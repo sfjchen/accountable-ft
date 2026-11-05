@@ -6,16 +6,26 @@ Setup: a policy (8-15 rules with exceptions and defaults) plus a case file writt
 
 ## Plan
 
-- Data: one schema, several domain skins (admin rulebooks like permits, grants, trial protocols, plus an invented conference review policy). One skin and a slice of policies held out. Variants per case: minimal flip, irrelevant edit, missing fact, model-proposed flip.
-- Models: Qwen3.5-9B for everything, Qwen3.8-27B for the final SFT only if compute allows. Gemma 4 26B and one API model as prompting references.
-- Conditions: base, base + CoT, SFT (admin only / review only / mix), SFT + RL or DPO with the engine as reward, one CREDIT-style relabel round on top of the best SFT.
-- Metrics, reported on correct and wrong items separately: accuracy, flip rate (both directions), invariance, cited-fact precision/recall vs the minimal sufficient set, assumption accuracy on missing facts, validity of the model's own proposed flip.
-- Decoding fixed across conditions, splits by policy, bootstrap CIs by policy, 100 items hand-checked by both of us.
+Details and reasoning in `PLAN.md`.
+
+- Data: 4 invented domains (grant, trial, review for training, permit held out), policies sampled from template families, each case in 3 views (table, prose, prose with derivation needed). Variants per case: certified minimal flip, invariant edit, removed fact, revealed fact.
+- Model: Qwen3.5-9B. Gemma 4 26B and one API model as prompting references.
+- Conditions: prompted base (thinking off and on), decision-only SFT, account SFT on the same sequences with the account in the loss, one CREDIT-style relabel round if the core result is clean. RL and a 27B run only if compute allows.
+- Primary endpoint: how much the model's own account helps it predict its decision after an edit it did not choose, against an oracle-copying control and a no-account control. Also decision accuracy per class, counterfactual and invariance pair accuracy, explanation validity under the engine, own proposed smallest change checked against both engine and model.
+- Greedy decoding with a repeat control, splits by template family, cluster bootstrap CIs, paired comparisons, 100 items hand-checked blind by both of us.
 
 ## Files
 
 - `gen_z3_v0.py` — first generator (toy trial eligibility, z3). Kept as a cross-check only, the engine replaces it.
+- `engine.py` — rule engine: decide, minimal sufficient sets (exact, over admissible completions), minimal flips up to radius 4, invariant edits, `is_valid_justification`.
+- `gen.py` — generator: template families, policies, base cases and flip/invariant/missing variants in 3 views (table, prose, prose_derive), optional Gemini prose. `render_case()` re-renders edited cases for interventions.
+- `domains/*.yaml` — 4 invented domains (grant, permit, trial, review): facts, derived facts, rule templates, defaults, prose vocabulary. Permit is the held-out domain.
+- `tests/test_engine.py` — engine tests on hand-written policies plus brute-force cross-checks.
+- Smoke run: `python gen.py --domains all --n-policies 4 --cases-per-policy 5 --seed 0 --prose template --out data/smoke.jsonl`
+- `infer.py` — one `Runner` over OpenAI-compatible endpoints (vLLM serve, OpenRouter), Gemini and offline vLLM, with fixed decoding, a response cache, `--rep` for the repeat control, `--mode bank` (intervention bank, `data/<name>.bank.jsonl`) and `--mode predict` (self-prediction with or without the frozen account).
+- `evaluate.py` — all metrics with cluster bootstrap CIs, slices (primary: prose, unseen families, training vocabularies), paired comparisons, seed aggregates, coverage, checkpoint selection. Markdown to stdout, every number in JSON.
+- `tests/test_evaluate.py`, `tests/fixtures/mini.jsonl` — parser, metric math on a 12-record hand-made fixture, bank, selection, bootstrap.
 
 ## Related
 
-VERDICT (2609.03366), CREDIT (2610.35295), Chen et al. 2024 (2307.08678), Chua et al. 2024 (2403.05518), Hase & Potts 2026 (2602.20710), Jia et al. 2026 (2605.24286), Mayne et al. 2025 (2509.09396).
+VERDICT (2609.03366), CREDIT (2610.35295), Chen et al. 2024 (2307.08678), Chua et al. 2024 (2403.05518), Hase & Potts 2026 (2602.20710), Jia et al. 2026 (2605.24286), Mayne et al. 2025 (2509.09396), Doi et al. 2025 (2512.07288).
