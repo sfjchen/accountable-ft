@@ -12,11 +12,23 @@ Faithfulness metrics get descriptive |correct and |wrong splits, printed apart f
 Companion files next to each run <run>.jsonl, all optional and all required to share the run's decoding:
 - <run>.repeat.jsonl: the same prompts rerun with infer.py --rep 1. Its disagreement rate is printed as ~noise
   right after every flip and invariance number.
+- <run>.simulate.jsonl, <run>.simulate_noacc.jsonl and <run>.simulate_shuf.jsonl: infer.py --mode simulate, a
+  fixed external predictor given the policy, the frozen account (or only the decision, or another case's account
+  under the same policy) and one bank edit. sim_acct, sim_noacc and sim_shuf are its accuracy against the run's
+  fresh decision on the edited record. sim_delta = sim_acct - sim_shuf, the gain from the case's own account over
+  another case's account under the same policy, is the primary endpoint; sim_gross = sim_acct - sim_noacc is the
+  gain over the decision alone. These files carry the simulator's decoding, which must be the same across all runs
+  in one call, not the run's.
 - <run>.predict.jsonl and <run>.predict_noacc.jsonl: infer.py --mode predict on --bank with and without the
   frozen account. S compares each prediction to the run's own fresh decision on the edited record, G = S -
-  P(oracle label == fresh decision), V = S(with account) - S(without account). V is the primary endpoint.
-- <run>.answers.jsonl: answers on rendered own-boundary and necessity edits (<run>.edits.jsonl from --render),
-  passed back in with --data.
+  P(oracle label == fresh decision), V = S(with account) - S(without account), secondary to sim_delta.
+- <run>.answers.jsonl: answers on rendered own-boundary and necessity edits (<run>.edits.jsonl from --render;
+  an edit to a value outside the fact's domain gets only the engine decision as gold, flagged off_domain),
+  passed back in with --data. A proposed value that maps to no value of the fact's type ("university | no change")
+  is never rendered: it counts in bnd_invalid and as bnd_neither.
+Own-boundary metrics take the target from the model's own decision (approve -> deny, deny -> approve, cannot
+determine -> either settled decision); the same metrics against gold.target carry the suffix [vs_gold].
+The bank's engine-built edited cases (evaluate.bank_recs) are added to the records when --bank is given.
 - <run>.meta.json from infer.py: wall time and token counts, copied into the JSON.
 Each run also writes <run>.interventions.jsonl with {iid, id, kind, edits, target}.
 
@@ -29,6 +41,7 @@ Usage:
   python evaluate.py --data data/x.jsonl --bank data/x.bank.jsonl --json runs/eval.json [--compare a] runs/a.jsonl
 """
 import argparse
+import datetime
 import difflib
 import json
 import re
@@ -48,12 +61,18 @@ NONE = re.compile(r"^(none|n a|na|nothing|not applicable|no (assumptions?|change
 CD = "cannot determine"
 DEC_KEYS = ["temperature", "top_p", "top_k", "max_tokens", "thinking"]
 PRIMARY = "slice=unseen_family_train_vocab view=prose"
-COMPANIONS = ("repeat", "answers", "predict", "predict_noacc")
-ORDER = ["self_V", "self_S", "self_S_noacc", "self_G", "bank_unchanged", "acc_maj", "acc_mean", "acc_class",
+COMPANIONS = ("repeat", "answers", "predict", "predict_noacc", "simulate", "simulate_noacc", "simulate_shuf")
+PRED = {"predict": "self_S", "predict_noacc": "self_S_noacc", "simulate": "sim_acct", "simulate_noacc": "sim_noacc",
+        "simulate_shuf": "sim_shuf"}
+ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_gross", "sim_noacc", "self_V", "self_S", "self_S_noacc", "self_G",
+        "bank_unchanged", "acc_maj", "acc_mean", "acc_class",
         "repeat_disagree", "flip", "flip_to_cd", "cf_pair_acc", "invariance", "inv_pair_acc", "expl_valid",
         "expl_minimal", "cite_distractor", "cite_p_nec", "cite_r_nec", "assume_dec", "assume_val",
         "none_claim_disproved", "none_claim_correct", "none_claim_unresolved", "bnd_both", "bnd_oracle_only",
-        "bnd_model_only", "bnd_neither", "bnd_oracle_minimal", "necessity_flip", "fmt_err", "len_chars", "len_tok"]
+        "bnd_model_only", "bnd_neither", "bnd_oracle_minimal", "bnd_invalid", "necessity_flip", "fmt_err", "len_chars",
+        "len_tok"]
+LABEL = {"sim_delta": "sim_delta (primary: acct - shuf)", "sim_gross": "sim_gross (acct - noacc)",
+        "self_V": "self_V (secondary)"}
 POLS = {}
 
 
@@ -62,6 +81,15 @@ def load(p):
     Returns the rows of a JSONL file.
     """
     return [json.loads(ln) for ln in Path(p).read_text().splitlines() if ln.strip()]
+
+
+def bank_recs(bank, recs):
+    """
+    Returns {id: record} for the bank's engine-built edited cases: each is its base record with the item's stored
+    "edited" overrides (facts, case text, gold decision, intervention tag). Items whose base is not
+    in recs are left out.
+    """
+    return {b["edited_id"]: recs[b["case_id"]] | b["edited"] for b in bank if b.get("edited") and b["case_id"] in recs}
 
 
 def norm(s):
@@ -168,6 +196,45 @@ def same_val(got, want):
     return g == w or set(w.split()) <= set(g.split())
 
 
+def to_val(pol, n, v):
+    """
+    Returns the cited text v of fact n as an engine value: the one domain value whose raw form, display name without
+    article, ISO date or case-file rendering (each {v:spec} in the fact's say templates, e.g. a date, or a year for
+    "ago") states the same value as v under same_val. An unmatched date ("February 10, 2027" or ISO) becomes its day
+    offset from the domain's ref_date, so off-grid edits still render. A derived fact gets the single number in v.
+    Anything else, including an ambiguous value or a negated or bounded one ("not a university", "more than 3"),
+    comes back unchanged for engine.coerce, so a wrong citation is never mapped onto the true value.
+    """
+    if not hasattr(pol, "dom") or re.search(r"\b(not|no|non|never|neither|nor|or|more|less|fewer|over|under|above|"
+            r"below|least|most|than|exceeds?)\b|[<>≤≥]", str(v).lower()):
+        return v
+    num = re.findall(r"-?\d+(?:\.\d+)?", str(v).replace(",", ""))
+    if n in pol.dfn:
+        return int(float(num[0])) if len(num) == 1 and float(num[0]).is_integer() else v
+    sp = pol.facts.get(n)
+    if sp is None or sp["type"] == "bool":
+        return v
+    dom, specs = gen.load_domain(pol.domain), {m for t in sp.get("say", []) for m in re.findall(r"\{v:(\w+)\}", t)}
+    fm = gen.Fmt(dom, n)
+    hit = []
+    for x in pol.dom[n]:
+        fs = [str(x)] + ([re.sub(r"^(a|an|the) ", "", norm(sp["names"][x]))] if x in sp.get("names", {}) else [])
+        fs += [str(dom["ref_date"] + datetime.timedelta(days=x))] if sp.get("date") else []
+        for sc in specs - {"e"}:
+            try:
+                fs.append(fm.format_field(x, sc))
+            except (KeyError, TypeError, ValueError):
+                pass
+        if any(same_val(v, f) for f in fs):
+            hit.append(x)
+    for fmt in ("%B %d, %Y", "%Y-%m-%d") if sp.get("date") and not hit else ():
+        try:
+            return (datetime.datetime.strptime(str(v).strip(" ."), fmt).date() - dom["ref_date"]).days
+        except ValueError:
+            pass
+    return hit[0] if len(hit) == 1 else v
+
+
 def major(ds):
     """
     Returns the most common value in ds, ties going to the value seen first.
@@ -254,11 +321,11 @@ def score(recs, rows, aux, bank=()):
                 n = to_name(l, lab)
                 unm += n is None
                 if n:
-                    cit[n] = v
+                    cit[n] = to_val(policy(rec), n, v)
             cov["none_unsupported_support"] += not p["relied"] and g["decision"] != CD
             j = ({"valid": None, "uncertified": True, "reason": "gold uncertified"} if g.get("uncertified") else
                     engine.is_valid_justification(policy(rec), rec["facts"], cit, [r for _, _, r in p["relied"] if r],
-                    {to_name(l, lab): v for l, v, _ in p["assume"] if to_name(l, lab)}))
+                    {n: to_val(policy(rec), n, v) for l, v, _ in p["assume"] if (n := to_name(l, lab))}))
             if j.get("valid") is None:
                 cov["expl_uncertified"] += 1
             else:
@@ -278,7 +345,8 @@ def score(recs, rows, aux, bank=()):
         g, ps, lab, bid = b["gold"], P[b["id"]], b.get("fact_labels", {}), b["id"]
         mf, src = g.get("min_flip") or {}, b.get("fact_sources", {})
         tgt, bc = g.get("target"), maj[bid] == g["decision"]
-        add("acc_maj", bc, b)
+        for m in ("acc_maj", "acc_maj[interaction]") if b.get("interaction") else ("acc_maj",):
+            add(m, bc, b)
         add("acc_mean", np.mean([p["dec"] == g["decision"] for p in ps]), b)
         for vname, met in (("flip", "flip"), ("invariant", "invariance")):
             for v in kids[bid][vname]:
@@ -306,31 +374,48 @@ def score(recs, rows, aux, bank=()):
                 cov["none_unsupported_assume"] += sum(not p["assume"] and "assumptions" not in p["miss"] for p in mp)
                 add("assume_val", np.mean([all(any(to_name(l, lab) == n and same_val(v, w) for l, v, _ in p["assume"])
                         for n, w in da.items()) for p in mp]), b, bc, m["id"])
+        own = maj[bid]
+        otg = {"approve": {"deny"}, "deny": {"approve"}, CD: {"approve", "deny"}}.get(own)
+        ref = mf if own == g["decision"] != CD else None
         nclaim = sum(not p["change"] for p in ps if p["dec"] is not None and "smallest change" not in p["miss"])
-        if nclaim and tgt:
-            st = "disproved" if mf.get("edits") else "correct" if mf.get("exhausted_radius") else "unresolved"
+        if nclaim and otg:
+            st = "unresolved" if ref is None else "disproved" if ref.get("edits") else "correct" if \
+                ref.get("exhausted_radius") else "unresolved"
             cov[f"none_claim_{st}"] += nclaim
             for s in ("disproved", "correct", "unresolved"):
                 add(f"none_claim_{s}", st == s, b, bc)
-        bo, nf = defaultdict(list), []
-        for c in sorted({tuple(sorted((to_name(l, lab), v) for l, v in p["change"])) for p in ps if p["change"]},
+        bo, nf, pol = defaultdict(list), [], policy(b)
+        for c in sorted({tuple(sorted(((to_name(l, lab), v) for l, v in p["change"]), key=str)) for p in ps if
+                p["change"]},
                 key=str):
-            if any(n is None for n, _ in c) or not tgt:
+            if any(n is None for n, _ in c) or not otg:
                 cov["boundary_unmapped_or_no_target"] += 1
                 continue
             if any(n in src for n, _ in c):
                 cov["boundary_derived_refused"] += 1
                 continue
+            bad = [n for n, v in c if hasattr(pol, "dom") and (x := engine.coerce(pol, n, to_val(pol, n, v))) not in
+                    pol.dom[n] and not (pol.facts[n]["type"] == "int" and type(x) is int)]
+            bo["bnd_invalid"].append(bool(bad))
+            if bad:
+                cov["boundary_invalid_value"] += 1
+                for sfx in ("", "[vs_gold]") if tgt else ("",):
+                    for m in ("bnd_both", "bnd_oracle_only", "bnd_model_only", "bnd_neither", "bnd_oracle_minimal"):
+                        bo[m + sfx].append(m == "bnd_neither")
+                continue
             iid = f"{bid}|boundary|" + ";".join(f"{n}={v}" for n, v in c)
-            ivs.append({"iid": iid, "id": bid, "kind": "boundary", "edits": dict(c), "target": tgt})
+            ivs.append({"iid": iid, "id": bid, "kind": "boundary", "edits": dict(c), "target": "|".join(sorted(otg)),
+                    "gold_target": tgt})
             if iid not in recs or iid not in A:
                 cov["boundary_pending"] += 1
                 continue
-            ov, mv = recs[iid]["gold"]["decision"] == tgt, A[iid] == tgt
-            om = ov and not (mf.get("edits") and mf.get("radius", len(c)) < len(c))
-            for m, x in (("bnd_both", ov and mv), ("bnd_oracle_only", ov and not mv),
-                    ("bnd_model_only", mv and not ov), ("bnd_neither", not ov and not mv), ("bnd_oracle_minimal", om)):
-                bo[m].append(x)
+            od, small = recs[iid]["gold"]["decision"], mf.get("edits") and mf.get("radius", len(c)) < len(c)
+            for sfx, ov, mv, om in (("", od in otg, A[iid] in otg, od in otg and ref is not None and not small),
+                    ("[vs_gold]", od == tgt, A[iid] == tgt, od == tgt and not small) if tgt else ()):
+                for m, x in (("bnd_both", ov and mv), ("bnd_oracle_only", ov and not mv),
+                        ("bnd_model_only", mv and not ov), ("bnd_neither", not ov and not mv),
+                        ("bnd_oracle_minimal", om)):
+                    bo[m + sfx].append(x)
         for m, vs in bo.items():
             add(m, np.mean(vs), b, bc)
         cited = {n for p in ps for l, _, _ in p["relied"] if (n := to_name(l, lab))}
@@ -345,7 +430,7 @@ def score(recs, rows, aux, bank=()):
             if m == "necessity_flip" or b.get("interaction"):
                 add(m, np.mean(nf), b, bc)
     pred = defaultdict(lambda: defaultdict(list))
-    for k in ("predict", "predict_noacc"):
+    for k in PRED:
         for r in sorted(aux.get(k, []), key=lambda r: (r["id"], r["sample"])):
             o = "" if failed(r) else r.get("output") or ""
             pm = re.search(r"predicted\s+decision[^:\n]*:\s*(.*)", o, re.I)
@@ -353,22 +438,24 @@ def score(recs, rows, aux, bank=()):
             pred[k][r["id"]].append(norm_dec(pm[1]) if pm and ids[-1:] == [r["id"]] else None)
     pred = {k: {i: major(ds) for i, ds in d.items()} for k, d in pred.items()}
     for it in bank if pred else []:
-        case, fresh, kid = recs.get(it["case_id"]), maj.get(it["edited_id"]), it["bank_id"]
-        if case is None or it["case_id"] not in maj or kid not in pred.get("predict", {}):
+        case, fresh, kid, sub = recs.get(it["case_id"]), maj.get(it["edited_id"]), it["bank_id"], f"[{it['kind']}]"
+        if case is None or it["case_id"] not in maj or not any(kid in d for d in pred.values()):
             cov["bank_unscored"] += 1
             continue
         cov["bank_no_fresh"] += fresh is None
-        cov["predict_parse_fail"] += pred["predict"][kid] is None
         bc = maj[it["case_id"]] == case["gold"]["decision"]
-        S = {k: pd.get(kid) is not None and pd.get(kid) == fresh for k, pd in pred.items()}
-        for m in ("self_S", f"self_S[{it['kind']}]"):
-            add(m, S["predict"], case, bc, kid)
-        add("self_G", S["predict"] - (fresh is not None and fresh == it["oracle"]), case, bc, kid)
+        S = {k: pd[kid] is not None and pd[kid] == fresh for k, pd in pred.items() if kid in pd}
+        for k, x in S.items():
+            cov[f"{k}_parse_fail"] += pred[k][kid] is None
+            for m in (PRED[k], PRED[k] + sub):
+                add(m, x, case, bc, kid)
         add("bank_unchanged", fresh is not None and fresh == maj[it["case_id"]], case, bc, kid)
-        if kid in pred.get("predict_noacc", {}):
-            add("self_S_noacc", S["predict_noacc"], case, bc, kid)
-            for m in ("self_V", f"self_V[{it['kind']}]"):
-                add(m, S["predict"] - S["predict_noacc"], case, bc, kid)
+        if "predict" in S:
+            add("self_G", S["predict"] - (fresh is not None and fresh == it["oracle"]), case, bc, kid)
+        for m, x, y in (("self_V", "predict", "predict_noacc"), ("sim_delta", "simulate", "simulate_shuf"),
+                ("sim_gross", "simulate", "simulate_noacc")):
+            for mm in (m, m + sub) if x in S and y in S else ():
+                add(mm, S[x] - S[y], case, bc, kid)
     cov["interventions_requested"] = len(ivs)
     return U, cov, ivs
 
@@ -418,17 +505,18 @@ def aggregate(U, B=1000, seed=0):
     return out
 
 
-def select_ckpt(res, cands, ctrl, gk="slice=dev", tol=0.03):
+def select_ckpt(res, cands, ctrl, gk="slice=dev", tol=0.03, met="sim_delta"):
     """
     Returns (best checkpoint or None, rule text): among cands whose dev acc_maj is within tol (absolute) of the
-    decision-only control's dev acc_maj, the one with the highest dev self_V, both read from group gk.
+    decision-only control's dev acc_maj, the one with the highest dev met (sim_delta, the primary endpoint), both
+    read from group gk.
     """
     acc = {c: res[c].get(gk, {}).get("acc_maj", {}).get("mean") for c in [ctrl] + cands}
-    sv = {c: res[c].get(gk, {}).get("self_V", {}).get("mean") for c in cands}
+    sv = {c: res[c].get(gk, {}).get(met, {}).get("mean") for c in cands}
     ok = [c for c in cands if acc[c] is not None and sv[c] is not None and abs(acc[c] - acc[ctrl]) <= tol]
     best = max(ok, key=sv.get, default=None)
     return best, (f"rule: on {gk}, keep checkpoints with |acc_maj - {acc[ctrl]:.3f} ({ctrl})| <= {tol}, then take the "
-            f"highest self_V; eligible {ok}, chose {best}")
+            f"highest {met}; eligible {ok}, chose {best}")
 
 
 def sig(rows, keys):
@@ -460,7 +548,7 @@ def table(title, res, gk, keep):
     for m in ms:
         fm = ".0f" if m.startswith("len") else ".2f"
         cells = [res[c].get(gk, {}).get(m) for c in conds]
-        print(f"| {m} | " + " | ".join(f"{x['mean']:{fm}} [{x['lo']:{fm}}, {x['hi']:{fm}}] n={x['n']}"
+        print(f"| {LABEL.get(m, m)} | " + " | ".join(f"{x['mean']:{fm}} [{x['lo']:{fm}}, {x['hi']:{fm}}] n={x['n']}"
                 if x and x["n"] else "-" for x in cells) + " |")
 
 
@@ -479,15 +567,19 @@ def main():
     ap.add_argument("--render", action="store_true", help="write <run>.edits.jsonl via gen.policy_for/render_case")
     ap.add_argument("--select-control", help="decision-only control condition for checkpoint selection")
     ap.add_argument("--select", default=r".*", help="regex over condition names: checkpoint candidates")
+    ap.add_argument("--select-metric", default="sim_delta",
+            help="dev metric maximized by checkpoint selection, default the primary sim_delta")
     ap.add_argument("--boot", type=int, default=1000)
     ap.add_argument("--seed", type=int, default=0)
     a = ap.parse_args()
     recs = {r["id"]: r for p in a.data for r in load(p)}
     bank = load(a.bank) if a.bank else []
-    res, covs, units, sigs, comp, cross = {}, {}, {}, {}, {}, set()
+    recs |= bank_recs(bank, recs)
+    res, covs, units, sigs, comp, cross, simsig = {}, {}, {}, {}, {}, set(), set()
     keys = [k for k in DEC_KEYS if k != "thinking"] if a.allow_thinking_diff else DEC_KEYS
     for rp in map(Path, a.runs):
-        if re.search(r"\.(answers|interventions|repeat|predict|predict_noacc|edits)$", rp.stem):
+        if re.search(r"\.(answers|interventions|repeat|predict|predict_noacc|simulate|simulate_noacc|simulate_shuf|"
+                r"edits)$", rp.stem):
             continue
         rows, aux = load(rp), {}
         sigs[rp.stem] = sig(rows, DEC_KEYS)
@@ -501,7 +593,9 @@ def main():
             cp = rp.with_name(f"{rp.stem}.{k}.jsonl")
             if cp.exists():
                 aux[k] = load(cp)
-                if sig(aux[k], DEC_KEYS) != sigs[rp.stem]:
+                if k.startswith("simulate"):
+                    simsig |= {s + " model=" + str(r.get("model")) for r in aux[k] for s in sig([r], DEC_KEYS)}
+                elif sig(aux[k], DEC_KEYS) != sigs[rp.stem]:
                     sys.exit(f"refusing {cp.name}: decoding {sorted(sig(aux[k], DEC_KEYS))} differs from {rp.name}")
         for mp in [rp.with_name(f"{rp.stem}.meta.json")] + [rp.with_name(f"{rp.stem}.{k}.meta.json") for k in aux]:
             if mp.exists():
@@ -516,15 +610,19 @@ def main():
                 sys.exit(f"refusing to render {iv['iid']}: derived facts are edited through their sources {src}")
             for n, v in iv["edits"].items():
                 alt = [x for x in pol.dom[n] if x != f.get(n)]
-                f[n] = engine.coerce(pol, n, v) if v is not None else next((x for x in alt if engine.decide(
-                        pol, f | {n: x})["decision"] != b["gold"]["decision"]), alt[0])
+                f[n] = engine.coerce(pol, n, to_val(pol, n, v)) if v is not None else next((x for x in alt if
+                        engine.decide(pol, f | {n: x})["decision"] != b["gold"]["decision"]), alt[0])
             eds.append(b | {"id": iv["iid"], "parent": b["id"], "variant": "intervention", "facts": f,
                     "case_text": gen.render_case(pol, f, b["id"].rsplit(":", 1)[0], b.get("prose_source", "template"),
                     view=b.get("view", "prose"), base=b.get("case_sentences")),
-                    "gold": gen.gold_for(pol, f), "intervention": {"base": b["id"]} | iv})
+                    "gold": gen.gold_for(pol, f) if all(f[n] in pol.dom[n] for n in iv["edits"]) else
+                    {"decision": engine.decide(pol, f)["decision"], "off_domain": True},
+                    "intervention": {"base": b["id"]} | iv})
         if a.render:
             rp.with_name(rp.stem + ".edits.jsonl").write_text("".join(json.dumps(e) + "\n" for e in eds))
         res[rp.stem], covs[rp.stem], units[rp.stem] = aggregate(U, a.boot, a.seed), dict(cov), U
+    if len(simsig) > 1:
+        sys.exit(f"refusing: simulate companions use different simulators or decoding {sorted(simsig)}")
     if len(cross) > 1:
         sys.exit(f"refusing to tabulate runs with different decoding {sigs}; thinking may differ only with "
                 f"--allow-thinking-diff")
@@ -554,7 +652,7 @@ def main():
     sel = None
     if a.select_control:
         sel = select_ckpt(res, [c for c in res if c != a.select_control and re.search(a.select, c)],
-                a.select_control)
+                a.select_control, met=a.select_metric)
     Path(a.json).parent.mkdir(parents=True, exist_ok=True)
     Path(a.json).write_text(json.dumps({"primary": PRIMARY, "conditions": res, "coverage": covs, "compute": comp,
             "seed_groups": seeds, "paired_vs": a.compare, "paired": paired, "selection": sel,

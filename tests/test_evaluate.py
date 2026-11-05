@@ -1,7 +1,9 @@
 """
 Tests evaluate.py and the data-side helpers of infer.py: the output parser on messy model text, every metric on the
 12-record fixture against hand-computed values (fake run, repeat, answer and prediction outputs are written here),
-the intervention bank proportions, checkpoint selection, and bootstrap determinism under a seed.
+simulator and self-prediction scores, the prompts, the --slice/--view/--cases filter and the Vertex cache key of
+infer.py, and on data/smoke.jsonl the intervention bank mix, the SFT target format and cited-value canonicalization,
+then checkpoint selection and bootstrap determinism under a seed.
 """
 import json
 import sys
@@ -14,7 +16,9 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import evaluate  # noqa: E402
 from evaluate import aggregate, boot, norm_dec, parse, score, select_ckpt  # noqa: E402
-from infer import build_bank, build_prompt  # noqa: E402
+import engine  # noqa: E402
+import gen  # noqa: E402
+from infer import CHANGE, PROPS, Runner, build_bank, build_prompt, format_target, select_recs  # noqa: E402
 
 RECS = {r["id"]: r for r in map(json.loads, (ROOT / "tests/fixtures/mini.jsonl").read_text().splitlines())}
 ALL4 = ["decision", "policy support", "assumptions", "smallest change"]
@@ -153,20 +157,27 @@ def test_metrics():
         """
         return {"id": bid, "sample": 0, "output": f"Edit ID: {eid or bid}\nPredicted decision after edit: {d}"}
 
+    ks = [b["bank_id"] for b in bank]
     aux = {"answers": [{"id": i, "sample": 0, "output": f"Decision: {e[1]}"} for i, e in edits.items()],
         "predict": [pr("p1-b1|pivotal_replace", "deny"), pr("p2-b1|invariant_replace", "deny"),
             {"id": "p1-b1|remove", "sample": 0, "output": "it depends"}, pr("p2-b1-m|add", "deny")],
         "predict_noacc": [pr("p1-b1|pivotal_replace", "deny", "zzz"), pr("p2-b1|invariant_replace", "deny"),
             pr("p1-b1|remove", "cannot determine"), pr("p2-b1-m|add", "approve")]}
+    for k, ds in (("simulate", ["deny", "approve", "cannot determine", "approve"]),
+            ("simulate_noacc", ["approve", "deny", "cannot determine", "deny"]), ("simulate_shuf", ["approve"] * 4)):
+        aux[k] = [pr(i, d) for i, d in zip(ks, ds)]
     U, cov, _ = score(recs, fake_rows(), aux, bank)
     a = aggregate(U)["all"]
-    for m, v in {"bnd_both": 1 / 3, "bnd_oracle_only": 2 / 3, "bnd_model_only": 0.0, "bnd_neither": 0.0,
-            "bnd_oracle_minimal": 2 / 3, "necessity_flip": 3 / 4, "necessity_flip[interaction]": 1 / 2,
-            "acc_maj": 3 / 4, "self_S": 1 / 2,
+    for m, v in {"bnd_both": 1 / 3, "bnd_oracle_only": 1 / 3, "bnd_model_only": 1 / 3, "bnd_neither": 0.0,
+            "bnd_oracle_minimal": 2 / 3, "bnd_invalid": 0.0, "bnd_both[vs_gold]": 1 / 3,
+            "bnd_oracle_only[vs_gold]": 2 / 3, "bnd_model_only[vs_gold]": 0.0, "bnd_oracle_minimal[vs_gold]": 2 / 3,
+            "necessity_flip": 3 / 4, "necessity_flip[interaction]": 1 / 2, "acc_maj": 3 / 4, "self_S": 1 / 2,
             "self_S[pivotal_replace]": 1.0, "self_S_noacc": 1 / 4, "self_G": -1 / 4, "self_V": 1 / 4,
-            "bank_unchanged": 0.0}.items():
+            "bank_unchanged": 0.0, "sim_acct": 3 / 4, "sim_noacc": 1 / 2, "sim_shuf": 1 / 4, "sim_delta": 1 / 2,
+            "sim_delta[pivotal_replace]": 1.0, "sim_delta[invariant_replace]": 0.0, "sim_delta[add]": 0.0,
+            "sim_gross": 1 / 4, "sim_gross[add]": -1.0}.items():
         assert a[m]["mean"] == pytest.approx(v), m
-    assert cov["predict_parse_fail"] == 1
+    assert (cov["predict_parse_fail"], cov["simulate_parse_fail"], cov["bank_unscored"]) == (1, 0, 0)
 
 
 def test_failures():
@@ -187,30 +198,33 @@ def test_failures():
             "Deny.")] == ["approve", None, "cannot determine", "deny"]
 
 
-def test_bank_and_prompts():
+def test_prompts():
     """
-    Checks the bank's kind counts on the fixture (40/30/15/15 scaled to the 2 invariant items), its oracle labels,
-    determinism, and that both prompts carry the target label, the frozen answer and the Edit ID.
+    Checks that the decision prompt names no target label (its instructions are identical for a gold-approve and a
+    gold-deny case with the same labels), and that the predict and simulate prompts carry the frozen answer and the
+    Edit ID, the simulate prompt without the case text.
     """
-    bk = build_bank(list(RECS.values()))
-    assert sorted((b["kind"] for b in bk)) == ["add", "invariant_replace", "invariant_replace", "pivotal_replace",
-        "pivotal_replace", "pivotal_replace", "remove"]
-    assert all(b["oracle"] == RECS[b["edited_id"]]["gold"]["decision"] for b in bk) and bk == build_bank(
-        list(RECS.values()))
-    assert "Smallest change to make this deny:" in build_prompt(RECS["p1-b1"])[1]
-    it = next(b for b in bk if b["kind"] == "remove")
-    u = build_prompt(RECS[it["case_id"]], it, "Decision: approve\nPolicy support: x=y (R2)")[1]
-    assert f"Edit ID: {it['bank_id']}" in u and "Policy support: x=y (R2)" in u and "is no longer stated" in u
+    tail = [build_prompt(RECS[i])[1].split(RECS[i]["case_text"].strip())[1] for i in ("p1-b1", "p1-b2")]
+    assert RECS["p1-b1"]["gold"]["target"] == "deny" and RECS["p1-b2"]["gold"]["target"] == "approve"
+    assert tail[0] == tail[1] and f"{CHANGE}:" in tail[0] and "make this" not in tail[0]
+    it = {"bank_id": "p1-b1|remove", "kind": "remove", "edits": {"site_zone": None}}
+    for sim in (False, True):
+        u = build_prompt(RECS["p1-b1"], it, "Decision: approve\nPolicy support: x=y (R2)", sim)[1]
+        assert f"Edit ID: {it['bank_id']}" in u and "Policy support: x=y (R2)" in u and "is no longer stated" in u
+        assert (RECS["p1-b1"]["case_text"].strip() in u) != sim
 
 
 def test_select():
     """
-    Checks that checkpoint selection drops checkpoints more than 3 points from the control's accuracy.
+    Checks that checkpoint selection drops checkpoints more than 3 points from the control's accuracy and maximizes
+    sim_delta by default, self_V when asked.
     """
-    res = {c: {"slice=dev": {"acc_maj": {"mean": acc}, "self_V": {"mean": v}}} for c, acc, v in
-            (("ctrl", 0.70, None), ("c1", 0.72, 0.10), ("c2", 0.60, 0.40), ("c3", 0.69, 0.20))}
+    res = {c: {"slice=dev": {"acc_maj": {"mean": acc}, "sim_delta": {"mean": d}, "self_V": {"mean": v}}} for c, acc,
+            d, v in (("ctrl", 0.70, None, None), ("c1", 0.72, 0.10, 0.30), ("c2", 0.60, 0.40, 0.50),
+            ("c3", 0.69, 0.20, 0.10))}
     best, rule = select_ckpt(res, ["c1", "c2", "c3"], "ctrl")
-    assert best == "c3" and "eligible ['c1', 'c3']" in rule
+    assert best == "c3" and "eligible ['c1', 'c3']" in rule and "highest sim_delta" in rule
+    assert select_ckpt(res, ["c1", "c2", "c3"], "ctrl", met="self_V")[0] == "c1"
 
 
 def test_boot():
@@ -227,3 +241,111 @@ def test_boot():
     assert c["lo"] == c["hi"] == 0.5
     assert boot(v - v, cl)["hi"] == 0.0
     assert boot([float("nan")], ["a"])["n"] == 0
+
+
+def test_select_recs():
+    """
+    Checks that --slice and --view filter records, and that --cases K keeps K whole base cases (every variant along),
+    spread over both domains before a second case of either, the same under one seed.
+    """
+    recs = list(RECS.values())
+    fam = {"p1-b1": ["p1-b1", "p1-b1-f", "p1-b1-i", "p1-b1-m"], "p1-b2": ["p1-b2", "p1-b2-f"],
+        "p2-b1": ["p2-b1", "p2-b1-f", "p2-b1-i", "p2-b1-m"], "p2-b2": ["p2-b2", "p2-b2-f"]}
+    assert {r["id"] for r in select_recs(recs, "unseen_family_train_vocab")} == {r["id"] for r in recs if
+            r["id"].startswith("p2")}
+    assert select_recs(recs, view="table") == [] and select_recs(recs) == recs
+    for k in (1, 2, 4):
+        got = [r["id"] for r in select_recs(recs, cases=k)]
+        bases = [i for i in got if i in fam]
+        assert len(bases) == k and sorted(got) == sorted(i for b in bases for i in fam[b])
+        assert k != 2 or {b[:2] for b in bases} == {"p1", "p2"}
+        assert got == [r["id"] for r in select_recs(recs, cases=k)]
+    assert {r["id"] for r in select_recs(recs, "unseen_family_train_vocab", "prose", 1)} in ({*fam["p2-b1"]},
+            {*fam["p2-b2"]})
+
+
+def test_vertex_cache_key():
+    """
+    Checks that the cache key separates the Vertex and API-key gemini backends and keeps the old key without Vertex.
+    """
+    dec = {"temperature": 0.0, "top_p": 1.0, "top_k": 0, "max_tokens": 64, "seed": 0, "thinking": False}
+    ks = []
+    for vx in (None, "global", "us-central1"):
+        r = Runner.__new__(Runner)
+        r.backend, r.base_url, r.model, r.extra, r.rep = "gemini", None, "m", {}, 0
+        r.tag = f"gemini/vertex:{vx}" if vx else "gemini"
+        ks.append(r.key("s", "p", dec))
+    assert len(set(ks)) == 3
+
+
+SMOKE = ROOT / "data/smoke.jsonl"
+
+
+@pytest.mark.skipif(not SMOKE.exists(), reason="needs data/smoke.jsonl")
+def test_to_val(monkeypatch):
+    """
+    Checks that cited case-file renderings (dates, years for "ago", money, thousands, display names, derived numbers)
+    map to engine values on the first grant policy, and that off-grid dates become day offsets.
+    """
+    monkeypatch.undo()
+    rec = next(r for r in map(json.loads, SMOKE.read_text().splitlines()) if r["domain"] == "grant")
+    pol = evaluate.policy(rec)
+    got = {(n, v): evaluate.to_val(pol, n, v) for n, v in (("start_day", "January 4, 2027"),
+            ("start_day", "2027-01-18"), ("end_day", "January 5, 2027"), ("pi_years_since_phd", "2024"),
+            ("institution_type", "teaching hospital"), ("equipment_amount", "$30,000"),
+            ("requested_amount", "40 thousand dollars"), ("duration_weeks", "34 weeks"), ("human_subjects", "no"))}
+    assert list(got.values()) == [0, 14, 1, 3, "hospital", 30000, 40000, 34, "no"]
+    for n, v in (("institution_type", "not a hospital"), ("duration_weeks", "more than 34"), ("pi_years_since_phd",
+            "under 3")):
+        assert evaluate.to_val(pol, n, v) == v
+
+
+@pytest.mark.skipif(not SMOKE.exists(), reason="needs data/smoke.jsonl")
+def test_bank(monkeypatch):
+    """
+    Checks the bank on the primary population of the smoke data: the 40/30/15/15 mix within one item, unique ids,
+    determinism, engine oracles on every edited case, and pivotal edits that are certified flips independent of
+    gold.min_flip (a different fact set, no shared edit). Also checks that bank_recs keys each edited case by
+    edited_id under its base.
+    """
+    monkeypatch.undo()
+    recs = select_recs([json.loads(ln) for ln in SMOKE.read_text().splitlines()], "unseen_family_train_vocab", "prose")
+    bk, meta = build_bank(recs)
+    by, grp = {r["id"]: r for r in recs}, {"noncrossing_replace": "invariant", "invariant_replace": "invariant"}
+    assert bk and (bk, meta) == build_bank(recs) and len({b["bank_id"] for b in bk}) == len(bk)
+    for gk, p in PROPS.items():
+        assert abs(sum(grp.get(b["kind"], b["kind"]) == gk for b in bk) - p * len(bk)) <= 1, gk
+    br = evaluate.bank_recs(bk, by)
+    for b in bk:
+        e = br.get(b["edited_id"]) or by[b["edited_id"]]
+        pol = gen.policy_for(by[b["case_id"]])
+        assert b["oracle"] == e["gold"]["decision"] == engine.decide(pol, e["facts"])["decision"], b["bank_id"]
+        if b["kind"] == "pivotal_replace":
+            g = by[b["case_id"]]["gold"]
+            gold = (g.get("min_flip") or {}).get("edits") or {}
+            assert b["oracle"] == engine.flip_target(g["decision"]) and set(b["edits"]) != set(gold)
+            assert not any(gold.get(n) == v for n, v in b["edits"].items())
+        if b["kind"] == "noncrossing_replace":
+            assert b["oracle"] == by[b["case_id"]]["gold"]["decision"]
+    assert all(r["parent"] == next(b["case_id"] for b in bk if b["edited_id"] == i) for i, r in br.items())
+
+
+@pytest.mark.skipif(not SMOKE.exists(), reason="needs data/smoke.jsonl")
+def test_format_target(monkeypatch):
+    """
+    Checks that the SFT target puts the decision first, parses with no missing line back to the gold decision, and
+    for a settled decision cites a policy support the engine accepts as a valid justification.
+    """
+    monkeypatch.undo()
+    recs = [r for r in map(json.loads, SMOKE.read_text().splitlines()) if r["variant"] == "base"][:40]
+    for r in recs:
+        t = format_target(r)
+        p, pol = parse(t), evaluate.policy(r)
+        assert t.startswith(f"Decision: {r['gold']['decision']}\n") and p["dec"] == r["gold"]["decision"], r["id"]
+        assert p["miss"] == [] and not p["err"] and f"\n{CHANGE}: " in t
+        if r["gold"]["decision"] != "cannot determine" and not r["gold"].get("uncertified"):
+            lab = r.get("fact_labels", {})
+            cit = {n: evaluate.to_val(pol, n, v) for l, v, _ in p["relied"] if (n := evaluate.to_name(l, lab))}
+            ass = {n: evaluate.to_val(pol, n, v) for l, v, _ in p["assume"] if (n := evaluate.to_name(l, lab))}
+            j = engine.is_valid_justification(pol, r["facts"], cit, [x for _, _, x in p["relied"] if x], ass)
+            assert j["valid"], (r["id"], t, j)
