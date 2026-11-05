@@ -1,0 +1,272 @@
+# Submission and review policy of the invented Twelfth Symposium on Quorian Methods (SQM 2027).
+# Facts (ints bucketed to at most 8 values), derived facts, rule templates, defaults and prose vocabulary.
+# Dates are day offsets from ref_date. Scoped rules carry a "near" condition for near-miss distractors.
+name: review
+title: "Twelfth Symposium on Quorian Methods (SQM 2027): submission and review policy"
+preamble: "A submission is admitted to review with its assigned reviewer (approved) only if it meets every rule below. Rules marked as defaults say what to assume when the submission record is silent on a point."
+ref_date: 2027-04-05
+facts:
+  track:
+    type: enum
+    values: [lattice, applied, position]
+    names: {lattice: "the Lattice track", applied: "the Applied Quorian track", position: "the Position Paper track"}
+    label: "submission track"
+    say:
+      - "The paper was submitted to {v:e}."
+      - "The authors chose {v:e}."
+  main_pages:
+    type: int
+    values: [6, 7, 8, 9, 10, 11, 12]
+    label: "main text length (pages)"
+    say:
+      - "The main text runs {v} pages."
+      - "Excluding references, the paper is {v} pages long."
+  ref_pages:
+    type: int
+    values: [1, 2, 3, 4, 5]
+    label: "reference list length (pages)"
+    say:
+      - "The reference list takes {v} pages."
+      - "References fill {v} pages."
+  anonymized:
+    type: bool
+    label: "manuscript anonymized"
+    say_true:
+      - "The manuscript is fully anonymized."
+      - "Author names and affiliations were removed from the PDF."
+    say_false:
+      - "The author names appear on the first page of the PDF."
+      - "The manuscript is not anonymized."
+  under_review_elsewhere:
+    type: bool
+    label: "under review at another venue"
+    say_true:
+      - "A version of the paper is under review at another venue."
+      - "The authors disclose that the same work is currently under review elsewhere."
+    say_false:
+      - "The work is not under review anywhere else."
+      - "The authors confirm the paper is not under submission at any other venue."
+  nonarchival_venue:
+    type: bool
+    label: "other venue is a non-archival workshop"
+    say_true:
+      - "The other venue is a non-archival workshop."
+      - "The authors describe the other venue as a workshop without proceedings."
+    say_false:
+      - "The other venue publishes archival proceedings."
+      - "Any other venue involved publishes formal proceedings."
+  submission_day:
+    type: int
+    values: [0, 4, 8, 10, 12, 14, 16, 18]
+    date: true
+    label: "submission date"
+    say:
+      - "The paper was uploaded on {v:date}."
+      - "The submission system timestamps the upload on {v:date}."
+  extension:
+    type: bool
+    label: "deadline extension granted"
+    say_true:
+      - "The program chairs granted the authors a deadline extension."
+      - "An extension was approved by the chairs in advance."
+    say_false:
+      - "No extension was requested or granted."
+      - "The authors did not receive an extension."
+  last_coauthor_day:
+    type: int
+    values: [-1095, -730, -540, -365, -180, -60]
+    date: true
+    label: "date of the assigned reviewer's most recent paper co-authored with any author"
+    say:
+      - "The assigned reviewer last co-authored a paper with one of the authors on {v:date}."
+      - "The reviewer's most recent joint paper with an author appeared on {v:date}."
+  supp_mb:
+    type: int
+    values: [0, 25, 50, 75, 100, 150, 200]
+    label: "supplementary material size (MB)"
+    say:
+      - "Supplementary material totals {v} MB."
+      - "The supplementary archive is {v} MB."
+  supp_anonymized:
+    type: bool
+    label: "supplementary material anonymized"
+    say_true:
+      - "The supplementary material was scrubbed of identifying information."
+      - "The supplementary files are anonymized."
+    say_false:
+      - "The supplementary files still contain the authors' institutional logos."
+      - "The supplementary material is not anonymized."
+  num_authors:
+    type: int
+    values: [1, 2, 3, 4, 6, 8, 10]
+    label: "number of authors"
+    say:
+      - "The paper has {v} authors."
+      - "{v} authors are listed in the submission form."
+  reviewer_same_institution:
+    type: bool
+    label: "assigned reviewer works at an author's institution"
+    say_true:
+      - "The assigned reviewer works at the same institution as one of the authors."
+      - "One author and the assigned reviewer share an employer."
+    say_false:
+      - "The assigned reviewer works at a different institution from every author."
+      - "No author shares an institution with the assigned reviewer."
+  human_subjects:
+    type: bool
+    label: "study involves human participants"
+    say_true:
+      - "The paper reports a user study with human participants."
+      - "The evaluation recruited human volunteers."
+    say_false:
+      - "The work involves no human participants."
+      - "All experiments are run on synthetic Quorian lattices, with no human participants."
+  ethics_statement:
+    type: bool
+    label: "ethics statement included"
+    say_true:
+      - "An ethics statement is included at the end of the paper."
+      - "The authors added a short ethics statement."
+    say_false:
+      - "The paper has no ethics statement."
+      - "No ethics statement appears anywhere in the submission."
+  artifact_license:
+    type: bool
+    label: "supplementary artifacts carry an open license"
+    say_true:
+      - "The supplementary code is released under an open license."
+      - "A license file grants open reuse of the supplementary artifacts."
+    say_false:
+      - "The supplementary artifacts carry no license."
+      - "The authors have not chosen a license for the supplementary files."
+derived_facts:
+  total_pages:
+    expr: "main_pages + ref_pages"
+    label: "main text plus references (pages)"
+    say: ["In total the PDF is {v} pages."]
+  coauthor_gap:
+    expr: "submission_day - last_coauthor_day"
+    label: "days from the reviewer's last joint paper to the submission date"
+    say: ["That joint paper appeared {v} days before the submission date."]
+rules:
+  - key: page_limit
+    cond: "main_pages <= {t}"
+    text: "The main text may not exceed {t} pages"
+    params: {t: [8, 9, 10]}
+    unless:
+      - cond: "track == 'position' and main_pages <= {t2}"
+        text: "the paper is in the Position Paper track and the main text is at most {t2} pages"
+        params: {t2: "t + 2"}
+  - key: anonymity
+    cond: "anonymized"
+    text: "The manuscript must be anonymized"
+    unless:
+      - cond: "track == 'position'"
+        text: "it is submitted to the Position Paper track, which is reviewed with author names visible"
+  - key: dual_submission
+    cond: "not under_review_elsewhere"
+    text: "Work under review at another venue may not be submitted"
+    unless:
+      - cond: "nonarchival_venue"
+        text: "the other venue is a non-archival workshop"
+  - key: deadline
+    cond: "submission_day <= {t}"
+    text: "Submissions must be uploaded no later than {t:date}"
+    params: {t: [10, 12]}
+    unless:
+      - cond: "extension and submission_day <= {t2}"
+        text: "the chairs granted an extension and the paper was uploaded by {t2:date}"
+        params: {t2: "t + 4"}
+  - key: supp_size
+    cond: "supp_mb <= {t}"
+    text: "Supplementary material may not exceed {t} MB"
+    params: {t: [50, 75]}
+    unless:
+      - cond: "track == 'applied' and supp_mb <= {t2}"
+        text: "the paper is in the Applied Quorian track, which allows up to {t2} MB"
+        params: {t2: "t * 2"}
+  - key: supp_anon
+    scoped: true
+    cond: "supp_mb == 0 or supp_anonymized"
+    near: "supp_mb == 0 and not supp_anonymized"
+    text: "Any supplementary material must be anonymized"
+  - key: position_authors
+    scoped: true
+    cond: "track != 'position' or num_authors <= {t}"
+    near: "track != 'position' and num_authors > {t}"
+    text: "Position papers may list at most {t} authors"
+    params: {t: [2, 3]}
+  - key: applied_refs
+    scoped: true
+    cond: "track != 'applied' or ref_pages <= {t}"
+    near: "track != 'applied' and ref_pages > {t}"
+    text: "Applied Quorian track papers may use at most {t} pages of references"
+    params: {t: [2, 3]}
+  - key: reviewer_institution
+    cond: "not reviewer_same_institution"
+    text: "The assigned reviewer may not work at the same institution as any author"
+    unless:
+      - cond: "track == 'position'"
+        text: "the paper is in the Position Paper track, which is reviewed openly by the whole committee"
+  - key: extension_pages
+    scoped: true
+    cond: "not extension or main_pages <= {t}"
+    near: "not extension and main_pages > {t}"
+    text: "Papers uploaded under a deadline extension may not exceed {t} pages of main text"
+    params: {t: [7, 8]}
+  - key: ethics
+    scoped: true
+    cond: "not human_subjects or ethics_statement"
+    near: "not human_subjects and not ethics_statement"
+    text: "Papers reporting studies with human participants must include an ethics statement"
+    unless:
+      - cond: "track == 'position'"
+        text: "the paper is in the Position Paper track"
+  - key: artifact_license
+    scoped: true
+    cond: "supp_mb == 0 or artifact_license"
+    near: "supp_mb == 0 and not artifact_license"
+    text: "Any supplementary artifacts must be released under an open license"
+derived:
+  - key: total_length
+    cond: "total_pages <= {t}"
+    text: "The main text and references together may not exceed {t} pages"
+    params: {t: [11, 12, 13]}
+  - key: conflict_window
+    cond: "coauthor_gap >= {t}"
+    text: "The assigned reviewer may not have co-authored a paper with any author within {t} days before the submission date"
+    params: {t: [365, 540, 730]}
+defaults:
+  - fact: ethics_statement
+    value: false
+    text: "If the record does not mention an ethics statement, assume there is none"
+  - fact: artifact_license
+    value: false
+    text: "If the record does not mention a license for supplementary artifacts, assume they carry none"
+  - fact: reviewer_same_institution
+    value: false
+    text: "If the reviewer's institution is not recorded, assume it differs from every author's"
+  - fact: extension
+    value: false
+    text: "If the record does not mention an extension, assume none was granted"
+  - fact: supp_anonymized
+    value: false
+    text: "If the record does not say whether supplementary material is anonymized, treat it as not anonymized"
+  - fact: nonarchival_venue
+    value: false
+    text: "If the nature of another venue is not stated, treat it as archival"
+names: ["Okonkwo, Dale and Freyr", "Lindqvist and Arate", "the Marsh Hollow group", "Pirelli, Tan and Vos", "Hadley and Quint", "the Osk University team", "Benedek and Rowe", "Sato, Imre and Kell"]
+intro:
+  - "Submission {num} to SQM 2027 comes from {name}."
+  - "The chairs' record for submission {num}, by {name}, reads as follows."
+  - "{name} submitted paper {num} to the symposium."
+color:
+  - "The paper proposes a new notation for Quorian lattices."
+  - "The abstract was revised twice before the deadline."
+  - "One author asked whether a poster slot is available."
+  - "The title contains a pun that one chair found distracting."
+  - "The authors thank an anonymous colleague for proofreading."
+  - "The figures use a colorblind-friendly palette."
+  - "The cover note mentions that code will be released after the conference."
+  - "The corresponding author's email bounced once during the process."
+  - "The paper cites an unusually large number of older works."

@@ -1,0 +1,214 @@
+# Halbrecht Early Inquiry Grants, an invented research grant program of the invented Ostrava-Lune Foundation.
+# Facts (ints bucketed to at most 8 values), derived facts, rule templates, defaults and prose vocabulary.
+# Dates are day offsets from ref_date. Scoped rules carry a "near" condition: the rule is inactive (its
+# trigger is off) but its other facts would violate it, which makes a near-miss distractor.
+name: grant
+title: "Ostrava-Lune Foundation, Halbrecht Early Inquiry Grants: eligibility rules (2027 cycle)"
+preamble: "An application is approved only if it meets every rule below. Rules marked as defaults say what to assume when an application is silent on a point."
+ref_date: 2027-01-04
+facts:
+  pi_years_since_phd:
+    type: int
+    values: [1, 3, 5, 7, 9, 11, 13]
+    label: "years since the lead applicant's doctorate (counted to 2027)"
+    say:
+      - "The lead applicant received a doctorate {v} years ago."
+      - "According to the CV, the lead applicant was awarded a doctorate in {v:ago}."
+      - "The lead applicant's doctoral degree was conferred in {v:ago}, per the attached transcript."
+  career_break:
+    type: bool
+    label: "documented Corran career break"
+    say_true:
+      - "A Corran career break form is on file, documenting time away from research."
+      - "The applicant took a documented Corran career break, and the form is attached."
+    say_false:
+      - "No Corran career break form was submitted."
+      - "The applicant reports no career break of any kind."
+  institution_type:
+    type: enum
+    values: [university, institute, hospital, community_lab]
+    names: {university: "a university", institute: "an independent institute", hospital: "a teaching hospital", community_lab: "a community laboratory"}
+    label: "type of host institution"
+    say:
+      - "The host institution is {v:e}."
+      - "The work would be hosted by {v:e} in the Vessel Bay region."
+  requested_amount:
+    type: int
+    values: [20000, 40000, 60000, 80000, 100000, 120000, 140000]
+    label: "total requested amount (dollars)"
+    say:
+      - "The total request comes to {v:money}."
+      - "The budget sheet asks the foundation for {v:k} dollars in total."
+  equipment_amount:
+    type: int
+    values: [0, 10000, 20000, 30000, 40000, 50000]
+    label: "equipment budget (dollars)"
+    say:
+      - "Of the budget, {v:money} is earmarked for equipment."
+      - "Equipment purchases are budgeted at {v:money}."
+  travel_amount:
+    type: int
+    values: [0, 5000, 10000, 15000, 20000]
+    label: "travel budget (dollars)"
+    say:
+      - "Travel is budgeted at {v:money}."
+      - "The applicant sets aside {v:money} for fieldwork travel."
+  start_day:
+    type: int
+    values: [0, 14, 28, 42, 56, 70]
+    date: true
+    label: "project start date"
+    say:
+      - "The project is scheduled to begin on {v:date}."
+      - "Work would start on {v:date}."
+  end_day:
+    type: int
+    values: [238, 294, 364, 434, 490, 546]
+    date: true
+    label: "project end date"
+    say:
+      - "The proposed end date is {v:date}."
+      - "The team expects to wrap up on {v:date}."
+  letter_of_support:
+    type: bool
+    label: "letter of support from the host"
+    say_true:
+      - "A signed letter of support from the host's research office is included."
+      - "The host's research dean wrote a letter of support for the application."
+    say_false:
+      - "The application contains no letter of support from the host."
+      - "The host did not provide a letter of support."
+  open_data_plan:
+    type: bool
+    label: "open data plan included"
+    say_true:
+      - "An open data plan describing deposit in the Tallis archive is attached."
+      - "The team commits, in an attached plan, to releasing all data openly."
+    say_false:
+      - "No open data plan accompanies the proposal."
+      - "The proposal is silent on data sharing beyond a line saying it will be decided later."
+  human_subjects:
+    type: bool
+    label: "research involves human participants"
+    say_true:
+      - "The study would interview and survey human participants."
+      - "Part of the work involves recruiting human volunteers."
+    say_false:
+      - "The work involves no human participants."
+      - "Only soil and water samples are studied, with no human participants."
+  ethics_approval:
+    type: bool
+    label: "ethics approval from the Mereth board"
+    say_true:
+      - "The Mereth ethics board has approved the protocol."
+      - "A Mereth board approval letter is attached."
+    say_false:
+      - "No Mereth ethics board approval has been obtained."
+      - "The applicant has not applied to the Mereth ethics board."
+derived_facts:
+  duration_weeks:
+    expr: "(end_day - start_day) // 7"
+    label: "project length in weeks"
+    say: ["That makes a project period of {v} weeks."]
+  equip_travel:
+    expr: "equipment_amount + travel_amount"
+    label: "equipment plus travel budget (dollars)"
+    say: ["Equipment and travel together come to {v:money}."]
+rules:
+  - key: early_career
+    cond: "pi_years_since_phd <= {t}"
+    text: "The lead applicant must have received a doctorate no more than {t} years before 2027"
+    params: {t: [4, 6, 8, 10]}
+    unless:
+      - cond: "career_break and pi_years_since_phd <= {t2}"
+        text: "the applicant has a documented Corran career break and the doctorate is at most {t2} years old"
+        params: {b: [2, 4], t2: "t + b"}
+  - key: amount_cap
+    cond: "requested_amount <= {t}"
+    text: "The total requested amount may not exceed {t:money}"
+    params: {t: [70000, 90000, 110000]}
+    unless:
+      - cond: "institution_type == 'community_lab' and requested_amount <= {t2}"
+        text: "the host is a community laboratory and the request is at most {t2:money}"
+        params: {t2: "t + 30000"}
+  - key: letter
+    cond: "letter_of_support"
+    text: "The application must include a letter of support from the host"
+    unless:
+      - cond: "institution_type == 'university'"
+        text: "the host is a university, whose standing agreement with the foundation replaces the letter"
+  - key: open_data
+    cond: "open_data_plan"
+    text: "Every proposal must include an open data plan"
+    unless:
+      - cond: "institution_type == 'hospital'"
+        text: "the host is a teaching hospital bound by patient privacy rules"
+  - key: host_type
+    cond: "institution_type in {t}"
+    text: "The host institution must be {t:e:institution_type}"
+    params: {t: [[university, institute, hospital], [university, institute, community_lab], [university, hospital, community_lab]]}
+  - key: start_date
+    cond: "start_day >= {t}"
+    text: "No project may begin before {t:date}"
+    params: {t: [10, 21, 35]}
+  - key: equipment_cap
+    cond: "equipment_amount <= {t}"
+    text: "Equipment may account for no more than {t:money}"
+    params: {t: [25000, 35000]}
+  - key: ethics
+    scoped: true
+    cond: "not human_subjects or ethics_approval"
+    near: "not human_subjects and not ethics_approval"
+    text: "Research with human participants requires approval from the Mereth ethics board"
+  - key: hospital_travel
+    scoped: true
+    cond: "institution_type != 'hospital' or travel_amount <= {t}"
+    near: "institution_type != 'hospital' and travel_amount > {t}"
+    text: "Applications hosted by a teaching hospital may budget at most {t:money} for travel"
+    params: {t: [5000, 10000]}
+  - key: big_request_letter
+    scoped: true
+    cond: "requested_amount <= {t} or letter_of_support"
+    near: "requested_amount <= {t} and not letter_of_support"
+    text: "Requests above {t:money} must include a letter of support from the host"
+    params: {t: [50000, 70000]}
+derived:
+  - key: duration
+    cond: "duration_weeks <= {w}"
+    text: "The project period, from start date to end date, may not exceed {w} weeks"
+    params: {w: [39, 52, 65]}
+  - key: equip_travel_cap
+    cond: "equip_travel <= {t}"
+    text: "Equipment and travel together may not exceed {t:money}"
+    params: {t: [30000, 40000, 50000]}
+defaults:
+  - fact: letter_of_support
+    value: false
+    text: "If an application does not mention a letter of support, treat it as having none"
+  - fact: career_break
+    value: false
+    text: "If an application does not mention a career break, assume the applicant took none"
+  - fact: open_data_plan
+    value: false
+    text: "If an application says nothing about data sharing, treat it as lacking an open data plan"
+  - fact: institution_type
+    value: institute
+    text: "If the type of host institution is not stated, treat the host as an independent institute"
+  - fact: ethics_approval
+    value: false
+    text: "If ethics approval is not mentioned, assume none was obtained"
+names: ["Dr. Ilse Varnholt", "Dr. Teodor Quayle", "Dr. Amara Esselin", "Dr. Ruben Tolliver", "Dr. Nadia Corvane", "Dr. Pell Ostrander", "Dr. Sana Ivarsson", "Dr. Joaquin Brell"]
+intro:
+  - "Application file HEI-{num} concerns a proposal led by {name}."
+  - "The following summarizes Halbrecht application HEI-{num}, submitted by {name}."
+  - "{name} submitted application HEI-{num} to the Ostrava-Lune Foundation this cycle."
+color:
+  - "The proposal studies seasonal salt crusts on the Vessel Bay flats."
+  - "The cover letter thanks two former mentors by name."
+  - "The applicant mentions having presented preliminary results at a regional workshop last spring."
+  - "Several figures in the narrative were drawn by a graduate student."
+  - "The budget justification is written in an unusually informal tone."
+  - "A previous version of the proposal was circulated among colleagues for comments."
+  - "The applicant notes that the lab's freezer was replaced last year."
+  - "The title of the project was shortened at the suggestion of the host's grants office."
+  - "One referee contact listed in the file has since moved to another city."

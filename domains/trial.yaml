@@ -1,0 +1,208 @@
+# Invented clinical trial protocol VX-118 (study drug celvorex, biomarkers PRX-7 and the Kelman index).
+# Facts (ints bucketed to at most 8 values), derived facts, rule templates, defaults and prose vocabulary.
+# Dates are day offsets from ref_date. Scoped rules carry a "near" condition for near-miss distractors.
+name: trial
+title: "Protocol VX-118 (celvorex in Tarrant fibrosis): enrollment criteria"
+preamble: "A participant is enrolled (approved) only if every criterion below is met. Criteria marked as defaults say what to assume when the screening record is silent on a point."
+ref_date: 2027-02-01
+facts:
+  age:
+    type: int
+    values: [20, 30, 40, 50, 60, 70, 80]
+    label: "age (years)"
+    say:
+      - "The participant is {v} years old."
+      - "The screening sheet lists the participant's age as {v}."
+  prx7_level:
+    type: int
+    values: [50, 100, 150, 200, 250, 300, 350]
+    label: "PRX-7 serum level (ng/mL)"
+    say:
+      - "The PRX-7 serum level came back at {v} ng/mL."
+      - "Central lab reported PRX-7 at {v} ng/mL."
+  kelman_index:
+    type: int
+    values: [2, 4, 6, 8, 10, 12]
+    label: "Kelman fibrosis index"
+    say:
+      - "The Kelman fibrosis index was scored at {v}."
+      - "Imaging gave a Kelman index of {v}."
+  crcl:
+    type: int
+    values: [30, 45, 60, 75, 90, 105, 120]
+    label: "creatinine clearance (mL/min)"
+    say:
+      - "Creatinine clearance is {v} mL/min."
+      - "Renal function testing gave a creatinine clearance of {v} mL/min."
+  washout_weeks:
+    type: int
+    values: [2, 4, 6, 8, 12, 16]
+    label: "weeks since last systemic therapy"
+    say:
+      - "The last systemic therapy ended {v} weeks before screening."
+      - "It has been {v} weeks since the participant's last dose of systemic therapy."
+  prior_celvorex:
+    type: bool
+    label: "prior exposure to celvorex"
+    say_true:
+      - "The participant received celvorex in an earlier study."
+      - "Records show prior exposure to celvorex."
+    say_false:
+      - "The participant has never received celvorex."
+      - "There is no record of prior celvorex exposure."
+  anticoagulant:
+    type: bool
+    label: "currently on an anticoagulant"
+    say_true:
+      - "The participant currently takes an anticoagulant."
+      - "The medication list includes a daily anticoagulant."
+    say_false:
+      - "The participant takes no anticoagulant."
+      - "No anticoagulant appears on the medication list."
+  bleeding_history:
+    type: bool
+    label: "history of major bleeding"
+    say_true:
+      - "The history notes a major bleeding episode two years ago."
+      - "The participant was once hospitalized for a major bleed."
+    say_false:
+      - "There is no history of major bleeding."
+      - "The participant reports no serious bleeding events."
+  consent_day:
+    type: int
+    values: [0, 3, 7, 10, 14, 21]
+    date: true
+    label: "date informed consent was signed"
+    say:
+      - "Informed consent was signed on {v:date}."
+      - "The consent form is dated {v:date}."
+  screening_day:
+    type: int
+    values: [0, 7, 14, 21, 28, 35, 42]
+    date: true
+    label: "screening visit date"
+    say:
+      - "The screening visit took place on {v:date}."
+      - "Screening was completed on {v:date}."
+  site_tier:
+    type: enum
+    values: [A, B, C]
+    names: {A: "a tier A Halvard site", B: "a tier B Halvard site", C: "a tier C Halvard site"}
+    label: "Halvard network tier of the enrolling site"
+    say:
+      - "The enrolling site is {v:e}."
+      - "The participant was screened at {v:e}."
+  heart_rate:
+    type: int
+    values: [55, 65, 75, 85, 95, 105]
+    label: "resting heart rate (beats per minute)"
+    say:
+      - "Resting heart rate was {v} beats per minute."
+      - "The pulse at rest measured {v}."
+derived_facts:
+  consent_gap:
+    expr: "screening_day - consent_day"
+    label: "days from consent to screening"
+    say: ["Screening thus came {v} days after consent."]
+  halden_score:
+    expr: "prx7_level + 10 * kelman_index"
+    label: "Halden composite score (PRX-7 plus ten times the Kelman index)"
+    say: ["The Halden composite score works out to {v}."]
+rules:
+  - key: age_range
+    cond: "{lo} <= age <= {hi}"
+    text: "Participants must be between {lo} and {hi} years old inclusive"
+    params: {lo: [25, 35], hi: [65, 75]}
+  - key: prx7_min
+    cond: "prx7_level >= {t}"
+    text: "The PRX-7 serum level must be at least {t} ng/mL"
+    params: {t: [100, 150, 200]}
+    unless:
+      - cond: "kelman_index >= {k}"
+        text: "the Kelman index is {k} or higher"
+        params: {k: [8, 10]}
+  - key: kelman_max
+    cond: "kelman_index <= {t}"
+    text: "The Kelman fibrosis index may not exceed {t}"
+    params: {t: [8, 10]}
+  - key: crcl_min
+    cond: "crcl >= {t}"
+    text: "Creatinine clearance must be at least {t} mL/min"
+    params: {t: [60, 75]}
+    unless:
+      - cond: "site_tier == 'A' and crcl >= {t2}"
+        text: "the participant is enrolled at a tier A Halvard site and creatinine clearance is at least {t2} mL/min"
+        params: {t2: "t - 15"}
+  - key: washout
+    cond: "washout_weeks >= {t}"
+    text: "At least {t} weeks must have passed since the last systemic therapy"
+    params: {t: [4, 6, 8]}
+  - key: prior_drug
+    cond: "not prior_celvorex"
+    text: "Participants previously exposed to celvorex are excluded"
+  - key: anticoag
+    cond: "not anticoagulant"
+    text: "Participants taking an anticoagulant are excluded"
+    unless:
+      - cond: "site_tier == 'A'"
+        text: "they enroll at a tier A Halvard site, where coagulation is monitored weekly"
+  - key: tier_c_age
+    scoped: true
+    cond: "site_tier != 'C' or age <= {t}"
+    near: "site_tier != 'C' and age > {t}"
+    text: "Tier C Halvard sites may only enroll participants aged {t} or younger"
+    params: {t: [45, 55]}
+  - key: bleeding
+    scoped: true
+    cond: "not anticoagulant or not bleeding_history"
+    near: "not anticoagulant and bleeding_history"
+    text: "Participants on an anticoagulant must have no history of major bleeding"
+  - key: older_renal
+    scoped: true
+    cond: "age < {t} or crcl >= {t2}"
+    near: "age < {t} and crcl < {t2}"
+    text: "Participants aged {t} or older need a creatinine clearance of at least {t2} mL/min"
+    params: {t: [60, 70], t2: [90, 105]}
+  - key: heart_rate_max
+    scoped: true
+    cond: "not anticoagulant or heart_rate <= {t}"
+    near: "not anticoagulant and heart_rate > {t}"
+    text: "Participants on an anticoagulant must have a resting heart rate of at most {t} beats per minute"
+    params: {t: [75, 85]}
+derived:
+  - key: consent_window
+    cond: "0 <= consent_gap <= {t}"
+    text: "Screening must take place on or after the consent date and no more than {t} days after it"
+    params: {t: [14, 21]}
+  - key: halden_max
+    cond: "halden_score <= {t}"
+    text: "The Halden composite score (PRX-7 level in ng/mL plus ten times the Kelman index) may not exceed {t}"
+    params: {t: [300, 350, 400]}
+defaults:
+  - fact: anticoagulant
+    value: false
+    text: "If the record does not mention anticoagulants, assume the participant takes none"
+  - fact: prior_celvorex
+    value: false
+    text: "If the record does not mention prior celvorex exposure, assume there was none"
+  - fact: site_tier
+    value: B
+    text: "If the site tier is not recorded, treat the site as tier B"
+  - fact: bleeding_history
+    value: false
+    text: "If the record does not mention bleeding, assume no history of major bleeding"
+names: ["participant 0412", "participant 1187", "participant 2093", "participant 0736", "participant 3340", "participant 1561", "participant 2828", "participant 0059"]
+intro:
+  - "This screening summary for VX-118 covers {name} (file {num})."
+  - "Screening file {num} for protocol VX-118 concerns {name}."
+  - "The study coordinator prepared the following note on {name}, file {num}."
+color:
+  - "The participant drove two hours to reach the clinic."
+  - "The coordinator notes that the participant asked several questions about parking."
+  - "A family member accompanied the participant to the visit."
+  - "The participant works as a piano tuner."
+  - "The visit started thirty minutes late because of a scheduling mix-up."
+  - "The participant mentioned enjoying long walks along the river."
+  - "The intake form was completed on a tablet in the waiting room."
+  - "The participant prefers to be contacted by email."
+  - "A translator was offered but not needed."

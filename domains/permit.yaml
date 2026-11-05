@@ -1,0 +1,201 @@
+# Street apparatus permits of the invented City of Marrowgate, Bureau of Street Apparatus. Held-out domain.
+# Facts (ints bucketed to at most 8 values), derived facts, rule templates, defaults and prose vocabulary.
+# Dates are day offsets from ref_date. Scoped rules carry a "near" condition for near-miss distractors.
+name: permit
+title: "City of Marrowgate, Bureau of Street Apparatus: temporary equipment placement permits"
+preamble: "A permit is approved only if the application meets every rule below. Rules marked as defaults say what to assume when an application is silent on a point."
+ref_date: 2027-03-01
+valid: ["start_day >= application_day", "end_day > start_day"]
+facts:
+  equipment_class:
+    type: enum
+    values: [K1, K2, K3, T]
+    names: {K1: "a Class K-1 skylift", K2: "a Class K-2 skylift", K3: "a Class K-3 tower hoist", T: "a Tessel-type crawler crane"}
+    label: "equipment class"
+    say:
+      - "The equipment to be placed is {v:e}."
+      - "The applicant intends to set up {v:e} on the street."
+  weight_kg:
+    type: int
+    values: [1000, 2000, 4000, 6000, 8000, 10000, 12000]
+    label: "operating weight of the equipment (kg)"
+    say:
+      - "Its operating weight is {v} kg."
+      - "The manufacturer sheet gives an operating weight of {v:t} tonnes."
+  application_day:
+    type: int
+    values: [0, 7, 14, 21, 28, 35]
+    date: true
+    label: "date the application was filed"
+    say:
+      - "The application was filed on {v:date}."
+      - "The Bureau stamped the application as received on {v:date}."
+  start_day:
+    type: int
+    values: [7, 14, 21, 28, 35, 42, 49, 56]
+    date: true
+    label: "placement start date"
+    say:
+      - "Placement would begin on {v:date}."
+      - "The equipment is due to arrive on site on {v:date}."
+  end_day:
+    type: int
+    values: [21, 35, 49, 63, 77, 91, 105]
+    date: true
+    label: "placement end date"
+    say:
+      - "The equipment would be removed on {v:date}."
+      - "The applicant expects to clear the site by {v:date}."
+  operator_level:
+    type: int
+    values: [0, 1, 2, 3, 4]
+    label: "Ferrin operator certificate level"
+    say:
+      - "The named operator holds a Ferrin certificate at level {v}."
+      - "The operator's Ferrin card shows level {v}."
+  insured_amount:
+    type: int
+    values: [0, 500000, 1000000, 1500000, 2000000, 2500000, 3000000]
+    label: "liability insurance cover (dollars)"
+    say:
+      - "Liability insurance covers {v:money}."
+      - "The certificate of insurance lists cover of {v:money}."
+  residential_zone:
+    type: bool
+    label: "site in a residential zone"
+    say_true:
+      - "The site lies within a residential zone."
+      - "The address is zoned residential on the city map."
+    say_false:
+      - "The site lies in a commercial district, not a residential zone."
+      - "The address is zoned for light industry."
+  night_work:
+    type: bool
+    label: "night work planned (10 p.m. to 6 a.m.)"
+    say_true:
+      - "Some lifts are planned between 10 p.m. and 6 a.m."
+      - "The crew intends to work overnight on at least one day."
+    say_false:
+      - "All work is planned for daytime hours."
+      - "The crew will not work between 10 p.m. and 6 a.m."
+  sidewalk_closure:
+    type: bool
+    label: "sidewalk closure needed"
+    say_true:
+      - "A section of sidewalk will have to be closed."
+      - "Pedestrians would be diverted around the site because the sidewalk is closed."
+    say_false:
+      - "The sidewalk stays open throughout."
+      - "No sidewalk closure is requested."
+  neighbor_notice:
+    type: bool
+    label: "neighbouring addresses notified"
+    say_true:
+      - "Neighbouring addresses were notified in writing."
+      - "Notice letters went out to every neighbouring address."
+    say_false:
+      - "The neighbours have not been notified."
+      - "No notice was sent to neighbouring addresses."
+  crew_size:
+    type: int
+    values: [2, 3, 4, 6, 8, 10]
+    label: "crew size"
+    say:
+      - "The crew numbers {v}."
+      - "{v} workers will be on site."
+derived_facts:
+  lead_days:
+    expr: "start_day - application_day"
+    label: "days between filing and placement start"
+    say: ["The application was therefore filed {v} days before placement begins."]
+  placement_days:
+    expr: "end_day - start_day"
+    label: "placement length in days"
+    say: ["The equipment would stay in place for {v} days."]
+rules:
+  - key: weight_cap
+    cond: "weight_kg <= {t}"
+    text: "Equipment may weigh no more than {t} kg"
+    params: {t: [6000, 8000]}
+    unless:
+      - cond: "operator_level >= {l} and weight_kg <= {t2}"
+        text: "the operator holds a Ferrin certificate at level {l} or higher and the equipment weighs at most {t2} kg"
+        params: {l: [3, 4], t2: "t + 2000"}
+  - key: insurance
+    cond: "insured_amount >= {t}"
+    text: "Liability insurance must cover at least {t:money}"
+    params: {t: [1000000, 1500000, 2000000]}
+    unless:
+      - cond: "equipment_class == 'K1'"
+        text: "the equipment is a Class K-1 skylift"
+  - key: night
+    cond: "not night_work"
+    text: "No work may take place between 10 p.m. and 6 a.m."
+    unless:
+      - cond: "not residential_zone"
+        text: "the site lies outside a residential zone"
+  - key: operator
+    cond: "operator_level >= {t}"
+    text: "The operator must hold a Ferrin certificate at level {t} or higher"
+    params: {t: [1, 2]}
+    unless:
+      - cond: "equipment_class == 'K1'"
+        text: "the equipment is a Class K-1 skylift"
+  - key: crane
+    cond: "equipment_class != 'T'"
+    text: "Tessel-type crawler cranes may not be placed on city streets"
+    unless:
+      - cond: "insured_amount >= {t}"
+        text: "liability insurance covers at least {t:money}"
+        params: {t: [2500000, 3000000]}
+  - key: sidewalk
+    scoped: true
+    cond: "not sidewalk_closure or neighbor_notice"
+    near: "not sidewalk_closure and not neighbor_notice"
+    text: "If a sidewalk will be closed, all neighbouring addresses must have been notified in writing"
+  - key: residential_weight
+    scoped: true
+    cond: "not residential_zone or weight_kg <= {t}"
+    near: "not residential_zone and weight_kg > {t}"
+    text: "In a residential zone, equipment may weigh no more than {t:t} tonnes"
+    params: {t: [4000, 6000]}
+  - key: night_crew
+    scoped: true
+    cond: "not night_work or crew_size >= {t}"
+    near: "not night_work and crew_size < {t}"
+    text: "Night work requires a crew of at least {t}"
+    params: {t: [4, 6]}
+derived:
+  - key: lead_time
+    cond: "lead_days >= {t}"
+    text: "The application must be filed at least {t} days before placement begins"
+    params: {t: [7, 14]}
+  - key: placement_length
+    cond: "placement_days <= {t}"
+    text: "Equipment may stay in place for at most {t} days, counted from the start date to the removal date"
+    params: {t: [21, 35, 49]}
+defaults:
+  - fact: neighbor_notice
+    value: false
+    text: "If an application does not mention notifying neighbours, assume they were not notified"
+  - fact: night_work
+    value: false
+    text: "If an application does not mention night work, assume all work is in daytime hours"
+  - fact: residential_zone
+    value: true
+    text: "If the zoning of the site is not stated, treat the site as residential"
+names: ["Brightwater Hoisting", "Calloway & Senn", "Ostrel Builders", "Pemberline Works", "Duskfield Rigging", "Harrow Lane Glazing", "Ninefold Roofing", "Quarrend Signs"]
+intro:
+  - "Permit application SA-{num} was submitted by {name} for a site on Tolley Street."
+  - "{name} applied to the Bureau of Street Apparatus under reference SA-{num}."
+  - "The file below covers application SA-{num} from {name}."
+color:
+  - "The job involves replacing a storefront sign."
+  - "The application form was filled out by hand."
+  - "A site plan sketch is attached on the back page."
+  - "The applicant asked whether the permit fee can be paid in two parts."
+  - "The building owner is copied on the correspondence."
+  - "A nearby cafe has asked to be kept informed."
+  - "The applicant's phone number changed after submission."
+  - "The previous tenant of the building ran a bicycle shop."
+  - "The covering email apologizes for a late reply to an earlier query."
