@@ -4,29 +4,41 @@ For each domain in domains/*.yaml it samples template families (which rule templ
 defaults a policy uses, before thresholds), instantiates each family as several policies with fresh
 thresholds and rule order, then samples base cases with a target approve/deny mix and three variants
 per base: flip (engine minimal flip), invariant (edit outside every sufficient set) and missing (one
-fact removed, which may trigger a default), plus a reveal variant (min_reveal facts added) for each
-cannot-determine missing item. Edit kinds: replace (flip, invariant), remove (missing), add (reveal).
-Every item is written in three aligned views: "table" (fact list with derived values), "prose" (derived
-values stated) and "prose_derive" (only source facts, so the reader must derive). Prose comes from
-fact-sentence templates. With --prose gemini each base case is rewritten once as fact-tagged sentences,
-checked by re-extraction, and every variant and view swaps only the sentences of its edited facts; a
-failed check drops the whole base family.
+fact removed, which may trigger a default), plus a reveal variant for each cannot-determine missing
+item (the cheapest deciding add over the min_reveal facts whose facts no sibling has, since the removed
+value itself would just restore the base). Edit kinds: replace (flip, invariant), remove (missing), add
+(reveal). Every item is written in three aligned views: "table" (fact list with derived values), "prose"
+(derived values stated) and "prose_derive" (only source facts, so the reader must derive); stated_facts
+lists what the view's text states (never a default). Prose comes from fact-sentence templates, and each
+variant keeps its base's sentences except those of its edited facts. With --prose gemini each base case is
+rewritten once as fact-tagged sentences, checked by re-extraction (the untagged sentences alone must state
+no fact), and a failed check drops the whole base family; every swapped-in template sentence is then
+restyled against the base file and re-extracted alone (seam_template lists the ones that failed and stay
+template). Items whose text repeats an earlier one in the same view are dropped.
 
-Splits are by template family: 70/10/20 train/dev/test_policy inside grant, trial and review, the whole
+Splits are by template family: 50/10/40 train/dev/test_policy inside grant, trial and review, the whole
 permit domain is test_domain, and one family per domain that carries a held-out exception/default
 combination goes to test with holdout_structure true. "slice" names the evaluation population.
 
 Eval helpers: policy_for(record) rebuilds the Policy, render_case(...) re-renders an edited case aligned.
 
-Usage: python gen.py --domains all --n-policies 4 --cases-per-policy 5 --seed 0 --prose template --out data/smoke.jsonl
+Each base case draws from its own RNG (seed, domain, policy, case), so a search that runs over its time
+budget changes only that case's variants, never the cases after it. Gemini replies are cached on disk
+(--cache) keyed by model and prompt, so an interrupted run resumes, and --workers calls run in parallel.
+
+Usage: python gen.py --domains all --n-policies 4 --cases-per-family 5 --seed 0 --prose template --out data/smoke.jsonl
 """
 import argparse
 import collections
+import concurrent.futures
 import datetime
+import hashlib
+import itertools
 import json
 import random
 import re
 import string
+import threading
 import time
 from pathlib import Path
 
@@ -41,7 +53,8 @@ VIEWS = ["table", "prose", "prose_derive"]
 SLICE = {"train": "train", "dev": "dev", "test_policy": "unseen_family_train_vocab", "test_domain": "combined_transfer"}
 EDIT_KIND = {"base": None, "flip": "replace", "invariant": "replace", "missing": "remove", "reveal": "add"}
 P_APPROVE, P_CD, P_DEFAULT, MIN_FAM_DIST = 0.43, 0.6, 0.25, 4
-DOM_CACHE, GEM = {}, {}
+FRAC_TEST, FRAC_DEV = 0.4, 0.1
+DOM_CACHE, GEM, GEM_LOCK = {}, {"usage": collections.Counter(), "seam": collections.Counter()}, threading.Lock()
 
 
 def load_domain(name):
@@ -58,7 +71,8 @@ def load_domain(name):
 class Fmt(string.Formatter):
     """
     Formats rule and case templates. Specs: money, date (day offset), ago (year = ref year - v),
-    k (thousands), t (tonnes from kg), e (enum display name of the current fact), e:<fact>.
+    k (thousands), t (tonnes from kg), e (enum display name of the current fact), e:<fact>, before and
+    after (v days before or after, e.g. "3 days after", "on the same day as", for signed day gaps).
     """
 
     def __init__(self, dom, fact=None):
@@ -84,6 +98,10 @@ class Fmt(string.Formatter):
             return f"{v / 1000:g} thousand"
         if spec == "t":
             return f"{v / 1000:g}"
+        if spec in ("before", "after"):
+            d = v if spec == "before" else -v
+            n = f"{abs(d)} day" + "s" * (abs(d) != 1)
+            return "on the same day as" if not d else f"{n} before" if d > 0 else f"{n} after"
         if spec.startswith("e"):
             names = self.dom["facts"][spec[2:] or self.fact]["names"]
             if not isinstance(v, list):
@@ -380,64 +398,104 @@ def gold_for(pol, facts, rid=None):
             "uncertified": bool(unc), "uncertified_reasons": unc}
 
 
-def gemini_call(prompt, json_out=False):
+def gemini_client():
     """
-    Returns one Gemini reply, building a Vertex (GEM["vertex"]) or API-key client on first use, cheapest flash first.
+    Builds the Vertex (GEM["vertex"]) or API-key client once and sets GEM["ids"] to the pinned model
+    (GEM["model"]) or to the flash-class candidates, cheapest first.
     """
     from google import genai
+
+    path, env = Path.home() / ".config" / "cs224v" / ".env", {}
+    for ln in path.read_text().splitlines() if path.exists() else []:
+        if "=" in ln and not ln.strip().startswith("#"):
+            k, v = ln.split("=", 1)
+            env[k.strip()] = v.strip().strip("'\"")
+    if GEM.get("vertex"):
+        import google.auth
+
+        if not env.get("GCP_PROJECT"):
+            raise RuntimeError(f"no GCP_PROJECT in {path}")
+        creds, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"],
+                                       quota_project_id=env["GCP_PROJECT"])
+        GEM["client"] = genai.Client(vertexai=True, project=env["GCP_PROJECT"], location=GEM["vertex"],
+                                     credentials=creds)
+        models = [] if GEM.get("model") else GEM["client"].models.list(config={"query_base": True})
+    else:
+        if not env.get("GEMINI_API_KEY"):
+            raise RuntimeError(f"no GEMINI_API_KEY in {path}")
+        GEM["client"] = genai.Client(api_key=env["GEMINI_API_KEY"])
+        models = [] if GEM.get("model") else GEM["client"].models.list()
+    if GEM.get("model"):
+        GEM["ids"] = [GEM["model"]]
+        return
+    ids = []
+    for m in models:
+        mid = m.name.split("/")[-1]
+        acts = m.supported_actions
+        if (acts is None or "generateContent" in acts) and "flash" in mid and \
+          not re.search(r"image|tts|live|audio|embed|exp|preview|latest|thinking|native|computer", mid):
+            ids.append(mid)
+    ver = {mid: float((re.search(r"gemini-(\d+(?:\.\d+)?)", mid) or [0, 0])[1]) for mid in ids}
+    GEM["ids"] = sorted(ids, key=lambda mid: ("lite" not in mid, -ver[mid], len(mid)))
+    print("flash-class candidates, cheapest first:", ", ".join(GEM["ids"]))
+
+
+def gemini_call(prompt, json_out=False):
+    """
+    Returns one Gemini reply. Replies are cached as JSON files under GEM["cache"] keyed by model, mode and
+    prompt, with their token usage, so reruns are free. Counts calls and tokens (fresh and cached) in
+    GEM["usage"], retries server errors and rate limits with backoff, and falls through unavailable models.
+    """
     from google.genai import errors, types
 
-    if "client" not in GEM:
-        path, env = Path.home() / ".config" / "cs224v" / ".env", {}
-        for ln in path.read_text().splitlines() if path.exists() else []:
-            if "=" in ln and not ln.strip().startswith("#"):
-                k, v = ln.split("=", 1)
-                env[k.strip()] = v.strip().strip("'\"")
-        if GEM.get("vertex"):
-            import google.auth
-
-            if not env.get("GCP_PROJECT"):
-                raise RuntimeError(f"no GCP_PROJECT in {path}")
-            creds, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"],
-                                           quota_project_id=env["GCP_PROJECT"])
-            GEM["client"] = genai.Client(vertexai=True, project=env["GCP_PROJECT"], location=GEM["vertex"],
-                                         credentials=creds)
-            models = GEM["client"].models.list(config={"query_base": True})
-        else:
-            if not env.get("GEMINI_API_KEY"):
-                raise RuntimeError(f"no GEMINI_API_KEY in {path}")
-            GEM["client"] = genai.Client(api_key=env["GEMINI_API_KEY"])
-            models = GEM["client"].models.list()
-        ids = []
-        for m in models:
-            mid = m.name.split("/")[-1]
-            acts = m.supported_actions
-            if (acts is None or "generateContent" in acts) and "flash" in mid and \
-              not re.search(r"image|tts|live|audio|embed|exp|preview|latest|thinking|native|computer", mid):
-                ids.append(mid)
-        ver = {mid: float((re.search(r"gemini-(\d+(?:\.\d+)?)", mid) or [0, 0])[1]) for mid in ids}
-        GEM["ids"] = sorted(ids, key=lambda mid: ("lite" not in mid, -ver[mid], len(mid)))
-        print("flash-class candidates, cheapest first:", ", ".join(GEM["ids"]))
+    with GEM_LOCK:
+        if "client" not in GEM:
+            gemini_client()
     cfg = types.GenerateContentConfig(temperature=0.7 if not json_out else 0.0,
                                       response_mime_type="application/json" if json_out else "text/plain")
     tries = 0
     while GEM["ids"]:
+        mid = GEM["ids"][0]
+        key = hashlib.sha256(json.dumps([mid, json_out, prompt]).encode()).hexdigest()
+        cp = Path(GEM["cache"]) / f"{key}.json" if GEM.get("cache") else None
+        if cp and cp.exists():
+            hit = json.loads(cp.read_text())
+            with GEM_LOCK:
+                GEM["usage"].update({"cached_calls": 1, **{"cached_" + k: v for k, v in hit["usage"].items()}})
+            GEM.setdefault("chosen", mid)
+            return hit["text"]
         try:
-            out = GEM["client"].models.generate_content(model=GEM["ids"][0], contents=prompt, config=cfg).text
-            if not GEM.get("chosen"):
-                GEM["chosen"] = GEM["ids"][0]
-                print("Gemini model:", GEM["chosen"])
-            return out
-        except errors.ServerError as e:
+            res = GEM["client"].models.generate_content(model=mid, contents=prompt, config=cfg)
+        except errors.ServerError:
             tries += 1
             if tries > 3:
                 raise
             time.sleep(5 * tries)
+            continue
         except errors.ClientError as e:
+            if e.code == 429 and tries < 6:
+                tries += 1
+                time.sleep(2 ** tries + random.random())
+                continue
             if e.code == 429 or GEM.get("chosen"):
                 raise
-            print(f"Gemini model {GEM['ids'][0]} unavailable ({e.code}), trying the next one")
+            print(f"Gemini model {mid} unavailable ({e.code}), trying the next one")
             GEM["ids"].pop(0)
+            continue
+        um = res.usage_metadata
+        use = {"in": um.prompt_token_count or 0, "out": um.candidates_token_count or 0,
+               "think": um.thoughts_token_count or 0}
+        with GEM_LOCK:
+            GEM["usage"].update({"calls": 1, **use})
+            if not GEM.get("chosen"):
+                GEM["chosen"] = mid
+                print("Gemini model:", mid)
+        if cp:
+            cp.parent.mkdir(parents=True, exist_ok=True)
+            tmp = cp.with_suffix(f".{threading.get_ident()}.tmp")
+            tmp.write_text(json.dumps({"model": mid, "text": res.text, "usage": use}))
+            tmp.replace(cp)
+        return res.text
     raise RuntimeError("no usable Gemini model")
 
 
@@ -450,16 +508,21 @@ def main():
     ap.add_argument("--domains", default="all", help="comma list of " + ",".join(DOMAINS) + " or all")
     ap.add_argument("--n-policies", type=int, default=20, help="policies per domain")
     ap.add_argument("--policies-per-family", type=int, default=2)
-    ap.add_argument("--cases-per-policy", type=int, default=10)
+    ap.add_argument("--cases-per-family", type=int, default=10, help="base cases per family, split over its policies")
+    ap.add_argument("--train-cases-per-family", type=int, default=0,
+                    help="base cases per train-split family (0 uses --cases-per-family)")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", default="data/out.jsonl")
     ap.add_argument("--prose", choices=["template", "gemini"], default="template")
     ap.add_argument("--limit", type=int, default=0, help="keep only the first N records (0 keeps all)")
     ap.add_argument("--vertex", nargs="?", const="global", default=None, metavar="LOCATION",
                     help="use Vertex AI (GCP_PROJECT, ADC) in LOCATION (default global) instead of the API key")
+    ap.add_argument("--gemini-model", default=None, help="pin the Gemini model (default: cheapest flash found)")
+    ap.add_argument("--workers", type=int, default=4, help="parallel Gemini base rewrites")
+    ap.add_argument("--cache", default="data/.gemini_cache", help="Gemini reply cache directory ('' disables)")
     a = ap.parse_args()
-    GEM["vertex"] = a.vertex
-    t0, recs, pols, tcase, invalid = time.time(), [], [], [], 0
+    GEM.update(vertex=a.vertex, model=a.gemini_model, cache=a.cache)
+    t0, recs, pols, tcase, invalid, norev = time.time(), [], [], [], 0, 0
     for dname in DOMAINS if a.domains == "all" else a.domains.split(","):
         dom = load_domain(dname)
         drng = random.Random(f"{a.seed}-{dname}-families")
@@ -472,7 +535,7 @@ def main():
             fams.append(sample_family(dom, drng, hold, nf > 1 and i == 0, fams))
         rest = list(range(1, nf)) if nf > 1 else [0]
         drng.shuffle(rest)
-        nt, nd = max(0, round(0.2 * nf) - (nf > 1)), round(0.1 * nf) if nf >= 5 else 0
+        nt, nd = max(0, round(FRAC_TEST * nf) - (nf > 1)), round(FRAC_DEV * nf) if nf >= 5 else 0
         split = {0: "test_policy"} if nf > 1 else {}
         for i, fi in enumerate(rest):
             split[fi] = "test_policy" if i < nt else "dev" if i < nt + nd else "train"
@@ -481,14 +544,19 @@ def main():
             rng = random.Random(f"{a.seed}-{dname}-{p}")
             pol = instantiate(dname, fams[fi], f"{dname}-p{p:03d}", rng)
             pols.append(pol)
-            n_app = int(P_APPROVE * a.cases_per_policy + rng.random())
-            wants = ["approve"] * n_app + ["deny"] * (a.cases_per_policy - n_app)
+            ncase = a.train_cases_per_family if a.train_cases_per_family and dname != HELD_OUT and \
+                split.get(fi) == "train" else a.cases_per_family
+            j, npf = p % a.policies_per_family, min(a.policies_per_family, a.n_policies - fi * a.policies_per_family)
+            ncase = ncase // npf + (j < ncase % npf)
+            n_app = int(P_APPROVE * ncase + rng.random())
+            wants = ["approve"] * n_app + ["deny"] * (ncase - n_app)
             rng.shuffle(wants)
             for c, want in enumerate(wants):
                 tc = time.time()
-                f = sample_case(pol, rng, want)
+                crng = random.Random(f"{a.seed}-{dname}-{p}-c{c}")
+                f = sample_case(pol, crng, want)
                 bid = f"{pol.id}-c{c:02d}"
-                items = [(bid, "base", f, {}, None, None)]
+                items, bcs = [(bid, "base", f, {}, None, None)], {}
                 try:
                     g = gold_for(pol, f, bid)
                 except E.InvalidRecord:
@@ -497,18 +565,18 @@ def main():
                 if g["min_flip"]["edits"]:
                     items.append((bid + "-flip", "flip", {**f, **g["min_flip"]["edits"]}, g["min_flip"]["edits"],
                                   None, bid))
-                inv = E.invariant_edit(pol, f, rng, g["sufficient_sets"])
+                inv = E.invariant_edit(pol, f, crng, g["sufficient_sets"])
                 if inv:
                     items.append((bid + "-inv", "invariant", {**f, **inv}, inv, None, bid))
                 used = {n for s in g["sufficient_sets"] for n in s}
                 nec = g["necessary_facts"] or sorted(used, key=pol.order.index)
                 pools = [[x for x in nec if x not in pol.defaults], [x for x in nec if x in pol.defaults],
                          [x for x in pol.order if x not in used]]
-                u = rng.random()
+                u = crng.random()
                 first = 0 if u < P_CD else 1 if u < P_CD + P_DEFAULT else 2
                 pool = next((pl for pl in [pools[first]] + pools if pl), [])
                 if pool:
-                    x = rng.choice(pool)
+                    x = crng.choice(pool)
                     items.append((bid + "-miss", "missing", {k: v for k, v in f.items() if k != x}, {}, x, bid))
                 for iid, variant, facts, changed, removed, src in items:
                     try:
@@ -521,8 +589,22 @@ def main():
                     if variant == "invariant":
                         assert gi["decision"] == g["decision"]
                     if variant == "missing" and gi["min_reveal"] and gi["min_reveal"]["adds"]:
-                        adds = gi["min_reveal"]["adds"]
-                        items.append((bid + "-reveal", "reveal", {**facts, **adds}, adds, None, iid))
+                        # The minimal reveal often restores the removed value (the reveal then equals the base) or
+                        # the flip's value, so this takes the cheapest deciding add whose facts no sibling has.
+                        ks, sib = list(gi["min_reveal"]["adds"]), [it[2] for it in items]
+                        for vs in sorted(itertools.product(*(pol.dom[n] for n in ks)),
+                                         key=lambda vs: sum(pol.dom[n].index(v) for n, v in zip(ks, vs))):
+                            adds = dict(zip(ks, vs))
+                            try:
+                                ok = {**facts, **adds} not in sib and \
+                                  E.decide(pol, {**facts, **adds})["decision"] != "cannot determine"
+                            except E.InvalidRecord:
+                                ok = False
+                            if ok:
+                                items.append((bid + "-reveal", "reveal", {**facts, **adds}, adds, None, iid))
+                                break
+                        else:
+                            norev += 1
                     eff = None
                     if removed:
                         eff = "cannot determine" if gi["decision"] == "cannot determine" else \
@@ -531,8 +613,14 @@ def main():
                     sp = "test_domain" if dname == HELD_OUT else split[fi]
                     inter = not gi["single_condition"] and len(gi["sufficient_sets"]) >= 2 \
                         if variant == "base" else None
+                    fs = E.fact_states(pol, facts)
                     for view in VIEWS:
-                        cs = case_sentences(pol, facts, bid, view) if view != "table" else None
+                        cs = case_sentences(pol, facts, bid, view, bcs.get(view)) if view != "table" else None
+                        if variant == "base":
+                            bcs[view] = cs
+                        said = [x["fact"] for x in cs if x["fact"]] if cs else \
+                            [n for n, s in fs.items() if s["state"] == "observed" or
+                             s["state"] == "derived" and all(x in facts for x in s["sources"])]
                         recs.append({"id": f"{iid}:{view}", "domain": dname, "policy_id": pol.id,
                                      "template_family": f"{dname}-f{fi:02d}",
                                      "holdout_structure": nf > 1 and fi == 0, "split": sp, "slice": SLICE[sp],
@@ -541,28 +629,37 @@ def main():
                                      "parent": None if iid == bid else f"{bid}:{view}",
                                      "edited_from": f"{src}:{view}" if src else None,
                                      "policy_text": pol.text, "case_sentences": cs, "prose_source": "template",
-                                     "case_text": render_case(pol, facts, bid, view=view),
-                                     "facts": facts, "stated_facts": list(facts), "fact_labels": pol.labels,
-                                     "fact_states": E.fact_states(pol, facts),
+                                     "seam_template": None, "case_text": " ".join(x["sentence"] for x in cs) if cs
+                                     else render_case(pol, facts, bid, view=view),
+                                     "facts": facts, "stated_facts": said, "fact_labels": pol.labels,
+                                     "fact_states": fs,
                                      "fact_sources": {n: refs for n, (_, refs) in pol.dfn.items()},
                                      "policy_spec": pol.spec, "changed_facts": changed,
                                      "removed_fact": removed, "removed_effect": eff, "gold": gi})
                 tcase.append(time.time() - tc)
+            pol.cache.clear()
     if a.limit:
         recs = recs[:a.limit]
-    dropped, limited = 0, False
+    dropped, limited = 0, threading.Event()
     if a.prose == "gemini":
         from google.genai import errors
 
         fams = collections.defaultdict(list)
         for r in recs:
             fams[r["id"].split(":")[0] if r["variant"] == "base" else r["parent"].split(":")[0]].append(r)
-        kept = []
-        for bid, rs in fams.items():
+
+        def rewrite(bid, rs):
+            """
+            Returns (records, dropped) for one base family: rewritten by Gemini and re-extracted, swapped into
+            every variant and prose view if the re-extraction matches the base facts, no tag name shows up and
+            the untagged (header and color) sentences alone state no fact, dropped ([], 1) if not,
+            kept as template prose once a rate limit or outage has set `limited`. Each template sentence a
+            variant swaps in is then restyled by Gemini against the base file and kept only if, read alone, it
+            states exactly its fact with the edited value; otherwise it stays the template sentence.
+            """
             base = next((r for r in rs if r["variant"] == "base" and r["view"] == "prose"), None)
-            if limited or base is None:
-                kept.extend(rs)
-                continue
+            if limited.is_set() or base is None:
+                return rs, 0
             dom = load_domain(base["domain"])
             tagged = [{"fact": x["fact"], "sentence": x["sentence"]} for x in base["case_sentences"]]
             lines = []
@@ -577,44 +674,122 @@ def main():
                     f"JSON list of sentences, each tagged with the fact it states (null for header or color). Return a "
                     f"JSON list of the same length and order with the same \"fact\" tags and a rewritten \"sentence\" "
                     f"for each. Every tagged sentence must state exactly its fact with the same value and nothing "
-                    f"else; untagged sentences must not state any fact. Dates stay dates, amounts stay amounts. Do "
-                    f"not mention rules or decisions.\n\n{json.dumps(tagged)}", json_out=True))
-                text = " ".join(x["sentence"] for x in new)
-                raw = json.loads(gemini_call(
-                    "Read the case file and return one JSON object with exactly these keys. Use null when the case "
-                    "file does not state the fact. Compute a value only when the key's description asks for it.\n" +
-                      "\n".join(lines) + f"\n\nCase file:\n{text}", json_out=True))
+                    f"else; untagged sentences must not state any fact. Dates stay dates, amounts stay amounts. Write "
+                    f"each as a full natural sentence and never put a tag name in it. Do not mention rules or "
+                    f"decisions.\n\n{json.dumps(tagged)}", json_out=True))
+                ask = "Read the case file and return one JSON object with exactly these keys. Use null when the " \
+                    "case file does not state the fact. Compute a value only when the key's description asks for " \
+                    "it.\n" + "\n".join(lines) + "\n\nCase file:\n"
+                raw = json.loads(gemini_call(ask + " ".join(x["sentence"] for x in new), json_out=True))
+                stray = json.loads(gemini_call(
+                    "Here is a list of fact keys with descriptions, then a short text. Return a JSON list of the keys "
+                    "whose value the text states or clearly implies. Return [] if it states none. Do not guess from "
+                    "what the text leaves out.\n" +
+                      "\n".join(f"- {n}: {sf['label']}" for n, sf in dom["facts"].items()) +
+                    "\n\nText:\n" + " ".join(y["sentence"] for y in new if y.get("fact") is None), json_out=True))
             except (errors.APIError, RuntimeError) as e:
                 code = getattr(e, "code", None)
                 if code not in (429, 503, None):
                     raise
-                print("Gemini rate limited (429)" if code == 429 else f"Gemini unavailable ({code or e})",
-                      "- falling back to template prose for the remaining items")
-                limited = True
-                kept.extend(rs)
-                continue
-            back = {}
-            for n, sf in dom["facts"].items():
-                v = raw.get(n)
-                if v is not None and sf.get("date"):
-                    v = (datetime.date.fromisoformat(str(v)) - dom["ref_date"]).days
-                elif v is not None and sf["type"] == "int":
-                    v = int(v)
-                back[n] = v
-            same = [x["fact"] for x in new] == [x["fact"] for x in tagged]
-            if not same or any(back[n] != base["facts"].get(n) for n in dom["facts"]):
-                dropped += 1
-                print("dropped base family", bid, "tags changed" if not same else
-                      {n: (back[n], base["facts"].get(n)) for n in dom["facts"] if back[n] != base["facts"].get(n)})
-                continue
+                if not limited.is_set():
+                    print("Gemini rate limited (429)" if code == 429 else f"Gemini unavailable ({code or e})",
+                          "- falling back to template prose for the remaining items")
+                limited.set()
+                return rs, 0
+            except (ValueError, TypeError, KeyError, AttributeError) as e:
+                print("dropped base family", bid, "unparsable reply:", e)
+                return [], 1
+
+            def conv(n, v):
+                """
+                Returns an extracted value in engine form: dates as day offsets, ints (derived facts too) as int.
+                """
+                sf = dom["facts"].get(n)
+                if v is None or sf and sf["type"] != "int":
+                    return v
+                return (datetime.date.fromisoformat(str(v)) - dom["ref_date"]).days if sf and sf.get("date") else int(v)
+
+            keys = [k for k in list(dom["facts"]) + list(dom["derived_facts"]) if "_" in k]
+            leaky = lambda s: bool(re.match(r"\s*[a-z_]+\s*:", s) or any(re.search(rf"\b{k}\b", s) for k in keys))
+            try:
+                back = {n: conv(n, raw.get(n)) for n in dom["facts"]}
+            except (ValueError, TypeError, AttributeError) as e:
+                print("dropped base family", bid, "unparsable extraction:", e)
+                return [], 1
+            same = [x.get("fact") for x in new] == [x["fact"] for x in tagged]
+            leak = [y["sentence"] for y in new if leaky(y["sentence"])]
+            leak += [f"untagged sentences state {n}" for n in (stray if isinstance(stray, list) else ["?"])]
+            if not same or leak or any(back[n] != base["facts"].get(n) for n in dom["facts"]):
+                print("dropped base family", bid, "tags changed" if not same else f"leak: {leak[0]!r}"
+                      if leak else {n: (back[n], base["facts"].get(n)) for n in dom["facts"]
+                                    if back[n] != base["facts"].get(n)})
+                return [], 1
             gs = [{**x, "sentence": y["sentence"]} for x, y in zip(base["case_sentences"], new)]
+            orig, sw = {x["fact"]: x["sentence"] for x in gs if x["fact"]}, {}
             for r in rs:
                 if r["view"] != "table":
                     r["case_sentences"] = case_sentences(r, r["facts"], bid, r["view"], gs)
+                    sw.update({(x["fact"], x["value"]): x["sentence"] for x in r["case_sentences"]
+                               if x["fact"] and x["sentence"] != orig.get(x["fact"])})
+            fix, todo = {}, list(sw.items())
+            try:
+                if todo:
+                    out = json.loads(gemini_call(
+                        f"Below is a case file for {dom['title']}, then a JSON list of edits. Each edit gives a "
+                        f"sentence from the file (\"old\", null if none) and a plain sentence (\"new\") that states "
+                        f"a different value for the same point. For each edit, write the new sentence in the style "
+                        f"of the file: reuse the old sentence's wording and change only what the new value "
+                        f"requires. It must state exactly what \"new\" states, with the same value, and nothing "
+                        f"else. Never put a tag name in it and do not mention rules or decisions. Return a JSON list "
+                        f"of strings, one per edit, in order.\n\nCase file:\n{' '.join(x['sentence'] for x in gs)}"
+                        f"\n\nEdits:\n{json.dumps([{'old': orig.get(f), 'new': s} for (f, _), s in todo])}",
+                        json_out=True))
+                    out = [s if isinstance(s, str) and not leaky(s) else None for s in out][:len(todo)]
+                    dl = [f"- {n}: {d['label']}; integer" for n, d in dom["derived_facts"].items()]
+                    chk = json.loads(gemini_call(
+                        "For each numbered sentence below, return the facts it states: a JSON list with one object "
+                        "per sentence, in order, mapping each key the sentence states to its value and leaving out "
+                        "every key it does not state. Compute a value only when the key's description asks for "
+                        "it.\n" + "\n".join(lines + dl) + "\n\nSentences:\n" +
+                          "\n".join(f"{i + 1}. {s}" for i, s in enumerate(out)), json_out=True))
+                    for ((f, v), _), s, got in zip(todo, out, chk):
+                        try:
+                            if s and {k: conv(k, w) for k, w in got.items() if w is not None} == {f: v}:
+                                fix[f, v] = s
+                        except (ValueError, TypeError, AttributeError):
+                            pass
+            except (errors.APIError, RuntimeError, ValueError, TypeError) as e:
+                print("seam rewrite fell back to template sentences for", bid, e)
+            with GEM_LOCK:
+                GEM["seam"].update({"rewritten": len(fix), "template": len(todo) - len(fix)})
+            for r in rs:
+                if r["view"] != "table":
+                    r["case_sentences"] = [{**x, "sentence": fix[x["fact"], x["value"]]}
+                                           if (x["fact"], x["value"]) in fix else x for x in r["case_sentences"]]
+                    r["seam_template"] = [x["fact"] for x in r["case_sentences"] if
+                                          (x["fact"], x["value"]) in sw and (x["fact"], x["value"]) not in fix]
                     r["case_text"] = " ".join(x["sentence"] for x in r["case_sentences"])
                     r["prose_source"] = "gemini"
-                kept.append(r)
+            return rs, 0
+
+        kept = []
+        with concurrent.futures.ThreadPoolExecutor(max(1, a.workers)) as ex:
+            futs = [ex.submit(rewrite, bid, rs) for bid, rs in fams.items()]
+            for i, fu in enumerate(futs):
+                rs, d = fu.result()
+                kept.extend(rs)
+                dropped += d
+                if (i + 1) % 50 == 0:
+                    print(f"gemini: {i + 1}/{len(futs)} base families, dropped {dropped}, usage",
+                          dict(GEM["usage"]), flush=True)
         recs = kept
+    seen, dup = set(), set()
+    for r in recs:
+        if (r["view"], r["case_text"]) in seen:
+            dup.add(r["id"].split(":")[0])
+        seen.add((r["view"], r["case_text"]))
+    recs = [r for r in recs if not {r["id"], r["parent"] or "", r["edited_from"] or ""} & {d + ":" + r["view"]
+                                                                                             for d in dup}]
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w") as fh:
@@ -639,13 +814,18 @@ def main():
           "certified no flip within radius 4:", sum("exhausted_radius" in r["gold"]["min_flip"] for r in one))
     print("single_condition:", sum(r["gold"]["single_condition"] for r in one), "of", len(one),
           "| interaction bases:", sum(bool(r["interaction"]) for r in one), "| invalid records skipped:", invalid)
+    print("reveal skipped (every deciding add copies a sibling):", norev,
+          "| items dropped as duplicate text:", len(dup))
     print("uncertified (over budget):", sum(r["gold"]["uncertified"] for r in one),
           dict(collections.Counter(x.split(":")[0] for r in one for x in r["gold"]["uncertified_reasons"])))
     print("reveal radius:", dict(collections.Counter(r["gold"]["min_reveal"].get("radius") for r in one
                                                      if r["gold"]["min_reveal"])))
     if a.prose == "gemini":
         print(f"gemini: model {GEM.get('chosen')}, dropped {dropped} base families on check failure, "
-              f"rate limited: {limited}")
+              f"rate limited: {limited.is_set()}, usage {dict(GEM['usage'])}")
+        sm = GEM["seam"]
+        print(f"seam: {sm['rewritten']} swapped sentences restyled, {sm['template']} kept as template "
+              f"({sm['template'] / max(1, sum(sm.values())):.1%} fallback)")
 
 
 if __name__ == "__main__":

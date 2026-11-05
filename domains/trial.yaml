@@ -103,7 +103,7 @@ derived_facts:
   consent_gap:
     expr: "screening_day - consent_day"
     label: "days from consent to screening"
-    say: ["Screening thus came {v} days after consent."]
+    say: ["Screening took place {v:after} the consent signature."]
   halden_score:
     expr: "prx7_level + 10 * kelman_index"
     label: "Halden composite score (PRX-7 plus ten times the Kelman index)"

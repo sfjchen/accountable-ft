@@ -21,7 +21,7 @@ facts:
     label: "operating weight of the equipment (kg)"
     say:
       - "Its operating weight is {v} kg."
-      - "The manufacturer sheet gives an operating weight of {v:t} tonnes."
+      - "The manufacturer sheet gives an operating weight of {v:,} kilograms."
   application_day:
     type: int
     values: [0, 7, 14, 21, 28, 35]
@@ -107,7 +107,7 @@ derived_facts:
   lead_days:
     expr: "start_day - application_day"
     label: "days between filing and placement start"
-    say: ["The application was therefore filed {v} days before placement begins."]
+    say: ["The application was filed {v:before} the start of placement."]
   placement_days:
     expr: "end_day - start_day"
     label: "placement length in days"
@@ -195,7 +195,7 @@ color:
   - "A site plan sketch is attached on the back page."
   - "The applicant asked whether the permit fee can be paid in two parts."
   - "The building owner is copied on the correspondence."
-  - "A nearby cafe has asked to be kept informed."
+  - "A nearby cafe owner called the bureau to ask about parking."
   - "The applicant's phone number changed after submission."
   - "The previous tenant of the building ran a bicycle shop."
   - "The covering email apologizes for a late reply to an earlier query."

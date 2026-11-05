@@ -109,7 +109,7 @@ derived_facts:
   duration_weeks:
     expr: "(end_day - start_day) // 7"
     label: "project length in weeks"
-    say: ["That makes a project period of {v} weeks."]
+    say: ["The work plan covers a project period of {v} weeks."]
   equip_travel:
     expr: "equipment_amount + travel_amount"
     label: "equipment plus travel budget (dollars)"

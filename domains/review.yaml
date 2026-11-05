@@ -26,8 +26,8 @@ facts:
     values: [1, 2, 3, 4, 5]
     label: "reference list length (pages)"
     say:
-      - "The reference list takes {v} pages."
-      - "References fill {v} pages."
+      - "The reference list runs to {v} page(s)."
+      - "Page count of the reference list: {v}."
   anonymized:
     type: bool
     label: "manuscript anonymized"
@@ -101,8 +101,8 @@ facts:
     values: [1, 2, 3, 4, 6, 8, 10]
     label: "number of authors"
     say:
-      - "The paper has {v} authors."
-      - "{v} authors are listed in the submission form."
+      - "The author count on the submission form is {v}."
+      - "The submission form gives {v} as the number of authors."
   reviewer_same_institution:
     type: bool
     label: "assigned reviewer works at an author's institution"
@@ -147,7 +147,7 @@ derived_facts:
   coauthor_gap:
     expr: "submission_day - last_coauthor_day"
     label: "days from the reviewer's last joint paper to the submission date"
-    say: ["That joint paper appeared {v} days before the submission date."]
+    say: ["The reviewer's last joint paper with an author appeared {v} days before the submission date."]
 rules:
   - key: page_limit
     cond: "main_pages <= {t}"
@@ -255,17 +255,18 @@ defaults:
   - fact: nonarchival_venue
     value: false
     text: "If the nature of another venue is not stated, treat it as archival"
-names: ["Okonkwo, Dale and Freyr", "Lindqvist and Arate", "the Marsh Hollow group", "Pirelli, Tan and Vos", "Hadley and Quint", "the Osk University team", "Benedek and Rowe", "Sato, Imre and Kell"]
+# Author groups, never lists of names, so the header does not give away num_authors.
+names: ["the Okonkwo group", "the Lindqvist lab", "the Marsh Hollow group", "the Pirelli lab", "the Hadley group", "the Osk University team", "the Benedek lab", "the Sato group"]
 intro:
   - "Submission {num} to SQM 2027 comes from {name}."
   - "The chairs' record for submission {num}, by {name}, reads as follows."
-  - "{name} submitted paper {num} to the symposium."
+  - "Paper {num} was submitted to the symposium by {name}."
 color:
-  - "The paper proposes a new notation for Quorian lattices."
+  - "The paper proposes a new proof notation."
   - "The abstract was revised twice before the deadline."
-  - "One author asked whether a poster slot is available."
+  - "The corresponding author asked whether a poster slot is available."
   - "The title contains a pun that one chair found distracting."
-  - "The authors thank an anonymous colleague for proofreading."
+  - "The acknowledgments thank an anonymous colleague for proofreading."
   - "The figures use a colorblind-friendly palette."
   - "The cover note mentions that code will be released after the conference."
   - "The corresponding author's email bounced once during the process."
