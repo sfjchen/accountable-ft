@@ -1,6 +1,6 @@
-# Plan and decisions (revised Nov 4, 2026, after two external reviews)
+# Plan and decisions (revised Nov 5, 2026, after two external reviews and one internal review pass)
 
-CS 224V final project, Jon Chen and Eitan Green, mentor Cyrus Zhou. Presentation Dec 4. Working plan plus the reasoning behind each decision, written so someone outside the project can check it. Changes from the previous draft are marked [rev2].
+CS 224V final project, Jon Chen and Eitan Green, mentor Cyrus Zhou. Presentation Dec 4. Working plan plus the reasoning behind each decision, written so someone outside the project can check it. Changes from the previous drafts are marked [rev2] and [rev3].
 
 ## 1. Question and claim
 
@@ -18,7 +18,7 @@ Three properties we keep apart:
 
 We measure the first two and do not claim the third. Correctness on a case does not show which fact the model used. Agreement over a defined intervention set supports a behavioral claim and nothing more.
 
-[rev2] Primary comparison: account-SFT vs decision-only SFT, same cases, same augmentation, same decision context (section 3.3). Primary endpoint: V, the gain in self-prediction accuracy from having the account in the prediction prompt vs not (section 3.6). Raw self-prediction validity S and its gain G over an oracle-copying predictor are reported next to it, because S alone is matched by a predictor that just outputs the policy answer, and then equals edited-case accuracy. Secondary: explanation validity, counterfactual pair accuracy, own-boundary outcomes. Accuracy is a non-inferiority requirement with a 3-point margin on the primary population (a design choice): the paired CI on the accuracy difference has to exclude a loss larger than 3 points.
+[rev2] Primary comparison: account-SFT vs decision-only SFT, same cases, same augmentation, same decision context (section 3.3). [rev3] Primary endpoint: dSim, the gain in an external simulator's accuracy at predicting the model's fresh post-edit decision when it sees the model's account vs only the model's decision (section 3.6). The simulator is a fixed frozen model that never sees the case text, so it cannot re-solve the case and its only route to the answer is the account. V, the same gain measured by self-prediction (the trained model predicting itself with the full case in view), moves to secondary: the Nov 5 baseline shows a no-account self-predictor already at 0.77-0.84 because it re-solves the case from the policy and facts, and after SFT both conditions converge toward self-consistency, which leaves V no headroom. Raw self-prediction validity S and its gain G over an oracle-copying predictor are reported next to it, because S alone is matched by a predictor that just outputs the policy answer, and then equals edited-case accuracy. The smoke run of this protocol (74 bank items, base reference model) showed why the control matters: the simulator scored 0.62 with the real account, 0.47 with none, and 0.66 with a shuffled account (another case's account under the same policy), so the whole gain over no-account came from having account-shaped text, not from this account's content. The primary endpoint is therefore the content gain dSim = Sim(own account) - Sim(shuffled account, same policy), and Sim(own account) - Sim(no account) is reported beside it as the gross gain. Secondary: explanation validity, counterfactual pair accuracy, own-boundary outcomes. Accuracy is a non-inferiority requirement with a 3-point margin on the primary population (a design choice): the paired CI on the accuracy difference has to exclude a loss larger than 3 points.
 
 Not claimed: cross-schema transfer, causal mediation, introspection, anything about real clinical or legal use.
 
@@ -83,8 +83,10 @@ Why the control matters: "Breaking the Chain" reports Qwen3-8B on AVeriTeC going
 Decision: approve | deny | cannot determine
 Policy support: <fact>=<value> (R<n>); <fact>=<value> (R<n>); ...
 Assumptions: <fact>=<value> (default from R<n>) | none
-Smallest change to make this <target>: <fact> -> <value>; <fact> -> <value> | no change within 4 edits
+Smallest change that would reverse this decision: <fact> -> <value>; <fact> -> <value> | no change within 4 edits
 ```
+
+[rev3] The prompt no longer names the target. The old line, "Smallest change to make this approve", told the model that gold was deny, for every item (5,061 of 5,061 in v1). For a cannot-determine decision the model writes the smallest addition that would settle the case. The target for scoring derives from the model's own decision; the same numbers against the gold target are reported with a vs_gold suffix.
 
 Separate prediction call, evaluation only:
 
@@ -105,7 +107,7 @@ Primary table, Qwen3.5-9B, 3 training seeds each, same held-out items:
 | prompted base, thinking on | same, thinking on |
 | decision-only SFT | LoRA SFT, account tokens masked out of the loss |
 | account SFT | same data and sequences, account tokens in the loss |
-| account SFT + relabel | one CREDIT-style round, if the core result is interpretable |
+| account SFT + relabel | one CREDIT-style round, only if account SFT is not at the accuracy ceiling (at ceiling the model's reliance already matches gold, so relabeling is a near no-op) |
 | larger reference models | Gemma 4 26B-A4B and one API model, prompting only, 1 seed, references not ceilings |
 
 [rev2] Retention order under the compute budget: the 6 core SFT runs, then primary evaluation with both prediction controls, then transfer evaluation of the same checkpoints, then the relabel round. Deferred until those are done: the domain-mixture table (account SFT on admin-only vs review-only vs both, 6 more runs), on-policy RL, the 27B run. RL, if it ever runs, uses a reward that depends on the account's claims (explanation validity, self-prediction validity), not decision correctness alone, and is gated by a 1-hour throughput pilot. Offline preference optimization on engine-built pairs is labeled as such, not as RL, and some pairs would hold the decision fixed and differ only in account quality.
@@ -116,6 +118,10 @@ All reported on the primary population (prose view, unseen families, training vo
 
 [rev2] Self-prediction protocol: (1) ordinary decision call, account frozen; (2) a prediction call with the case, the model's own decision and account, and one edit from a fixed intervention bank chosen independently of the account (40% pivotal replace, 30% invariant replace, 15% remove, 15% add, same bank for every model), returning an explicit label; (3) a fresh ordinary decision call on the edited case with no trace of the prediction; (4) compare. The prediction call is a simulator scored against discrete outputs, not an LLM judge.
 
+[rev3] Bank independence, fixed Nov 5: the first bank took every pivotal edit from the flip variant, which equals the gold account's own "smallest change" line in 1,097 of 1,097 cases, the exact edit the account-SFT model is trained to write. Pivotal edits now come from an engine search for a certified flip whose fact set differs from the gold minimum flip (radius up to 3); bases with no such flip leave the pivotal pool and are counted. A non-crossing edit (a necessary fact moved without crossing its threshold, decision unchanged) joins the invariant share. The bank is restricted to the primary slice and view unless widened on purpose, and every item records its source.
+
+[rev3] External simulation protocol: the same frozen account and the same bank edit go to a fixed external simulator (gemini-3.5-flash-lite, thinking off, pinned version) that sees the policy text, the model's decision and account, and the edit description, never the case text; the control call gets the decision and the edit only. dSim is the accuracy difference against the model's fresh post-edit decision. The simulator is a classifier of the trained model's behavior from the account alone; it is not an LLM judge of quality, and its outputs are scored against discrete labels.
+
 | Measure | Definition |
 |---|---|
 | Decision accuracy | on all items, per class (approve, deny, cannot determine) |
@@ -124,7 +130,8 @@ All reported on the primary population (prose view, unseen families, training vo
 | Explanation validity | cited facts, rules and defaults form a valid justification under the engine; minimality and distractor citation separately; cannot-determine items scored on whether the cited missing facts could decide the case |
 | S, self-prediction validity | predicted label equals the fresh decision on the edited case |
 | G | S minus P(oracle label on the edited case equals the fresh decision); an oracle-copying predictor scores 0 |
-| V, primary endpoint | accuracy of the prediction call with the account minus the same call without the account (case, own decision, edit only), as in Mayne et al.'s simulatability gain |
+| dSim, primary endpoint [rev3] | external simulator accuracy at predicting the fresh post-edit decision from policy, decision, own account and edit, minus the same with another case's account from the same policy in place of the own account (content gain); the gross gain over a decision-and-edit-only call is reported beside it |
+| V, secondary [rev3] | accuracy of the self-prediction call with the account minus the same call without the account (case, own decision, edit only), as in Mayne et al.'s simulatability gain |
 | Own-boundary outcomes | the proposed smallest change toward the fixed target is valid for oracle and model, oracle only, model only, neither; oracle-minimality under the declared edit space; a "no change within 4 edits" claim is disproved by a certified engine flip and "unresolved" when the engine is uncertified |
 | Necessity by intervention | editing each cited fact flips the fresh run, single-condition items, with coverage |
 | Assumption accuracy | on missing items, decision and stated default match the engine |
@@ -132,7 +139,9 @@ All reported on the primary population (prose view, unseen families, training vo
 
 A perfectly accurate model leaves no room for G, which is a limitation of the diagnostic, not a flaw in the model. Optional: a single frozen predictor model on a small audit subset, to separate changes in the accounts' usefulness from changes in the trained model's prediction skill. Correct-vs-wrong base splits are descriptive only. The own-boundary metric comes from our probe; whether it is promoted is decided on pilot data.
 
-[rev2] Checkpoint selection: among checkpoints whose dev accuracy is within 3 points of the decision-only control's, pick the best dev V. Then test once.
+[rev2] Checkpoint selection: among checkpoints whose dev accuracy is within 3 points of the decision-only control's, pick the best dev dSim [rev3]. Then test once.
+
+[rev3] Reference baseline, gemini-3.5-flash-lite via Vertex, thinking off, v1 unseen slice, prose, 545 items from 120 stratified bases (dirty tree, before the leak and bank fixes, so a pilot not a result): accuracy 0.88, approve 0.78, deny 0.94, cannot-determine 0.03, interaction bases 0.97, pair accuracy 0.68, repeat-without-edit disagreement 0.17 at temperature 0, account validity 0.25, S 0.78 with vs 0.77 without account, V 0.02 [-0.01, 0.05]. Reading: the decision task is near ceiling for a frontier small model on the interaction subset, cannot-determine is the hard class (the model fills in the missing fact instead of flagging it), and accounts are mostly invalid, so the account metrics have the headroom and accuracy does not. That is the expected shape for the comparison, which is about accounts under an accuracy non-inferiority constraint.
 
 No LLM judge in the metric path.
 
@@ -148,6 +157,8 @@ No LLM judge in the metric path.
 - Budget from measured throughput. Evaluation multiplies: 1,000 base cases, a 10-edit bank, prediction call plus fresh call, is about 20,000 generations per checkpoint before repeats, and thinking tokens can dominate.
 - Floor: 6 core SFT runs 12-24 GPU-hours, eval and debugging about 30, relabel round 5-10 (one seed). 47-64 hours before anything deferred. RunPod or Vast roughly $120-250.
 - Have: $50 GCP education credits, GPU quota 0 on the project (Compute Engine API enabled Nov 4). Free-trial accounts cannot attach GPUs; unused trial credit survives an upgrade within its expiry; AI Studio Gemini API costs are excluded from trial credit. Asking Cyrus for credits, RunPod or Vast out of pocket meanwhile.
+- [rev3] Options checked Nov 5, in order: FarmShare (Stanford's free coursework cluster, SUNet login, Slurm, L40S 46GB nodes reported by a third-party config, 4 GPUs per user, not confirmed on the official docs), Modal Starter ($30 free per month, A100 80GB at $2.50/h, academic credit program), RunPod Community A100 80GB at about $1.19/h (about $25 for the whole project plus a network volume), Vast on-demand A100 at about $0.84/h median with less reliable hosts, Colab Pro (A100 40GB not guaranteed, disconnects), GCP quota request on the education account (often denied, 2 days to a week). Marlowe and Sherlock need a faculty PI. Kaggle, Lightning free and the GitHub pack have no 40GB GPU. Difficulty pilot on Qwen3.5-9B: OpenRouter or DeepInfra host it at about $0.10 per million tokens, under $1 for a pilot.
+- [rev3] Gemini prose and reference runs go through Vertex (ADC, project gen-lang-client-0275203787, location global, gemini-3.5-flash-lite), billed to the education credits. The AI Studio key is free tier (20 requests a day) and only serves smoke tests. Spend so far: data v1 about $9, pilots about $1.
 
 ### 3.9 Held-out design and what "domain-agnostic" means here
 
@@ -162,6 +173,12 @@ Plus a structural holdout of 1-2 exception/default combinations, and 40 hand-wri
 
 Sample size: for paired items with 20% discordance and a true difference near zero, about 850 items give a 95% half-width of 3 points before clustering, so the primary population needs at least 20 held-out families with about 45 prose items each, which means at least 100 families generated. The planned clustered paired analysis is simulated on pilot data before the split is frozen.
 
+[rev3] Clusters, not items, set the power. v1.0 had 21 unseen families with 9-12 bases each; with a design effect near 2.3 (intra-cluster correlation assumed 0.05, not yet measured) the detectable dSim or V difference at 80% power was about 10 points and the accuracy CI half-width about 3.5 points, which fails a 3-point margin even at a true difference of zero. v1 therefore moves to 72 unseen families (24 per training domain) with 5 bases each, a 50/10/40 family split, and 60 permit families, at about $6 of prose. The intra-cluster correlation is estimated on the v1 reference run and the power statement is redone from it before training starts.
+
+[rev3] Honest label for the primary slice: every rule template of the unseen families also appears in training families once numbers are abstracted, so "unseen family" is threshold-and-combination transfer, not transfer to new rule shapes. The permit slice is the real transfer test and is reported as such. Holding whole rule templates out of training is a cheap follow-up if time allows.
+
+[rev3] Data validity fixes made Nov 5 on review: the Gemini prose had a seam (the edited sentence of a variant was the plain template sentence among Gemini sentences, which marks the edited fact by style for every flip and invariant item), so edited sentences are now restyled by Gemini with the base file as style context and re-extracted, template fallback counted; 201 reveal variants per view had the same text as their base because the cheapest reveal value restored the removed fact, fixed and deduplicated; stated_facts now lists what the view states rather than all facts; fact-key leaks are filtered; 103 of 1,200 base families were dropped by the extraction filter at rates from 2% (grant) to 13% (review), which both conditions share and which limits external validity only.
+
 Defensible claim: transfer across held-out policy structures and one held-out vocabulary within one schema.
 
 ## 4. Split of work
@@ -172,7 +189,7 @@ Defensible claim: transfer across held-out policy structures and one held-out vo
 
 ## 5. Timeline
 
-- Nov 5-9: freeze oracle semantics and acceptance tests, intervention kinds, family splits, prediction protocol. Pilot difficulty on dev. Measure training and eval throughput for 1 hour. Simulate the primary analysis on pilot data.
+- Nov 5-9: [rev3 done Nov 5] oracle semantics and acceptance tests frozen, intervention kinds, family splits, prediction protocol, dataset v1 with Vertex prose, reference baseline, leak and bank fixes. Remaining: Qwen3.5-9B base pilot through an API host, FarmShare login and a 1-hour throughput run, power simulation on the v1 reference run, blind 100-item labeling.
 - Nov 10-16: prompted baselines, decision-only and account SFT (3 seeds each), blind annotation. RL go/no-go.
 - Nov 17-23: primary and transfer evaluation, paired CIs, error analysis. Relabel round only if the core result is interpretable.
 - Nov 24-30: uncertainty, limitations, report, slides.
@@ -192,7 +209,8 @@ Defensible claim: transfer across held-out policy structures and one held-out vo
 - Does Cyrus accept the Python engine as the oracle with z3 as a cross-check?
 - Does paraphrased real policy text count as "realistic" for the 40-item check?
 - GPU credits: how many, on which provider?
-- Is a documented negative result (account supervision improves validity but not V) acceptable?
+- Is a documented negative result (account supervision improves validity but not dSim) acceptable?
+- [rev3] Does Cyrus accept an external frozen simulator as the primary scorer, given that it is a classifier of the trained model's behavior and not a judge of text quality?
 
 ## 8. Sources
 
