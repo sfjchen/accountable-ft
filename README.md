@@ -80,7 +80,17 @@ CS 224V final project (Stanford, fall 2026). Jon Chen and Eitan Green, mentor Cy
   - Hold whole rule templates out of training too, so "unseen" means new rule shapes.
   - Split the 100-item blind labeling (`data/v1.blind100.jsonl`, answers in the sibling file, do not open first).
 
-## 6. Where we are (Nov 7)
+## 6. What a case looks like
+
+- Prompt = system line, the policy (about 10 numbered rules, 2 with exceptions), a 20-sentence case file with filler and shuffled facts, and the 4-line answer format. Full prompts are in the run files, cases in the `data-v1` release.
+- Example, grant-p010-c01-reveal (prose, held-out family). Gold: approve. Qwen3.5-9B base: deny.
+  - Qwen cited R5 (request over $90,000) and R6 (start before Jan 14). R5 is waived because the host is a community laboratory and the request is exactly the exception's $120,000 limit. R6 holds, the start is Feb 1.
+  - The gold account needs 9 facts, including the career-break exception that waives R2 for a 9-year-old doctorate.
+- Why base models score low: exceptions, boundary values and distractors in long prose, not trick wording.
+  - Qwen's 309 wrong base answers: 196 approve called deny, 82 cannot-determine called deny, 16 deny called approve, 15 cannot-determine called approve.
+  - Two failure modes cover 90%: missed exceptions and boundaries, and never abstaining.
+
+## 7. Where we are (Nov 7)
 
 - Data v1: about 5,000 cases, 3 views, 72 held-out families, 60 permit families.
 - Harness: 55 tests, end to end on two prompting pilots, same 150 held-out cases (logs `v1-lite-eval-52322ce-20261107-0253`, `qwen9b-lite-eval-52322ce-20261107-0254`).
@@ -96,14 +106,14 @@ CS 224V final project (Stanford, fall 2026). Jon Chen and Eitan Green, mentor Cy
   - Reading: accounts are where the headroom is, accuracy has some too. That is the shape the comparison needs.
 - Compute: FarmShare (Stanford, free), 6 nodes with 4 L40S 48 GB each, 4 GPUs per user. Environment, data and model are on the cluster, smoke jobs queued Nov 7. RunPod ($1.19/h A100) is the fallback.
 
-## 7. Next
+## 8. Next
 
 - Nov 9-16: 6 training runs (2 conditions x 3 seeds), about 2 hours each on an L40S, then evaluation on the held-out families.
 - Nov 17-23: permit transfer, error analysis, a second simulator family as a robustness check.
 - Nov 24-30: report and slides.
 - Relabel round (CREDIT-style) only if account SFT is below the accuracy ceiling.
 
-## 8. Risks, one line each
+## 9. Risks, one line each
 
 - Gains that come from accuracy rather than accounts: matched control and the 3-point margin.
 - Noise read as flips: greedy decoding, repeat control, a planned paraphrase-edit noise floor.
