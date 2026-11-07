@@ -14,11 +14,15 @@ Companion files next to each run <run>.jsonl, all optional and all required to s
   right after every flip and invariance number.
 - <run>.simulate.jsonl, <run>.simulate_noacc.jsonl and <run>.simulate_shuf.jsonl: infer.py --mode simulate, a
   fixed external predictor given the policy, the frozen account (or only the decision, or another case's account
-  under the same policy) and one bank edit. sim_acct, sim_noacc and sim_shuf are its accuracy against the run's
-  fresh decision on the edited record. sim_delta = sim_acct - sim_shuf, the gain from the case's own account over
-  another case's account under the same policy, is the primary endpoint; sim_gross = sim_acct - sim_noacc is the
-  gain over the decision alone. These files carry the simulator's decoding, which must be the same across all runs
-  in one call, not the run's.
+  under the same policy with the item's own decision) and one bank edit. sim_acct, sim_noacc and sim_shuf are its
+  accuracy against the run's fresh decision on the edited record, all on the bank items present in every available
+  simulate file. sim_delta = sim_acct - sim_shuf, the gain from the case's own account over another case's account
+  under the same policy, is the primary endpoint, also split by whether the fresh decision equals the frozen base
+  decision ([changed], [unchanged]); sim_gross = sim_acct - sim_noacc is the gain over the decision alone. Trivial
+  baselines on the same items: sim_const_unchanged always predicts the frozen base decision, sim_oracle the engine
+  label. A shuf file from the old shuffle (no shuf_src "frozen" or shuf_decision_match) and a bank item with no
+  fresh decision both stop the run with a message. These files carry the simulator's decoding, which must be the
+  same across all runs in one call, not the run's.
 - <run>.predict.jsonl and <run>.predict_noacc.jsonl: infer.py --mode predict on --bank with and without the
   frozen account. S compares each prediction to the run's own fresh decision on the edited record, G = S -
   P(oracle label == fresh decision), V = S(with account) - S(without account), secondary to sim_delta.
@@ -35,7 +39,8 @@ Each run also writes <run>.interventions.jsonl with {iid, id, kind, edits, targe
 All runs in one call must share temperature, top_p, top_k, max_tokens and n; thinking may differ only with
 --allow-thinking-diff. Training seeds are runs named <cond>-s<k>: own columns plus a seed aggregate (mean of per-seed
 means with min and max), never one pooled CI. --compare REF prints paired bootstrap CIs of each condition minus REF on
-shared units. --select-control C picks a checkpoint (see select_ckpt).
+shared units. --epoch K picks every condition's checkpoint at the same fixed epoch (select_ckpt); --select-by MET
+with --select-control C adds an exploratory best-of-k table, labelled as such (explore_ckpt).
 
 Usage:
   python evaluate.py --data data/x.jsonl --bank data/x.bank.jsonl --json runs/eval.json [--compare a] runs/a.jsonl
@@ -64,7 +69,8 @@ PRIMARY = "slice=unseen_family_train_vocab view=prose"
 COMPANIONS = ("repeat", "answers", "predict", "predict_noacc", "simulate", "simulate_noacc", "simulate_shuf")
 PRED = {"predict": "self_S", "predict_noacc": "self_S_noacc", "simulate": "sim_acct", "simulate_noacc": "sim_noacc",
         "simulate_shuf": "sim_shuf"}
-ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_gross", "sim_noacc", "self_V", "self_S", "self_S_noacc", "self_G",
+ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_gross", "sim_noacc", "sim_const_unchanged", "sim_oracle", "self_V",
+        "self_S", "self_S_noacc", "self_G",
         "bank_unchanged", "acc_maj", "acc_mean", "acc_class",
         "repeat_disagree", "flip", "flip_to_cd", "cf_pair_acc", "invariance", "inv_pair_acc", "expl_valid",
         "expl_minimal", "cite_distractor", "cite_p_nec", "cite_r_nec", "assume_dec", "assume_val",
@@ -72,7 +78,8 @@ ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_gross", "sim_noacc", "self_V"
         "bnd_model_only", "bnd_neither", "bnd_oracle_minimal", "bnd_invalid", "necessity_flip", "fmt_err", "len_chars",
         "len_tok"]
 LABEL = {"sim_delta": "sim_delta (primary: acct - shuf)", "sim_gross": "sim_gross (acct - noacc)",
-        "self_V": "self_V (secondary)"}
+        "self_V": "self_V (secondary)", "sim_const_unchanged": "sim_const_unchanged (baseline: frozen decision)",
+        "sim_oracle": "sim_oracle (baseline: engine label)"}
 POLS = {}
 
 
@@ -126,12 +133,11 @@ def split_item(s):
     return lbl.strip(" .,*`\"'"), val.strip(" .,*`\"'"), f"R{m[1]}" if m else None
 
 
-def parse(text):
+def sections(text):
     """
-    Parses one model output into {dec, relied, assume, change, miss, err}, with the 4 lines in any order and
-    "Relied on" accepted for "Policy support". relied and assume are lists of (label, value, rule), change is a list
-    of (label, value) edits ([] for none or "no change within 4 edits"), miss lists the absent lines, and err is True
-    when the decision is unreadable or any line is missing.
+    Returns {section: [text after the header, continuation line, ...]} for one model output, with the 4 lines in any
+    order, markdown bold dropped, and sections keyed "decision", "policy support" ("Relied on" accepted),
+    "assumptions" and "smallest change".
     """
     sec, cur = {}, None
     for ln in (text or "").splitlines():
@@ -143,7 +149,16 @@ def parse(text):
             sec[cur] = [m[2]]
         elif cur and ln.strip():
             sec[cur].append(ln)
-    its = {}
+    return sec
+
+
+def parse(text):
+    """
+    Parses one model output into {dec, relied, assume, change, miss, err} from its sections. relied and assume are
+    lists of (label, value, rule), change is a list of (label, value) edits ([] for none or "no change within 4
+    edits"), miss lists the absent lines, and err is True when the decision is unreadable or any line is missing.
+    """
+    sec, its = sections(text), {}
     for k in ("policy support", "assumptions", "smallest change"):
         parts = [p.strip(" -*\t.") for p in ";".join(sec.get(k, [])).split(";")]
         its[k] = [p for p in parts if p and not NONE.match(norm(p))]
@@ -437,25 +452,37 @@ def score(recs, rows, aux, bank=()):
             ids = [x.strip("*`. ") for x in re.findall(r"edit\s*id\s*[:\-]\s*(\S+)", o, re.I)]
             pred[k][r["id"]].append(norm_dec(pm[1]) if pm and ids[-1:] == [r["id"]] else None)
     pred = {k: {i: major(ds) for i, ds in d.items()} for k, d in pred.items()}
+    sims = [set(d) for k, d in pred.items() if k.startswith("simulate")]
+    shared = set.intersection(*sims) if sims else set()
+    cov["sim_items_shared"], nofresh = len(shared), []
     for it in bank if pred else []:
         case, fresh, kid, sub = recs.get(it["case_id"]), maj.get(it["edited_id"]), it["bank_id"], f"[{it['kind']}]"
         if case is None or it["case_id"] not in maj or not any(kid in d for d in pred.values()):
             cov["bank_unscored"] += 1
             continue
-        cov["bank_no_fresh"] += fresh is None
-        bc = maj[it["case_id"]] == case["gold"]["decision"]
-        S = {k: pd[kid] is not None and pd[kid] == fresh for k, pd in pred.items() if kid in pd}
+        if it["edited_id"] not in maj:
+            nofresh.append(kid)
+            continue
+        f0, bc = P[it["case_id"]][0]["dec"], maj[it["case_id"]] == case["gold"]["decision"]
+        S = {k: pd[kid] is not None and pd[kid] == fresh for k, pd in pred.items() if kid in
+                (shared if k.startswith("simulate") else pd)}
+        S |= {"const_unchanged": f0 is not None and f0 == fresh, "oracle": fresh == it["oracle"]} if kid in shared \
+                else {}
         for k, x in S.items():
-            cov[f"{k}_parse_fail"] += pred[k][kid] is None
-            for m in (PRED[k], PRED[k] + sub):
+            cov[f"{k}_parse_fail"] += k in pred and pred[k][kid] is None
+            for m in (PRED.get(k, "sim_" + k), PRED.get(k, "sim_" + k) + sub):
                 add(m, x, case, bc, kid)
         add("bank_unchanged", fresh is not None and fresh == maj[it["case_id"]], case, bc, kid)
         if "predict" in S:
             add("self_G", S["predict"] - (fresh is not None and fresh == it["oracle"]), case, bc, kid)
         for m, x, y in (("self_V", "predict", "predict_noacc"), ("sim_delta", "simulate", "simulate_shuf"),
                 ("sim_gross", "simulate", "simulate_noacc")):
-            for mm in (m, m + sub) if x in S and y in S else ():
+            ch = ("[changed]" if fresh != f0 else "[unchanged]",) if m == "sim_delta" else ()
+            for mm in (m, m + sub) + tuple(m + c for c in ch) if x in S and y in S else ():
                 add(mm, S[x] - S[y], case, bc, kid)
+    if nofresh:
+        sys.exit(f"refusing: {len(nofresh)} bank items have no fresh decision on their edited record (e.g. "
+                f"{nofresh[:3]}); rerun the answer run with --bank so every edited case is answered")
     cov["interventions_requested"] = len(ivs)
     return U, cov, ivs
 
@@ -505,27 +532,45 @@ def aggregate(U, B=1000, seed=0):
     return out
 
 
-def select_ckpt(res, cands, ctrl, gk="slice=dev", tol=0.03, met="sim_delta"):
+def select_ckpt(res, conds, ep, gk="slice=dev", met="sim_delta"):
     """
-    Returns (best checkpoint or None, rule text): among cands whose dev acc_maj is within tol (absolute) of the
-    decision-only control's dev acc_maj, the one with the highest dev met (sim_delta, the primary endpoint), both
-    read from group gk.
+    Returns (chosen conditions, rule text) under the prespecified symmetric rule: every condition at the same fixed
+    epoch ep, set before any account metric is read. Checkpoint runs are named <cond>-e<k> or <cond>-e<k>-s<seed>.
+    Raises ValueError when a condition has no run at ep or a chosen run lacks acc_maj or met on group gk.
+    """
+    rx, fams, pick = re.compile(r"(.*)-e(\d+)(-s\d+)?$"), set(), []
+    for c in conds:
+        if m := rx.match(c):
+            fams.add(m[1] + (m[3] or ""))
+            pick += [c] if int(m[2]) == ep else []
+    miss = sorted(fams - {rx.sub(r"\1\3", c) for c in pick})
+    bad = [c for c in pick if any(res[c].get(gk, {}).get(x, {}).get("mean") is None for x in ("acc_maj", met))]
+    if miss or bad or not pick:
+        raise ValueError(f"epoch {ep}: no run for {miss}, no acc_maj or {met} on {gk} for {bad}, candidates {conds}")
+    return sorted(pick), f"rule: fixed epoch {ep} for every condition ({gk} read only to check {met} exists)"
+
+
+def explore_ckpt(res, cands, ctrl, met, gk="slice=dev", tol=0.03):
+    """
+    Returns (best checkpoint or None, rule text) for the exploratory best-of-k table only, never the reported pick:
+    among cands whose acc_maj on gk is within tol (absolute) of the control ctrl's, the one with the highest met.
     """
     acc = {c: res[c].get(gk, {}).get("acc_maj", {}).get("mean") for c in [ctrl] + cands}
     sv = {c: res[c].get(gk, {}).get(met, {}).get("mean") for c in cands}
-    ok = [c for c in cands if acc[c] is not None and sv[c] is not None and abs(acc[c] - acc[ctrl]) <= tol]
+    ok = [c for c in cands if None not in (acc[c], sv[c], acc[ctrl]) and abs(acc[c] - acc[ctrl]) <= tol]
     best = max(ok, key=sv.get, default=None)
-    return best, (f"rule: on {gk}, keep checkpoints with |acc_maj - {acc[ctrl]:.3f} ({ctrl})| <= {tol}, then take the "
-            f"highest {met}; eligible {ok}, chose {best}")
+    return best, (f"EXPLORATORY best-of-k (not the prespecified rule): on {gk}, keep checkpoints with |acc_maj - "
+            f"acc_maj({ctrl})| <= {tol}, then take the highest {met}; eligible {ok}, chose {best}")
 
 
-def sig(rows, keys):
+def sig(rows, keys, who=("model", "backend")):
     """
-    Returns the set of decoding signatures in rows: the decoding restricted to keys, plus n samples per id.
+    Returns the set of signatures in rows: the decoding restricted to keys, n samples per id, and the row fields
+    in who (model and backend, so a companion file from another model is refused; () to compare across conditions).
     """
     n = Counter(r["id"] for r in rows)
-    return {json.dumps({k: r.get("decoding", {}).get(k) for k in keys} | {"n": n[r["id"]]}, sort_keys=True)
-            for r in rows}
+    return {json.dumps({k: r.get("decoding", {}).get(k) for k in keys} | {"n": n[r["id"]]} | {k: r.get(k) for k in
+            who}, sort_keys=True) for r in rows}
 
 
 def okey(m):
@@ -565,10 +610,11 @@ def main():
     ap.add_argument("--compare", help="reference condition (run stem) for paired differences")
     ap.add_argument("--allow-thinking-diff", action="store_true", help="allow thinking on vs off across runs")
     ap.add_argument("--render", action="store_true", help="write <run>.edits.jsonl via gen.policy_for/render_case")
-    ap.add_argument("--select-control", help="decision-only control condition for checkpoint selection")
+    ap.add_argument("--epoch", type=int, help="checkpoint selection: the fixed epoch k taken for every condition "
+            "(runs named <cond>-e<k>[-s<seed>])")
     ap.add_argument("--select", default=r".*", help="regex over condition names: checkpoint candidates")
-    ap.add_argument("--select-metric", default="sim_delta",
-            help="dev metric maximized by checkpoint selection, default the primary sim_delta")
+    ap.add_argument("--select-by", help="exploratory only: also print the best-of-k checkpoint by this dev metric")
+    ap.add_argument("--select-control", help="--select-by: decision-only control whose dev acc_maj bounds the pick")
     ap.add_argument("--boot", type=int, default=1000)
     ap.add_argument("--seed", type=int, default=0)
     a = ap.parse_args()
@@ -585,7 +631,7 @@ def main():
         sigs[rp.stem] = sig(rows, DEC_KEYS)
         if len(sigs[rp.stem]) > 1:
             sys.exit(f"refusing {rp.stem}: mixed decoding inside the run {sorted(sigs[rp.stem])}")
-        cross |= sig(rows, keys)
+        cross |= sig(rows, keys, ())
         comp[rp.stem] = {"out_tokens": sum(r.get("out_tokens") or 0 for r in rows),
                 "think_tokens": sum(r.get("think_tokens") or 0 for r in rows),
                 "call_latency_s": round(sum(r.get("latency") or 0 for r in rows), 2)}
@@ -593,8 +639,13 @@ def main():
             cp = rp.with_name(f"{rp.stem}.{k}.jsonl")
             if cp.exists():
                 aux[k] = load(cp)
+                if k == "simulate_shuf" and not all(r.get("shuf_src") == "frozen" and "shuf_decision_match" in r
+                        for r in aux[k]):
+                    sys.exit(f"refusing {cp.name}: rows without shuf_src frozen and shuf_decision_match come from "
+                            f"the old shuffle (partner decision or gold accounts); rerun infer.py --mode simulate "
+                            f"--all-sim")
                 if k.startswith("simulate"):
-                    simsig |= {s + " model=" + str(r.get("model")) for r in aux[k] for s in sig([r], DEC_KEYS)}
+                    simsig |= {s for r in aux[k] for s in sig([r], DEC_KEYS)}
                 elif sig(aux[k], DEC_KEYS) != sigs[rp.stem]:
                     sys.exit(f"refusing {cp.name}: decoding {sorted(sig(aux[k], DEC_KEYS))} differs from {rp.name}")
         for mp in [rp.with_name(f"{rp.stem}.meta.json")] + [rp.with_name(f"{rp.stem}.{k}.meta.json") for k in aux]:
@@ -633,12 +684,13 @@ def main():
             sg[m[1]].append(c)
     seeds = {}
     for gname, cs in sg.items():
-        seeds[gname] = {"seeds": cs, "metrics": {}}
-        for m in {m for c in cs for m in res[c]["all"]}:
-            xs = [res[c]["all"][m]["mean"] for c in cs if res[c]["all"].get(m, {}).get("mean") is not None]
-            if xs:
-                seeds[gname]["metrics"][m] = {"mean": float(np.mean(xs)), "min": min(xs), "max": max(xs),
-                        "k": len(xs)}
+        seeds[gname] = {"seeds": cs, "metrics": defaultdict(dict)}
+        for gk in {gk for c in cs for gk in res[c]}:
+            for m in {m for c in cs for m in res[c].get(gk, {})}:
+                xs = [res[c][gk][m]["mean"] for c in cs if res[c].get(gk, {}).get(m, {}).get("mean") is not None]
+                if xs:
+                    seeds[gname]["metrics"][gk][m] = {"mean": float(np.mean(xs)), "min": min(xs), "max": max(xs),
+                            "k": len(xs)}
     paired = {}
     for c in res if a.compare else []:
         if c == a.compare:
@@ -649,10 +701,16 @@ def main():
             pu = [(u[0] - ref[u[5]][0],) + u[1:] for u in units[c][m] if u[5] in ref]
             for gk, sel in groups(pu).items():
                 paired[c][gk][m] = boot([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed)
-    sel = None
-    if a.select_control:
-        sel = select_ckpt(res, [c for c in res if c != a.select_control and re.search(a.select, c)],
-                a.select_control, met=a.select_metric)
+    if a.select_by and not a.select_control:
+        sys.exit("--select-by needs --select-control")
+    cands, sel = [c for c in res if re.search(a.select, c)], {}
+    try:
+        sel |= dict(zip(("chosen", "rule"), select_ckpt(res, cands, a.epoch))) if a.epoch is not None else {}
+    except ValueError as e:
+        sys.exit(f"refusing checkpoint selection: {e}")
+    if a.select_by:
+        sel["exploratory"] = explore_ckpt(res, [c for c in cands if c != a.select_control], a.select_control,
+                a.select_by)
     Path(a.json).parent.mkdir(parents=True, exist_ok=True)
     Path(a.json).write_text(json.dumps({"primary": PRIMARY, "conditions": res, "coverage": covs, "compute": comp,
             "seed_groups": seeds, "paired_vs": a.compare, "paired": paired, "selection": sel,
@@ -669,14 +727,20 @@ def main():
     for k in sorted({k for cv in covs.values() for k in cv}):
         print(f"| {k} | " + " | ".join(str(covs[c].get(k, 0)) for c in conds) + " |")
     for gname, s in seeds.items():
-        print(f"\n### seed aggregate {gname} ({', '.join(s['seeds'])}): mean of per-seed means [min, max]\n")
-        for m in sorted(s["metrics"], key=okey):
-            x = s["metrics"][m]
-            print(f"- {m}: {x['mean']:.2f} [{x['min']:.2f}, {x['max']:.2f}] k={x['k']}")
+        for gk in (PRIMARY, "all"):
+            print(f"\n### seed aggregate {gname} {gk} ({', '.join(s['seeds'])}): mean of per-seed means [min, max]\n")
+            for m in sorted((m for m in s["metrics"].get(gk, {}) if "|" not in m), key=okey):
+                x = s["metrics"][gk][m]
+                print(f"- {m}: {x['mean']:.2f} [{x['min']:.2f}, {x['max']:.2f}] k={x['k']}")
     for c, pg in paired.items():
         table(f"paired difference {c} - {a.compare} (all)", {c: pg}, "all", lambda m: "|" not in m)
-    if sel:
-        print(f"\ncheckpoint selection: {sel[1]}")
+    if "chosen" in sel:
+        print(f"\ncheckpoint selection: {sel['rule']}; chose {sel['chosen']}")
+    if "exploratory" in sel:
+        ex = sel["exploratory"]
+        print(f"\n{ex[1]}")
+        table(f"EXPLORATORY best-of-k by {a.select_by}, not the prespecified rule (slice=dev)",
+                {c: res[c] for c in (a.select_control, ex[0]) if c}, "slice=dev", lambda m: "|" not in m)
     print(f"\njson={a.json}")
 
 

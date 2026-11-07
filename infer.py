@@ -6,11 +6,12 @@ endpoint (vLLM serve, OpenRouter, OpenAI), "gemini" through google-genai, and "v
 "gemini" takes --vertex [LOCATION] to go through Vertex AI (ADC credentials, GCP_PROJECT) instead of the API key.
 Sample i of an item uses seed + i. Every response is cached in a JSONL keyed by a hash of backend (with the Vertex
 location), model, prompt, decoding and repeat index, so a rerun only calls the model for what is missing and
---rep 1 forces a fresh run of the same prompts (the repeat-without-edit control). API keys come from environment
-variables, filled from ~/.config/cs224v/.env when unset, and are never printed. --slice, --view and --cases K (a
-seeded sample of K base cases stratified over (domain, template_family), each with all its views and variants, so
-pairs and bank items stay whole) pick a subset of the data file. Every row keeps finish, token counts, response_id
-and model_version for auditing.
+--rep 1 forces a fresh run of the same prompts (the repeat-without-edit control). --cache-tag joins the key too and
+is required for a local checkpoint, whose model path stays the same when the weights under it change. API keys come
+from environment variables, filled from ~/.config/cs224v/.env when unset, and are never printed. --slice, --view
+and --cases K (a seeded sample of K base cases stratified over (domain, template_family), each with all its views
+and variants, so pairs and bank items stay whole) pick a subset of the data file. Every row keeps finish, token
+counts, response_id and model_version for auditing.
 
 Modes:
 - answer: the ordinary decision call (decision, policy support, assumptions, smallest change that would reverse the
@@ -26,9 +27,11 @@ Modes:
 - simulate: external simulatability. A fixed external predictor (gemini-3.5-flash-lite, thinking off, --vertex)
   sees the policy, the frozen account (decision, policy support, assumptions; no case text, no smallest change)
   and the edit, and predicts the model's decision after the edit. --no-account gives it only the decision, and
-  --shuffle-accounts gives each item the account of another case under the same policy (a frozen answer, else
-  that case's gold account; rows carry shuf_src "frozen" or "gold"). --all-sim runs all 3
-  passes in one call into <frozen>.simulate.jsonl, <frozen>.simulate_shuf.jsonl and <frozen>.simulate_noacc.jsonl.
+  --shuffle-accounts keeps the item's own Decision line but takes the Policy support and Assumptions lines from the
+  frozen answer on another case under the same policy (rows carry shuf_src "frozen", shuf_partner and
+  shuf_decision_match, whether the partner decided the same way). An item whose case has no such partner in the
+  frozen run is skipped and counted in shuf_missing. --all-sim runs all 3 passes in one call into
+  <frozen>.simulate.jsonl, <frozen>.simulate_shuf.jsonl and <frozen>.simulate_noacc.jsonl.
 
 format_target(record) renders the gold account in the answer format; the SFT script uses it as the target sequence.
 
@@ -37,7 +40,7 @@ Usage:
   python infer.py --data data/x.jsonl --bank data/x.bank.jsonl --backend gemini --vertex \
           --model gemini-3.5-flash-lite --slice unseen_family_train_vocab --view prose --cases 13 --out runs/name.jsonl
   python infer.py --mode predict --data data/x.jsonl --bank data/x.bank.jsonl --frozen runs/name.jsonl \
-          --backend gemini --model gemini-3.8-flash --temperature 0 --out runs/name.predict.jsonl [--no-account]
+          --backend gemini --vertex --model gemini-3.5-flash-lite --out runs/name.predict.jsonl [--no-account]
   python infer.py --mode simulate --data data/x.jsonl --bank data/x.bank.jsonl --frozen runs/name.jsonl \
           --backend gemini --vertex --model gemini-3.5-flash-lite --all-sim
 """
@@ -55,7 +58,7 @@ from pathlib import Path
 
 import engine
 import gen
-from evaluate import HDR, bank_recs, load, norm, parse
+from evaluate import bank_recs, load, parse, sections
 
 SYSTEM = ("You decide cases under a written policy. Apply only the numbered rules of the policy, not outside "
         "knowledge or common practice. Reply in exactly the requested format with no other text.")
@@ -105,6 +108,15 @@ PRIME = ("unseen_family_train_vocab", "prose")
 PRICES = {"gemini-3.5-flash-lite": (0.30, 2.50), "qwen/qwen3.5-9b": (0.17, 0.25)}
 
 
+def root(r, by):
+    """
+    Returns the base case id (without the view suffix) that r descends from, following parents through by.
+    """
+    while r.get("parent") in by:
+        r = by[r["parent"]]
+    return r["id"].rsplit(":", 1)[0]
+
+
 def select_recs(recs, slc=None, view=None, cases=0, seed=0):
     """
     Returns the records of slice slc and view view (None keeps all), and with cases > 0 only those under a seeded
@@ -130,18 +142,9 @@ def select_recs(recs, slc=None, view=None, cases=0, seed=0):
     order = [fs[i] for i in range(max(map(len, doms), default=0)) for fs in doms if i < len(fs)]
     keep = []
     while len(keep) < cases and any(order):
-        keep += [f.pop() for f in order if f][:cases - len(keep)]
+        keep += [f.pop() for f in [f for f in order if f][:cases - len(keep)]]
     keep = set(keep)
-
-    def root(r):
-        """
-        Returns the base case id (without the view suffix) that r descends from.
-        """
-        while r.get("parent") in by:
-            r = by[r["parent"]]
-        return r["id"].rsplit(":", 1)[0]
-
-    return [r for r in sel if root(r) in keep]
+    return [r for r in sel if root(r, by) in keep]
 
 
 def show(dom, n, v):
@@ -315,13 +318,15 @@ class Runner:
     """
 
     def __init__(self, backend, model, dec, base_url=None, key_env=None, extra=None, conc=8, retries=6, rpm=0,
-            cache="runs/cache.jsonl", rep=0, vertex=None):
+            cache="runs/cache.jsonl", rep=0, vertex=None, ctag=""):
         """
         Sets up the backend client and loads the cache.
         dec holds temperature, top_p, top_k (0 = off), max_tokens, seed and thinking (bool). extra is merged into
         extra_body for "openai" (a null value drops a default key) and passed to vllm.LLM() for "vllm". rep is the
         repeat index: it shifts every seed by 1000 * rep and is part of the cache key. vertex is a Vertex AI location
         for "gemini" (None uses GEMINI_API_KEY) and tags the backend in the cache key as gemini/vertex:<location>.
+        ctag is a free cache tag, required for a local checkpoint (e.g. the training run and epoch), since its model
+        path can point at new weights.
         """
         envf = Path("~/.config/cs224v/.env").expanduser()
         for ln in envf.read_text().splitlines() if envf.exists() else []:
@@ -329,7 +334,8 @@ class Runner:
             if m:
                 os.environ.setdefault(m[1], m[2])
         self.backend, self.model, self.dec, self.extra, self.rep = backend, model, dec, extra or {}, rep
-        self.conc, self.retries, self.rpm, self.base_url, self.vertex = conc, retries, rpm, base_url, vertex
+        self.conc, self.retries, self.rpm, self.base_url, self.vertex, self.ctag = conc, retries, rpm, base_url, \
+            vertex, ctag
         self.tag = f"{backend}/vertex:{vertex}" if vertex else backend
         self.cpath = Path(cache)
         self.cache = {}
@@ -362,9 +368,11 @@ class Runner:
     def key(self, sys_, prm, d):
         """
         Returns the cache key: a sha256 over backend (tagged with the Vertex location), base_url, model, extra options,
-        both prompt parts, the decoding (temperature, top_p, top_k, max_tokens, seed, thinking) and rep.
+        both prompt parts, the decoding (temperature, top_p, top_k, max_tokens, seed, thinking), rep and a non-empty
+        cache tag (an empty one keeps the keys of earlier runs).
         """
-        blob = json.dumps([self.tag, self.base_url, self.model, self.extra, sys_, prm, d, self.rep], sort_keys=True)
+        blob = json.dumps([self.tag, self.base_url, self.model, self.extra, sys_, prm, d, self.rep] +
+                ([self.ctag] if self.ctag else []), sort_keys=True)
         return hashlib.sha256(blob.encode()).hexdigest()
 
     async def call(self, sys_, prm, d):
@@ -495,28 +503,18 @@ class Runner:
 
 def shuffle_partners(fz, cases, byid, seed=0):
     """
-    Returns {id: (account, src, partner id)} for every frozen id in byid: the account of another case under the same
-    policy_id, never a view, variant or edit of the same base case. The partner comes from the frozen answers on
-    cases (byid plus the bank's edited records), src "frozen", and when none qualifies from the gold account
-    (format_target) of a base record in byid under the same policy and view, src "gold". Ids with neither are left
-    out. Draws are deterministic under seed.
+    Returns {id: (partner id, same decision)} for every frozen id in byid: a frozen answer on another case of cases
+    (byid plus the bank's edited records) under the same policy_id, never a view, variant or edit of the same base
+    case, and whether its parsed decision equals the id's own. Ids with no such partner are left out. Draws are
+    deterministic under seed.
     """
-    rng, root = random.Random(seed), lambda r: (r.get("parent") or r["id"]).rsplit(":", 1)[0]
-    pf, pg, out = defaultdict(list), defaultdict(list), {}
-    for j in sorted(fz):
-        if j in cases:
-            pf[cases[j]["policy_id"]].append(j)
-    for r in byid.values():
-        if r["variant"] == "base":
-            pg[r["policy_id"], r.get("view")].append(r)
+    rng, pf, out = random.Random(seed), defaultdict(list), {}
+    for j in sorted(j for j in fz if j in cases):
+        pf[cases[j]["policy_id"]].append(j)
     for i in sorted(i for i in fz if i in byid):
-        c = byid[i]
-        if o := [j for j in pf[c["policy_id"]] if root(cases[j]) != root(c)]:
+        if o := [j for j in pf[byid[i]["policy_id"]] if root(cases[j], cases) != root(byid[i], cases)]:
             j = rng.choice(o)
-            out[i] = (fz[j], "frozen", j)
-        elif o := [r for r in pg[c["policy_id"], c.get("view")] if root(r) != root(c)]:
-            r = rng.choice(o)
-            out[i] = (format_target(r), "gold", r["id"])
+            out[i] = (j, parse(fz[j])["dec"] == parse(fz[i])["dec"])
     return out
 
 
@@ -535,7 +533,8 @@ def main():
     ap.add_argument("--frozen", help="predict, simulate: the answer run whose sample-0 outputs are frozen")
     ap.add_argument("--no-account", action="store_true", help="predict, simulate: show only the frozen decision")
     ap.add_argument("--shuffle-accounts", action="store_true",
-            help="simulate: give each item the frozen account of another case under the same policy")
+            help="simulate: keep each item's decision, take the rest of the account from another case's frozen answer "
+            "under the same policy")
     ap.add_argument("--all-sim", action="store_true", help="simulate: run the account, --shuffle-accounts and "
             "--no-account passes in one call, writing <frozen>.simulate{,_shuf,_noacc}.jsonl")
     ap.add_argument("--wide-bank", action="store_true", help="bank: every slice and view, not only the primary one")
@@ -561,6 +560,8 @@ def main():
     ap.add_argument("--retries", type=int, default=6)
     ap.add_argument("--rpm", type=float, default=0, help="requests per minute cap, 0 = none")
     ap.add_argument("--cache", default="runs/cache.jsonl")
+    ap.add_argument("--cache-tag", default="", help="extra cache-key tag, required for a local checkpoint (e.g. "
+            "sft-acct-s0-e2), whose model path can point at new weights")
     ap.add_argument("--limit", type=int, default=0, help="first N items only")
     a = ap.parse_args()
     if a.vertex and a.backend != "gemini":
@@ -599,34 +600,36 @@ def main():
             items = [(r["id"], r, None, None) for r in sel] + [(i, r, None, None) for i, r in br.items()
                     if r["parent"] in keep]
         else:
-            fz, src = {r["id"]: r["output"] for r in load(a.frozen) if r["sample"] == 0}, {}
-            if sh:
-                sp = shuffle_partners(fz, byid | br, byid, a.sample_seed)
-                fz, src = {i: t for i, (t, _, _) in sp.items()}, {i: s for i, (_, s, _) in sp.items()}
-                mode += "_shuf"
-            if a.mode == "simulate":
-                # Keeps only the decision, policy support and assumptions lines: no case text, no smallest change.
+            fz = {r["id"]: r["output"] for r in load(a.frozen) if r["sample"] == 0}
+            elig = [b for b in bank if b["case_id"] in fz and b["case_id"] in keep and
+                    (b["edited_id"] in keep or b["edited_id"] in br)]
+            sp = shuffle_partners(fz, byid | br, byid, a.sample_seed) if sh else {i: (i, True) for i in fz}
+            miss = sum(b["case_id"] not in sp for b in elig)
+            if sh or a.mode == "simulate":
+                # Rebuilds each account in the answer FORMAT from parsed sections, the Decision line from the item's
+                # own answer and the rest from its partner (itself without --shuffle-accounts). simulate drops the
+                # smallest change: the simulator sees no case text and no smallest change.
+                hs = {"decision": "Decision", "policy support": "Policy support", "assumptions": "Assumptions"} | (
+                        {} if a.mode == "simulate" else {"smallest change": CHANGE})
                 acct = {}
-                for i, o in fz.items():
-                    cur, out = None, []
-                    for ln in (o or "").splitlines():
-                        m = HDR.match(ln.replace("**", ""))
-                        cur = norm(m[1]) if m else cur
-                        if cur and not cur.startswith("smallest") and ln.strip():
-                            out.append(ln.strip())
-                    acct[i] = "\n".join(out) or "(no readable answer)"
+                for i, (j, _) in sp.items():
+                    sec = {k: v for k, v in sections(fz[j]).items() if k != "decision"} | {k: v for k, v in
+                            sections(fz[i]).items() if k == "decision"}
+                    acct[i] = "\n".join(f"{h}: {sec[k][0]}".strip() + "".join("\n" + x.strip() for x in sec[k][1:])
+                            for k, h in hs.items() if k in sec) or "(no readable answer)"
                 fz = acct
-            items = [(b["bank_id"], byid[b["case_id"]], b,
-                    f"Decision: {parse(fz[b['case_id']])['dec'] or 'unreadable'}" if na else fz[b["case_id"]])
-                    for b in bank if b["case_id"] in fz and b["case_id"] in keep and (b["edited_id"] in keep or b["edited_id"] in br)]
+            mode += "_shuf" if sh else ""
+            items = [(b["bank_id"], byid[b["case_id"]], b, f"Decision: {parse(fz[b['case_id']])['dec'] or 'unreadable'}"
+                    if na else fz[b["case_id"]]) for b in elig if b["case_id"] in sp]
             mode += "_noacc" if na else ""
         items = items[:a.limit] if a.limit else items
         t0 = time.monotonic()
         rows = Runner(a.backend, a.model, dec, a.base_url, a.key_env, a.extra, a.conc, a.retries, a.rpm, a.cache,
-                a.rep, a.vertex).run(items, a.n, mode)
-        if "_shuf" in mode:
+                a.rep, a.vertex, a.cache_tag).run(items, a.n, mode)
+        if sh:
             cid = {b["bank_id"]: b["case_id"] for b in bank}
-            rows = [r | {"shuf_src": src[cid[r["id"]]]} for r in rows]
+            rows = [r | {"shuf_src": "frozen", "shuf_partner": sp[cid[r["id"]]][0], "shuf_decision_match":
+                    sp[cid[r["id"]]][1]} for r in rows]
         out = Path(op)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text("".join(json.dumps(r) + "\n" for r in rows))
@@ -638,7 +641,8 @@ def main():
         cost = [round((tok["in_tokens"][i] * pr[0] + (tok["out_tokens"][i] + tok["think_tokens"][i]) * pr[1]) /
                 1e6, 4) for i in (0, 1)] if pr else None
         meta = {"model": a.model, "backend": a.backend, "vertex": a.vertex, "mode": mode, "no_account": na,
-                "shuffle_accounts": sh, "cases": a.cases, "sample_seed": a.sample_seed, "decoding": dec,
+                "shuffle_accounts": sh, "shuf_missing": miss if a.mode != "answer" and sh else None,
+                "cases": a.cases, "cache_tag": a.cache_tag, "sample_seed": a.sample_seed, "decoding": dec,
                 "n": a.n, "rows": len(rows), "cached": sum(r["cached"] for r in rows), "errors": len(errs),
                 "fresh_calls": len(fresh), "wall_s": round(time.monotonic() - t0, 2),
                 "in_tokens": tok["in_tokens"][1], "out_tokens": tok["out_tokens"][1],
