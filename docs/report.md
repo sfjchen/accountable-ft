@@ -25,13 +25,20 @@ Fine-tuning on verified accounts (which facts, which rules, which defaults) impr
 
 - Dataset v1: about 5,000 cases, 3 views, 72 held-out families, 60 permit families, prose written by Gemini and checked by extraction, 100-item blind sample for hand labeling.
 - Harness: generation, answering, edit bank, self-prediction, external simulation, evaluation with clustered CIs. 44 tests. Repo `sfjchen/accountable-ft`.
-- 2 prompting pilots on the same 150 held-out cases (logs `v1-lite-eval-145ad3c-20261105-1758`, `qwen9b-lite-eval-c479313-20261107-0147`):
+- 2 prompting pilots on the same 150 held-out cases (logs `v1-lite-eval-145ad3c-20261105-1758`, `qwen9b-lite-eval-c479313-20261107-0147`; simulator rows rerun at 52322ce, logs `v1-lite-simulate-52322ce-20261107-0252`, `v1-lite-eval-52322ce-20261107-0253`, `qwen9b-lite-simulate-52322ce-20261107-0253`, `qwen9b-lite-eval-52322ce-20261107-0254`, n=176 shared bank items):
 
-|                  | Gemini 3.5 Flash-Lite | Qwen3.5-9B base   |
-| ---------------- | --------------------- | ----------------- |
-| accuracy         | 0.77                  | 0.60              |
-| account validity | 0.22                  | 0.07              |
-| dSim             | 0.03 [-0.11, 0.17]    | 0.08 [0.01, 0.16] |
+|                       | Gemini 3.5 Flash-Lite      | Qwen3.5-9B base           |
+| --------------------- | -------------------------- | ------------------------- |
+| accuracy              | 0.77                       | 0.60                      |
+| account validity      | 0.22                       | 0.07                      |
+| sim_acct              | 0.68 [0.60, 0.74]          | 0.82 [0.76, 0.89]         |
+| sim_shuf              | 0.64 [0.55, 0.72]          | 0.73 [0.66, 0.81]         |
+| sim_const_unchanged   | 0.69 [0.60, 0.78]          | 0.85 [0.78, 0.92]         |
+| sim_oracle            | 0.62 [0.56, 0.69]          | 0.52 [0.46, 0.58]         |
+| dSim                  | 0.04 [-0.06, 0.13]         | 0.09 [0.04, 0.15]         |
+| dSim [changed]        | 0.15 [0.00, 0.26] n=55     | 0.19 [0.03, 0.40] n=26    |
+| dSim [unchanged]      | -0.01 [-0.13, 0.13] n=121  | 0.07 [0.02, 0.13] n=150   |
+| gross (acct - noacc)  | 0.24 [0.14, 0.34]          | 0.41 [0.33, 0.50]         |
 
 Both models never say "cannot determine" and both give mostly invalid accounts, so accounts are where the headroom is. That is the shape the comparison needs.
 
