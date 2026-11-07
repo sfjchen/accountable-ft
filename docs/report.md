@@ -27,11 +27,11 @@ Fine-tuning on verified accounts (which facts, which rules, which defaults) impr
 - Harness: generation, answering, edit bank, self-prediction, external simulation, evaluation with clustered CIs. 44 tests. Repo `sfjchen/accountable-ft`.
 - 2 prompting pilots on the same 150 held-out cases (logs `v1-lite-eval-145ad3c-20261105-1758`, `qwen9b-lite-eval-c479313-20261107-0147`):
 
-| | Gemini 3.5 Flash-Lite | Qwen3.5-9B base |
-|---|---|---|
-| accuracy | 0.77 | 0.60 |
-| account validity | 0.22 | 0.07 |
-| dSim | 0.03 [-0.11, 0.17] | 0.08 [0.01, 0.16] |
+|                  | Gemini 3.5 Flash-Lite | Qwen3.5-9B base   |
+| ---------------- | --------------------- | ----------------- |
+| accuracy         | 0.77                  | 0.60              |
+| account validity | 0.22                  | 0.07              |
+| dSim             | 0.03 [-0.11, 0.17]    | 0.08 [0.01, 0.16] |
 
 Both models never say "cannot determine" and both give mostly invalid accounts, so accounts are where the headroom is. That is the shape the comparison needs.
 
