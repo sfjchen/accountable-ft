@@ -31,9 +31,9 @@ echo "== venv and pinned stack (train.PINS)"
 # shellcheck disable=SC1091
 source "$VENV/bin/activate"
 CU=https://download.pytorch.org/whl/cu126
-uv pip install "torch==2.14.0+cu126" --index-url "$CU"
+uv pip install "torch==2.14.0+cu126" "torchvision==0.29.0+cu126" --index-url "$CU"  # both from cu126, a PyPI torchvision breaks unsloth
 # the constraint keeps torch on the cu126 build, the extra index gives matching torchvision and friends
-echo "torch==2.14.0+cu126" > "$VENV/torch-pin.txt"
+printf "torch==2.14.0+cu126\ntorchvision==0.29.0+cu126\n" > "$VENV/torch-pin.txt"
 uv pip install -c "$VENV/torch-pin.txt" --extra-index-url "$CU" --index-strategy unsafe-best-match \
     unsloth==2026.11.3 trl==1.15.0 transformers==5.17.0 peft==0.21.2 vllm==0.33.0 huggingface_hub \
     -r requirements.txt
