@@ -154,6 +154,49 @@ def test_min_flip_is_minimal():
     assert mf == {"kind": "replace", "edits": None, "exhausted_radius": 4, "target": "deny"}
 
 
+def test_min_flip_skips_edits_without_completion():
+    """
+    Checks that min_flip skips a candidate edit whose partial record has no admissible completion (end 5 with
+    start unstated) instead of raising InvalidRecord, as on permit-p000-c01 with start_day removed.
+    """
+    facts = {"start": {"type": "int", "values": [10, 20]}, "end": {"type": "int", "values": [5, 15, 25]}}
+    pol = E.Policy("p", facts, [{"id": "R1", "kind": "require", "cond": "end >= 25"}], valid=["end > start"])
+    assert E.min_flip(pol, {"end": 15}) == {"kind": "replace", "edits": {"end": 25}, "radius": 1,
+                                            "certified_minimum": True, "target": "approve"}
+
+
+def test_min_flip_exclude_and_prefer_disjoint():
+    """
+    Checks that exclude bars fact names or (fact, value) edits and prefer_disjoint takes a disjoint flip at a
+    larger radius, else the smallest overlapping one.
+    """
+    pol = E.Policy("p", {"a": V5, "b": V5, "c": BOOL},
+                   [{"id": "R1", "kind": "require", "cond": "a <= 2"},
+                    {"id": "R2", "kind": "require", "cond": "b >= 6"}])
+    f = {"a": 2, "b": 6, "c": True}
+    assert E.min_flip(pol, f)["edits"] == {"a": 4}
+    assert E.min_flip(pol, f, exclude={"a"})["edits"] == {"b": 4}
+    assert E.min_flip(pol, f, exclude={"a": 4})["edits"] == {"b": 4}
+    mf = E.min_flip(pol, f, prefer_disjoint={"a": 4})
+    assert mf["edits"] == {"b": 4} and mf["disjoint"] is True
+    one = E.Policy("p", {"a": V5}, [{"id": "R1", "kind": "require", "cond": "a <= 2"}])
+    mf = E.min_flip(one, {"a": 2}, prefer_disjoint={"a": 4})
+    assert mf["edits"] == {"a": 4} and mf["disjoint"] is False and mf["radius"] == 1
+    alt = E.Policy("p", {"a": V5, "b": V5, "c": BOOL},
+                   [{"id": "R1", "kind": "require", "cond": "a <= 2 or b >= 6 and c"}])
+    mf = E.min_flip(alt, {"a": 6, "b": 2, "c": False}, prefer_disjoint={"a": 2})
+    assert mf["edits"] == {"b": 6, "c": True} and mf["radius"] == 2 and mf["disjoint"] is True
+
+
+def test_coerce_bool_text():
+    """
+    Checks that only yes/no words coerce to bools and other text stays raw, so it never matches False.
+    """
+    pol = E.Policy("p", {"c": BOOL}, [{"id": "R1", "kind": "require", "cond": "c"}])
+    assert [E.coerce(pol, "c", t) for t in ("Yes", "'no'", "true", "0")] == [True, False, True, False]
+    assert E.coerce(pol, "c", "unknown") == "unknown" and E.coerce(pol, "c", "") == ""
+
+
 def test_random_policies_match_brute_force():
     """
     Checks possible(), sufficient_sets() and min_flip radius against brute force on 60 random policies.

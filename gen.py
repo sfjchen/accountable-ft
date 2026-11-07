@@ -59,11 +59,12 @@ DOM_CACHE, GEM, GEM_LOCK = {}, {"usage": collections.Counter(), "seam": collecti
 
 def load_domain(name):
     """
-    Returns the parsed domain YAML for `name`, with compiled derived-fact functions under "_dfn", cached.
+    Returns the parsed domain YAML for `name`, cached, with a rule-free Policy over its facts and derived
+    facts under "_pol" (for derived_values).
     """
     if name not in DOM_CACHE:
         dom = yaml.safe_load((ROOT / "domains" / f"{name}.yaml").read_text())
-        dom["_dfn"] = {n: E.compile_cond(d["expr"], set(dom["facts"])) for n, d in dom["derived_facts"].items()}
+        dom["_pol"] = E.Policy(name, dom["facts"], [], (), {n: d["expr"] for n, d in dom["derived_facts"].items()})
         DOM_CACHE[name] = dom
     return DOM_CACHE[name]
 
@@ -284,6 +285,17 @@ def sample_case(pol, rng, want):
     raise RuntimeError(f"could not sample a {want} case for {pol.id}")
 
 
+def case_facts(policy, facts):
+    """
+    Returns (domain name, domain, stated source facts, derived values) for a Policy, record dict or domain
+    name and a fact dict.
+    """
+    dname = policy["domain"] if isinstance(policy, dict) else getattr(policy, "domain", policy)
+    dom = load_domain(dname)
+    stated = {n: v for n, v in facts.items() if n in dom["facts"] and v is not None}
+    return dname, dom, stated, dom["_pol"].derived_values(stated)
+
+
 def case_sentences(policy, facts, seed, view="prose", base=None):
     """
     Returns the case as [{"fact", "value", "sentence"}] (fact None for header and color sentences) for
@@ -292,8 +304,7 @@ def case_sentences(policy, facts, seed, view="prose", base=None):
     order and wording, swaps in the template sentence for each fact whose value differs from the base,
     and drops sentences of facts that are unstated here (derived ones too in prose_derive).
     """
-    dname = policy["domain"] if isinstance(policy, dict) else getattr(policy, "domain", policy)
-    dom = load_domain(dname)
+    _, dom, stated, dv = case_facts(policy, facts)
     rng = random.Random(str(seed).split(":")[0])
     head = rng.choice(dom["intro"]).format(name=rng.choice(dom["names"]), num=rng.randint(1000, 9999))
     picks = {n: rng.random() for n in dom["facts"]}
@@ -301,11 +312,6 @@ def case_sentences(policy, facts, seed, view="prose", base=None):
     ncol = rng.randint(2, 4)
     keys = list(dom["facts"]) + list(dom["derived_facts"]) + list(range(ncol))
     rng.shuffle(keys)
-    stated = {n: v for n, v in facts.items() if n in dom["facts"] and v is not None}
-    dv = {}
-    for n, (fn, refs) in dom["_dfn"].items():
-        if all(x in stated for x in refs):
-            dv[n] = fn(stated)
     out = [{"fact": None, "value": None, "sentence": head}]
     for k in keys:
         if isinstance(k, int):
@@ -339,14 +345,11 @@ def render_case(policy, facts, seed, prose="template", view="prose", base=None):
     Returns the case text for `facts` in `view`; prose views join case_sentences (pass the base record's
     "case_sentences" as `base` to stay aligned with a Gemini rewrite, required for prose="gemini").
     """
-    dname = policy["domain"] if isinstance(policy, dict) else getattr(policy, "domain", policy)
-    dom = load_domain(dname)
+    dname, dom, stated, dv = case_facts(policy, facts)
     if prose == "gemini" and base is None and view != "table":
         raise ValueError("prose='gemini' needs the base record's case_sentences as base")
     if view != "table":
         return " ".join(x["sentence"] for x in case_sentences(dname, facts, seed, view, base))
-    stated = {n: v for n, v in facts.items() if n in dom["facts"] and v is not None}
-    dv = {n: fn(stated) for n, (fn, refs) in dom["_dfn"].items() if all(x in stated for x in refs)}
     rows = [case_sentences(dname, {}, seed)[0]["sentence"], ""]
     for n, s in list(dom["facts"].items()) + list(dom["derived_facts"].items()):
         v = stated.get(n, dv.get(n))
@@ -514,7 +517,8 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out", default="data/out.jsonl")
     ap.add_argument("--prose", choices=["template", "gemini"], default="template")
-    ap.add_argument("--limit", type=int, default=0, help="keep only the first N records (0 keeps all)")
+    ap.add_argument("--limit", type=int, default=0,
+                    help="keep only the first N base families, each with its variants and views (0 keeps all)")
     ap.add_argument("--vertex", nargs="?", const="global", default=None, metavar="LOCATION",
                     help="use Vertex AI (GCP_PROJECT, ADC) in LOCATION (default global) instead of the API key")
     ap.add_argument("--gemini-model", default=None, help="pin the Gemini model (default: cheapest flash found)")
@@ -638,15 +642,23 @@ def main():
                                      "removed_fact": removed, "removed_effect": eff, "gold": gi})
                 tcase.append(time.time() - tc)
             pol.cache.clear()
+
+    def base_of(r):
+        """
+        Returns the base item id (view suffix stripped) of the family a record belongs to.
+        """
+        return (r["parent"] or r["id"]).split(":")[0]
+
     if a.limit:
-        recs = recs[:a.limit]
+        keep = set(list(dict.fromkeys(map(base_of, recs)))[:a.limit])
+        recs = [r for r in recs if base_of(r) in keep]
     dropped, limited = 0, threading.Event()
     if a.prose == "gemini":
         from google.genai import errors
 
         fams = collections.defaultdict(list)
         for r in recs:
-            fams[r["id"].split(":")[0] if r["variant"] == "base" else r["parent"].split(":")[0]].append(r)
+            fams[base_of(r)].append(r)
 
         def rewrite(bid, rs):
             """
@@ -783,13 +795,16 @@ def main():
                     print(f"gemini: {i + 1}/{len(futs)} base families, dropped {dropped}, usage",
                           dict(GEM["usage"]), flush=True)
         recs = kept
+    # Drops each item whose text repeats an earlier one in any view, with the items built from it, in every
+    # view by item id, so the views stay aligned.
     seen, dup = set(), set()
     for r in recs:
         if (r["view"], r["case_text"]) in seen:
             dup.add(r["id"].split(":")[0])
         seen.add((r["view"], r["case_text"]))
-    recs = [r for r in recs if not {r["id"], r["parent"] or "", r["edited_from"] or ""} & {d + ":" + r["view"]
-                                                                                             for d in dup}]
+    drop = dup | {r["id"].split(":")[0] for r in recs if
+                  any((x or "").split(":")[0] in dup for x in (r["parent"], r["edited_from"]))}
+    recs = [r for r in recs if r["id"].split(":")[0] not in drop]
     out = Path(a.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w") as fh:

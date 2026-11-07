@@ -41,6 +41,8 @@ class Timeout(RuntimeError):
     """
     Signals that a search ran past its per-case budget; callers report the result as uncertified.
     """
+
+
 OPS = (ast.Expression, ast.BoolOp, ast.And, ast.Or, ast.UnaryOp, ast.Not, ast.USub, ast.BinOp, ast.Add,
        ast.Sub, ast.Mult, ast.FloorDiv, ast.Compare, ast.Lt, ast.LtE, ast.Gt, ast.GtE, ast.Eq, ast.NotEq,
        ast.In, ast.NotIn, ast.Name, ast.Constant, ast.Tuple, ast.List, ast.Load)
@@ -241,6 +243,13 @@ def tick(pol):
         raise Timeout(f"search budget exceeded for {pol.id}")
 
 
+def fkey(known):
+    """
+    Returns a hashable cache key for a fact dict, order-independent and safe for unhashable values.
+    """
+    return tuple(sorted((n, repr(v)) for n, v in known.items()))
+
+
 def solve(pol, keys, known):
     """
     Returns values for omitted facts that, with `known`, satisfy every constraint in `keys` (ids into
@@ -249,7 +258,7 @@ def solve(pol, keys, known):
     are set. Facts outside every constraint are left out of the returned dict.
     """
     keys = list(keys) + [k for k in pol.cons if k[0] == "v"]
-    key = ("s", tuple(sorted(keys)), tuple(sorted((n, repr(v)) for n, v in known.items())))
+    key = ("s", tuple(sorted(keys)), fkey(known))
     if key in pol.cache:
         return pol.cache[key]
     comps, res = [], {}
@@ -307,7 +316,7 @@ def possible(pol, known):
     Returns the set of decisions ("approve", "deny") reached by admissible completions of `known`.
     Raises InvalidRecord when no admissible completion exists.
     """
-    key = ("p", tuple(sorted((n, repr(v)) for n, v in known.items())))
+    key = ("p", fkey(known))
     if key not in pol.cache:
         out = set()
         if sat(pol, ["+" + r.id for r in pol.requires], known):
@@ -420,14 +429,18 @@ def flip_target(decision):
 
 
 @budgeted
-def min_flip(pol, facts, target=None, radius=MAX_RADIUS):
+def min_flip(pol, facts, target=None, radius=MAX_RADIUS, exclude=(), prefer_disjoint=None):
     """
     Returns the smallest "replace" edit of stated source facts that makes the decision `target`
     (default flip_target of the current decision), searching by increasing number of edited facts up to
     `radius` and preferring the smallest total move in bucket steps, then schema order. Edits must stay
-    admissible; for deny, the edited facts must touch every failed rule. Found: {"kind": "replace",
-    "edits", "radius", "certified_minimum": True, "target"}. Certified absence within the radius:
-    {"kind", "edits": None, "exhausted_radius", "target"}. Over budget: {"kind", "edits": None,
+    admissible; for deny, the edited facts must touch every failed rule. Candidate edits whose partial
+    record has no admissible completion are skipped. exclude: fact names never edited, or a
+    {fact: value} dict of edits never made. prefer_disjoint: an edit (or fact names); a flip sharing no
+    fact with it wins at any radius, else the smallest overlapping flip is returned, and the result
+    gains "disjoint": bool. Found: {"kind": "replace", "edits", "radius", "certified_minimum": True,
+    "target"} (minimal among disjoint flips when "disjoint" is True). Certified absence within the
+    radius: {"kind", "edits": None, "exhausted_radius", "target"}. Over budget: {"kind", "edits": None,
     "searched_radius", "uncertified": True, "reason", "target"}. "cannot determine": edits and target None.
     """
     d = decide(pol, facts)
@@ -437,34 +450,50 @@ def min_flip(pol, facts, target=None, radius=MAX_RADIUS):
     if tgt == d["decision"] or tgt not in ("approve", "deny"):
         raise ValueError(f"target {tgt!r} is not a flip from {d['decision']!r}")
     known, _ = known_facts(pol, facts)
-    want = tgt == "approve"
-    cand = [n for n in pol.referenced() if n in facts and facts[n] is not None]
+    want, pd = tgt == "approve", set(prefer_disjoint or ())
+    pairs = exclude if isinstance(exclude, dict) else {}
+    cand = [n for n in pol.referenced() if n in facts and facts[n] is not None and (pairs or n not in exclude)]
     full = all(n in known for n in pol.referenced())
     failed = [r for r in pol.requires if d["rule_trace"][r.id] == "fail"] if want else []
-    k = 0
+
+    def found(k, ed):
+        """
+        Returns the found-edit result for edits `ed` at radius k.
+        """
+        return {"kind": "replace", "edits": ed, "radius": k, "certified_minimum": True, "target": tgt} | \
+            ({"disjoint": not pd & set(ed)} if prefer_disjoint is not None else {})
+
+    k, late = 0, None
     try:
         for k in range(1, radius + 1):
-            best = None
+            best = {}
             for combo in itertools.combinations(cand, k):
                 tick(pol)
                 if any(not set(combo) & set(r.all_refs) for r in failed):
                     continue
-                alts = [[v for v in pol.dom[n] if v != known[n]] for n in combo]
+                alts = [[v for v in pol.dom[n] if v != known[n] and pairs.get(n) != v] for n in combo]
                 for vals in itertools.product(*alts):
                     f = {**known, **dict(zip(combo, vals))}
                     if not pol.ok(f):
                         continue
-                    hit = all(r.holds(f) for r in pol.requires) == want if full else possible(pol, f) == {tgt}
+                    try:
+                        hit = all(r.holds(f) for r in pol.requires) == want if full else possible(pol, f) == {tgt}
+                    except InvalidRecord:
+                        continue
                     if hit:
-                        c = (sum(abs(pol.dom[n].index(v) - pol.dom[n].index(known[n])) for n, v in zip(combo, vals)),
-                             [pol.order.index(n) for n in combo])
-                        if best is None or c < best[0]:
-                            best = (c, dict(zip(combo, vals)))
-            if best:
-                return {"kind": "replace", "edits": best[1], "radius": k, "certified_minimum": True, "target": tgt}
+                        c, o = (sum(abs(pol.dom[n].index(v) - pol.dom[n].index(known[n])) for n, v in
+                                    zip(combo, vals)), [pol.order.index(n) for n in combo]), bool(pd & set(combo))
+                        if o not in best or c < best[o][0]:
+                            best[o] = (c, dict(zip(combo, vals)))
+            if False in best:
+                return found(k, best[False][1])
+            if True in best and late is None:
+                late = (k, best[True][1])
     except Timeout as e:
         return {"kind": "replace", "edits": None, "searched_radius": k - 1, "uncertified": True,
                 "reason": f"{e} at radius {k}", "target": tgt}
+    if late:
+        return found(*late)
     return {"kind": "replace", "edits": None, "exhausted_radius": radius, "target": tgt}
 
 
@@ -531,14 +560,15 @@ def invariant_edit(pol, facts, rng, sets=None):
 
 def coerce(pol, n, v):
     """
-    Returns v converted to the type of fact n (ints, bools and enums from strings), or v unchanged.
+    Returns v converted to the type of fact n (ints, bools and enums from strings), or v unchanged when the
+    text is no value of that type (a bool only from true/false, yes/no or 1/0).
     """
     s = pol.facts.get(n)
     if s is None or not isinstance(v, str):
         return v
     t = v.strip().strip("'\"").lower()
     if s["type"] == "bool":
-        return t in ("true", "yes", "1")
+        return True if t in ("true", "yes", "1") else False if t in ("false", "no", "0") else v
     if s["type"] == "int":
         try:
             return int(t.replace(",", "").replace("$", ""))
