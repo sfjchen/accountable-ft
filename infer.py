@@ -26,7 +26,8 @@ Modes:
 - simulate: external simulatability. A fixed external predictor (gemini-3.5-flash-lite, thinking off, --vertex)
   sees the policy, the frozen account (decision, policy support, assumptions; no case text, no smallest change)
   and the edit, and predicts the model's decision after the edit. --no-account gives it only the decision, and
-  --shuffle-accounts gives each item the account of another case under the same policy. --all-sim runs all 3
+  --shuffle-accounts gives each item the account of another case under the same policy (a frozen answer, else
+  that case's gold account; rows carry shuf_src "frozen" or "gold"). --all-sim runs all 3
   passes in one call into <frozen>.simulate.jsonl, <frozen>.simulate_shuf.jsonl and <frozen>.simulate_noacc.jsonl.
 
 format_target(record) renders the gold account in the answer format; the SFT script uses it as the target sequence.
@@ -100,7 +101,8 @@ PROPS = {"pivotal_replace": 0.40, "invariant": 0.30, "remove": 0.15, "add": 0.15
 GROUPS = {"pivotal_replace": ("pivotal_replace",), "invariant": ("noncrossing_replace", "invariant_replace"),
         "remove": ("remove",), "add": ("add",)}
 PRIME = ("unseen_family_train_vocab", "prose")
-PRICES = {"gemini-3.5-flash-lite": (0.30, 2.50)}  # USD per 1M input / output tokens (output includes thinking)
+# USD per 1M input / output tokens (output includes thinking); qwen is the OpenRouter PrimeIntellect list price
+PRICES = {"gemini-3.5-flash-lite": (0.30, 2.50), "qwen/qwen3.5-9b": (0.17, 0.25)}
 
 
 def select_recs(recs, slc=None, view=None, cases=0, seed=0):
@@ -491,6 +493,33 @@ class Runner:
         return rows
 
 
+def shuffle_partners(fz, cases, byid, seed=0):
+    """
+    Returns {id: (account, src, partner id)} for every frozen id in byid: the account of another case under the same
+    policy_id, never a view, variant or edit of the same base case. The partner comes from the frozen answers on
+    cases (byid plus the bank's edited records), src "frozen", and when none qualifies from the gold account
+    (format_target) of a base record in byid under the same policy and view, src "gold". Ids with neither are left
+    out. Draws are deterministic under seed.
+    """
+    rng, root = random.Random(seed), lambda r: (r.get("parent") or r["id"]).rsplit(":", 1)[0]
+    pf, pg, out = defaultdict(list), defaultdict(list), {}
+    for j in sorted(fz):
+        if j in cases:
+            pf[cases[j]["policy_id"]].append(j)
+    for r in byid.values():
+        if r["variant"] == "base":
+            pg[r["policy_id"], r.get("view")].append(r)
+    for i in sorted(i for i in fz if i in byid):
+        c = byid[i]
+        if o := [j for j in pf[c["policy_id"]] if root(cases[j]) != root(c)]:
+            j = rng.choice(o)
+            out[i] = (fz[j], "frozen", j)
+        elif o := [r for r in pg[c["policy_id"], c.get("view")] if root(r) != root(c)]:
+            r = rng.choice(o)
+            out[i] = (format_target(r), "gold", r["id"])
+    return out
+
+
 def main():
     """
     Parses the CLI and runs the chosen mode: writes the bank and its meta, or runs answer, predict or simulate calls
@@ -570,7 +599,11 @@ def main():
             items = [(r["id"], r, None, None) for r in sel] + [(i, r, None, None) for i, r in br.items()
                     if r["parent"] in keep]
         else:
-            fz = {r["id"]: r["output"] for r in load(a.frozen) if r["sample"] == 0}
+            fz, src = {r["id"]: r["output"] for r in load(a.frozen) if r["sample"] == 0}, {}
+            if sh:
+                sp = shuffle_partners(fz, byid | br, byid, a.sample_seed)
+                fz, src = {i: t for i, (t, _, _) in sp.items()}, {i: s for i, (_, s, _) in sp.items()}
+                mode += "_shuf"
             if a.mode == "simulate":
                 # Keeps only the decision, policy support and assumptions lines: no case text, no smallest change.
                 acct = {}
@@ -583,14 +616,6 @@ def main():
                             out.append(ln.strip())
                     acct[i] = "\n".join(out) or "(no readable answer)"
                 fz = acct
-            if sh:
-                rng, pool = random.Random(a.sample_seed), defaultdict(list)
-                pk = {i: (byid[i]["policy_id"], byid[i].get("view")) for i in sorted(fz) if i in byid}
-                for i, k in pk.items():
-                    pool[k].append(i)
-                root = {i: byid[i].get("parent") or i for i in pk}
-                fz = {i: fz[rng.choice(o)] for i in pk if (o := [j for j in pool[pk[i]] if root[j] != root[i]])}
-                mode += "_shuf"
             items = [(b["bank_id"], byid[b["case_id"]], b,
                     f"Decision: {parse(fz[b['case_id']])['dec'] or 'unreadable'}" if na else fz[b["case_id"]])
                     for b in bank if b["case_id"] in fz and b["case_id"] in keep and (b["edited_id"] in keep or b["edited_id"] in br)]
@@ -599,6 +624,9 @@ def main():
         t0 = time.monotonic()
         rows = Runner(a.backend, a.model, dec, a.base_url, a.key_env, a.extra, a.conc, a.retries, a.rpm, a.cache,
                 a.rep, a.vertex).run(items, a.n, mode)
+        if "_shuf" in mode:
+            cid = {b["bank_id"]: b["case_id"] for b in bank}
+            rows = [r | {"shuf_src": src[cid[r["id"]]]} for r in rows]
         out = Path(op)
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text("".join(json.dumps(r) + "\n" for r in rows))

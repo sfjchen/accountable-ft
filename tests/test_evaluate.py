@@ -18,7 +18,8 @@ import evaluate  # noqa: E402
 from evaluate import aggregate, boot, norm_dec, parse, score, select_ckpt  # noqa: E402
 import engine  # noqa: E402
 import gen  # noqa: E402
-from infer import CHANGE, PROPS, Runner, build_bank, build_prompt, format_target, select_recs  # noqa: E402
+from infer import (CHANGE, PROPS, Runner, build_bank, build_prompt, format_target, select_recs,  # noqa: E402
+        shuffle_partners)
 
 RECS = {r["id"]: r for r in map(json.loads, (ROOT / "tests/fixtures/mini.jsonl").read_text().splitlines())}
 ALL4 = ["decision", "policy support", "assumptions", "smallest change"]
@@ -349,3 +350,30 @@ def test_format_target(monkeypatch):
             ass = {n: evaluate.to_val(pol, n, v) for l, v, _ in p["assume"] if (n := evaluate.to_name(l, lab))}
             j = engine.is_valid_justification(pol, r["facts"], cit, [x for _, _, x in p["relied"] if x], ass)
             assert j["valid"], (r["id"], t, j)
+
+
+@pytest.mark.skipif(not SMOKE.exists(), reason="needs data/smoke.jsonl")
+def test_shuffle_partners(monkeypatch):
+    """
+    Checks on sparse samples of the smoke primary population that every bank item gets a shuffle partner under the
+    same policy whose base case differs from the item's, that a frozen answer is preferred and the gold account
+    (format_target) fills in when none qualifies, and that the draw is deterministic under the seed.
+    """
+    monkeypatch.undo()
+    recs = [json.loads(ln) for ln in SMOKE.read_text().splitlines()]
+    by, base, srcs = {r["id"]: r for r in recs}, lambda r: (r.get("parent") or r["id"]).rsplit(":", 1)[0], set()
+    for n in (4, 10, 0):
+        sel = select_recs(recs, "unseen_family_train_vocab", "prose", n)
+        bk = build_bank(sel)[0]
+        br = evaluate.bank_recs(bk, by)
+        cs = by | br
+        fz = {r["id"]: f"Decision: deny ({r['id']})" for r in sel} | {i: f"Decision: approve ({i})" for i in br}
+        sp = shuffle_partners(fz, cs, by, 1)
+        assert bk and sp == shuffle_partners(fz, cs, by, 1)
+        for b in bk:
+            t, src, j = sp[b["case_id"]]
+            c, p = by[b["case_id"]], cs[j]
+            assert p["policy_id"] == c["policy_id"] and base(p) != base(c), (b["bank_id"], j)
+            assert t == (fz[j] if src == "frozen" else format_target(p)), (b["bank_id"], src)
+            srcs.add(src)
+    assert srcs == {"frozen", "gold"}
