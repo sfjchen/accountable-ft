@@ -32,6 +32,16 @@ Details and reasoning in `PLAN.md`.
 - `python scripts/data_report.py data/v1.jsonl --log data/v1.gen.log` writes `data/v1.stats.md` (counts, class balance, families, spend) and the blind sample `data/v1.blind100.jsonl`, with gold in `data/v1.blind100.answers.jsonl`. We each label the blind file before opening the answers.
 - Each domain has 60 families of 2 policies with 5 base cases per family. Grant, trial and review split their families 30/6/24 into train/dev/unseen, so the unseen slice has 72 families (24 per domain) for clustered stats while train stays near 5.5k records. Permit's 60 families are the transfer slice. The previous dataset is kept as `data/v1.0.jsonl`.
 
+## Training
+
+`scripts/sft_data.py` exports chat rows (harness prompt, gold answer from `infer.format_target`, account span) and `train.py` runs LoRA SFT on Qwen3.5-9B with Unsloth and TRL on a CUDA GPU. Both conditions use the same export, so the only difference is the account loss.
+
+- Export (once, both conditions): `python scripts/sft_data.py --split train --out data/v1.sft.train.jsonl && python scripts/sft_data.py --split dev --out data/v1.sft.dev.jsonl`
+- Account SFT: `python train.py --condition account --data data/v1.sft.train.jsonl --eval-data data/v1.sft.dev.jsonl --seed 0 --out outputs/qwen9b-acct-s0`
+- Decision-only SFT: `python train.py --condition decision --data data/v1.sft.train.jsonl --eval-data data/v1.sft.dev.jsonl --seed 0 --out outputs/qwen9b-dec-s0`
+- In `<out>`: `checkpoint-<step>/` per epoch, `adapter/` (final LoRA adapter and tokenizer), `merged/` (merged 16-bit model for vLLM) and `train_meta.json` (flags, commit and dirty state, library versions, GPU, token counts with the masked-token fraction, training log).
+- `tests/test_train.py` checks the masking with the Qwen2.5-0.5B-Instruct tokenizer: on the smoke train rows the decision condition masks 94.5% of answer tokens (36,480 of 38,586) and the account condition none.
+
 ## Related
 
 VERDICT (2609.03366), CREDIT (2610.35295), Chen et al. 2024 (2307.08678), Chua et al. 2024 (2403.05518), Hase & Potts 2026 (2602.20710), Jia et al. 2026 (2605.24286), Mayne et al. 2025 (2509.09396), Doi et al. 2025 (2512.07288).
