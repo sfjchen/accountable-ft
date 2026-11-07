@@ -1,0 +1,35 @@
+{
+ "data": "data/smoke.jsonl",
+ "slice": "unseen_family_train_vocab",
+ "view": "prose",
+ "seed": 0,
+ "items": 74,
+ "kinds": {
+  "add": 11,
+  "invariant_replace": 11,
+  "noncrossing_replace": 11,
+  "pivotal_replace": 30,
+  "remove": 11
+ },
+ "groups": {
+  "pivotal_replace": 0.40540540540540543,
+  "invariant": 0.2972972972972973,
+  "remove": 0.14864864864864866,
+  "add": 0.14864864864864866
+ },
+ "sources": {
+  "engine_alt_disjoint": 20,
+  "engine_alt_overlap": 10,
+  "engine_noncrossing": 11,
+  "variant_record": 33
+ },
+ "candidates": {
+  "prose/add": 30,
+  "prose/invariant_replace": 30,
+  "prose/noncrossing_replace": 23,
+  "prose/pivotal_replace": 30,
+  "prose/remove": 30
+ },
+ "drop_reasons": {},
+ "drops": []
+}

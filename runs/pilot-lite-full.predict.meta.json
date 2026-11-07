@@ -1,0 +1,25 @@
+{
+ "model": "gemini-3.5-flash-lite",
+ "backend": "gemini",
+ "vertex": "global",
+ "mode": "predict",
+ "no_account": false,
+ "decoding": {
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "top_k": 0,
+  "max_tokens": 4096,
+  "seed": 0,
+  "thinking": false
+ },
+ "n": 1,
+ "rows": 69,
+ "cached": 30,
+ "errors": 0,
+ "fresh_calls": 39,
+ "wall_s": 7.17,
+ "in_tokens": 53560,
+ "out_tokens": 1908,
+ "think_tokens": 0,
+ "mean_latency_s": 1.077
+}

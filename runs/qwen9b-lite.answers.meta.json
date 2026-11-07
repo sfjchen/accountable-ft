@@ -1,0 +1,36 @@
+{
+ "model": "qwen/qwen3.5-9b",
+ "backend": "openai",
+ "vertex": null,
+ "mode": "answer",
+ "no_account": false,
+ "shuffle_accounts": false,
+ "cases": 0,
+ "sample_seed": 0,
+ "decoding": {
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "top_k": 0,
+  "max_tokens": 4096,
+  "seed": 0,
+  "thinking": false
+ },
+ "n": 1,
+ "rows": 411,
+ "cached": 30,
+ "errors": 0,
+ "fresh_calls": 381,
+ "wall_s": 51.11,
+ "in_tokens": 436344,
+ "out_tokens": 43466,
+ "think_tokens": 0,
+ "finish": {
+  "stop": 411
+ },
+ "model_versions": [
+  "qwen/qwen3.5-9b"
+ ],
+ "mean_latency_s": 1.13,
+ "cost_usd_fresh": null,
+ "cost_usd_if_uncached": null
+}

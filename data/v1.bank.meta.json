@@ -1,0 +1,114 @@
+{
+ "data": "data/v1.jsonl",
+ "slice": "unseen_family_train_vocab",
+ "view": "prose",
+ "seed": 0,
+ "items": 782,
+ "kinds": {
+  "add": 117,
+  "invariant_replace": 117,
+  "noncrossing_replace": 118,
+  "pivotal_replace": 313,
+  "remove": 117
+ },
+ "groups": {
+  "pivotal_replace": 0.40025575447570333,
+  "invariant": 0.30051150895140666,
+  "remove": 0.149616368286445,
+  "add": 0.149616368286445
+ },
+ "sources": {
+  "engine_alt_disjoint": 217,
+  "engine_alt_overlap": 96,
+  "engine_noncrossing": 118,
+  "variant_record": 351
+ },
+ "candidates": {
+  "prose/add": 332,
+  "prose/invariant_replace": 332,
+  "prose/noncrossing_replace": 218,
+  "prose/pivotal_replace": 313,
+  "prose/remove": 332
+ },
+ "drop_reasons": {
+  "no certified flip within radius 3 other than gold.min_flip": 19
+ },
+ "drops": [
+  {
+   "case_id": "grant-p026-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "grant-p026-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "grant-p028-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "grant-p100-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p002-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p022-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p030-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p047-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p055-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p104-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "trial-p008-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "trial-p009-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "trial-p029-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "trial-p052-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "trial-p053-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "trial-p073-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "trial-p080-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "trial-p085-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "trial-p095-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  }
+ ]
+}

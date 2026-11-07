@@ -1,0 +1,94 @@
+{"iid": "grant-p000-c00:prose|necessity|end_day", "id": "grant-p000-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "grant-p000-c00:prose|necessity|equipment_amount", "id": "grant-p000-c00:prose", "kind": "necessity", "edits": {"equipment_amount": null}, "target": "deny"}
+{"iid": "grant-p000-c00:prose|necessity|human_subjects", "id": "grant-p000-c00:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "grant-p000-c00:prose|necessity|institution_type", "id": "grant-p000-c00:prose", "kind": "necessity", "edits": {"institution_type": null}, "target": "deny"}
+{"iid": "grant-p000-c00:prose|necessity|letter_of_support", "id": "grant-p000-c00:prose", "kind": "necessity", "edits": {"letter_of_support": null}, "target": "deny"}
+{"iid": "grant-p000-c00:prose|necessity|pi_years_since_phd", "id": "grant-p000-c00:prose", "kind": "necessity", "edits": {"pi_years_since_phd": null}, "target": "deny"}
+{"iid": "grant-p000-c00:prose|necessity|start_day", "id": "grant-p000-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "grant-p000-c00:prose|necessity|travel_amount", "id": "grant-p000-c00:prose", "kind": "necessity", "edits": {"travel_amount": null}, "target": "deny"}
+{"iid": "grant-p000-c01:prose|boundary|travel_amount=5000", "id": "grant-p000-c01:prose", "kind": "boundary", "edits": {"travel_amount": "5000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "grant-p000-c02:prose|boundary|career_break=no;pi_years_since_phd=6", "id": "grant-p000-c02:prose", "kind": "boundary", "edits": {"career_break": "no", "pi_years_since_phd": "6"}, "target": "approve", "gold_target": "approve"}
+{"iid": "grant-p000-c03:prose|boundary|pi_years_since_phd=6", "id": "grant-p000-c03:prose", "kind": "boundary", "edits": {"pi_years_since_phd": "6"}, "target": "approve", "gold_target": "approve"}
+{"iid": "grant-p000-c03:prose|necessity|career_break", "id": "grant-p000-c03:prose", "kind": "necessity", "edits": {"career_break": null}, "target": "approve"}
+{"iid": "grant-p000-c03:prose|necessity|pi_years_since_phd", "id": "grant-p000-c03:prose", "kind": "necessity", "edits": {"pi_years_since_phd": null}, "target": "approve"}
+{"iid": "grant-p000-c04:prose|boundary|institution_type=teaching hospital;travel_amount=5000", "id": "grant-p000-c04:prose", "kind": "boundary", "edits": {"institution_type": "teaching hospital", "travel_amount": "5000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "grant-p001-c00:prose|boundary|ethics_approval=no;pi_years_since_phd=9", "id": "grant-p001-c00:prose", "kind": "boundary", "edits": {"ethics_approval": "no", "pi_years_since_phd": "9"}, "target": "deny", "gold_target": "deny"}
+{"iid": "grant-p001-c00:prose|necessity|end_day", "id": "grant-p001-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "grant-p001-c00:prose|necessity|equipment_amount", "id": "grant-p001-c00:prose", "kind": "necessity", "edits": {"equipment_amount": null}, "target": "deny"}
+{"iid": "grant-p001-c00:prose|necessity|human_subjects", "id": "grant-p001-c00:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "grant-p001-c00:prose|necessity|institution_type", "id": "grant-p001-c00:prose", "kind": "necessity", "edits": {"institution_type": null}, "target": "deny"}
+{"iid": "grant-p001-c00:prose|necessity|letter_of_support", "id": "grant-p001-c00:prose", "kind": "necessity", "edits": {"letter_of_support": null}, "target": "deny"}
+{"iid": "grant-p001-c00:prose|necessity|pi_years_since_phd", "id": "grant-p001-c00:prose", "kind": "necessity", "edits": {"pi_years_since_phd": null}, "target": "deny"}
+{"iid": "grant-p001-c00:prose|necessity|start_day", "id": "grant-p001-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "grant-p001-c00:prose|necessity|travel_amount", "id": "grant-p001-c00:prose", "kind": "necessity", "edits": {"travel_amount": null}, "target": "deny"}
+{"iid": "grant-p001-c01:prose|boundary|institution_type=university", "id": "grant-p001-c01:prose", "kind": "boundary", "edits": {"institution_type": "university"}, "target": "approve", "gold_target": "approve"}
+{"iid": "grant-p001-c02:prose|necessity|equipment_amount", "id": "grant-p001-c02:prose", "kind": "necessity", "edits": {"equipment_amount": null}, "target": "deny"}
+{"iid": "grant-p001-c02:prose|necessity|travel_amount", "id": "grant-p001-c02:prose", "kind": "necessity", "edits": {"travel_amount": null}, "target": "deny"}
+{"iid": "grant-p001-c04:prose|necessity|end_day", "id": "grant-p001-c04:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "grant-p001-c04:prose|necessity|start_day", "id": "grant-p001-c04:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "trial-p000-c00:prose|boundary|prx7_level=200 ng/mL", "id": "trial-p000-c00:prose", "kind": "boundary", "edits": {"prx7_level": "200 ng/mL"}, "target": "approve", "gold_target": "approve"}
+{"iid": "trial-p000-c00:prose|necessity|prx7_level", "id": "trial-p000-c00:prose", "kind": "necessity", "edits": {"prx7_level": null}, "target": "approve"}
+{"iid": "trial-p000-c01:prose|boundary|anticoagulant=yes;site_tier=tier A", "id": "trial-p000-c01:prose", "kind": "boundary", "edits": {"anticoagulant": "yes", "site_tier": "tier A"}, "target": "approve", "gold_target": "deny"}
+{"iid": "trial-p000-c01:prose|necessity|anticoagulant", "id": "trial-p000-c01:prose", "kind": "necessity", "edits": {"anticoagulant": null}, "target": "deny"}
+{"iid": "trial-p000-c02:prose|boundary|age=50 years", "id": "trial-p000-c02:prose", "kind": "boundary", "edits": {"age": "50 years"}, "target": "approve", "gold_target": "approve"}
+{"iid": "trial-p000-c03:prose|boundary|kelman_index=11;prx7_level=200 ng/mL", "id": "trial-p000-c03:prose", "kind": "boundary", "edits": {"kelman_index": "11", "prx7_level": "200 ng/mL"}, "target": "deny", "gold_target": "deny"}
+{"iid": "trial-p000-c03:prose|necessity|age", "id": "trial-p000-c03:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "trial-p000-c03:prose|necessity|anticoagulant", "id": "trial-p000-c03:prose", "kind": "necessity", "edits": {"anticoagulant": null}, "target": "deny"}
+{"iid": "trial-p000-c03:prose|necessity|consent_day", "id": "trial-p000-c03:prose", "kind": "necessity", "edits": {"consent_day": null}, "target": "deny"}
+{"iid": "trial-p000-c03:prose|necessity|kelman_index", "id": "trial-p000-c03:prose", "kind": "necessity", "edits": {"kelman_index": null}, "target": "deny"}
+{"iid": "trial-p000-c03:prose|necessity|prx7_level", "id": "trial-p000-c03:prose", "kind": "necessity", "edits": {"prx7_level": null}, "target": "deny"}
+{"iid": "trial-p000-c03:prose|necessity|screening_day", "id": "trial-p000-c03:prose", "kind": "necessity", "edits": {"screening_day": null}, "target": "deny"}
+{"iid": "trial-p000-c03:prose|necessity|washout_weeks", "id": "trial-p000-c03:prose", "kind": "necessity", "edits": {"washout_weeks": null}, "target": "deny"}
+{"iid": "trial-p000-c04:prose|boundary|anticoagulant=yes;heart_rate=85", "id": "trial-p000-c04:prose", "kind": "boundary", "edits": {"anticoagulant": "yes", "heart_rate": "85"}, "target": "deny", "gold_target": "deny"}
+{"iid": "trial-p000-c04:prose|necessity|age", "id": "trial-p000-c04:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "trial-p000-c04:prose|necessity|anticoagulant", "id": "trial-p000-c04:prose", "kind": "necessity", "edits": {"anticoagulant": null}, "target": "deny"}
+{"iid": "trial-p000-c04:prose|necessity|consent_day", "id": "trial-p000-c04:prose", "kind": "necessity", "edits": {"consent_day": null}, "target": "deny"}
+{"iid": "trial-p000-c04:prose|necessity|kelman_index", "id": "trial-p000-c04:prose", "kind": "necessity", "edits": {"kelman_index": null}, "target": "deny"}
+{"iid": "trial-p000-c04:prose|necessity|prx7_level", "id": "trial-p000-c04:prose", "kind": "necessity", "edits": {"prx7_level": null}, "target": "deny"}
+{"iid": "trial-p000-c04:prose|necessity|screening_day", "id": "trial-p000-c04:prose", "kind": "necessity", "edits": {"screening_day": null}, "target": "deny"}
+{"iid": "trial-p000-c04:prose|necessity|washout_weeks", "id": "trial-p000-c04:prose", "kind": "necessity", "edits": {"washout_weeks": null}, "target": "deny"}
+{"iid": "trial-p001-c00:prose|boundary|anticoagulant=yes;heart_rate=95", "id": "trial-p001-c00:prose", "kind": "boundary", "edits": {"anticoagulant": "yes", "heart_rate": "95"}, "target": "deny", "gold_target": "deny"}
+{"iid": "trial-p001-c00:prose|necessity|age", "id": "trial-p001-c00:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "trial-p001-c00:prose|necessity|anticoagulant", "id": "trial-p001-c00:prose", "kind": "necessity", "edits": {"anticoagulant": null}, "target": "deny"}
+{"iid": "trial-p001-c00:prose|necessity|consent_day", "id": "trial-p001-c00:prose", "kind": "necessity", "edits": {"consent_day": null}, "target": "deny"}
+{"iid": "trial-p001-c00:prose|necessity|kelman_index", "id": "trial-p001-c00:prose", "kind": "necessity", "edits": {"kelman_index": null}, "target": "deny"}
+{"iid": "trial-p001-c00:prose|necessity|prx7_level", "id": "trial-p001-c00:prose", "kind": "necessity", "edits": {"prx7_level": null}, "target": "deny"}
+{"iid": "trial-p001-c00:prose|necessity|screening_day", "id": "trial-p001-c00:prose", "kind": "necessity", "edits": {"screening_day": null}, "target": "deny"}
+{"iid": "trial-p001-c00:prose|necessity|site_tier", "id": "trial-p001-c00:prose", "kind": "necessity", "edits": {"site_tier": null}, "target": "deny"}
+{"iid": "trial-p001-c00:prose|necessity|washout_weeks", "id": "trial-p001-c00:prose", "kind": "necessity", "edits": {"washout_weeks": null}, "target": "deny"}
+{"iid": "trial-p001-c01:prose|boundary|anticoagulant=no;site_tier=tier B", "id": "trial-p001-c01:prose", "kind": "boundary", "edits": {"anticoagulant": "no", "site_tier": "tier B"}, "target": "deny", "gold_target": "deny"}
+{"iid": "trial-p001-c01:prose|necessity|age", "id": "trial-p001-c01:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "trial-p001-c01:prose|necessity|anticoagulant", "id": "trial-p001-c01:prose", "kind": "necessity", "edits": {"anticoagulant": null}, "target": "deny"}
+{"iid": "trial-p001-c01:prose|necessity|heart_rate", "id": "trial-p001-c01:prose", "kind": "necessity", "edits": {"heart_rate": null}, "target": "deny"}
+{"iid": "trial-p001-c01:prose|necessity|kelman_index", "id": "trial-p001-c01:prose", "kind": "necessity", "edits": {"kelman_index": null}, "target": "deny"}
+{"iid": "trial-p001-c01:prose|necessity|prx7_level", "id": "trial-p001-c01:prose", "kind": "necessity", "edits": {"prx7_level": null}, "target": "deny"}
+{"iid": "trial-p001-c01:prose|necessity|screening_day", "id": "trial-p001-c01:prose", "kind": "necessity", "edits": {"screening_day": null}, "target": "deny"}
+{"iid": "trial-p001-c01:prose|necessity|washout_weeks", "id": "trial-p001-c01:prose", "kind": "necessity", "edits": {"washout_weeks": null}, "target": "deny"}
+{"iid": "trial-p001-c02:prose|boundary|kelman_index=10", "id": "trial-p001-c02:prose", "kind": "boundary", "edits": {"kelman_index": "10"}, "target": "approve", "gold_target": "approve"}
+{"iid": "trial-p001-c03:prose|boundary|kelman_index=10", "id": "trial-p001-c03:prose", "kind": "boundary", "edits": {"kelman_index": "10"}, "target": "approve", "gold_target": "approve"}
+{"iid": "trial-p001-c04:prose|necessity|consent_day", "id": "trial-p001-c04:prose", "kind": "necessity", "edits": {"consent_day": null}, "target": "approve"}
+{"iid": "trial-p001-c04:prose|necessity|screening_day", "id": "trial-p001-c04:prose", "kind": "necessity", "edits": {"screening_day": null}, "target": "approve"}
+{"iid": "review-p000-c01:prose|boundary|supp_anonymized=yes;supp_mb=51", "id": "review-p000-c01:prose", "kind": "boundary", "edits": {"supp_anonymized": "yes", "supp_mb": "51"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p000-c03:prose|boundary|extension=yes;submission_day=April 20, 2027", "id": "review-p000-c03:prose", "kind": "boundary", "edits": {"extension": "yes", "submission_day": "April 20, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p000-c03:prose|necessity|extension", "id": "review-p000-c03:prose", "kind": "necessity", "edits": {"extension": null}, "target": "approve"}
+{"iid": "review-p000-c03:prose|necessity|submission_day", "id": "review-p000-c03:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "approve"}
+{"iid": "review-p000-c04:prose|boundary|ethics_statement=yes;track=Position Paper", "id": "review-p000-c04:prose", "kind": "boundary", "edits": {"ethics_statement": "yes", "track": "Position Paper"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p000-c04:prose|necessity|ethics_statement", "id": "review-p000-c04:prose", "kind": "necessity", "edits": {"ethics_statement": null}, "target": "deny"}
+{"iid": "review-p001-c00:prose|boundary|ethics_statement=yes;human_subjects=no", "id": "review-p001-c00:prose", "kind": "boundary", "edits": {"ethics_statement": "yes", "human_subjects": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p001-c00:prose|necessity|ethics_statement", "id": "review-p001-c00:prose", "kind": "necessity", "edits": {"ethics_statement": null}, "target": "deny"}
+{"iid": "review-p001-c00:prose|necessity|human_subjects", "id": "review-p001-c00:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "review-p001-c01:prose|boundary|ref_pages=3", "id": "review-p001-c01:prose", "kind": "boundary", "edits": {"ref_pages": "3"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p001-c01:prose|necessity|ref_pages", "id": "review-p001-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "approve"}
+{"iid": "review-p001-c02:prose|boundary|ethics_statement=yes;human_subjects=no", "id": "review-p001-c02:prose", "kind": "boundary", "edits": {"ethics_statement": "yes", "human_subjects": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p001-c03:prose|boundary|ethics_statement=yes;human_subjects=no", "id": "review-p001-c03:prose", "kind": "boundary", "edits": {"ethics_statement": "yes", "human_subjects": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p001-c03:prose|necessity|extension", "id": "review-p001-c03:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p001-c03:prose|necessity|human_subjects", "id": "review-p001-c03:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "review-p001-c03:prose|necessity|last_coauthor_day", "id": "review-p001-c03:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p001-c03:prose|necessity|main_pages", "id": "review-p001-c03:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p001-c03:prose|necessity|ref_pages", "id": "review-p001-c03:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p001-c03:prose|necessity|reviewer_same_institution", "id": "review-p001-c03:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "deny"}
+{"iid": "review-p001-c03:prose|necessity|submission_day", "id": "review-p001-c03:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p001-c03:prose|necessity|supp_anonymized", "id": "review-p001-c03:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p001-c03:prose|necessity|supp_mb", "id": "review-p001-c03:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p001-c03:prose|necessity|track", "id": "review-p001-c03:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p001-c04:prose|boundary|ethics_statement=yes", "id": "review-p001-c04:prose", "kind": "boundary", "edits": {"ethics_statement": "yes"}, "target": "approve", "gold_target": "approve"}

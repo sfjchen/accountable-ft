@@ -1,0 +1,36 @@
+{
+ "model": "gemini-3.5-flash-lite",
+ "backend": "gemini",
+ "vertex": "global",
+ "mode": "answer",
+ "no_account": false,
+ "shuffle_accounts": false,
+ "cases": 0,
+ "sample_seed": 0,
+ "decoding": {
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "top_k": 0,
+  "max_tokens": 4096,
+  "seed": 0,
+  "thinking": false
+ },
+ "n": 1,
+ "rows": 476,
+ "cached": 46,
+ "errors": 0,
+ "fresh_calls": 430,
+ "wall_s": 44.99,
+ "in_tokens": 494826,
+ "out_tokens": 42404,
+ "think_tokens": 0,
+ "finish": {
+  "FinishReason.STOP": 476
+ },
+ "model_versions": [
+  "gemini-3.5-flash-lite"
+ ],
+ "mean_latency_s": 0.882,
+ "cost_usd_fresh": 0.2287,
+ "cost_usd_if_uncached": 0.2545
+}
