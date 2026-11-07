@@ -56,15 +56,15 @@ Jon Chen and Eitan Green, CS 224V, mentor Cyrus Zhou. Read top to bottom, each l
 - Data v1: about 5,000 cases, 3 views, 72 held-out families, 60 permit families, 100-item blind sample for us to hand-label.
 - Harness: 55 tests, end to end on two prompting pilots, same 150 held-out cases (logs `v1-lite-eval-52322ce-20261107-0253`, `qwen9b-lite-eval-52322ce-20261107-0254`).
 
-| | Gemini 3.5 Flash-Lite | Qwen3.5-9B base |
-|---|---|---|
-| accuracy | 0.77 | 0.60 |
-| account validity | 0.22 | 0.07 |
-| dSim | 0.04 [-0.06, 0.13] | 0.09 [0.04, 0.15] |
-| always-"unchanged" baseline | 0.69 | 0.85 |
+|                             | Gemini 3.5 Flash-Lite | Qwen3.5-9B base   |
+| --------------------------- | --------------------- | ----------------- |
+| accuracy                    | 0.77                  | 0.60              |
+| account validity            | 0.22                  | 0.07              |
+| dSim                        | 0.04 [-0.06, 0.13]    | 0.09 [0.04, 0.15] |
+| always-"unchanged" baseline | 0.69                  | 0.85              |
 
-  - Both never say "cannot determine". Both give mostly invalid accounts. The simulator does not beat the trivial baseline yet.
-  - Reading: accounts are where the headroom is, accuracy has some too. That is the shape the comparison needs.
+- Both never say "cannot determine". Both give mostly invalid accounts. The simulator does not beat the trivial baseline yet.
+- Reading: accounts are where the headroom is, accuracy has some too. That is the shape the comparison needs.
 - Compute: FarmShare (Stanford, free), 6 nodes with 4 L40S 48 GB each, 4 GPUs per user. Environment and data are on the cluster, smoke jobs submitted Nov 7.
 
 ## 6. Next

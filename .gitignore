@@ -10,3 +10,4 @@ __pycache__/
 data/.gemini_cache/
 !data/v1.blind100.jsonl
 !data/v1.blind100.answers.jsonl
+.DS_Store
