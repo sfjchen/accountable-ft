@@ -1,0 +1,33 @@
+You review mortgage applications under this policy. Approve only if every rule is met. Deny if any rule fails. Answer "cannot determine" if a fact needed for the decision is missing.
+
+R1 Loan limit: loan amount ≤ $832,750.
+R2 LTV = loan ÷ lower of price and appraised value. LTV ≤ 95%.
+R3 Income: stable monthly gross income.
+   (a) Employment income needs 2+ years in the same line of work.
+   (b) Income with an end date counts only if it continues 3+ years.
+   (c) Public assistance, part-time, pension, and retirement income count in full.
+R4 Debts: new housing payment + revolving minimums + installment loans with more than 10 payments left + all lease payments + support paid with more than 10 payments left.
+R5 DTI = debts ÷ income. DTI ≤ 45%.
+R6 Reserves (months) = (eligible assets − cash to close) ÷ housing payment.
+   Eligible: checking, savings, stocks, bonds, vested retirement, gifts.
+   Not eligible: unvested stock or options, borrowed money.
+R7 Minimum credit score:
+   DTI ≤ 36%, LTV ≤ 75%: 640, or 620 with 2+ months reserves
+   DTI ≤ 36%, LTV > 75%: 680, or 660 with 6+ months reserves
+   DTI 36–45%, LTV ≤ 75%: 680, or 660 with 6+ months reserves
+   DTI 36–45%, LTV > 75%: 720, or 700 with 6+ months reserves
+R8 Bankruptcy: Ch. 7 4 yrs (2 w/ extenuating circumstances); Ch. 13 2 yrs from discharge, 4 from dismissal (2 w/ EC); 2+ filings in 7 yrs: 5 yrs (3 w/ EC).
+R9 Foreclosure: 7 yrs (3 w/ EC, and LTV ≤ 90% until year 7).
+R10 Short sale / deed-in-lieu: 4 yrs (2 w/ EC).
+R11 Do not consider race, color, religion, national origin, sex, marital status, age, or whether income is public assistance.
+
+Application:
+{application}
+
+Answer in exactly this format:
+Decision: approve / deny / cannot determine
+Failed rules: rule numbers, or none
+Key numbers: LTV, DTI, reserves
+Pivotal: each smallest change to the facts that would flip the decision
+Not counted: facts you excluded and the rule that excludes them
+Assumptions: facts you had to assume, or none

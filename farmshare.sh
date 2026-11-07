@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# farmshare.sh: setup, cluster probe, smoke check, the 6 training runs and their evaluation on FarmShare, from
-# /scratch/users/$USER/accountable-ft. smoke, train and eval submit this script itself to Slurm with their resources
-# (extra sbatch options in SB), and the job runs the body inside the allocation.
+# farmshare.sh: setup, cluster probe, smoke check, the 6 training runs, their evaluation and the prompted-base
+# evaluation on FarmShare, from /scratch/users/$USER/accountable-ft. smoke, train, eval and base submit this script
+# itself to Slurm with their resources (extra sbatch options in SB), and the job runs the body inside the allocation.
 # Usage: bash farmshare.sh setup | probe | smoke [account|decision] | train | eval <cond>-s<seed> <epoch>
+#        | base (THINKING=on|off, CASES=N for a stratified subset)
 set -euo pipefail
 {
-cmd=${1:?usage: bash farmshare.sh setup|probe|smoke|train|eval}
+cmd=${1:?usage: bash farmshare.sh setup|probe|smoke|train|eval|base}
 shift
 SCRATCH=${SCRATCH:-/scratch/users/$USER}
 REPO=$SCRATCH/accountable-ft
@@ -14,10 +15,14 @@ export SCRATCH REPO VENV MODEL_FILE META_HOME PATH=$HOME/.local/bin:$PATH
 export HF_HOME=$SCRATCH/hf UV_CACHE_DIR=$SCRATCH/.uv/cache UV_PYTHON_INSTALL_DIR=$SCRATCH/.uv/python
 export XDG_CACHE_HOME=$SCRATCH/.cache TRITON_CACHE_DIR=$SCRATCH/.cache/triton VLLM_CACHE_ROOT=$SCRATCH/.cache/vllm
 OUT=/scratch/users/%u/accountable-ft/runs/slurm
+# One decoding budget for every run served here (base, thinking on and off, trained): evaluate.py refuses to compare
+# runs whose max_tokens differ, and thinking answers run 5-10k tokens. Non-thinking answers stop long before it.
+MAX_TOKENS=${MAX_TOKENS:-16384} MAX_LEN=${MAX_LEN:-24576}
 case $cmd in
   smoke) res="--job-name=aft-smoke --mem=48G --time=00:15:00 --output=$OUT/smoke_%j.out" ;;
   train) res="--job-name=aft-train --mem=48G --time=08:00:00 --array=0-5 --output=$OUT/%A_%a.out" ;;
   eval) res="--job-name=aft-eval --mem=64G --time=06:00:00 --output=$OUT/eval_%j.out" ;;
+  base) res="--job-name=aft-base --mem=64G --time=08:00:00 --output=$OUT/base_%j.out" ;;
   *) res= ;;
 esac
 if [[ -n $res && -z ${SLURM_JOB_ID:-} ]]; then
@@ -57,6 +62,32 @@ train_one() {
   mkdir -p "$META_HOME"
   cp "$out/train_meta.json" "$META_HOME/$(basename "$out").train_meta.json"
   echo "done: $out, meta in $META_HOME"
+}
+
+# Serves a model with vllm on this job's GPU and runs the answer, repeat and both predict passes on the primary
+# slice (CASES=N for a stratified subset, THINKING=on|off). Usage: run_passes <model path> <run name> <cache tag>
+run_passes() {
+  local model=$1 run=$2 tag=$3
+  local port=$((8000 + SLURM_JOB_ID % 1000)) vlog=$REPO/runs/slurm/vllm_$SLURM_JOB_ID.log  # 1-GPU jobs share nodes
+  vllm serve "$model" --served-model-name "$run" --host 127.0.0.1 --port "$port" --dtype bfloat16 \
+      --max-model-len "$MAX_LEN" --gpu-memory-utilization 0.9 --seed 0 > "$vlog" 2>&1 &
+  vpid=$!
+  trap 'kill "$vpid" 2>/dev/null || true' EXIT
+  for _ in $(seq 240); do
+    curl -sf "http://127.0.0.1:$port/v1/models" > /dev/null && break
+    kill -0 "$vpid" 2>/dev/null || die "vllm exited, see $vlog"
+    sleep 5
+  done
+  curl -sf "http://127.0.0.1:$port/v1/models" > /dev/null || die "vllm not up after 20 min, see $vlog"
+  local S=(--data data/v1.jsonl --bank data/v1.bank.jsonl --slice unseen_family_train_vocab --view prose)
+  [[ ${CASES:-0} -gt 0 ]] && S+=(--cases "$CASES")
+  S+=(--backend openai --base-url "http://127.0.0.1:$port/v1" --model "$run" --cache-tag "$tag"
+    --cache "runs/cache.$run.jsonl" --conc 32 --max-tokens "$MAX_TOKENS" --thinking "${THINKING:-off}")
+  python infer.py "${S[@]}" --out "runs/$run.jsonl"
+  python infer.py "${S[@]}" --rep 1 --out "runs/$run.repeat.jsonl"
+  python infer.py --mode predict "${S[@]}" --frozen "runs/$run.jsonl" --out "runs/$run.predict.jsonl"
+  python infer.py --mode predict "${S[@]}" --frozen "runs/$run.jsonl" --no-account \
+      --out "runs/$run.predict_noacc.jsonl"
 }
 
 case $cmd in
@@ -185,28 +216,21 @@ model, tok = FastLanguageModel.from_pretrained(sys.argv[1], dtype=torch.bfloat16
 model.save_pretrained_merged(sys.argv[2], tok, save_method="merged_16bit")
 PY
     fi
-    port=$((8000 + SLURM_JOB_ID % 1000)) vlog=$REPO/runs/slurm/vllm_$SLURM_JOB_ID.log  # 1-GPU jobs share nodes
-    vllm serve "$merged" --served-model-name "$run" --host 127.0.0.1 --port "$port" --dtype bfloat16 \
-        --max-model-len 8192 --gpu-memory-utilization 0.9 --seed 0 > "$vlog" 2>&1 &
-    vpid=$!
-    trap 'kill "$vpid" 2>/dev/null || true' EXIT
-    for _ in $(seq 240); do
-      curl -sf "http://127.0.0.1:$port/v1/models" > /dev/null && break
-      kill -0 "$vpid" 2>/dev/null || die "vllm exited, see $vlog"
-      sleep 5
-    done
-    curl -sf "http://127.0.0.1:$port/v1/models" > /dev/null || die "vllm not up after 20 min, see $vlog"
-    S=(--data data/v1.jsonl --bank data/v1.bank.jsonl --slice unseen_family_train_vocab --view prose)
-    [[ ${CASES:-0} -gt 0 ]] && S+=(--cases "$CASES")
-    S+=(--backend openai --base-url "http://127.0.0.1:$port/v1" --model "$run" --cache-tag "$tag"
-      --cache "runs/cache.$run.jsonl" --conc 32)
-    python infer.py "${S[@]}" --out "runs/$run.jsonl"
-    python infer.py "${S[@]}" --rep 1 --out "runs/$run.repeat.jsonl"
-    python infer.py --mode predict "${S[@]}" --frozen "runs/$run.jsonl" --out "runs/$run.predict.jsonl"
-    python infer.py --mode predict "${S[@]}" --frozen "runs/$run.jsonl" --no-account \
-        --out "runs/$run.predict_noacc.jsonl"
+    run_passes "$merged" "$run" "$tag"
     [[ ${KEEP_MERGED:-0} == 1 ]] || rm -rf "$merged"
     echo "done: runs/$run.{jsonl,repeat.jsonl,predict.jsonl,predict_noacc.jsonl}, tag $tag" ;;
+  base)  # prompted base model, the same passes as eval: THINKING=on|off, CASES=N for a stratified subset
+    [[ -s $MODEL_FILE ]] || die "$MODEL_FILE missing, run bash farmshare.sh setup first"
+    model_id=$(cat "$MODEL_FILE") run=base-think${THINKING:-off}
+    [[ ${CASES:-0} -gt 0 ]] && run=$run-c$CASES
+    cd "$REPO"
+    echo "job $SLURM_JOB_ID: $run ($model_id) on $(hostname), commit $(git rev-parse --short HEAD)"
+    nvidia-smi --query-gpu=name,memory.total --format=csv,noheader || true
+    # the local snapshot, so the job never needs the network
+    model=$(python -c "import sys; from huggingface_hub import snapshot_download as s; print(s(sys.argv[1], \
+local_files_only=True))" "$model_id")
+    run_passes "$model" "$run" "$run-$model_id-mt$MAX_TOKENS"
+    echo "done: runs/$run.{jsonl,repeat.jsonl,predict.jsonl,predict_noacc.jsonl}" ;;
   *) die "unknown command $cmd" ;;
 esac
 exit

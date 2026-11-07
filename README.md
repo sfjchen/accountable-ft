@@ -184,7 +184,8 @@ Gold: approve, R2 and R5 waived, every other rule passes. Minimum sufficient fac
 - `infer.py`: one `Runner` over OpenAI-compatible endpoints (vLLM serve, OpenRouter), Gemini and offline vLLM, with fixed decoding, a response cache, `--rep` for the repeat control, and the bank, predict and simulate modes.
 - `evaluate.py`: all metrics with cluster bootstrap CIs, slices (primary: prose, unseen families, training vocabularies), paired comparisons, seed aggregates, coverage, checkpoint selection, `--power`.
 - `train.py`: LoRA SFT with the matched loss, and `train.py export` for the SFT rows.
-- `farmshare.sh`: setup and Slurm jobs on FarmShare.
+- `farmshare.sh`: setup and Slurm jobs on FarmShare, including the prompted-base evaluation (`base`).
+- `pilots/mortgage/`: a real-rules pilot (Fannie Mae manual underwriting plus Regulation B), 3 hand-checked cases and a Qwen3.5-9B run with thinking off and on. Not engine-generated.
 - `tests/test_all.py`, `tests/mini.jsonl`: engine against brute force and the acceptance cases, the generator, the parser and every metric on a 12-record hand-made fixture, bank, prompts, cache key, shuffled control, export, masking and loss weights. Run `python -m pytest -q`.
 
 ## Data
@@ -216,6 +217,7 @@ Everything lives in `/scratch/users/$USER/accountable-ft` (purged after 90 idle 
 - Smoke (15 min): `bash farmshare.sh smoke`, after it ends `CASES=13 bash farmshare.sh eval smoke-account 1`. Logs in `runs/slurm/smoke_*.out` and `eval_*.out`.
 - The 6-run array (account and decision, seeds 0-2, 8 h each): `jid=$(SB=--parsable bash farmshare.sh train)`. One run: `SB=--array=4 bash farmshare.sh train`. Watch with `squeue -u $USER` and `tail -f runs/slurm/${jid}_0.out`.
 - Eval every run at both epochs once training ends: `for r in {account,decision}-s{0,1,2}; do for k in 1 2; do SB=--dependency=afterok:$jid bash farmshare.sh eval $r $k; done; done`. Eval runs are named `<cond>-e<k>-s<seed>`, the cache tag adds the adapter hash, each run has its own `runs/cache.<run>.jsonl`, and the merged model is deleted afterwards unless `KEEP_MERGED=1`. A timed-out train run restarts from scratch (no resume).
+- Prompted base, the same 4 passes with no checkpoint: `bash farmshare.sh base` (thinking off, full primary slice) and `THINKING=on CASES=150 bash farmshare.sh base` (thinking answers run 5-10k tokens, so a subset). Runs are named `base-think<on|off>[-c<N>]`. Every run served here uses `--max-tokens 16384` (`MAX_TOKENS`, model length `MAX_LEN` 24576), because evaluate.py refuses to compare runs whose max_tokens differ, so base and trained runs stay comparable. Earlier API pilots used 4096.
 - Back on the Mac: `rsync -av --exclude slurm $USER@login.farmshare.stanford.edu:/scratch/users/$USER/accountable-ft/runs/ runs/`, then the simulate and score commands of section 4 on `data/v1.jsonl`, e.g. `python evaluate.py runs/*-e2-s*.jsonl --data data/v1.jsonl --bank data/v1.bank.jsonl --epoch 2`.
 
 ## Related work
