@@ -16,9 +16,9 @@ if ! type module &>/dev/null && [[ -f /etc/profile.d/lmod.sh ]]; then
   # shellcheck disable=SC1091
   source /etc/profile.d/lmod.sh
 fi
-# CUDA toolkit for JIT kernels (triton, flashinfer); torch wheels bring their own runtime. Module name unverified.
+# CUDA toolkit for JIT kernels (triton, flashinfer); torch wheels bring their own runtime. Module name verified on FarmShare Nov 7.
 if type module &>/dev/null; then
-  module load cuda/12.6 &>/dev/null || true
+  module load cuda/12.9.0 &>/dev/null || true
 fi
 set -u
 if [[ -f $VENV/bin/activate ]]; then
