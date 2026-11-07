@@ -34,13 +34,15 @@ Details and reasoning in `PLAN.md`.
 
 ## Training
 
-`scripts/sft_data.py` exports chat rows (harness prompt, gold answer from `infer.format_target`, account span) and `train.py` runs LoRA SFT on Qwen3.5-9B with Unsloth and TRL on a CUDA GPU. Both conditions use the same export, so the only difference is the account loss.
+`scripts/sft_data.py` exports chat rows (harness prompt, gold answer from `infer.format_target`, account span) and `train.py` runs LoRA SFT on Qwen3.5-9B with Unsloth and TRL on a CUDA GPU. Both conditions use the same export, and the loss per example is mean_dec + λ mean_acc (mean token loss over the Decision line plus end-of-turn, plus λ times the mean over the account lines), averaged over the batch. So the decision tokens carry the same total weight in both conditions however long the account is. The account condition uses λ = `--acc-weight` (default 1.0), the decision condition λ = 0 with the account labels set to -100.
 
+- Stack (pinned in `train.PINS`, these co-install since unsloth caps trl at 1.15 and transformers at 5.17): `pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cu126 && pip install unsloth==2026.11.3 trl==1.15.0 transformers==5.17.0 peft==0.21.2 vllm==0.33.0`. `train_meta.json` records the installed versions and whether they match the pins.
+- Thinking: Qwen3.5-9B has thinking off by default per Unsloth's docs, and the chat template is still rendered with `enable_thinking=False` so training and inference prompts stay identical.
 - Export (once, both conditions): `python scripts/sft_data.py --split train --out data/v1.sft.train.jsonl && python scripts/sft_data.py --split dev --out data/v1.sft.dev.jsonl`
 - Account SFT: `python train.py --condition account --data data/v1.sft.train.jsonl --eval-data data/v1.sft.dev.jsonl --seed 0 --out outputs/qwen9b-acct-s0`
 - Decision-only SFT: `python train.py --condition decision --data data/v1.sft.train.jsonl --eval-data data/v1.sft.dev.jsonl --seed 0 --out outputs/qwen9b-dec-s0`
-- In `<out>`: `checkpoint-<step>/` per epoch, `adapter/` (final LoRA adapter and tokenizer), `merged/` (merged 16-bit model for vLLM) and `train_meta.json` (flags, commit and dirty state, library versions, GPU, token counts with the masked-token fraction, training log).
-- `tests/test_train.py` checks the masking with the Qwen2.5-0.5B-Instruct tokenizer: on the smoke train rows the decision condition masks 94.5% of answer tokens (36,480 of 38,586) and the account condition none.
+- In `<out>`: `checkpoint-<step>/` per epoch, `adapter/` (final LoRA adapter and tokenizer), `merged/` (merged 16-bit model for vLLM) and `train_meta.json` (flags, λ, commit and dirty state, pinned and installed library versions, GPU, token counts with the masked-token fraction, realized weight sums on decision and account tokens, training log).
+- `tests/test_train.py` checks the masking and weights with the Qwen2.5-0.5B-Instruct tokenizer: on the smoke train rows the decision condition masks 94.5% of answer tokens (36,480 of 38,586) and the account condition none, decision tokens get identical weights summing to 1 per row in both conditions, account tokens sum to λ, λ = 0 reproduces the decision masking, and the trainer's loss equals mean_dec + λ mean_acc on random logits.
 
 ## Related
 

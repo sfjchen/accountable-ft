@@ -1,8 +1,11 @@
 """
 Tests the SFT export (scripts/sft_data.py) and the loss-masking Collator of train.py with the Qwen2.5-0.5B-Instruct
 tokenizer (no model weights): on rows exported from data/smoke.jsonl, the decision condition masks exactly the
-account tokens, the account condition masks only the prompt, and supervised token counts differ by the account
-length. Skips when the tokenizer cannot be loaded (no network and no cache) or the smoke data is missing.
+account tokens, the account condition masks only the prompt, supervised token counts differ by the account
+length, the loss weights give the decision tokens total weight 1 per row and the same per-token weights in both
+conditions with lam on the account tokens, lam 0 reproduces the decision masking, and weighted_loss equals mean_dec +
+lam * mean_acc averaged over the batch. Skips when the tokenizer cannot be loaded (no network and no cache) or the
+smoke data is missing.
 """
 import json
 import subprocess
@@ -85,13 +88,64 @@ def test_collator_masks(rows, tok):
 
 def test_collator_batch(rows, tok):
     """
-    Checks that a padded batch keeps each row's labels and pads with -100 and attention 0.
+    Checks that a padded batch keeps each row's labels and weights and pads with -100, weight 0 and attention 0.
     """
     pytest.importorskip("torch")
     from train import Collator
-    col = Collator(tok, "decision")
+    col = Collator(tok, "account")
     b, es = col(rows[:3]), [col.encode(x) for x in rows[:3]]
     for i, e in enumerate(es):
         n = len(e["ids"])
         assert b["labels"][i, :n].tolist() == e["lab"] and set(b["labels"][i, n:].tolist()) <= {-100}
+        assert b["weights"][i, :n].tolist() == pytest.approx(e["w"]) and b["weights"][i, n:].sum().item() == 0
         assert b["attention_mask"][i].sum().item() == n
+
+
+def test_weights(rows, tok):
+    """
+    Checks on every smoke row that the decision tokens (Decision line plus end-of-turn) get the same weights in both
+    conditions and any lam, summing to 1, that the account tokens sum to lam (0 under decision, whatever lam is
+    passed), that account with lam 0 gives exactly the decision labels and weights, and the realized sums in
+    token_stats.
+    """
+    from train import Collator, token_stats
+    cs = {"dec": Collator(tok, "decision", lam=2.0), "acc": Collator(tok, "account"),
+            "half": Collator(tok, "account", lam=0.5), "zero": Collator(tok, "account", lam=0.0)}
+    assert [c.lam for c in cs.values()] == [0.0, 1.0, 0.5, 0.0]
+    for x in rows:
+        es = {k: c.check(x) for k, c in cs.items()}
+        ed = es["dec"]
+        nd = sum(s and not a for s, a in zip(ed["sup"], ed["acct"]))
+        for k, e in es.items():
+            dw = [w for w, s, a in zip(e["w"], e["sup"], e["acct"]) if s and not a]
+            aw = {w for w, a in zip(e["w"], e["acct"]) if a}
+            assert dw == [1 / nd] * nd and aw == {cs[k].lam / sum(e["acct"])}, (k, x["id"])
+            assert all(w == 0 for w, s in zip(e["w"], e["sup"]) if not s)
+        assert es["zero"]["lab"] == ed["lab"] and es["zero"]["w"] == ed["w"]
+    for k, c in cs.items():
+        t = token_stats(c, rows)
+        assert t["w_dec"] == pytest.approx(len(rows)) and t["w_acc"] == pytest.approx(c.lam * len(rows))
+        assert t["w_dec_per_row"] == pytest.approx(1) and t["w_acc_per_row"] == pytest.approx(c.lam)
+
+
+def test_weighted_loss(rows, tok):
+    """
+    Checks weighted_loss on a collated batch with random logits against mean_dec + lam * mean_acc computed per row
+    from cross-entropy over the shifted decision and account masks, then averaged over the rows.
+    """
+    torch = pytest.importorskip("torch")
+    from train import Collator, weighted_loss
+    F = torch.nn.functional
+    for lam in (0.0, 1.0, 0.5):
+        col = Collator(tok, "account", lam=lam)
+        b, es = col(rows[:4]), [col.encode(x) for x in rows[:4]]
+        lg = torch.randn(*b["input_ids"].shape, len(tok), generator=torch.Generator().manual_seed(0))
+        per = []
+        for i, e in enumerate(es):
+            ids = torch.tensor(e["ids"])
+            ce = F.cross_entropy(lg[i, :len(ids) - 1], ids[1:], reduction="none")
+            dm = torch.tensor([s and not a for s, a in zip(e["sup"], e["acct"])])[1:]
+            am = torch.tensor(e["acct"])[1:]
+            per.append(ce[dm].mean() + lam * ce[am].mean())
+        assert weighted_loss(lg, b["labels"], b["weights"]).item() == pytest.approx(torch.stack(per).mean().item(),
+                rel=1e-5)
