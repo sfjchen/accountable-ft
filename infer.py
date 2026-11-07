@@ -47,7 +47,6 @@ Usage:
 import argparse
 import asyncio
 import hashlib
-import itertools
 import json
 import os
 import random
@@ -214,8 +213,8 @@ def build_bank(recs, seed=0):
     """
     Returns (bank, meta) for a list of records, with every edit chosen independently of the gold account. Kinds:
     - pivotal_replace: a certified engine flip of the base (decide gives the flip target) whose fact set differs from
-      gold.min_flip and that repeats none of its (fact, value) edits, found by increasing radius up to 3, preferring
-      facts disjoint from min_flip, then the smallest bucket move; a base with none is dropped with its reason.
+      gold.min_flip and that repeats none of its (fact, value) edits (engine.min_flip with radius 3, exclude and
+      prefer_disjoint gold.min_flip); a base with none is dropped with its reason.
     - invariant_replace: base -> its invariant variant (an edit outside every sufficient set).
     - noncrossing_replace: the smallest move of one necessary fact that keeps the decision and the rule trace (a
       cited fact moved without crossing its threshold); counted in the invariant share.
@@ -236,31 +235,14 @@ def build_bank(recs, seed=0):
                     ("add", r, p, {rf: p["facts"].get(rf)}, "variant_record")]
         elif r["variant"] == "base":
             pol, f, g = gen.policy_for(r), r["facts"], r["gold"]
-            gold, tgt, known = (g.get("min_flip") or {}).get("edits") or {}, engine.flip_target(g["decision"]), \
-                engine.known_facts(pol, r["facts"])[0]
-            cand, full, best = [n for n in pol.referenced() if f.get(n) is not None], \
-                all(n in known for n in pol.referenced()), None
-            for k in range(1, 4) if tgt else ():
-                for combo in itertools.combinations(cand, k):
-                    if set(combo) == set(gold):
-                        continue
-                    for vals in itertools.product(*[[x for x in pol.dom[n] if x != known[n]] for n in combo]):
-                        ed, ff = dict(zip(combo, vals)), {**known, **dict(zip(combo, vals))}
-                        if any(gold.get(n) == x for n, x in ed.items()) or not pol.ok(ff):
-                            continue
-                        if (all(q.holds(ff) for q in pol.requires) == (tgt == "approve")) if full else \
-                                engine.possible(pol, ff) == {tgt}:
-                            c = (bool(set(combo) & set(gold)), k, sum(abs(pol.dom[n].index(x) - pol.dom[n].index(
-                                    known[n])) for n, x in ed.items()), [pol.order.index(n) for n in combo])
-                            best = min(best or (c, ed), (c, ed), key=lambda t: t[0])
-                if best and not best[0][0]:
-                    break
-            if best is None or engine.decide(pol, {**f, **best[1]})["decision"] != tgt:
-                drops.append({"case_id": r["id"], "reason": "cannot determine base" if not tgt else
-                        "no certified flip within radius 3 other than gold.min_flip" if gold else
-                        "no certified flip within radius 3"})
+            gold = (g.get("min_flip") or {}).get("edits") or {}
+            mf = engine.min_flip(pol, f, radius=3, exclude=gold, prefer_disjoint=gold)
+            if not mf["edits"] or engine.decide(pol, {**f, **mf["edits"]})["decision"] != mf["target"]:
+                drops.append({"case_id": r["id"], "reason": "cannot determine base" if not mf["target"] else
+                        mf.get("reason") or "no certified flip within radius 3" +
+                          (" other than gold.min_flip" if gold else "")})
             else:
-                its.append(("pivotal_replace", r, None, best[1], "engine_alt_disjoint" if not best[0][0] else
+                its.append(("pivotal_replace", r, None, mf["edits"], "engine_alt_disjoint" if mf["disjoint"] else
                         "engine_alt_overlap"))
             rng, nc = random.Random(r["id"]), None
             for n in sorted((n for n in g["necessary_facts"] if f.get(n) is not None), key=lambda n: rng.random()):

@@ -6,10 +6,11 @@ answer format that evaluate.parse reads (Decision line first, then Policy suppor
 mask_spans holds [start, end) character spans of the assistant content covering the account lines, everything after
 the Decision line, so the decision-only control can drop them from the loss (train.py --condition decision).
 --cases-per-family K keeps a seeded sample of K base cases per template family, each with all its variants and
-views. Output order is shuffled under --seed, so the same flags give the same file.
+views. --drop-flagged PATH drops the item ids listed one per line (scripts/audit_cd.py --flagged writes
+data/v1.flagged.txt). Output order is shuffled under --seed, so the same flags give the same file.
 
 Usage: python scripts/sft_data.py --split train --out data/v1.sft.train.jsonl [--view prose table] [--seed 0]
-        [--cases-per-family 5] [--data data/v1.jsonl]
+        [--cases-per-family 5] [--data data/v1.jsonl] [--drop-flagged data/v1.flagged.txt]
 """
 import argparse
 import json
@@ -20,7 +21,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
-from infer import build_prompt, format_target  # noqa: E402
+from infer import build_prompt, format_target, root  # noqa: E402
 
 VIEWS = ["table", "prose", "prose_derive"]
 
@@ -47,10 +48,14 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--cases-per-family", type=int, default=0, help="base cases kept per family (0 keeps all)")
+    ap.add_argument("--drop-flagged", metavar="PATH", help="file of item ids to drop, one per line")
     a = ap.parse_args()
     recs = [json.loads(ln) for ln in Path(a.data).read_text().splitlines() if ln.strip()]
     by = {r["id"]: r for r in recs}
+    drop = set(Path(a.drop_flagged).read_text().split()) if a.drop_flagged else set()
     sel = [r for r in recs if r["split"] == a.split and r["view"] in a.view]
+    nd, sel = len(sel), [r for r in sel if r["id"] not in drop]
+    nd -= len(sel)
     rng = random.Random(a.seed)
     if a.cases_per_family:
         fams = defaultdict(set)
@@ -62,23 +67,14 @@ def main():
             bs = sorted(fams[f])
             rng.shuffle(bs)
             keep.update(bs[:a.cases_per_family])
-
-        def root(r):
-            """
-            Returns the base case id (without the view suffix) that r descends from.
-            """
-            while r.get("parent") in by:
-                r = by[r["parent"]]
-            return r["id"].rsplit(":", 1)[0]
-
-        sel = [r for r in sel if root(r) in keep]
+        sel = [r for r in sel if root(r, by) in keep]
     rows = [to_example(r) for r in sorted(sel, key=lambda r: r["id"])]
     rng.shuffle(rows)
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     Path(a.out).write_text("".join(json.dumps(x) + "\n" for x in rows))
     cnt = Counter((r["view"], r["gold"]["decision"]) for r in sel)
     decs = ["approve", "deny", "cannot determine"]
-    print(f"{len(rows)} examples ({a.split}, views {', '.join(a.view)}) -> {a.out}")
+    print(f"{len(rows)} examples ({a.split}, views {', '.join(a.view)}, {nd} flagged dropped) -> {a.out}")
     print("view".ljust(14) + "".join(d.rjust(18) for d in decs) + "total".rjust(8))
     for v in a.view:
         print(v.ljust(14) + "".join(str(cnt[v, d]).rjust(18) for d in decs) +

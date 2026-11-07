@@ -94,8 +94,8 @@ facts:
       - "The supplementary material was scrubbed of identifying information."
       - "The supplementary files are anonymized."
     say_false:
-      - "The supplementary files still contain the authors' institutional logos."
-      - "The supplementary material is not anonymized."
+      - "The authors have not certified that any supplementary material is anonymized."
+      - "No anonymization of any supplementary material is on record."
   num_authors:
     type: int
     values: [1, 2, 3, 4, 6, 8, 10]
@@ -137,8 +137,8 @@ facts:
       - "The supplementary code is released under an open license."
       - "A license file grants open reuse of the supplementary artifacts."
     say_false:
-      - "The supplementary artifacts carry no license."
-      - "The authors have not chosen a license for the supplementary files."
+      - "No open license is declared for any supplementary artifacts."
+      - "The authors have not named an open license for any supplementary code or data."
 derived_facts:
   total_pages:
     expr: "main_pages + ref_pages"

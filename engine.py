@@ -436,7 +436,8 @@ def min_flip(pol, facts, target=None, radius=MAX_RADIUS, exclude=(), prefer_disj
     `radius` and preferring the smallest total move in bucket steps, then schema order. Edits must stay
     admissible; for deny, the edited facts must touch every failed rule. Candidate edits whose partial
     record has no admissible completion are skipped. exclude: fact names never edited, or a
-    {fact: value} dict of edits never made. prefer_disjoint: an edit (or fact names); a flip sharing no
+    {fact: value} dict of edits never made, which also rules out every edit of exactly its fact set
+    (the same facts moved to other values). prefer_disjoint: an edit (or fact names); a flip sharing no
     fact with it wins at any radius, else the smallest overlapping flip is returned, and the result
     gains "disjoint": bool. Found: {"kind": "replace", "edits", "radius", "certified_minimum": True,
     "target"} (minimal among disjoint flips when "disjoint" is True). Certified absence within the
@@ -469,7 +470,7 @@ def min_flip(pol, facts, target=None, radius=MAX_RADIUS, exclude=(), prefer_disj
             best = {}
             for combo in itertools.combinations(cand, k):
                 tick(pol)
-                if any(not set(combo) & set(r.all_refs) for r in failed):
+                if pairs and set(combo) == set(pairs) or any(not set(combo) & set(r.all_refs) for r in failed):
                     continue
                 alts = [[v for v in pol.dom[n] if v != known[n] and pairs.get(n) != v] for n in combo]
                 for vals in itertools.product(*alts):

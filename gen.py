@@ -12,9 +12,11 @@ value itself would just restore the base). Edit kinds: replace (flip, invariant)
 lists what the view's text states (never a default). Prose comes from fact-sentence templates, and each
 variant keeps its base's sentences except those of its edited facts. With --prose gemini each base case is
 rewritten once as fact-tagged sentences, checked by re-extraction (the untagged sentences alone must state
-no fact), and a failed check drops the whole base family; every swapped-in template sentence is then
-restyled against the base file and re-extracted alone (seam_template lists the ones that failed and stay
-template). Items whose text repeats an earlier one in the same view are dropped.
+no fact), and a failed check drops the whole base family; a rewritten enum sentence without a token that
+distinguishes its value's name from the sibling values (e.g. "an academic institution" for university)
+falls back to its template sentence. Every swapped-in template sentence is then restyled against the base
+file and re-extracted alone, under the same enum test (seam_template lists the ones that stay template).
+Items whose text repeats an earlier one in the same view are dropped.
 
 Splits are by template family: 50/10/40 train/dev/test_policy inside grant, trial and review, the whole
 permit domain is test_domain, and one family per domain that carries a held-out exception/default
@@ -54,7 +56,10 @@ SLICE = {"train": "train", "dev": "dev", "test_policy": "unseen_family_train_voc
 EDIT_KIND = {"base": None, "flip": "replace", "invariant": "replace", "missing": "remove", "reveal": "add"}
 P_APPROVE, P_CD, P_DEFAULT, MIN_FAM_DIST = 0.43, 0.6, 0.25, 4
 FRAC_TEST, FRAC_DEV = 0.4, 0.1
-DOM_CACHE, GEM, GEM_LOCK = {}, {"usage": collections.Counter(), "seam": collections.Counter()}, threading.Lock()
+DOM_CACHE, GEM, GEM_LOCK = {}, {"usage": collections.Counter(), "seam": collections.Counter(),
+        "lossy": collections.Counter()}, threading.Lock()
+STOP = set("a an the of to in on for by at is are was were be been has have had and or with from as that this "
+           "it its any all no not per their there which who whose would will than into each one set".split())
 
 
 def load_domain(name):
@@ -110,6 +115,31 @@ class Fmt(string.Formatter):
             ws = [names[x] for x in v]
             return ", ".join(ws[:-1]) + " or " + ws[-1]
         return super().format_field(v, spec)
+
+
+def dist_pats(f):
+    """
+    Returns {value: regexes} for an enum fact spec, one per name token no sibling value's name has (short tokens
+    with their predecessor).
+    """
+    tk = {v: re.findall(r"[A-Za-z0-9]+", nm) for v, nm in f["names"].items()}
+    out = {}
+    for v, ws in tk.items():
+        other = {w for u, xs in tk.items() if u != v for w in xs}
+        pats = []
+        for i, w in enumerate(ws):
+            if w in other or w.lower() in STOP and len(w) > 1:
+                continue
+            pats.append(rf"\b{ws[i - 1]}[\s-]*{w}\b" if len(w) <= 2 and i else rf"\b{w}(s|es)?\b")
+        out[v] = pats
+    return out
+
+
+def names_value(f, v, s):
+    """
+    Returns whether sentence s carries a distinguishing name token of value v of enum fact spec f.
+    """
+    return any(re.search(p, s, re.I) for p in dist_pats(f)[v])
 
 
 def template_refs(dom, t, exc=None):
@@ -667,7 +697,8 @@ def main():
             the untagged (header and color) sentences alone state no fact, dropped ([], 1) if not,
             kept as template prose once a rate limit or outage has set `limited`. Each template sentence a
             variant swaps in is then restyled by Gemini against the base file and kept only if, read alone, it
-            states exactly its fact with the edited value; otherwise it stays the template sentence.
+            states exactly its fact with the edited value; otherwise it stays the template sentence. A rewritten
+            enum sentence (base or swapped in) without a distinguishing name token of its value stays template.
             """
             base = next((r for r in rs if r["variant"] == "base" and r["view"] == "prose"), None)
             if limited.is_set() or base is None:
@@ -723,6 +754,8 @@ def main():
 
             keys = [k for k in list(dom["facts"]) + list(dom["derived_facts"]) if "_" in k]
             leaky = lambda s: bool(re.match(r"\s*[a-z_]+\s*:", s) or any(re.search(rf"\b{k}\b", s) for k in keys))
+            lossy = lambda n, v, s: dom["facts"].get(n, {}).get("type") == "enum" and \
+                    not names_value(dom["facts"][n], v, s)
             try:
                 back = {n: conv(n, raw.get(n)) for n in dom["facts"]}
             except (ValueError, TypeError, AttributeError) as e:
@@ -736,7 +769,9 @@ def main():
                       if leak else {n: (back[n], base["facts"].get(n)) for n in dom["facts"]
                                     if back[n] != base["facts"].get(n)})
                 return [], 1
-            gs = [{**x, "sentence": y["sentence"]} for x, y in zip(base["case_sentences"], new)]
+            gs = [x if lossy(x["fact"], x["value"], y["sentence"]) else {**x, "sentence": y["sentence"]}
+                  for x, y in zip(base["case_sentences"], new)]
+            nl = sum(x is y for x, y in zip(gs, base["case_sentences"]) if x["fact"])
             orig, sw = {x["fact"]: x["sentence"] for x in gs if x["fact"]}, {}
             for r in rs:
                 if r["view"] != "table":
@@ -767,13 +802,17 @@ def main():
                     for ((f, v), _), s, got in zip(todo, out, chk):
                         try:
                             if s and {k: conv(k, w) for k, w in got.items() if w is not None} == {f: v}:
-                                fix[f, v] = s
+                                if not lossy(f, v, s):
+                                    fix[f, v] = s
+                                else:
+                                    nl += 1
                         except (ValueError, TypeError, AttributeError):
                             pass
             except (errors.APIError, RuntimeError, ValueError, TypeError) as e:
                 print("seam rewrite fell back to template sentences for", bid, e)
             with GEM_LOCK:
                 GEM["seam"].update({"rewritten": len(fix), "template": len(todo) - len(fix)})
+                GEM["lossy"]["enum"] += nl
             for r in rs:
                 if r["view"] != "table":
                     r["case_sentences"] = [{**x, "sentence": fix[x["fact"], x["value"]]}
@@ -840,7 +879,8 @@ def main():
               f"rate limited: {limited.is_set()}, usage {dict(GEM['usage'])}")
         sm = GEM["seam"]
         print(f"seam: {sm['rewritten']} swapped sentences restyled, {sm['template']} kept as template "
-              f"({sm['template'] / max(1, sum(sm.values())):.1%} fallback)")
+              f"({sm['template'] / max(1, sum(sm.values())):.1%} fallback), {GEM['lossy']['enum']} lossy enum "
+              f"sentences kept as template")
 
 
 if __name__ == "__main__":

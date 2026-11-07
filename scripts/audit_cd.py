@@ -7,9 +7,12 @@ tagged sentence), and whether the engine's two cd witnesses still decide approve
 It then lists every enum value's renderings (yaml templates and Gemini sentences in all slices) and flags
 those that carry no token distinguishing the value from its siblings (a hypernym such as "an academic
 institution" for university, or an omitted value). With --run it adds the model's decisions on cd items.
-Prints a markdown summary, then --sample stratified cd items for reading.
+Prints a markdown summary, then --sample stratified cd items for reading. --flagged PATH writes the ids of the
+items to drop from training, one per line: every item (all slices and prose views) with a lossy enum sentence,
+and every cd item whose text presupposes the object a missing zero guard covers (zero_guard_presupposed).
 
 Usage: python scripts/audit_cd.py data/v1.jsonl --run runs/v1-lite.jsonl --sample 30 --seed 0
+        [--flagged data/v1.flagged.txt]
 """
 import argparse
 import collections
@@ -21,10 +24,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 import engine as E  # noqa: E402
-from gen import Fmt, load_domain, policy_for  # noqa: E402
+from gen import STOP, Fmt, dist_pats, load_domain, names_value, policy_for  # noqa: E402
 
-STOP = set("a an the of to in on for by at is are was were be been has have had and or with from as that this "
-           "it its any all no not per their there which who whose would will than into each one set".split())
 NEG = re.compile(r"\b(no|not|none|never|without|lacks?|lacking|absent|neither|nor|missing|omits?|declined|yet to|"
                  r"zero|exclud\w*|omit\w*|absence of|free of|lack\w*|unavailable|fail\w*|pending|unspecified|undecided|"
                  r"(?:be|been) (?:decided|determined)|under (?:internal )?consideration|has not|have not|"
@@ -105,23 +106,6 @@ def nums(s):
     return out
 
 
-def dist_pats(f):
-    """
-    Returns {value: regexes}, one per name token no sibling value's name has (short tokens with their predecessor).
-    """
-    tk = {v: re.findall(r"[A-Za-z0-9]+", nm) for v, nm in f["names"].items()}
-    out = {}
-    for v, ws in tk.items():
-        other = {w for u, xs in tk.items() if u != v for w in xs}
-        pats = []
-        for i, w in enumerate(ws):
-            if w in other or w.lower() in STOP and len(w) > 1:
-                continue
-            pats.append(rf"\b{ws[i - 1]}[\s-]*{w}\b" if len(w) <= 2 and i else rf"\b{w}(s|es)?\b")
-        out[v] = pats
-    return out
-
-
 def renders(dom, n, v):
     """
     Returns the yaml template sentences for fact n at value v.
@@ -145,7 +129,7 @@ def value_ok(dom, n, v, s):
         tt, ff = (set().union(*map(toks, f[k])) for k in ("say_true", "say_false"))
         return (len(toks(s) & (tt - ff)) >= len(toks(s) & (ff - tt))) == v
     if f.get("type") == "enum":
-        return any(re.search(p, s, re.I) for p in dist_pats(f)[v])
+        return names_value(f, v, s)
     got = nums(s)
     return any(nums(t) - {2027} <= got for t in renders(dom, n, v))
 
@@ -155,6 +139,19 @@ def kind(dom, n):
     Returns "bool", "enum" or "number" for fact n of a domain (derived facts are numbers).
     """
     return {"bool": "bool", "enum": "enum"}.get((dom["facts"].get(n) or {}).get("type"), "number")
+
+
+def presupposed(r):
+    """
+    Returns the sentence of a cd record that states the false side of a zero guard ("supp_mb == 0 or x") whose
+    guard fact is missing and needed, so the text presupposes the guarded object, else None.
+    """
+    miss = {n for n, st in r["fact_states"].items() if st["state"] == "missing"}
+    for q in r["policy_spec"]["rules"]:
+        m = re.fullmatch(r"(\w+) == 0 or (\w+)", q.get("cond", ""))
+        if m and m[1] in miss and m[1] in r["gold"]["needs_facts"] and r["facts"].get(m[2]) is False:
+            return next(x["sentence"] for x in r["case_sentences"] if x["fact"] == m[2])
+    return None
 
 
 def main():
@@ -168,8 +165,10 @@ def main():
     ap.add_argument("--run", help="answer run jsonl whose decisions on cd items are reported")
     ap.add_argument("--sample", type=int, default=0)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--flagged", metavar="PATH", help="writes the ids of lossy-enum and zero_guard_presupposed items")
     a = ap.parse_args()
     recs = [json.loads(line) for line in open(a.data)]
+    byid = {r["id"]: r for r in recs}
     doms = {d: load_domain(d) for d in sorted({r["domain"] for r in recs})}
     lex = {d: lexicon(dom) for d, dom in doms.items()}
     pop = [r for r in recs if r["slice"] == a.slice and r["view"] == a.view]
@@ -202,13 +201,9 @@ def main():
         if any(set(r["fact_sources"].get(n, ())) & set(miss) for n in tagged):
             c["derived_from_missing_stated"] += 1
             bad["derived_from_missing_stated"].append((r["id"], miss))
-        for q in r["policy_spec"]["rules"]:
-            m = re.fullmatch(r"(\w+) == 0 or (\w+)", q.get("cond", ""))
-            if m and m[1] in miss and m[1] in r["gold"]["needs_facts"] and r["facts"].get(m[2]) is False:
-                c["zero_guard_presupposed"] += 1
-                bad["zero_guard_presupposed"].append((r["id"], next(x["sentence"] for x in sents
-                                                                    if x["fact"] == m[2])))
-                break
+        if zs := presupposed(r):
+            c["zero_guard_presupposed"] += 1
+            bad["zero_guard_presupposed"].append((r["id"], zs))
         w, ok = r["gold"]["cd_witnesses"], E.decide(pol, r["facts"])["decision"] == "cannot determine"
         for d in ("approve", "deny"):
             ok = ok and w[d] is not None and set(w[d]) <= set(miss) and E.decide(pol, {**r["facts"], **w[d]})[
@@ -242,10 +237,10 @@ def main():
                 continue
             pats = dist_pats(f)
             for v in f["values"]:
-                yml = [s for s in renders(dom, n, v) if not any(re.search(p, s, re.I) for p in pats[v])]
+                yml = [s for s in renders(dom, n, v) if not names_value(f, v, s)]
                 ss = seen[n, v]
-                lost = {s: k for s, k in ss.items() if not any(re.search(p, s, re.I) for p in pats[v])}
-                wrong = {s for s in ss for u in f["values"] if u != v and any(re.search(p, s, re.I) for p in pats[u])}
+                lost = {s: k for s, k in ss.items() if not names_value(f, v, s)}
+                wrong = {s for s in ss for u in f["values"] if u != v and names_value(f, u, s)}
                 print(f"- {d}.{n}={v} ({f['names'][v]!r}, tokens {pats[v]}): yaml lossy {len(yml)}/{len(f['say'])}, "
                       f"Gemini {len(ss)} distinct / {sum(ss.values())} uses, lossy {len(lost)} distinct / "
                       f"{sum(lost.values())} uses, names another value {len(wrong)}")
@@ -267,6 +262,13 @@ def main():
         m[1]) == 0 and m[2] in r["stated_facts"] for q in r["policy_spec"]["rules"])]
     print(f"\nitems in the slice whose text states a zero guard (e.g. 0 MB) next to a sentence presupposing the "
           f"guarded object (e.g. its logos): {len(zg)}/{len(pop)}")
+    if a.flagged:
+        fl = sorted(r["id"] for r in recs if r["case_sentences"] and (
+            any((x["fact"], x["sentence"]) in lossy_ids[r["domain"]] for x in r["case_sentences"]) or
+                r["gold"]["decision"] == "cannot determine" and presupposed(r)))
+        Path(a.flagged).write_text("".join(i + "\n" for i in fl))
+        print(f"\nflagged {len(fl)} items -> {a.flagged}: " + ", ".join(f"{k} {v}" for k, v in sorted(
+            collections.Counter((byid[i]["split"], byid[i]["view"]) for i in fl).items())))
     if a.run:
         out = {}
         for line in open(a.run):

@@ -167,8 +167,8 @@ def test_min_flip_skips_edits_without_completion():
 
 def test_min_flip_exclude_and_prefer_disjoint():
     """
-    Checks that exclude bars fact names or (fact, value) edits and prefer_disjoint takes a disjoint flip at a
-    larger radius, else the smallest overlapping one.
+    Checks that exclude bars fact names, or (fact, value) edits plus every edit of exactly their fact set, and
+    prefer_disjoint takes a disjoint flip at a larger radius, else the smallest overlapping one.
     """
     pol = E.Policy("p", {"a": V5, "b": V5, "c": BOOL},
                    [{"id": "R1", "kind": "require", "cond": "a <= 2"},
@@ -182,6 +182,7 @@ def test_min_flip_exclude_and_prefer_disjoint():
     one = E.Policy("p", {"a": V5}, [{"id": "R1", "kind": "require", "cond": "a <= 2"}])
     mf = E.min_flip(one, {"a": 2}, prefer_disjoint={"a": 4})
     assert mf["edits"] == {"a": 4} and mf["disjoint"] is False and mf["radius"] == 1
+    assert E.min_flip(one, {"a": 2}, exclude={"a": 4})["edits"] is None
     alt = E.Policy("p", {"a": V5, "b": V5, "c": BOOL},
                    [{"id": "R1", "kind": "require", "cond": "a <= 2 or b >= 6 and c"}])
     mf = E.min_flip(alt, {"a": 6, "b": 2, "c": False}, prefer_disjoint={"a": 2})
