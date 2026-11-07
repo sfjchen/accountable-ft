@@ -4,7 +4,7 @@ __pycache__/
 .venv/
 *.log
 .DS_Store
-# too big for git: raw v1 (144 MB, the .gz is committed), the old v1.0, the 14k-file Gemini cache (tarball on the data-v1 release)
+# over GitHub limits: raw v1 (the .gz is committed), the old v1.0, the Gemini cache (tarball on the data-v1 release)
 data/v1.jsonl
 data/v1.0.jsonl
 data/.gemini_cache/

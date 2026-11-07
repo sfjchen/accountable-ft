@@ -1,34 +1,7 @@
-"""Generates policy/case items with engine gold labels for the accountable-ft project.
-
-For each domain in domains/*.yaml it samples template families (which rule templates, exceptions and
-defaults a policy uses, before thresholds), instantiates each family as several policies with fresh
-thresholds and rule order, then samples base cases with a target approve/deny mix and three variants
-per base: flip (engine minimal flip), invariant (edit outside every sufficient set) and missing (one
-fact removed, which may trigger a default), plus a reveal variant for each cannot-determine missing
-item (the cheapest deciding add over the min_reveal facts whose facts no sibling has, since the removed
-value itself would just restore the base). Edit kinds: replace (flip, invariant), remove (missing), add
-(reveal). Every item is written in three aligned views: "table" (fact list with derived values), "prose"
-(derived values stated) and "prose_derive" (only source facts, so the reader must derive); stated_facts
-lists what the view's text states (never a default). Prose comes from fact-sentence templates, and each
-variant keeps its base's sentences except those of its edited facts. With --prose gemini each base case is
-rewritten once as fact-tagged sentences, checked by re-extraction (the untagged sentences alone must state
-no fact), and a failed check drops the whole base family; a rewritten enum sentence without a token that
-distinguishes its value's name from the sibling values (e.g. "an academic institution" for university)
-falls back to its template sentence. Every swapped-in template sentence is then restyled against the base
-file and re-extracted alone, under the same enum test (seam_template lists the ones that stay template).
-Items whose text repeats an earlier one in the same view are dropped.
-
-Splits are by template family: 50/10/40 train/dev/test_policy inside grant, trial and review, the whole
-permit domain is test_domain, and one family per domain that carries a held-out exception/default
-combination goes to test with holdout_structure true. "slice" names the evaluation population.
-
-Eval helpers: policy_for(record) rebuilds the Policy, render_case(...) re-renders an edited case aligned.
-
-Each base case draws from its own RNG (seed, domain, policy, case), so a search that runs over its time
-budget changes only that case's variants, never the cases after it. Gemini replies are cached on disk
-(--cache) keyed by model and prompt, so an interrupted run resumes, and --workers calls run in parallel.
-
-Usage: python gen.py --domains all --n-policies 4 --cases-per-family 10 --seed 0 --prose template --out data/smoke.jsonl
+"""Generates engine-labeled policy and case items from domains/*.yaml in 3 aligned views (table, prose,
+prose_derive), with flip, invariant, missing and reveal variants, family-level splits and optional Gemini prose.
+Entry points: main (generation, --report for stats and the blind sample, --audit for the cannot-determine audit),
+policy_for and render_case (used by infer.py and evaluate.py).
 """
 import argparse
 import collections
@@ -37,6 +10,7 @@ import datetime
 import hashlib
 import itertools
 import json
+import os
 import random
 import re
 import string
@@ -56,6 +30,9 @@ SLICE = {"train": "train", "dev": "dev", "test_policy": "unseen_family_train_voc
 EDIT_KIND = {"base": None, "flip": "replace", "invariant": "replace", "missing": "remove", "reveal": "add"}
 P_APPROVE, P_CD, P_DEFAULT, MIN_FAM_DIST = 0.43, 0.6, 0.25, 4
 FRAC_TEST, FRAC_DEV = 0.4, 0.1
+DECISIONS = ["approve", "deny", "cannot determine"]
+# USD per 1M input / output tokens (output includes thinking), qwen at the OpenRouter PrimeIntellect list price
+PRICES = {"gemini-3.5-flash-lite": (0.30, 2.50), "qwen/qwen3.5-9b": (0.17, 0.25)}
 DOM_CACHE, GEM, GEM_LOCK = {}, {"usage": collections.Counter(), "seam": collections.Counter(),
         "lossy": collections.Counter()}, threading.Lock()
 STOP = set("a an the of to in on for by at is are was were be been has have had and or with from as that this "
@@ -63,10 +40,7 @@ STOP = set("a an the of to in on for by at is are was were be been has have had 
 
 
 def load_domain(name):
-    """
-    Returns the parsed domain YAML for `name`, cached, with a rule-free Policy over its facts and derived
-    facts under "_pol" (for derived_values).
-    """
+    """Returns the parsed domain yaml, cached, with a rule-free Policy over its facts under "_pol"."""
     if name not in DOM_CACHE:
         dom = yaml.safe_load((ROOT / "domains" / f"{name}.yaml").read_text())
         dom["_pol"] = E.Policy(name, dom["facts"], [], (), {n: d["expr"] for n, d in dom["derived_facts"].items()})
@@ -76,22 +50,17 @@ def load_domain(name):
 
 class Fmt(string.Formatter):
     """
-    Formats rule and case templates. Specs: money, date (day offset), ago (year = ref year - v),
-    k (thousands), t (tonnes from kg), e (enum display name of the current fact), e:<fact>, before and
-    after (v days before or after, e.g. "3 days after", "on the same day as", for signed day gaps).
+    Formats rule and case templates. Specs: money, date (day offset), ago (ref year - v), k (thousands), t (tonnes
+    from kg), e or e:<fact> (enum display name), before and after (signed day gaps such as "3 days after").
     """
 
     def __init__(self, dom, fact=None):
-        """
-        Builds a formatter bound to a domain vocabulary and optionally the fact being rendered.
-        """
+        """Binds the formatter to a domain vocabulary and optionally the fact being rendered."""
         super().__init__()
         self.dom, self.fact = dom, fact
 
     def format_field(self, v, spec):
-        """
-        Returns the display string for value v under the given spec.
-        """
+        """Returns the display string for value v under spec."""
         ref = self.dom["ref_date"]
         if spec == "money":
             return f"${v:,}"
@@ -118,10 +87,7 @@ class Fmt(string.Formatter):
 
 
 def dist_pats(f):
-    """
-    Returns {value: regexes} for an enum fact spec, one per name token no sibling value's name has (short tokens
-    with their predecessor).
-    """
+    """Returns {value: regexes} for an enum fact, one per name token no sibling value's name has."""
     tk = {v: re.findall(r"[A-Za-z0-9]+", nm) for v, nm in f["names"].items()}
     out = {}
     for v, ws in tk.items():
@@ -136,16 +102,12 @@ def dist_pats(f):
 
 
 def names_value(f, v, s):
-    """
-    Returns whether sentence s carries a distinguishing name token of value v of enum fact spec f.
-    """
+    """Returns whether sentence s carries a distinguishing name token of value v of enum fact f."""
     return any(re.search(p, s, re.I) for p in dist_pats(f)[v])
 
 
 def template_refs(dom, t, exc=None):
-    """
-    Returns the source facts a rule template (and optionally one of its exceptions) reads.
-    """
+    """Returns the source facts a rule template (and optionally one of its exceptions) reads."""
     src = t["cond"] + " " + (t["unless"][exc]["cond"] if exc is not None else "")
     out = set()
     for w in re.findall(r"[a-z_][a-z0-9_]*", src):
@@ -158,11 +120,10 @@ def template_refs(dom, t, exc=None):
 
 def sample_family(dom, rng, hold, want_hold, prev=()):
     """
-    Returns a template family {"core": [(key, exception index or None)], "derived": [keys],
-    "defaults": [facts], "parts": [structural parts]} with 2-4 exceptions, at least 2 scoped rules,
-    1-2 derived-fact rules, 1-2 defaults on live facts, 8-15 rules and at most MAX_FACTS facts read.
-    want_hold forces a held-out combination in, otherwise every held-out combination is kept out.
-    Families within MIN_FAM_DIST parts of one in `prev` are rejected as near-duplicates.
+    Returns a template family {"core", "derived", "defaults", "parts"}: 5-8 core templates with 2-4 exceptions and
+    2+ scoped rules, 1-2 derived-fact rules, 1-2 defaults on live facts, 8-15 rules, at most MAX_FACTS facts.
+    want_hold forces a held-out exception/default pair in, else keeps all out; families within MIN_FAM_DIST parts of
+    one in prev are rejected.
     """
     for _ in range(50000):
         core = rng.sample(dom["rules"], rng.randint(5, min(8, len(dom["rules"]))))
@@ -195,18 +156,15 @@ def sample_family(dom, rng, hold, want_hold, prev=()):
 
 
 def sample_params(params, rng, vals):
-    """
-    Adds sampled template parameters to vals: lists are choices, strings are expressions over earlier ones.
-    """
+    """Adds sampled template parameters to vals: lists are choices, strings are expressions over earlier ones."""
     for k, p in (params or {}).items():
         vals[k] = rng.choice(p) if isinstance(p, list) else eval(p, {"__builtins__": {}}, dict(vals))
 
 
 def instantiate(dname, fam, pid, rng):
     """
-    Returns a Policy for a template family with sampled thresholds and shuffled rule order. Sets
-    .domain, .text, .labels and .near (rule id -> near-miss lambda). Every rule must be able both to
-    hold and to fail, and approval must be reachable.
+    Returns a Policy for a family with sampled thresholds and shuffled rule order, with .domain, .spec, .text,
+    .labels and .near set. Every rule must be able to hold and to fail, and approval must be reachable.
     """
     dom = load_domain(dname)
     byk = {t["key"]: t for t in dom["rules"] + dom["derived"]}
@@ -255,10 +213,7 @@ def instantiate(dname, fam, pid, rng):
 
 
 def policy_for(record):
-    """
-    Returns the engine Policy for a record, rebuilt from its "policy_spec" (rules, validity conditions,
-    derived facts) and the domain's fact schema, with .domain, .spec, .labels, .near and .text set.
-    """
+    """Returns the Policy of a record, rebuilt from its policy_spec and the domain schema, with the same attributes."""
     sp, dom = record["policy_spec"], load_domain(record["domain"])
     pol = E.Policy(record["policy_id"], dom["facts"], sp["rules"], sp["valid"], sp["derived"])
     pol.domain, pol.spec, pol.labels, pol.text = record["domain"], sp, record["fact_labels"], record["policy_text"]
@@ -269,15 +224,12 @@ def policy_for(record):
 
 def sample_case(pol, rng, want):
     """
-    Returns a complete admissible fact dict whose decision is `want`. Repairs a random draw until every
-    rule holds, sometimes moves a rule into its waived state or a scoped rule into its near-miss state,
-    then for deny breaks 1-2 rules.
+    Returns a complete admissible fact dict with decision want: a random draw repaired until every rule holds, some
+    rules moved into their waived or near-miss state, then for deny 1-2 rules broken.
     """
 
     def bad(g):
-        """
-        Returns the number of failed rules plus 1 if g violates a validity condition.
-        """
+        """Returns the number of failed rules plus 1 for a validity violation."""
         return sum(not r.holds(g) for r in pol.requires) + (not pol.ok(g))
 
     vrefs = sorted({n for _, refs in pol.valid for n in refs})
@@ -316,10 +268,7 @@ def sample_case(pol, rng, want):
 
 
 def case_facts(policy, facts):
-    """
-    Returns (domain name, domain, stated source facts, derived values) for a Policy, record dict or domain
-    name and a fact dict.
-    """
+    """Returns (domain name, domain, stated source facts, derived values) for a Policy, record or domain name."""
     dname = policy["domain"] if isinstance(policy, dict) else getattr(policy, "domain", policy)
     dom = load_domain(dname)
     stated = {n: v for n, v in facts.items() if n in dom["facts"] and v is not None}
@@ -328,11 +277,10 @@ def case_facts(policy, facts):
 
 def case_sentences(policy, facts, seed, view="prose", base=None):
     """
-    Returns the case as [{"fact", "value", "sentence"}] (fact None for header and color sentences) for
-    the prose views. The seed (base item id, any ":view" suffix stripped) fixes header, phrasings, order
-    and color. With `base` (the base record's tagged sentences, e.g. a Gemini rewrite) it keeps the base
-    order and wording, swaps in the template sentence for each fact whose value differs from the base,
-    and drops sentences of facts that are unstated here (derived ones too in prose_derive).
+    Returns the prose case as [{"fact", "value", "sentence"}] (fact None for header and color), with header,
+    phrasing, order and color fixed by the base id in seed. With base (the base record's sentences, e.g. a Gemini
+    rewrite) it keeps the base wording, swaps in the template sentence of each fact whose value differs and drops
+    sentences of unstated facts.
     """
     _, dom, stated, dv = case_facts(policy, facts)
     rng = random.Random(str(seed).split(":")[0])
@@ -372,8 +320,8 @@ def case_sentences(policy, facts, seed, view="prose", base=None):
 
 def render_case(policy, facts, seed, prose="template", view="prose", base=None):
     """
-    Returns the case text for `facts` in `view`; prose views join case_sentences (pass the base record's
-    "case_sentences" as `base` to stay aligned with a Gemini rewrite, required for prose="gemini").
+    Returns the case text of facts in view; prose views need the base record's case_sentences as base when
+    prose="gemini".
     """
     dname, dom, stated, dv = case_facts(policy, facts)
     if prose == "gemini" and base is None and view != "table":
@@ -393,12 +341,10 @@ def render_case(policy, facts, seed, prose="template", view="prose", base=None):
 
 def gold_for(pol, facts, rid=None):
     """
-    Returns the gold dict for a fact dict: decision, trace, all minimal sufficient sets (always at source
-    level: derived facts never appear) with the minimum-cardinality ones, necessary facts, the fixed flip
-    target and min_flip, defaults,
-    case-level distractors (facts outside every minimal sufficient set, and holding rules that read such
-    a fact), and for "cannot determine" the two witness completions, the missing facts behind the
-    undecided rules and min_reveal. Searches over budget mark the gold uncertified with reasons.
+    Returns the gold labels of a record: decision, trace, minimal sufficient sets (source level) with the minimum
+    ones, necessary facts, flip target and min_flip, defaults, case-level distractor facts and rules, and for
+    "cannot determine" the witnesses, needs_facts and min_reveal. Over-budget searches mark it uncertified with
+    reasons.
     """
     d = E.decide(pol, facts, rid)
     cd, unc = d["decision"] == "cannot determine", []
@@ -431,59 +377,53 @@ def gold_for(pol, facts, rid=None):
             "uncertified": bool(unc), "uncertified_reasons": unc}
 
 
-def gemini_client():
-    """
-    Builds the Vertex (GEM["vertex"]) or API-key client once and sets GEM["ids"] to the pinned model
-    (GEM["model"]) or to the flash-class candidates, cheapest first.
-    """
+def load_env():
+    """Fills unset environment variables (API keys, GCP_PROJECT) from ~/.config/cs224v/.env and returns its path."""
+    path = Path.home() / ".config" / "cs224v" / ".env"
+    for ln in path.read_text().splitlines() if path.exists() else []:
+        if m := re.match(r"\s*(?:export\s+)?(\w+)\s*=\s*['\"]?([^'\"\s#]*)", ln):
+            os.environ.setdefault(m[1], m[2])
+    return path
+
+
+def gemini_client(vertex):
+    """Returns a google-genai client on Vertex AI in location vertex (ADC, GCP_PROJECT) or on GEMINI_API_KEY."""
     from google import genai
 
-    path, env = Path.home() / ".config" / "cs224v" / ".env", {}
-    for ln in path.read_text().splitlines() if path.exists() else []:
-        if "=" in ln and not ln.strip().startswith("#"):
-            k, v = ln.split("=", 1)
-            env[k.strip()] = v.strip().strip("'\"")
-    if GEM.get("vertex"):
-        import google.auth
+    path, key = load_env(), "GCP_PROJECT" if vertex else "GEMINI_API_KEY"
+    if not os.environ.get(key):
+        raise RuntimeError(f"no {key} in the environment or {path}")
+    if not vertex:
+        return genai.Client(api_key=os.environ[key])
+    import google.auth
 
-        if not env.get("GCP_PROJECT"):
-            raise RuntimeError(f"no GCP_PROJECT in {path}")
-        creds, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"],
-                                       quota_project_id=env["GCP_PROJECT"])
-        GEM["client"] = genai.Client(vertexai=True, project=env["GCP_PROJECT"], location=GEM["vertex"],
-                                     credentials=creds)
-        models = [] if GEM.get("model") else GEM["client"].models.list(config={"query_base": True})
-    else:
-        if not env.get("GEMINI_API_KEY"):
-            raise RuntimeError(f"no GEMINI_API_KEY in {path}")
-        GEM["client"] = genai.Client(api_key=env["GEMINI_API_KEY"])
-        models = [] if GEM.get("model") else GEM["client"].models.list()
-    if GEM.get("model"):
-        GEM["ids"] = [GEM["model"]]
-        return
-    ids = []
-    for m in models:
-        mid = m.name.split("/")[-1]
-        acts = m.supported_actions
-        if (acts is None or "generateContent" in acts) and "flash" in mid and \
-          not re.search(r"image|tts|live|audio|embed|exp|preview|latest|thinking|native|computer", mid):
-            ids.append(mid)
-    ver = {mid: float((re.search(r"gemini-(\d+(?:\.\d+)?)", mid) or [0, 0])[1]) for mid in ids}
-    GEM["ids"] = sorted(ids, key=lambda mid: ("lite" not in mid, -ver[mid], len(mid)))
-    print("flash-class candidates, cheapest first:", ", ".join(GEM["ids"]))
+    creds, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"],
+                                   quota_project_id=os.environ[key])
+    return genai.Client(vertexai=True, project=os.environ[key], location=vertex, credentials=creds)
 
 
 def gemini_call(prompt, json_out=False):
     """
-    Returns one Gemini reply. Replies are cached as JSON files under GEM["cache"] keyed by model, mode and
-    prompt, with their token usage, so reruns are free. Counts calls and tokens (fresh and cached) in
-    GEM["usage"], retries server errors and rate limits with backoff, and falls through unavailable models.
+    Returns one Gemini reply, cached on disk under GEM["cache"] by model, mode and prompt with its token usage.
+    Counts usage in GEM["usage"], retries server errors and rate limits with backoff, and falls through unavailable
+    models (GEM["ids"], the pinned model or the flash-class ones, cheapest first).
     """
     from google.genai import errors, types
 
     with GEM_LOCK:
         if "client" not in GEM:
-            gemini_client()
+            GEM["client"] = gemini_client(GEM.get("vertex"))
+            GEM["ids"] = [GEM["model"]] if GEM.get("model") else []
+            for m in [] if GEM.get("model") else GEM["client"].models.list(
+                    **({"config": {"query_base": True}} if GEM.get("vertex") else {})):
+                mid, acts = m.name.split("/")[-1], m.supported_actions
+                if (acts is None or "generateContent" in acts) and "flash" in mid and \
+                  not re.search(r"image|tts|live|audio|embed|exp|preview|latest|thinking|native|computer", mid):
+                    GEM["ids"].append(mid)
+            if not GEM.get("model"):
+                ver = {mid: float((re.search(r"gemini-(\d+(?:\.\d+)?)", mid) or [0, 0])[1]) for mid in GEM["ids"]}
+                GEM["ids"].sort(key=lambda mid: ("lite" not in mid, -ver[mid], len(mid)))
+                print("flash-class candidates, cheapest first:", ", ".join(GEM["ids"]))
     cfg = types.GenerateContentConfig(temperature=0.7 if not json_out else 0.0,
                                       response_mime_type="application/json" if json_out else "text/plain")
     tries = 0
@@ -532,11 +472,361 @@ def gemini_call(prompt, json_out=False):
     raise RuntimeError("no usable Gemini model")
 
 
+def md_table(rows, head):
+    """Returns a markdown table for a header list and row lists."""
+    return "\n".join(["| " + " | ".join(head) + " |", "|" + "---|" * len(head)] +
+                     ["| " + " | ".join(str(x) for x in r) + " |" for r in rows])
+
+
+def crosstab(recs, rkey, ckey, cols=None):
+    """Returns a markdown table counting records by rkey (rows) and ckey (columns), with totals."""
+    c = collections.Counter((rkey(r), ckey(r)) for r in recs)
+    rows, cols = sorted({k[0] for k in c}), cols or sorted({k[1] for k in c})
+    body = [[rv] + [c[rv, cv] for cv in cols] + [sum(c[rv, cv] for cv in cols)] for rv in rows]
+    body.append(["total"] + [sum(c[rv, cv] for rv in rows) for cv in cols] + [sum(c.values())])
+    return md_table(body, [""] + list(cols) + ["total"])
+
+
+def report(a):
+    """Writes <data>.stats.md (counts, balance, families, Gemini drops and spend) and the blind validation sample."""
+    src = Path(a.report)
+    recs = [json.loads(ln) for ln in src.open()]
+    pro = [r for r in recs if r["view"] == "prose"]
+    base = [r for r in pro if r["variant"] == "base"]
+    dec = lambda r: r["gold"]["decision"]
+    fams = collections.defaultdict(set)
+    for r in pro:
+        fams[r["domain"], r["slice"]].add(r["template_family"])
+    calls = tin = tout = 0
+    for p in Path(a.cache).glob("*.json") if a.cache and Path(a.cache).exists() else []:
+        u = json.loads(p.read_text())["usage"]
+        calls, tin, tout = calls + 1, tin + u["in"], tout + u["out"] + u["think"]
+    pin, pout = PRICES["gemini-3.5-flash-lite"]
+    usd = tin / 1e6 * pin + tout / 1e6 * pout
+    md = [f"# {src.stem} dataset stats", "", f"Generated by `gen.py --report` from `{src.name}`.", ""]
+    md += ["```", a.cmd, "```", ""] if a.cmd else []
+    md += [f"{len(recs)} records = {len(pro)} items x 3 views, {len(base)} base cases, "
+           f"{len({r['policy_id'] for r in pro})} policies, {len({r['template_family'] for r in pro})} families.", "",
+           "## Items (all views) by domain and slice", "",
+           crosstab(recs, lambda r: r["domain"], lambda r: r["slice"]), "",
+           "## Items by view and slice", "", crosstab(recs, lambda r: r["view"], lambda r: r["slice"]), "",
+           "## Items (prose view) by variant and slice", "",
+           crosstab(pro, lambda r: r["variant"], lambda r: r["slice"]), "",
+           "## Decision balance (prose view) by slice", "", crosstab(pro, lambda r: r["slice"], dec, DECISIONS), "",
+           "## Decision balance (prose view) by variant", "", crosstab(pro, lambda r: r["variant"], dec, DECISIONS), "",
+           "## Template families by domain and slice", "",
+           md_table([[d, s, len(v)] for (d, s), v in sorted(fams.items())], ["domain", "slice", "families"]), "",
+           "Prose items per unseen family (unseen_family_train_vocab): " +
+           ", ".join(f"{k} {v}" for k, v in sorted(collections.Counter(
+               r["template_family"] for r in pro if r["slice"] == "unseen_family_train_vocab").items())), "",
+           "## Gold properties (prose view)", ""]
+    flips = collections.Counter(len(r["changed_facts"]) for r in pro if r["variant"] == "flip")
+    md += [f"- interaction bases (no single condition, 2+ sufficient sets): "
+           f"{sum(bool(r['interaction']) for r in base)} of {len(base)}",
+           f"- single-condition items: {sum(r['gold']['single_condition'] for r in pro)} of {len(pro)}",
+           "- flip radius: " + ", ".join(f"{k}: {v}" for k, v in sorted(flips.items())),
+           f"- items certified with no flip within radius 4 (none are bases): "
+           f"{sum('exhausted_radius' in r['gold']['min_flip'] for r in pro)}",
+           f"- uncertified gold (search over budget): {sum(r['gold']['uncertified'] for r in pro)}",
+           f"- holdout_structure items: {sum(r['holdout_structure'] for r in pro)}",
+           "- missing-fact effects: " + ", ".join(f"{k}: {v}" for k, v in sorted(collections.Counter(
+               r["removed_effect"] for r in pro if r["variant"] == "missing").items())), "",
+           "## Prose source (prose and prose_derive views)", "",
+           crosstab([r for r in recs if r["view"] != "table"], lambda r: r["domain"], lambda r: r["prose_source"]), ""]
+    if a.log:
+        log = Path(a.log).read_text().splitlines()
+        dl = [ln for ln in log if ln.startswith("dropped base family")]
+        dom, kept = collections.Counter(ln.split()[3].split("-")[0] for ln in dl), collections.Counter(
+            r["domain"] for r in base)
+        why = collections.Counter()
+        for ln in dl:
+            un = re.search(r"untagged sentences state ([^']+)", ln)
+            why.update(re.findall(r"'([a-z_]+)': \(", ln) or [f"untagged sentence states {un[1]}" if un else
+                                                              "tag names in prose" if "leak:" in ln else "other"])
+        rows = [[d, kept[d], dom[d], f"{dom[d] / (kept[d] + dom[d]):.1%}"] for d in sorted(kept)]
+        md += ["## Gemini check failures (base families dropped)", "",
+               md_table(rows, ["domain", "kept bases", "dropped", "drop rate"]), "",
+               "Mismatched facts: " + ", ".join(f"{k} {v}" for k, v in why.most_common()) +
+               f". In {sum(bool(re.search(r'[(]None, ', ln)) for ln in dl)} of {len(dl)} drops the re-extraction "
+               f"returned null for a fact the rewrite was asked to state.", "",
+               *[ln.strip() for ln in log if ln.startswith(("seam:", "reveal skipped"))], ""]
+    md += ["## Vertex spend", "",
+           f"{calls} Gemini calls in the cache, {tin:,} input and {tout:,} output tokens, about ${usd:.2f} at "
+           f"${pin}/${pout} per 1M input/output tokens (gemini-3.5-flash-lite list price, third-party "
+           f"trackers, Nov 2026). This is everything the cache holds: the extraction call per base, dropped families "
+           f"and earlier attempts whose cases later changed.", ""]
+    rng, cells, picks, used = random.Random(a.seed), collections.defaultdict(list), [], set()
+    for r in pro:
+        cells[r["domain"], dec(r)].append(r)
+    keys = sorted(cells)
+    for k in keys:
+        rng.shuffle(cells[k])
+    while len(picks) < a.n_blind and any(cells[k] for k in keys):
+        for k in keys:
+            while cells[k] and len(picks) < a.n_blind:
+                r = cells[k].pop()
+                fam = (r["parent"] or r["id"]).split(":")[0]
+                if fam not in used:
+                    used.add(fam)
+                    picks.append(r)
+                    break
+    rng.shuffle(picks)
+    bl, ans = src.with_suffix(".blind100.jsonl"), src.with_suffix(".blind100.answers.jsonl")
+    with bl.open("w") as fb, ans.open("w") as fa:
+        for i, r in enumerate(picks):
+            fb.write(json.dumps({"blind_id": f"b{i:03d}", "policy_text": r["policy_text"], "case_text": r["case_text"],
+                                 "fact_labels": r["fact_labels"], "label_decision": None, "label_facts": [],
+                                 "label_notes": ""}) + "\n")
+            fa.write(json.dumps({"blind_id": f"b{i:03d}", "id": r["id"], "domain": r["domain"], "slice": r["slice"],
+                                 "variant": r["variant"], "decision": dec(r),
+                                 "minimum_sets": r["gold"]["minimum_sets"], "needs_facts": r["gold"]["needs_facts"],
+                                 "defaults_applied": r["gold"]["defaults_applied"],
+                                 "changed_facts": r["changed_facts"], "removed_fact": r["removed_fact"]}) + "\n")
+    md += ["## Blind validation sample", "",
+           f"`{bl.name}` ({len(picks)} prose items, at most 1 per base family, gold in `{ans.name}`). Each of us fills "
+           "label_decision (approve, deny, cannot determine) and label_facts without opening the answer file.", "",
+           crosstab(picks, lambda r: r["domain"], dec, DECISIONS), "",
+           "By variant: " + ", ".join(f"{k} {v}" for k, v in sorted(collections.Counter(
+               r["variant"] for r in picks).items())), ""]
+    src.with_suffix(".stats.md").write_text("\n".join(md))
+    print("wrote", src.with_suffix(".stats.md"), bl, ans, f"spend ${usd:.2f}",
+          dict(collections.Counter((r["domain"], dec(r)) for r in picks)))
+
+
+NEG = re.compile(r"\b(no|not|none|never|without|lacks?|lacking|absent|neither|nor|missing|omits?|declined|yet to|"
+                 r"zero|exclud\w*|omit\w*|absence of|free of|lack\w*|unavailable|fail\w*|pending|unspecified|undecided|"
+                 r"(?:be|been) (?:decided|determined)|under (?:internal )?consideration|has not|have not|"
+                 r"did not|does not|was not|were not|nothing)\b|n't", re.I)
+WORDS = {"single": 1, "sole": 1, "a single": 1} | {w: i for i, w in enumerate(
+    "zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen "
+    "eighteen nineteen".split())} | {w: 10 * i for i, w in enumerate("twenty thirty forty fifty sixty seventy eighty "
+                                                                    "ninety".split(), 2)}
+ORD = {"first": 1, "second": 2, "third": 3, "fifth": 5, "eighth": 8, "ninth": 9, "twelfth": 12}
+MONTHS = "january february march april may june july august september october november december".split()
+
+
+def toks(s):
+    """Returns the lowercase content tokens of a string, placeholders removed and a plural s stripped."""
+    return {re.sub(r"(?<=[a-z]{3})s$", "", w) for w in re.findall(r"[a-z][a-z-]+", re.sub(r"\{[^}]*\}", " ",
+                                                                                         s).lower())} - STOP
+
+
+def cues(lx, n, s):
+    """Returns whether sentence s names fact n: 2 of its anchor tokens, or all of them when it has fewer."""
+    return len(toks(s) & lx[n]) >= min(2, len(lx[n])) > 0
+
+
+def renders(dom, n, v):
+    """Returns the yaml template sentences for fact n at value v."""
+    f = dom["facts"].get(n) or dom["derived_facts"][n]
+    return [Fmt(dom, n).format(t, v=v) for t in f.get("say") or (f["say_true"] if v else f["say_false"])]
+
+
+def kind(dom, n):
+    """Returns "bool", "enum" or "number" for fact n (derived facts are numbers)."""
+    return {"bool": "bool", "enum": "enum"}.get((dom["facts"].get(n) or {}).get("type"), "number")
+
+
+def value_ok(dom, n, v, s):
+    """
+    Returns whether sentence s carries value v of fact n: for bools the side whose negation cue it shares when only
+    one side negates, else whose own tokens it shares more; a distinguishing name token for enums; for numbers the
+    numbers (words read as digits, "60k" scaled, month-day pairs) of some yaml rendering of v.
+    """
+
+    def num(m):
+        """Returns the digit string of one matched run of number words."""
+        tot = cur = 0
+        for w in re.split(r"[\s-]+", m[0].lower()):
+            x = ORD.get(w) or WORDS.get(w) or WORDS.get(re.sub(r"th$", "", w.replace("ieth", "y"))) or 0
+            if w == "hundred":
+                cur *= 100
+            elif w == "thousand":
+                tot, cur = tot + cur * 1000, 0
+            elif w != "and":
+                cur += x
+        return str(tot + cur)
+
+    def nums(t):
+        """Returns the numbers and (month, day) pairs in a string."""
+        ws, out = "|".join(list(WORDS) + list(ORD) + ["[a-z]+tieth", "[a-z]+teenth", "fourth", "sixth", "seventh",
+                                                      "tenth"]), set()
+        t = re.sub(rf"\b(?:{ws})(?:(?:[\s-]+|\s+and\s+)(?:{ws}|hundred|thousand))*\b|\bhundred\b", num, t, flags=re.I)
+        for m in re.finditer(r"(\d[\d,]*(?:\.\d+)?)\s*(k\b|thousand\b)?", t, re.I):
+            x = float(m[1].replace(",", "")) * (1000 if m[2] else 1)
+            out.add(int(x) if x == int(x) else x)
+        mo = "|".join(MONTHS)
+        for m in re.finditer(rf"\b({mo})\s+(\d{{1,2}})\b|\b(\d{{1,2}})(?:st|nd|rd|th)?\s+(?:of\s+)?({mo})\b", t, re.I):
+            out.add((m[1] or m[4]).lower() + " " + (m[2] or m[3]))
+        return out
+
+    f = dom["facts"].get(n) or dom["derived_facts"][n]
+    if f.get("type") == "bool":
+        ng = {b: [bool(NEG.search(t)) for t in f["say_true" if b else "say_false"]] for b in (True, False)}
+        if all(ng[False]) and not any(ng[True]) or all(ng[True]) and not any(ng[False]):
+            return bool(NEG.search(s)) == all(ng[v])
+        tt, ff = (set().union(*map(toks, f[k])) for k in ("say_true", "say_false"))
+        return (len(toks(s) & (tt - ff)) >= len(toks(s) & (ff - tt))) == v
+    if f.get("type") == "enum":
+        return names_value(f, v, s)
+    got = nums(s)
+    return any(nums(t) - {2027} <= got for t in renders(dom, n, v))
+
+
+def presupposed(r):
+    """Returns the sentence of a cd record that presupposes the object a missing, needed zero guard covers, or None."""
+    miss = {n for n, st in r["fact_states"].items() if st["state"] == "missing"}
+    for q in r["policy_spec"]["rules"]:
+        m = re.fullmatch(r"(\w+) == 0 or (\w+)", q.get("cond", ""))
+        if m and m[1] in miss and m[1] in r["gold"]["needs_facts"] and r["facts"].get(m[2]) is False:
+            return next(x["sentence"] for x in r["case_sentences"] if x["fact"] == m[2])
+    return None
+
+
+def audit(a):
+    """
+    Audits the "cannot determine" (cd) items of one slice and view for leaked or distorted facts (lexicon cues,
+    stated_facts vs tags, values, witnesses), lists lossy enum renderings, adds the --run model's cd decisions and
+    --sample items, and with --flagged writes the ids to drop from training (lossy enum or zero_guard_presupposed).
+    """
+    recs = [json.loads(line) for line in open(a.audit)]
+    byid = {r["id"]: r for r in recs}
+    doms = {d: load_domain(d) for d in sorted({r["domain"] for r in recs})}
+    lex = {}
+    for d, dom in doms.items():
+        raw, anc = {}, {}
+        for n, f in list(dom["facts"].items()) + list(dom["derived_facts"].items()):
+            say = f.get("say", []) + f.get("say_true", []) + f.get("say_false", [])
+            nm = list(f.get("names", {}).values())
+            raw[n] = set().union(*map(toks, [f["label"]] + say + nm))
+            cnt = collections.Counter(w for t in say for w in toks(t))
+            anc[n] = toks(f["label"]) | set().union(*map(toks, nm)) | {w for w, k in cnt.items() if k >= 2}
+        common = set().union(*map(toks, dom["intro"] + dom["color"] + [dom["title"], dom["preamble"]] + dom["names"]))
+        lex[d] = {n: ws - common - set().union(*(v for m, v in raw.items() if m != n)) for n, ws in anc.items()}
+    pop = [r for r in recs if r["slice"] == a.slice and r["view"] == a.view]
+    cd = [r for r in pop if r["gold"]["decision"] == "cannot determine"]
+    c, bad = collections.Counter(), collections.defaultdict(list)
+    for r in cd:
+        dom, lx, pol = doms[r["domain"]], lex[r["domain"]], policy_for(r)
+        miss = [n for n, s in r["fact_states"].items() if s["state"] == "missing"]
+        sents, tagged = r["case_sentences"], {x["fact"] for x in r["case_sentences"] if x["fact"]}
+        c["items"] += 1
+        c["removed_fact_is_needed"] += r["removed_fact"] in r["gold"]["needs_facts"]
+        hit = [(n, x["sentence"]) for n in miss for x in sents if cues(lx, n, x["sentence"])]
+        hit += [(n, x["sentence"]) for n in miss if dom["facts"][n]["type"] == "enum" for x in sents
+                for v in dom["facts"][n]["values"] if all(re.search(p, x["sentence"], re.I)
+                                                          for p in dist_pats(dom["facts"][n])[v])]
+        if hit:
+            c["missing_fact_mentioned"] += 1
+            bad["missing_fact_mentioned"].append((r["id"], hit[0]))
+        if set(r["stated_facts"]) != tagged or set(miss) & tagged:
+            c["stated_facts_vs_tags"] += 1
+            bad["stated_facts_vs_tags"].append((r["id"], sorted(set(r["stated_facts"]) ^ tagged)))
+        for x in sents:
+            if x["fact"] and not value_ok(dom, x["fact"], x["value"], x["sentence"]):
+                c["value_not_found_" + kind(dom, x["fact"])] += 1
+                bad["value_not_found_" + kind(dom, x["fact"])].append((r["id"], (x["fact"], x["value"], x["sentence"])))
+            for n in set(lx) - tagged - set(miss) - {x["fact"]}:
+                if cues(lx, n, x["sentence"]) and n not in r["fact_sources"].get(x["fact"], ()):
+                    c["unlisted_fact_cue"] += 1
+                    bad["unlisted_fact_cue"].append((r["id"], (n, x["sentence"])))
+        if any(set(r["fact_sources"].get(n, ())) & set(miss) for n in tagged):
+            c["derived_from_missing_stated"] += 1
+            bad["derived_from_missing_stated"].append((r["id"], miss))
+        if zs := presupposed(r):
+            c["zero_guard_presupposed"] += 1
+            bad["zero_guard_presupposed"].append((r["id"], zs))
+        w, ok = r["gold"]["cd_witnesses"], E.decide(pol, r["facts"])["decision"] == "cannot determine"
+        for d in ("approve", "deny"):
+            ok = ok and w[d] is not None and set(w[d]) <= set(miss) and E.decide(pol, {**r["facts"], **w[d]})[
+                "decision"] == d
+        c["witness_pair_holds"] += ok
+        if not ok:
+            bad["witness_pair_fails"].append((r["id"], w))
+    print(f"# cd audit: {a.audit}, slice {a.slice}, view {a.view}\n")
+    print(f"{len(pop)} items, {len(cd)} cd ({len(cd) / len(pop):.1%}); by domain " +
+          ", ".join(f"{d} {n}" for d, n in sorted(collections.Counter(r["domain"] for r in cd).items())) + "\n")
+    print("| check | cd items or sentences |\n|---|---|")
+    for k in ["items", "removed_fact_is_needed", "witness_pair_holds", "missing_fact_mentioned",
+              "stated_facts_vs_tags", "derived_from_missing_stated", "zero_guard_presupposed", "unlisted_fact_cue",
+              "value_not_found_enum", "value_not_found_number", "value_not_found_bool"]:
+        print(f"| {k} | {c[k]} |")
+    for k, xs in bad.items():
+        print(f"\n## {k} ({len(xs)}), first 8\n")
+        for i, x in xs[:8]:
+            print(f"- {i}: {x}")
+    print("\n## Enum renderings (yaml templates and Gemini sentences, all slices, prose views)\n")
+    lossy_ids = collections.defaultdict(set)
+    for d, dom in doms.items():
+        seen = collections.defaultdict(collections.Counter)
+        for r in recs:
+            for x in r["case_sentences"] if r["domain"] == d and r["case_sentences"] else []:
+                if x["fact"] in dom["facts"] and dom["facts"][x["fact"]]["type"] == "enum":
+                    seen[x["fact"], x["value"]][x["sentence"]] += 1
+        for n, f in dom["facts"].items():
+            for v in f["values"] if f["type"] == "enum" else []:
+                yml, ss = [s for s in renders(dom, n, v) if not names_value(f, v, s)], seen[n, v]
+                lost = {s: k for s, k in ss.items() if not names_value(f, v, s)}
+                wrong = {s for s in ss for u in f["values"] if u != v and names_value(f, u, s)}
+                print(f"- {d}.{n}={v} ({f['names'][v]!r}, tokens {dist_pats(f)[v]}): yaml lossy {len(yml)}/"
+                      f"{len(f['say'])}, Gemini {len(ss)} distinct / {sum(ss.values())} uses, lossy {len(lost)} "
+                      f"distinct / {sum(lost.values())} uses, names another value {len(wrong)}")
+                for s, k in sorted(lost.items(), key=lambda t: -t[1])[:4]:
+                    print(f"  - lossy x{k}: {s!r}")
+                lossy_ids[d] |= {(n, s) for s in lost}
+    hurt = [r for r in cd if any((x["fact"], x["sentence"]) in lossy_ids[r["domain"]] and
+                                 any(x["fact"] in q.all_refs for q in policy_for(r).requires)
+                                 for x in r["case_sentences"])]
+    print(f"\ncd items with a lossy enum sentence for a fact some rule reads: {len(hurt)}/{len(cd)}")
+    for sl in sorted({r["slice"] for r in recs}):
+        rs = [r for r in recs if r["slice"] == sl and r["view"] == a.view]
+        k = sum(any((x["fact"], x["sentence"]) in lossy_ids[r["domain"]] for x in r["case_sentences"]) for r in rs)
+        nb = sum(any(x["fact"] and kind(doms[r["domain"]], x["fact"]) == "number" and
+                     not value_ok(doms[r["domain"]], x["fact"], x["value"], x["sentence"]) for x in r["case_sentences"])
+                 for r in rs)
+        print(f"- {sl}: {k}/{len(rs)} {a.view} items carry a lossy enum sentence, {nb} a number the heuristic misses")
+    zg = [r for r in pop if any((m := re.fullmatch(r"(\w+) == 0 or (\w+)", q.get("cond", ""))) and r["facts"].get(
+        m[1]) == 0 and m[2] in r["stated_facts"] for q in r["policy_spec"]["rules"])]
+    print(f"\nitems in the slice whose text states a zero guard (e.g. 0 MB) next to a sentence presupposing the "
+          f"guarded object (e.g. its logos): {len(zg)}/{len(pop)}")
+    if a.flagged:
+        fl = sorted(r["id"] for r in recs if r["case_sentences"] and (
+            any((x["fact"], x["sentence"]) in lossy_ids[r["domain"]] for x in r["case_sentences"]) or
+                r["gold"]["decision"] == "cannot determine" and presupposed(r)))
+        Path(a.flagged).write_text("".join(i + "\n" for i in fl))
+        print(f"\nflagged {len(fl)} items -> {a.flagged}: " + ", ".join(f"{k} {v}" for k, v in sorted(
+            collections.Counter((byid[i]["split"], byid[i]["view"]) for i in fl).items())))
+    out = {}
+    for line in open(a.run) if a.run else []:
+        o = json.loads(line)
+        if o.get("mode") == "answer" and str(o.get("rep", "0")) == "0":
+            m = re.search(r"Decision:\s*(approve|deny|cannot determine)", o.get("output") or "", re.I)
+            out[o["id"]] = m[1].lower() if m else "unparsed"
+    if a.run:
+        got, hid = [(r, out[r["id"]]) for r in cd if r["id"] in out], {r["id"] for r in hurt}
+        print(f"\n## Model decisions on cd items ({a.run})\n")
+        for name, xs in [("all cd", got), ("with lossy enum", [g for g in got if g[0]["id"] in hid]),
+                         ("without lossy enum", [g for g in got if g[0]["id"] not in hid])]:
+            print(f"- {name}: n={len(xs)}, " + ", ".join(f"{k} {v}" for k, v in
+                                                          collections.Counter(d for _, d in xs).most_common()))
+    if a.sample:
+        rng, by = random.Random(a.seed), collections.defaultdict(list)
+        for r in cd:
+            by[r["domain"]].append(r)
+        per = -(-a.sample // len(by))
+        print(f"\n## Sample: {a.sample} cd items, {per} per domain, seed {a.seed}\n")
+        for d in sorted(by):
+            for r in rng.sample(by[d], min(per, len(by[d]))):
+                rules = {q["id"]: q["text"] for q in r["policy_spec"]["rules"]}
+                print(f"### {r['id']} missing {r['gold']['needs_facts']} for "
+                      f"{[(i, rules[i]) for i in r['gold']['needs_fact_for']]}")
+                print(f"witnesses {r['gold']['cd_witnesses']}; model {out.get(r['id']) if a.run else '-'}")
+                print("trace", r["gold"]["rule_trace"], "defaults", r["gold"]["defaults_applied"])
+                print(r["case_text"] + "\n")
+
+
 def main():
-    """
-    Parses the CLI, generates and labels all items in three views, optionally rewrites prose with
-    Gemini, writes JSONL and prints a run summary.
-    """
+    """Parses the CLI and generates, labels and writes the items (or runs --report or --audit), printing a summary."""
     ap = argparse.ArgumentParser()
     ap.add_argument("--domains", default="all", help="comma list of " + ",".join(DOMAINS) + " or all")
     ap.add_argument("--n-policies", type=int, default=20, help="policies per domain")
@@ -554,7 +844,19 @@ def main():
     ap.add_argument("--gemini-model", default=None, help="pin the Gemini model (default: cheapest flash found)")
     ap.add_argument("--workers", type=int, default=4, help="parallel Gemini base rewrites")
     ap.add_argument("--cache", default="data/.gemini_cache", help="Gemini reply cache directory ('' disables)")
+    ap.add_argument("--report", metavar="DATA", help="write DATA's stats.md and blind sample instead of generating")
+    ap.add_argument("--log", default="", help="--report: gen.py stdout, for Gemini drops by domain and reason")
+    ap.add_argument("--cmd", default="", help="--report: generation command, copied into the report")
+    ap.add_argument("--n-blind", type=int, default=100)
+    ap.add_argument("--audit", metavar="DATA", help="audit DATA's cannot-determine items instead of generating")
+    ap.add_argument("--slice", default="unseen_family_train_vocab", help="--audit population")
+    ap.add_argument("--view", default="prose", help="--audit population")
+    ap.add_argument("--run", help="--audit: answer run whose decisions on cd items are reported")
+    ap.add_argument("--sample", type=int, default=0, help="--audit: cd items printed for reading")
+    ap.add_argument("--flagged", metavar="PATH", help="--audit: write lossy-enum and zero_guard_presupposed ids")
     a = ap.parse_args()
+    if a.report or a.audit:
+        return report(a) if a.report else audit(a)
     GEM.update(vertex=a.vertex, model=a.gemini_model, cache=a.cache)
     t0, recs, pols, tcase, invalid, norev = time.time(), [], [], [], 0, 0
     for dname in DOMAINS if a.domains == "all" else a.domains.split(","):
@@ -623,8 +925,7 @@ def main():
                     if variant == "invariant":
                         assert gi["decision"] == g["decision"]
                     if variant == "missing" and gi["min_reveal"] and gi["min_reveal"]["adds"]:
-                        # The minimal reveal often restores the removed value (the reveal then equals the base) or
-                        # the flip's value, so this takes the cheapest deciding add whose facts no sibling has.
+                        # takes the cheapest deciding add no sibling has, since min_reveal often restores the base
                         ks, sib = list(gi["min_reveal"]["adds"]), [it[2] for it in items]
                         for vs in sorted(itertools.product(*(pol.dom[n] for n in ks)),
                                          key=lambda vs: sum(pol.dom[n].index(v) for n, v in zip(ks, vs))):
@@ -674,9 +975,7 @@ def main():
             pol.cache.clear()
 
     def base_of(r):
-        """
-        Returns the base item id (view suffix stripped) of the family a record belongs to.
-        """
+        """Returns the base item id (view suffix stripped) of a record's family."""
         return (r["parent"] or r["id"]).split(":")[0]
 
     if a.limit:
@@ -692,13 +991,11 @@ def main():
 
         def rewrite(bid, rs):
             """
-            Returns (records, dropped) for one base family: rewritten by Gemini and re-extracted, swapped into
-            every variant and prose view if the re-extraction matches the base facts, no tag name shows up and
-            the untagged (header and color) sentences alone state no fact, dropped ([], 1) if not,
-            kept as template prose once a rate limit or outage has set `limited`. Each template sentence a
-            variant swaps in is then restyled by Gemini against the base file and kept only if, read alone, it
-            states exactly its fact with the edited value; otherwise it stays the template sentence. A rewritten
-            enum sentence (base or swapped in) without a distinguishing name token of its value stays template.
+            Returns (records, dropped) for one base family: the Gemini rewrite swapped into every prose view
+            if its re-extraction matches the base facts and no tag name or untagged fact shows, else ([],
+            1), or unchanged as template prose once `limited` is set. Each template sentence a variant swaps
+            in is restyled against the base file and kept only if read alone it states exactly its fact and
+            value. Enum sentences without a distinguishing name token stay template.
             """
             base = next((r for r in rs if r["variant"] == "base" and r["view"] == "prose"), None)
             if limited.is_set() or base is None:
@@ -744,9 +1041,7 @@ def main():
                 return [], 1
 
             def conv(n, v):
-                """
-                Returns an extracted value in engine form: dates as day offsets, ints (derived facts too) as int.
-                """
+                """Returns an extracted value in engine form: dates as day offsets, ints as int."""
                 sf = dom["facts"].get(n)
                 if v is None or sf and sf["type"] != "int":
                     return v
@@ -834,8 +1129,7 @@ def main():
                     print(f"gemini: {i + 1}/{len(futs)} base families, dropped {dropped}, usage",
                           dict(GEM["usage"]), flush=True)
         recs = kept
-    # Drops each item whose text repeats an earlier one in any view, with the items built from it, in every
-    # view by item id, so the views stay aligned.
+    # drops items whose text repeats an earlier one, with the items built from them, in every view
     seen, dup = set(), set()
     for r in recs:
         if (r["view"], r["case_text"]) in seen:

@@ -1,48 +1,7 @@
-"""Runs one model over a data file and writes one JSONL row per (item, sample), plus <out>.meta.json with tokens, wall
-time and a cost estimate.
-
-A single Runner wraps three backends with the same prompt and fixed decoding: "openai" for any OpenAI-compatible
-endpoint (vLLM serve, OpenRouter, OpenAI), "gemini" through google-genai, and "vllm" for offline batch generation.
-"gemini" takes --vertex [LOCATION] to go through Vertex AI (ADC credentials, GCP_PROJECT) instead of the API key.
-Sample i of an item uses seed + i. Every response is cached in a JSONL keyed by a hash of backend (with the Vertex
-location), model, prompt, decoding and repeat index, so a rerun only calls the model for what is missing and
---rep 1 forces a fresh run of the same prompts (the repeat-without-edit control). --cache-tag joins the key too and
-is required for a local checkpoint, whose model path stays the same when the weights under it change. API keys come
-from environment variables, filled from ~/.config/cs224v/.env when unset, and are never printed. --slice, --view
-and --cases K (a seeded sample of K base cases stratified over (domain, template_family), each with all its views
-and variants, so pairs and bank items stay whole) pick a subset of the data file. Every row keeps finish, token
-counts, response_id and model_version for auditing.
-
-Modes:
-- answer: the ordinary decision call (decision, policy support, assumptions, smallest change that would reverse the
-  decision). The prompt never names a target label, so it carries no trace of the gold decision. With --bank it
-  also answers the bank's engine-built edited cases of the selected records (the fresh decisions for those items).
-- bank: builds the intervention bank once, data/<name>.bank.jsonl plus <bank>.meta.json (mix, sources, drops),
-  reused for every model, on the primary population (slice unseen_family_train_vocab, view prose) unless
-  --wide-bank or --slice/--view say otherwise.
-- predict: the self-prediction call. For each bank item it shows the case, the model's own frozen answer from
-  --frozen (sample 0 of an answer run; with --no-account only its decision), and one edit, and asks for the
-  predicted decision after the edit. The fresh decision on the edited case is the answer run's own row for the
-  edited record, so it carries no trace of the prediction.
-- simulate: external simulatability. A fixed external predictor (gemini-3.5-flash-lite, thinking off, --vertex)
-  sees the policy, the frozen account (decision, policy support, assumptions; no case text, no smallest change)
-  and the edit, and predicts the model's decision after the edit. --no-account gives it only the decision, and
-  --shuffle-accounts keeps the item's own Decision line but takes the Policy support and Assumptions lines from the
-  frozen answer on another case under the same policy (rows carry shuf_src "frozen", shuf_partner and
-  shuf_decision_match, whether the partner decided the same way). An item whose case has no such partner in the
-  frozen run is skipped and counted in shuf_missing. --all-sim runs all 3 passes in one call into
-  <frozen>.simulate.jsonl, <frozen>.simulate_shuf.jsonl and <frozen>.simulate_noacc.jsonl.
-
-format_target(record) renders the gold account in the answer format; the SFT script uses it as the target sequence.
-
-Usage:
-  python infer.py --mode bank --data data/x.jsonl
-  python infer.py --data data/x.jsonl --bank data/x.bank.jsonl --backend gemini --vertex \
-          --model gemini-3.5-flash-lite --slice unseen_family_train_vocab --view prose --cases 13 --out runs/name.jsonl
-  python infer.py --mode predict --data data/x.jsonl --bank data/x.bank.jsonl --frozen runs/name.jsonl \
-          --backend gemini --vertex --model gemini-3.5-flash-lite --out runs/name.predict.jsonl [--no-account]
-  python infer.py --mode simulate --data data/x.jsonl --bank data/x.bank.jsonl --frozen runs/name.jsonl \
-          --backend gemini --vertex --model gemini-3.5-flash-lite --all-sim
+"""Runs one model over a data file through one Runner (OpenAI-compatible endpoints, Gemini, offline vLLM) with fixed
+decoding and a response cache, and writes one JSONL row per (item, sample) plus <out>.meta.json.
+Modes: answer (the decision call, --bank adds the edited cases), bank (builds the intervention bank), predict
+(self-prediction) and simulate (the external simulator, --all-sim for all 3 passes). format_target is the SFT target.
 """
 import argparse
 import asyncio
@@ -57,7 +16,7 @@ from pathlib import Path
 
 import engine
 import gen
-from evaluate import bank_recs, load, parse, sections
+from evaluate import PRIME, bank_recs, load, parse, sections
 
 SYSTEM = ("You decide cases under a written policy. Apply only the numbered rules of the policy, not outside "
         "knowledge or common practice. Reply in exactly the requested format with no other text.")
@@ -102,15 +61,10 @@ Predicted decision after edit: approve | deny | cannot determine"""
 PROPS = {"pivotal_replace": 0.40, "invariant": 0.30, "remove": 0.15, "add": 0.15}
 GROUPS = {"pivotal_replace": ("pivotal_replace",), "invariant": ("noncrossing_replace", "invariant_replace"),
         "remove": ("remove",), "add": ("add",)}
-PRIME = ("unseen_family_train_vocab", "prose")
-# USD per 1M input / output tokens (output includes thinking); qwen is the OpenRouter PrimeIntellect list price
-PRICES = {"gemini-3.5-flash-lite": (0.30, 2.50), "qwen/qwen3.5-9b": (0.17, 0.25)}
 
 
 def root(r, by):
-    """
-    Returns the base case id (without the view suffix) that r descends from, following parents through by.
-    """
+    """Returns the base case id (view suffix stripped) that r descends from, following parents through by."""
     while r.get("parent") in by:
         r = by[r["parent"]]
     return r["id"].rsplit(":", 1)[0]
@@ -118,10 +72,9 @@ def root(r, by):
 
 def select_recs(recs, slc=None, view=None, cases=0, seed=0):
     """
-    Returns the records of slice slc and view view (None keeps all), and with cases > 0 only those under a seeded
-    sample of `cases` base cases (ids without the ":view" suffix, so every view of a case comes along) stratified
-    over (domain, template_family): families are dealt round-robin across domains in shuffled order and one case is
-    drawn per family per round. Every kept base keeps its flip, invariant, missing and reveal variants.
+    Returns the records of slice slc and view view (None keeps all), with cases > 0 only those under a seeded sample
+    of that many base cases, dealt round-robin over shuffled domains and template families, each kept with every
+    view and variant.
     """
     sel = [r for r in recs if (slc is None or r.get("slice") == slc) and (view is None or r.get("view") == view)]
     if not cases:
@@ -148,8 +101,7 @@ def select_recs(recs, slc=None, view=None, cases=0, seed=0):
 
 def show(dom, n, v):
     """
-    Returns engine value v of fact n as the case-file table states it: yes or no, money, a date, an enum display name,
-    else the raw value. Facts outside the domain schema and unformattable values come back as str(v).
+    Returns engine value v of fact n as the case-file table states it (yes/no, money, date, enum name), else str(v).
     """
     s = dom.get("facts", {}).get(n)
     if isinstance(v, bool):
@@ -165,12 +117,10 @@ def show(dom, n, v):
 
 def format_target(rec):
     """
-    Returns the gold account of rec in the answer FORMAT, decision first: the SFT target sequence. Policy support is
-    the first minimum sufficient set (stated facts only) with the rule each fact triggers (a passed or waived rule for
-    approve, a failed one for deny), or for cannot determine the missing facts behind the undecided rules as
-    "not stated"; Assumptions are the defaults applied; the last line is the gold min_flip edits, for cannot
-    determine the min_reveal additions, else "no change within 4 edits". Values are rendered as the case file
-    states them, and nothing in it depends on the prompt.
+    Returns the gold account of rec in FORMAT, decision first: the SFT target. Policy support is the first minimum
+    sufficient set (stated facts) with the rule each fact triggers, or the missing facts behind the undecided rules
+    as "not stated"; Assumptions are the defaults applied; the last line is min_flip, min_reveal for cannot
+    determine, else "no change within 4 edits".
     """
     g, pol, lab = rec["gold"], gen.policy_for(rec), rec.get("fact_labels", {})
     dom, dec, tr, da = gen.load_domain(rec["domain"]), g["decision"], g["rule_trace"], g["defaults_applied"]
@@ -191,11 +141,8 @@ def format_target(rec):
 
 def build_prompt(rec, item=None, frozen=None, sim=False):
     """
-    Builds the (system, user) prompt pair for one record, identical across backends and stored with every row.
-    Without a bank item it is the ordinary decision prompt, which lists the fact_labels labels as the names to cite
-    and names no target label. With a bank item and the frozen answer text it is the self-prediction prompt (policy,
-    case, answer, edit), or with sim the external-simulator prompt (policy, answer, edit, no case text). Each edited
-    fact is described by its fact_labels label and its value as the case file would state it.
+    Returns the (system, user) prompt for one record: the decision prompt, or with a bank item and frozen answer the
+    self-prediction prompt (case included) or with sim the simulator prompt (no case text).
     """
     head, case = f"Policy:\n{rec['policy_text'].strip()}\n\n", f"Case file:\n{rec['case_text'].strip()}\n\n"
     if item is None:
@@ -211,18 +158,12 @@ def build_prompt(rec, item=None, frozen=None, sim=False):
 
 def build_bank(recs, seed=0):
     """
-    Returns (bank, meta) for a list of records, with every edit chosen independently of the gold account. Kinds:
-    - pivotal_replace: a certified engine flip of the base (decide gives the flip target) whose fact set differs from
-      gold.min_flip and that repeats none of its (fact, value) edits (engine.min_flip with radius 3, exclude and
-      prefer_disjoint gold.min_flip); a base with none is dropped with its reason.
-    - invariant_replace: base -> its invariant variant (an edit outside every sufficient set).
-    - noncrossing_replace: the smallest move of one necessary fact that keeps the decision and the rule trace (a
-      cited fact moved without crossing its threshold); counted in the invariant share.
-    - remove (base -> missing variant) and add (missing -> base).
-    Per view it draws 40% pivotal, 30% invariant (split evenly between the two subtypes, overflow to the other),
-    15% remove and 15% add, scaled to the scarcest group. Each item is {bank_id, kind, view, slice, case_id,
-    edited_id, edits, oracle, bank_source}; engine-built edited cases also carry "edited", the fields that override
-    the base record (see evaluate.bank_recs). meta holds the mix, the sources and the drops.
+    Returns (bank, meta) with every edit chosen independently of the gold account. Kinds: pivotal_replace (a
+    certified engine flip whose fact set differs from gold.min_flip and that repeats none of its edits, radius 3),
+    invariant_replace (the invariant variant), noncrossing_replace (the smallest move of a necessary fact that keeps
+    decision and trace), remove and add (base <-> missing variant). Per view 40% pivotal, 30% invariant, 15% remove,
+    15% add, scaled to the scarcest group. Engine-built edited cases carry "edited", the fields that override the
+    base record (evaluate.bank_recs).
     """
     by, cands, drops = {r["id"]: r for r in recs}, defaultdict(list), []
     for r in sorted(recs, key=lambda r: r["id"]):
@@ -295,26 +236,19 @@ def build_bank(recs, seed=0):
 
 class Runner:
     """
-    Calls one backend and model with fixed decoding.
-    Handles concurrency, retries with backoff, an optional requests-per-minute cap and the response cache.
+    Calls one backend and model with fixed decoding, concurrency, retries, an optional rate cap and the response
+    cache.
     """
 
     def __init__(self, backend, model, dec, base_url=None, key_env=None, extra=None, conc=8, retries=6, rpm=0,
             cache="runs/cache.jsonl", rep=0, vertex=None, ctag=""):
         """
-        Sets up the backend client and loads the cache.
-        dec holds temperature, top_p, top_k (0 = off), max_tokens, seed and thinking (bool). extra is merged into
-        extra_body for "openai" (a null value drops a default key) and passed to vllm.LLM() for "vllm". rep is the
-        repeat index: it shifts every seed by 1000 * rep and is part of the cache key. vertex is a Vertex AI location
-        for "gemini" (None uses GEMINI_API_KEY) and tags the backend in the cache key as gemini/vertex:<location>.
-        ctag is a free cache tag, required for a local checkpoint (e.g. the training run and epoch), since its model
-        path can point at new weights.
+        Sets up the backend client and loads the cache. dec: temperature, top_p, top_k (0 off), max_tokens,
+        seed, thinking. extra goes to extra_body (openai, a null drops a default key) or vllm.LLM(). rep shifts
+        every seed by 1000 * rep. vertex is a Vertex location for gemini. ctag is a cache tag, required for a
+        local checkpoint whose path can point at new weights.
         """
-        envf = Path("~/.config/cs224v/.env").expanduser()
-        for ln in envf.read_text().splitlines() if envf.exists() else []:
-            m = re.match(r"\s*(?:export\s+)?(\w+)\s*=\s*['\"]?([^'\"\s#]*)", ln)
-            if m:
-                os.environ.setdefault(m[1], m[2])
+        gen.load_env()
         self.backend, self.model, self.dec, self.extra, self.rep = backend, model, dec, extra or {}, rep
         self.conc, self.retries, self.rpm, self.base_url, self.vertex, self.ctag = conc, retries, rpm, base_url, \
             vertex, ctag
@@ -330,17 +264,8 @@ class Runner:
             from openai import AsyncOpenAI
             key = os.environ.get(key_env or "", "") or "EMPTY"
             self.cli = AsyncOpenAI(base_url=base_url, api_key=key, max_retries=0)
-        elif backend == "gemini" and vertex:
-            # Builds the same Vertex client as gen.gemini_call: ADC from gcloud, billed to GCP_PROJECT, no API key.
-            import google.auth
-            from google import genai
-            creds, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"],
-                    quota_project_id=os.environ["GCP_PROJECT"])
-            self.cli = genai.Client(vertexai=True, project=os.environ["GCP_PROJECT"], location=vertex,
-                    credentials=creds)
         elif backend == "gemini":
-            from google import genai
-            self.cli = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+            self.cli = gen.gemini_client(vertex)
         elif backend == "vllm":
             from vllm import LLM
             self.cli = LLM(model=model, seed=dec["seed"], **self.extra)
@@ -349,9 +274,8 @@ class Runner:
 
     def key(self, sys_, prm, d):
         """
-        Returns the cache key: a sha256 over backend (tagged with the Vertex location), base_url, model, extra options,
-        both prompt parts, the decoding (temperature, top_p, top_k, max_tokens, seed, thinking), rep and a non-empty
-        cache tag (an empty one keeps the keys of earlier runs).
+        Returns the cache key: sha256 over backend tag, base_url, model, extra, both prompt parts, decoding, rep
+        and a non-empty cache tag (an empty one keeps earlier keys).
         """
         blob = json.dumps([self.tag, self.base_url, self.model, self.extra, sys_, prm, d, self.rep] +
                 ([self.ctag] if self.ctag else []), sort_keys=True)
@@ -359,13 +283,10 @@ class Runner:
 
     async def call(self, sys_, prm, d):
         """
-        Sends one request and returns {output, reasoning, in_tokens, out_tokens, think_tokens, finish, response_id,
-        model_version}.
-        Thinking goes through chat_template_kwargs and reasoning in extra_body for "openai", and through
-        ThinkingConfig for "gemini" (thinking_budget 0 when off, -1 for dynamic when on). Gemini 3.x documents only
-        thinking_level, whose lowest value "minimal" still allows some thinking and which 3.8-flash rejects, while
-        budget 0 is accepted by 3.8-flash and by 3.5-flash and 3.5-flash-lite on Vertex with 0 thought tokens
-        (checked Nov 5, 2026). finish is "length" when the output hit max_tokens.
+        Sends one request and returns {output, reasoning, in_tokens, out_tokens, think_tokens, finish,
+        response_id, model_version}. Gemini thinking goes through thinking_budget (0 off, -1 dynamic): 3.x
+        documents only thinking_level, whose lowest value still thinks, while budget 0 gives 0 thought tokens on
+        3.5-flash-lite (checked Nov 5).
         """
         if self.backend == "openai":
             eb = {"chat_template_kwargs": {"enable_thinking": d["thinking"]}, "reasoning": {"enabled": d["thinking"]}}
@@ -393,10 +314,7 @@ class Runner:
                 "model_version": r.model_version}
 
     def split_think(self, res, d):
-        """
-        Moves a closed think block from the output into reasoning. An unclosed block (an opening tag without the
-        closing one, or vllm thinking output with no closing tag) empties the output and sets finish "truncated".
-        """
+        """Moves a closed think block into reasoning; an unclosed one empties the output with finish "truncated"."""
         o = res["output"]
         if "</think>" in o:
             think, _, ans = o.rpartition("</think>")
@@ -407,9 +325,8 @@ class Runner:
 
     async def one(self, sem, k, job):
         """
-        Runs one job under the semaphore with rate pacing and exponential backoff.
-        Returns (key, result), where a final failure gives an empty output and an error string. 400, 401, 403 and
-        404 responses are not retried.
+        Returns (key, result) for one job under the semaphore with pacing and backoff, no retry on
+        400/401/403/404.
         """
         async with sem:
             for i in range(self.retries + 1):
@@ -428,9 +345,7 @@ class Runner:
                     await asyncio.sleep(min(60, 2 ** i) + random.random())
 
     async def run_async(self, todo, fh):
-        """
-        Runs all uncached jobs concurrently and appends each success to the open cache file as it arrives.
-        """
+        """Runs all uncached jobs concurrently, appending each success to the cache file as it arrives."""
         sem, self.lock, self.next, res = asyncio.Semaphore(self.conc), asyncio.Lock(), 0.0, {}
         for fut in asyncio.as_completed([self.one(sem, k, j) for k, j in todo.items()]):
             k, r = await fut
@@ -442,10 +357,9 @@ class Runner:
 
     def run(self, items, n, mode):
         """
-        Returns one output row per (item, sample), calling the model only for jobs missing from the cache.
-        items are (row id, record, bank item or None, frozen text or None). Each row carries the prompt, the
-        decoding with its per-sample seed, the mode, the repeat index, whether it came from the cache, and the
-        response's finish, token counts, response_id and model_version (None for cache rows older than Nov 5).
+        Returns one row per (item, sample) with prompt, decoding, mode, rep, cache flag and response fields,
+        calling the model only for uncached jobs. items are (row id, record, bank item or None, frozen text or
+        None).
         """
         jobs = []
         for rid, rec, it, fz in items:
@@ -485,10 +399,8 @@ class Runner:
 
 def shuffle_partners(fz, cases, byid, seed=0):
     """
-    Returns {id: (partner id, same decision)} for every frozen id in byid: a frozen answer on another case of cases
-    (byid plus the bank's edited records) under the same policy_id, never a view, variant or edit of the same base
-    case, and whether its parsed decision equals the id's own. Ids with no such partner are left out. Draws are
-    deterministic under seed.
+    Returns {id: (partner id, same decision)}: a seeded frozen answer on another base case under the same policy,
+    ids without one left out.
     """
     rng, pf, out = random.Random(seed), defaultdict(list), {}
     for j in sorted(j for j in fz if j in cases):
@@ -502,8 +414,8 @@ def shuffle_partners(fz, cases, byid, seed=0):
 
 def main():
     """
-    Parses the CLI and runs the chosen mode: writes the bank and its meta, or runs answer, predict or simulate calls
-    and writes the rows and <out>.meta.json, printing a one-line cost estimate.
+    Parses the CLI and runs the mode: writes the bank, or runs answer, predict or simulate calls into rows and
+    <out>.meta.json.
     """
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data", required=True)
@@ -588,9 +500,8 @@ def main():
             sp = shuffle_partners(fz, byid | br, byid, a.sample_seed) if sh else {i: (i, True) for i in fz}
             miss = sum(b["case_id"] not in sp for b in elig)
             if sh or a.mode == "simulate":
-                # Rebuilds each account in the answer FORMAT from parsed sections, the Decision line from the item's
-                # own answer and the rest from its partner (itself without --shuffle-accounts). simulate drops the
-                # smallest change: the simulator sees no case text and no smallest change.
+                # rebuilds each account in FORMAT: the Decision line from the item's own answer, the rest from its
+                # partner (itself unless shuffled), without the smallest change for simulate
                 hs = {"decision": "Decision", "policy support": "Policy support", "assumptions": "Assumptions"} | (
                         {} if a.mode == "simulate" else {"smallest change": CHANGE})
                 acct = {}
@@ -619,7 +530,7 @@ def main():
         errs = [r["error"] for r in rows if r.get("error")]
         tok = {k: (sum(r.get(k) or 0 for r in fresh), sum(r.get(k) or 0 for r in rows)) for k in
                 ("in_tokens", "out_tokens", "think_tokens")}
-        pr = PRICES.get(a.model)
+        pr = gen.PRICES.get(a.model)
         cost = [round((tok["in_tokens"][i] * pr[0] + (tok["out_tokens"][i] + tok["think_tokens"][i]) * pr[1]) /
                 1e6, 4) for i in (0, 1)] if pr else None
         meta = {"model": a.model, "backend": a.backend, "vertex": a.vertex, "mode": mode, "no_account": na,

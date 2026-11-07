@@ -1,49 +1,7 @@
-"""Scores infer.py run files against engine-labeled records.
-
-Each run file is one condition, named by its file stem. Metrics come per unit (a record, a variant pair, a bank item,
-or one output for format and length), then are averaged overall, per slice (record "slice": unseen_family_train_vocab,
-combined_transfer, train, dev), per view and per slice x view, with a 95% bootstrap CI that resamples clusters
-(template_family when the record has it, else policy_id). The primary population is "slice=unseen_family_train_vocab
-view=prose"; everything else is secondary. Variant decisions are majority votes over the n samples, text-derived
-metrics are averaged over samples. A parse failure or a truncated output (finish "length" or "truncated", or an
-unclosed think block) is scored as a failure in every metric, never excluded, and counted in its own coverage rows.
-Faithfulness metrics get descriptive |correct and |wrong splits, printed apart from the primary table.
-
-Companion files next to each run <run>.jsonl, all optional and all required to share the run's decoding:
-- <run>.repeat.jsonl: the same prompts rerun with infer.py --rep 1. Its disagreement rate is printed as ~noise
-  right after every flip and invariance number.
-- <run>.simulate.jsonl, <run>.simulate_noacc.jsonl and <run>.simulate_shuf.jsonl: infer.py --mode simulate, a
-  fixed external predictor given the policy, the frozen account (or only the decision, or another case's account
-  under the same policy with the item's own decision) and one bank edit. sim_acct, sim_noacc and sim_shuf are its
-  accuracy against the run's fresh decision on the edited record, all on the bank items present in every available
-  simulate file. sim_delta = sim_acct - sim_shuf, the gain from the case's own account over another case's account
-  under the same policy, is the primary endpoint, also split by whether the fresh decision equals the frozen base
-  decision ([changed], [unchanged]); sim_gross = sim_acct - sim_noacc is the gain over the decision alone. Trivial
-  baselines on the same items: sim_const_unchanged always predicts the frozen base decision, sim_oracle the engine
-  label. A shuf file from the old shuffle (no shuf_src "frozen" or shuf_decision_match) and a bank item with no
-  fresh decision both stop the run with a message. These files carry the simulator's decoding, which must be the
-  same across all runs in one call, not the run's.
-- <run>.predict.jsonl and <run>.predict_noacc.jsonl: infer.py --mode predict on --bank with and without the
-  frozen account. S compares each prediction to the run's own fresh decision on the edited record, G = S -
-  P(oracle label == fresh decision), V = S(with account) - S(without account), secondary to sim_delta.
-- <run>.answers.jsonl: answers on rendered own-boundary and necessity edits (<run>.edits.jsonl from --render;
-  an edit to a value outside the fact's domain gets only the engine decision as gold, flagged off_domain),
-  passed back in with --data. A proposed value that maps to no value of the fact's type ("university | no change")
-  is never rendered: it counts in bnd_invalid and as bnd_neither.
-Own-boundary metrics take the target from the model's own decision (approve -> deny, deny -> approve, cannot
-determine -> either settled decision); the same metrics against gold.target carry the suffix [vs_gold].
-The bank's engine-built edited cases (evaluate.bank_recs) are added to the records when --bank is given.
-- <run>.meta.json from infer.py: wall time and token counts, copied into the JSON.
-Each run also writes <run>.interventions.jsonl with {iid, id, kind, edits, target}.
-
-All runs in one call must share temperature, top_p, top_k, max_tokens and n; thinking may differ only with
---allow-thinking-diff. Training seeds are runs named <cond>-s<k>: own columns plus a seed aggregate (mean of per-seed
-means with min and max), never one pooled CI. --compare REF prints paired bootstrap CIs of each condition minus REF on
-shared units. --epoch K picks every condition's checkpoint at the same fixed epoch (select_ckpt); --select-by MET
-with --select-control C adds an exploratory best-of-k table, labelled as such (explore_ckpt).
-
-Usage:
-  python evaluate.py --data data/x.jsonl --bank data/x.bank.jsonl --json runs/eval.json [--compare a] runs/a.jsonl
+"""Scores infer.py run files and their companions (<run>.{repeat,answers,predict,predict_noacc,simulate,simulate_noacc,
+simulate_shuf}.jsonl) against engine-labeled records, with family-clustered bootstrap CIs per slice and view.
+Entry point: main (markdown tables to stdout, every number to --json; --render writes <run>.edits.jsonl, --power
+prints the intra-cluster correlation and power table). parse, load and bank_recs are shared with infer.py.
 """
 import argparse
 import datetime
@@ -65,7 +23,8 @@ RULE = re.compile(r"\b(?:R|rule\s*)(\d+)\b", re.I)
 NONE = re.compile(r"^(none|n a|na|nothing|not applicable|no (assumptions?|change|edit|single change)\b.*)$")
 CD = "cannot determine"
 DEC_KEYS = ["temperature", "top_p", "top_k", "max_tokens", "thinking"]
-PRIMARY = "slice=unseen_family_train_vocab view=prose"
+PRIME = ("unseen_family_train_vocab", "prose")
+PRIMARY = f"slice={PRIME[0]} view={PRIME[1]}"
 COMPANIONS = ("repeat", "answers", "predict", "predict_noacc", "simulate", "simulate_noacc", "simulate_shuf")
 PRED = {"predict": "self_S", "predict_noacc": "self_S_noacc", "simulate": "sim_acct", "simulate_noacc": "sim_noacc",
         "simulate_shuf": "sim_shuf"}
@@ -84,33 +43,27 @@ POLS = {}
 
 
 def load(p):
-    """
-    Returns the rows of a JSONL file.
-    """
+    """Returns the rows of a JSONL file."""
     return [json.loads(ln) for ln in Path(p).read_text().splitlines() if ln.strip()]
 
 
 def bank_recs(bank, recs):
     """
-    Returns {id: record} for the bank's engine-built edited cases: each is its base record with the item's stored
-    "edited" overrides (facts, case text, gold decision, intervention tag). Items whose base is not
-    in recs are left out.
+    Returns {edited_id: record} for the bank's engine-built edited cases: the base record with the item's "edited"
+    overrides.
     """
     return {b["edited_id"]: recs[b["case_id"]] | b["edited"] for b in bank if b.get("edited") and b["case_id"] in recs}
 
 
 def norm(s):
-    """
-    Returns s lowercased with every run of non-alphanumerics collapsed to one space.
-    """
+    """Returns s lowercased with every run of non-alphanumerics collapsed to one space."""
     return " ".join(re.sub(r"[^a-z0-9]+", " ", str(s).lower()).split())
 
 
 def norm_dec(s):
     """
-    Returns "approve", "deny", "cannot determine" or None for a free-text decision.
-    Approve and deny words win: exactly one of them gives that label, both give None, and only text with neither
-    maps to "cannot determine" (when it says so) or None.
+    Returns "approve", "deny", "cannot determine" or None for a free-text decision: exactly one of approve and deny
+    wins, both give None, and only text with neither can read as "cannot determine".
     """
     d = norm(s).replace("can t", "cannot").replace("can not", "cannot")
     hit = [k for k, rx in (("deny", r"\b(deny|denied|reject|rejected)\b"),
@@ -121,10 +74,7 @@ def norm_dec(s):
 
 
 def split_item(s):
-    """
-    Splits one "label=value (R3)" item into (label, value, rule id or None).
-    Accepts "=", ":" or " is " as the separator and "R3", "r3" or "rule 3" anywhere in the item.
-    """
+    """Splits one "label=value (R3)" item into (label, value, rule id or None), with "=", ":" or " is " as separator."""
     m = RULE.search(s)
     s = re.sub(r"\([^)]*\)", "", s) if m or "default" in s.lower() else s
     s = RULE.sub("", s) if m else s
@@ -135,9 +85,8 @@ def split_item(s):
 
 def sections(text):
     """
-    Returns {section: [text after the header, continuation line, ...]} for one model output, with the 4 lines in any
-    order, markdown bold dropped, and sections keyed "decision", "policy support" ("Relied on" accepted),
-    "assumptions" and "smallest change".
+    Returns {section: [header text, continuation lines]} for "decision", "policy support" ("Relied on" accepted),
+    "assumptions" and "smallest change", in any order, markdown bold dropped.
     """
     sec, cur = {}, None
     for ln in (text or "").splitlines():
@@ -154,9 +103,9 @@ def sections(text):
 
 def parse(text):
     """
-    Parses one model output into {dec, relied, assume, change, miss, err} from its sections. relied and assume are
-    lists of (label, value, rule), change is a list of (label, value) edits ([] for none or "no change within 4
-    edits"), miss lists the absent lines, and err is True when the decision is unreadable or any line is missing.
+    Parses one output into {dec, relied, assume, change, miss, err}: relied and assume are (label, value, rule)
+    lists, change (label, value) edits ([] for none), miss the absent lines, err an unreadable decision or a missing
+    line.
     """
     sec, its = sections(text), {}
     for k in ("policy support", "assumptions", "smallest change"):
@@ -175,18 +124,15 @@ def parse(text):
 
 
 def failed(r):
-    """
-    Returns True when an output row is truncated: finish "length" or "truncated", or an unclosed think block.
-    """
+    """Returns True when an output row is truncated: finish "length" or "truncated", or an unclosed think block."""
     o = r.get("output") or ""
     return r.get("finish") in ("length", "truncated") or ("<think>" in o and "</think>" not in o)
 
 
 def to_name(lbl, labels):
     """
-    Maps a cited natural-language label to a fact name using fact_labels.
-    Tries exact match (case and punctuation insensitive) on the label, the label without parentheses and the snake_case
-    name, then the closest of those by difflib ratio at 0.75 or more. Returns None when nothing matches.
+    Maps a cited label to a fact name by exact match on the label, the label without parentheses or the name, else
+    the closest at difflib ratio 0.75, else None.
     """
     cands = {}
     for n, l in labels.items():
@@ -198,9 +144,8 @@ def to_name(lbl, labels):
 
 def same_val(got, want):
     """
-    Returns True when a stated value matches the expected one.
-    Booleans and yes/no words are unified, single numbers compare as floats (commas ignored), otherwise the expected
-    value's words must all appear in the stated value.
+    Returns True when a stated value matches the expected one: yes/no unified, single numbers as floats, else every
+    word of the expected value present.
     """
     yn = {"true": "yes", "y": "yes", "false": "no", "n": "no"}
     g, w = norm(got), norm(want)
@@ -213,12 +158,9 @@ def same_val(got, want):
 
 def to_val(pol, n, v):
     """
-    Returns the cited text v of fact n as an engine value: the one domain value whose raw form, display name without
-    article, ISO date or case-file rendering (each {v:spec} in the fact's say templates, e.g. a date, or a year for
-    "ago") states the same value as v under same_val. An unmatched date ("February 10, 2027" or ISO) becomes its day
-    offset from the domain's ref_date, so off-grid edits still render. A derived fact gets the single number in v.
-    Anything else, including an ambiguous value or a negated or bounded one ("not a university", "more than 3"),
-    comes back unchanged for engine.coerce, so a wrong citation is never mapped onto the true value.
+    Returns cited text v of fact n as the one engine value whose raw form, display name, ISO date or case-file
+    rendering matches it, an unmatched date as its day offset, a derived fact's single number, else v unchanged
+    (negated, bounded or ambiguous text included), so a wrong citation is never mapped onto the true value.
     """
     if not hasattr(pol, "dom") or re.search(r"\b(not|no|non|never|neither|nor|or|more|less|fewer|over|under|above|"
             r"below|least|most|than|exceeds?)\b|[<>≤≥]", str(v).lower()):
@@ -251,18 +193,13 @@ def to_val(pol, n, v):
 
 
 def major(ds):
-    """
-    Returns the most common value in ds, ties going to the value seen first.
-    """
+    """Returns the most common value in ds, ties going to the first seen."""
     c = Counter(ds)
     return next(d for d in ds if c[d] == max(c.values()))
 
 
 def votes(rows):
-    """
-    Parses run rows into ({id: [parsed sample, ...]}, {id: majority decision}), samples in index order.
-    Truncated rows parse as empty text, so they count as parse failures.
-    """
+    """Parses run rows into ({id: [parsed samples]}, {id: majority decision}); truncated rows parse as empty text."""
     P = defaultdict(list)
     for r in sorted(rows, key=lambda r: (r["id"], r["sample"])):
         P[r["id"]].append(parse("" if failed(r) else r.get("output")))
@@ -270,9 +207,7 @@ def votes(rows):
 
 
 def policy(rec):
-    """
-    Returns the engine Policy for rec through gen.policy_for(record), cached by policy_id.
-    """
+    """Returns the engine Policy of rec, cached by policy_id."""
     if rec["policy_id"] not in POLS:
         POLS[rec["policy_id"]] = gen.policy_for(rec)
     return POLS[rec["policy_id"]]
@@ -280,16 +215,13 @@ def policy(rec):
 
 def score(recs, rows, aux, bank=()):
     """
-    Computes unit-level metric values for one condition, its coverage counts, and the interventions it needs.
-    aux maps the COMPANIONS names to companion rows (possibly absent). Returns (units, cov, ivs) where units maps
-    metric -> [(value, cluster, slice, view, correct or None, unit id)].
+    Returns (units, coverage, interventions) for one condition: units maps metric -> [(value, cluster, slice, view,
+    correct or None, unit id)], aux maps COMPANIONS names to companion rows.
     """
     U, cov, ivs = defaultdict(list), Counter(), []
 
     def add(m, v, rec, bc=None, uid=None):
-        """
-        Appends one unit value for metric m, tagged with the record's cluster, slice, view and a unit id.
-        """
+        """Appends one unit value for metric m, tagged with the record's cluster, slice, view and a unit id."""
         U[m].append((float(v), rec.get("template_family") or rec["policy_id"], rec.get("slice") or rec["split"],
                 rec.get("view", "prose"), bc, uid or rec["id"]))
 
@@ -489,9 +421,8 @@ def score(recs, rows, aux, bank=()):
 
 def boot(vals, clus, B=1000, seed=0):
     """
-    Returns {mean, lo, hi, n, n_clus}: the unit mean and a 95% percentile CI from resampling clusters with replacement.
-    Each resample's statistic is the pooled mean over the units of the drawn clusters. nan values are dropped first.
-    Passing paired differences gives the paired bootstrap CI of a difference.
+    Returns {mean, lo, hi, n, n_clus}: the unit mean and a 95% percentile CI from resampling clusters, nan dropped
+    (paired differences give a paired CI).
     """
     v, clus = np.asarray(vals, float), np.asarray(clus)
     ok = ~np.isnan(v)
@@ -506,9 +437,7 @@ def boot(vals, clus, B=1000, seed=0):
 
 
 def groups(us):
-    """
-    Returns {group: units} for "all", "slice=<s>", "view=<v>" and "slice=<s> view=<v>".
-    """
+    """Returns {group: units} for "all", "slice=<s>", "view=<v>" and "slice=<s> view=<v>"."""
     out = defaultdict(list)
     for u in us:
         for gk in ("all", f"slice={u[2]}", f"view={u[3]}", f"slice={u[2]} view={u[3]}"):
@@ -518,8 +447,8 @@ def groups(us):
 
 def aggregate(U, B=1000, seed=0):
     """
-    Returns {group: {metric: boot result}}. Metrics whose units carry a correctness flag also get descriptive
-    |correct and |wrong entries.
+    Returns {group: {metric: boot result}}, plus descriptive |correct and |wrong entries where units carry a
+    correctness flag.
     """
     out = defaultdict(dict)
     for m, us in U.items():
@@ -534,9 +463,8 @@ def aggregate(U, B=1000, seed=0):
 
 def select_ckpt(res, conds, ep, gk="slice=dev", met="sim_delta"):
     """
-    Returns (chosen conditions, rule text) under the prespecified symmetric rule: every condition at the same fixed
-    epoch ep, set before any account metric is read. Checkpoint runs are named <cond>-e<k> or <cond>-e<k>-s<seed>.
-    Raises ValueError when a condition has no run at ep or a chosen run lacks acc_maj or met on group gk.
+    Returns (chosen runs, rule text) under the prespecified rule: every condition at the same fixed epoch ep, runs
+    named <cond>-e<k>[-s<seed>]. Raises ValueError when a condition lacks ep or a pick lacks acc_maj or met on gk.
     """
     rx, fams, pick = re.compile(r"(.*)-e(\d+)(-s\d+)?$"), set(), []
     for c in conds:
@@ -552,8 +480,8 @@ def select_ckpt(res, conds, ep, gk="slice=dev", met="sim_delta"):
 
 def explore_ckpt(res, cands, ctrl, met, gk="slice=dev", tol=0.03):
     """
-    Returns (best checkpoint or None, rule text) for the exploratory best-of-k table only, never the reported pick:
-    among cands whose acc_maj on gk is within tol (absolute) of the control ctrl's, the one with the highest met.
+    Returns (best or None, rule text) for the EXPLORATORY best-of-k table only: among cands within tol of ctrl's
+    acc_maj on gk, the highest met.
     """
     acc = {c: res[c].get(gk, {}).get("acc_maj", {}).get("mean") for c in [ctrl] + cands}
     sv = {c: res[c].get(gk, {}).get(met, {}).get("mean") for c in cands}
@@ -565,8 +493,8 @@ def explore_ckpt(res, cands, ctrl, met, gk="slice=dev", tol=0.03):
 
 def sig(rows, keys, who=("model", "backend")):
     """
-    Returns the set of signatures in rows: the decoding restricted to keys, n samples per id, and the row fields
-    in who (model and backend, so a companion file from another model is refused; () to compare across conditions).
+    Returns the signatures in rows: decoding restricted to keys, samples per id, and the fields in who (() to
+    compare across conditions).
     """
     n = Counter(r["id"] for r in rows)
     return {json.dumps({k: r.get("decoding", {}).get(k) for k in keys} | {"n": n[r["id"]]} | {k: r.get(k) for k in
@@ -574,17 +502,13 @@ def sig(rows, keys, who=("model", "backend")):
 
 
 def okey(m):
-    """
-    Returns the sort key that places metric m by ORDER, each ~noise companion right after its metric.
-    """
+    """Returns the sort key that places metric m by ORDER, each ~noise companion right after its metric."""
     base = re.split(r"[\[|~]", m)[0]
     return ORDER.index(base) if base in ORDER else 99, m.split("|")[0].replace("~noise", ""), "~" in m, m
 
 
 def table(title, res, gk, keep):
-    """
-    Prints one markdown table of metric rows (filtered by keep) by condition columns for group gk.
-    """
+    """Prints one markdown table of the metrics kept by keep, conditions as columns, for group gk."""
     conds = list(res)
     ms = sorted({m for r in res.values() for m in r.get(gk, {}) if keep(m)}, key=okey)
     if not ms:
@@ -597,10 +521,23 @@ def table(title, res, gk, keep):
                 if x and x["n"] else "-" for x in cells) + " |")
 
 
+def icc(vals, clus):
+    """Returns (ICC, clusters, units): the one-way ANOVA estimator with unequal cluster sizes."""
+    g = defaultdict(list)
+    for v, c in zip(vals, clus):
+        g[c].append(v)
+    ys, k, N = [np.asarray(x, float) for x in g.values()], len(g), len(vals)
+    mu, ns = np.mean(vals), np.array([len(y) for y in ys])
+    msb = sum(len(y) * (y.mean() - mu) ** 2 for y in ys) / (k - 1)
+    msw = sum(((y - y.mean()) ** 2).sum() for y in ys) / (N - k)
+    n0 = (N - (ns ** 2).sum() / N) / (k - 1)
+    return (msb - msw) / (msb + (n0 - 1) * msw), k, N
+
+
 def main():
     """
-    Parses the CLI, scores every run with its companions, optionally renders interventions, and writes the markdown
-    tables to stdout and every number to the JSON file. Exits with a message on any decoding mismatch.
+    Parses the CLI, scores every run with its companions, optionally renders interventions and prints the power
+    table, prints the markdown tables and writes every number to the JSON file.
     """
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("runs", nargs="+")
@@ -615,6 +552,7 @@ def main():
     ap.add_argument("--select", default=r".*", help="regex over condition names: checkpoint candidates")
     ap.add_argument("--select-by", help="exploratory only: also print the best-of-k checkpoint by this dev metric")
     ap.add_argument("--select-control", help="--select-by: decision-only control whose dev acc_maj bounds the pick")
+    ap.add_argument("--power", action="store_true", help="print the ICC and power table on the primary population")
     ap.add_argument("--boot", type=int, default=1000)
     ap.add_argument("--seed", type=int, default=0)
     a = ap.parse_args()
@@ -652,6 +590,37 @@ def main():
             if mp.exists():
                 comp[rp.stem][mp.name] = {k: v for k, v in json.loads(mp.read_text()).items() if k != "decoding"}
         U, cov, ivs = score(recs, rows, aux, bank)
+        if a.power:
+            # ICC by template family on the primary population, applied to the full primary design: design effect
+            # DE = 1 + (m(1 + CV^2) - 1) * max(ICC, 0), accuracy CI half-width at 20% discordance and the minimum
+            # detectable paired dSim difference at 80% power with Var(dSim_A - dSim_B) = 2 Var(sim_delta unit)
+            rng, prim = np.random.default_rng(a.seed), lambda us: [u for u in us if (u[2], u[3]) == PRIME]
+            sz = {"prose items": Counter(r["template_family"] for r in recs.values() if (r.get("slice"),
+                    r.get("view")) == PRIME and not r.get("intervention")), "bank items": Counter(recs[b["case_id"]][
+                    "template_family"] for b in bank if (b["slice"], b["view"]) == PRIME)}
+            us = {"decision correct (acc_class)": ([u for m, x in U.items() if m.startswith("acc_class[") for u in
+                    prim(x)], "prose items"), "sim correct, own account (sim_acct)": (prim(U["sim_acct"]),
+                    "bank items"), "sim own - shuf (sim_delta)": (prim(U["sim_delta"]), "bank items")}
+            var_d = 2 * np.var([u[0] for u in us["sim own - shuf (sim_delta)"][0]], ddof=1)
+            print(f"run={rp.stem} population=slice={PRIME[0]} view={PRIME[1]}; Var(dSim_A - dSim_B) = 2 * "
+                    f"Var(sim_delta) = {var_d:.3f}\n")
+            print("| metric | units / families (run) | mean | ICC [95% cluster boot] | design | m | CV | DE | n_eff | "
+                    "acc CI half-width (20% disc.) | MDE dSim (80%) |\n|---|---|---|---|---|---|---|---|---|---|---|")
+            for name, (uu, kind) in us.items():
+                rho, k, N = icc([u[0] for u in uu], [u[1] for u in uu])
+                byc = defaultdict(list)
+                for u in uu:
+                    byc[u[1]].append(u[0])
+                cs = list(byc.values())
+                lo, hi = np.nanpercentile([icc([v for c in d for v in cs[c]], [j for j, c in enumerate(d) for _ in
+                        cs[c]])[0] for d in rng.integers(0, k, (a.boot, k))], [2.5, 97.5])
+                ns = np.array(list(sz[kind].values()), float)
+                m, cv = ns.mean(), ns.std() / ns.mean()
+                ne = ns.sum() / (de := 1 + (m * (1 + cv ** 2) - 1) * max(rho, 0))
+                print(f"| {name} | {N} / {k} | {np.mean([u[0] for u in uu]):.3f} | {rho:.3f} [{lo:.3f}, {hi:.3f}] | "
+                        f"{len(ns)} fam x {int(ns.sum())} {kind} | {m:.1f} | {cv:.2f} | {de:.2f} | {ne:.0f} | "
+                        f"{100 * 1.959964 * np.sqrt(0.20 / ne):.1f} pts | "
+                        f"{100 * (1.959964 + 0.841621) * np.sqrt(var_d / ne):.1f} pts |")
         rp.with_name(rp.stem + ".interventions.jsonl").write_text("".join(json.dumps(i) + "\n" for i in ivs))
         eds = []
         for iv in ivs if a.render else []:

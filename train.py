@@ -1,33 +1,13 @@
-"""LoRA SFT of Qwen3.5-9B on the SFT rows of scripts/sft_data.py, for the 2 matched conditions of PLAN.md 3.3.
-
-Both conditions train on the same sequences (harness prompt, then the gold answer, decision first). The loss of one
-example is L = mean_dec + lam * mean_acc: mean_dec is the mean token loss over the decision tokens (the Decision line
-plus the end-of-turn marker after the answer), mean_acc the mean over the account lines (the row's mask_spans), and
-the batch loss is the mean over examples. The Collator encodes this as per-token weights, 1 / n_dec on each decision
-token and lam / n_acc on each account token, so the decision tokens carry total weight 1 per example in both
-conditions however long the account is. --condition account uses lam = --acc-weight (default 1.0), --condition
-decision uses lam = 0 exactly and sets the account labels to -100. The prompt is masked in both. The Collator
-tokenizes the chat template with thinking off (enable_thinking False) and maps character spans to tokens by offset
-mapping. Before training it checks on a sample that the training prefix equals the inference prompt with the
-generation prompt, that the account tokens decode to exactly the account text, that the supervised tokens decode to
-exactly the decision line plus the end-of-turn marker (lam 0) or the whole answer plus it, and that the weights sum
-to 1 on the decision tokens and lam on the account tokens.
-
-The model loads through Unsloth (FastLanguageModel, bf16, no 4-bit) and trains with a TRL SFTTrainer subclass whose
-compute_loss applies the weights, saving a checkpoint each epoch, then the final adapter in <out>/adapter and the
-merged 16-bit model in <out>/merged. <out>/train_meta.json records every flag, lam, the commit and dirty state, the
-pinned and installed library versions, the GPU, token counts, the masked-token fraction and the realized weight
-sums, then the training log. Unsloth, torch and TRL are imported inside main, so the Collator imports and runs on a
-machine without CUDA. Stack (co-installs, since unsloth caps trl at 1.15 and transformers at 5.17): PINS below.
-
-Usage:
-  python train.py --condition account --data data/v1.sft.train.jsonl --eval-data data/v1.sft.dev.jsonl \
-          --seed 0 --out outputs/acct-s0 [--acc-weight 1.0]
+"""LoRA SFT of Qwen3.5-9B for the 2 matched conditions (account, decision) with per-token loss weights, and the SFT
+export. Entry points: python train.py --condition ... (Unsloth and TRL, CUDA; writes <out>/train_meta.json) and
+python train.py export --split train|dev --out ... (chat rows with the account span, from infer.build_prompt and
+infer.format_target). Collator and weighted_loss import without CUDA.
 """
 import argparse
 import importlib.metadata
 import json
 import os
+import random
 import subprocess
 import sys
 from pathlib import Path
@@ -42,14 +22,16 @@ PROJ = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_pr
 
 class Collator:
     """
-    Turns SFT rows into padded input_ids, attention_mask, labels and per-token loss weights for one condition
-    (account or decision).
+    Turns SFT rows into padded input_ids, attention_mask, labels and per-token loss weights: 1 / n_dec on each
+    decision token (the Decision line plus end-of-turn), lam / n_acc on each account token (mask_spans), 0
+    elsewhere, so the decision tokens carry total weight 1 per example in both conditions; the decision condition
+    has lam 0 and account labels -100.
     """
 
     def __init__(self, tok, cond, max_len=4096, lam=1.0):
         """
-        Keeps the text tokenizer (the inner one when tok is a multimodal processor), the condition, the length cap
-        and the account weight lam, which is 0 under the decision condition whatever lam is passed.
+        Keeps the text tokenizer (the inner one of a multimodal processor), the condition, the length cap and
+        lam (0 under decision).
         """
         assert cond in ("account", "decision"), cond
         self.tk, self.cond, self.max_len = getattr(tok, "tokenizer", tok), cond, max_len
@@ -59,10 +41,8 @@ class Collator:
 
     def encode(self, ex):
         """
-        Returns the token ids, labels, weights and per-token flags of one row: sup marks the answer region (answer
-        content plus the end-of-turn marker), acct the account tokens inside it, w is 1 / n_dec on the other sup
-        tokens (the decision tokens), lam / n_acc on acct and 0 elsewhere, and lab the ids where w > 0, else -100.
-        Also returns the rendered text and the answer's char offset.
+        Returns ids, labels, weights, the sup (answer plus end-of-turn) and acct flags, the rendered text and
+        the answer's char offset of one row.
         """
         # Qwen3.5 has thinking off by default per Unsloth's docs, the flag keeps it off if the template changes
         txt = self.tk.apply_chat_template(ex["messages"], tokenize=False, enable_thinking=False)
@@ -80,11 +60,9 @@ class Collator:
 
     def check(self, ex):
         """
-        Asserts the masking of one row: the prefix before the answer equals the inference prompt, the account tokens
-        decode to exactly the mask_spans text, the supervised tokens decode to exactly the answer text left in the
-        loss plus the end-of-turn marker, the decision line is supervised, the masked answer tokens are exactly the
-        account tokens when lam is 0 (none otherwise), and the weights sum to 1 on the decision tokens and lam on
-        the account tokens. Returns the encoding.
+        Asserts one row's masking: the prefix equals the inference prompt, the account tokens decode to the
+        mask_spans text, the supervised tokens to the answer kept in the loss plus end-of-turn, and the weights
+        sum to 1 on decision tokens and lam on account tokens. Returns the encoding.
         """
         e, msg = self.encode(ex), ex["messages"]
         gen = self.tk.apply_chat_template(msg[:-1], tokenize=False, add_generation_prompt=True, enable_thinking=False)
@@ -105,9 +83,7 @@ class Collator:
         return e
 
     def __call__(self, exs):
-        """
-        Encodes and right-pads a batch, returning torch tensors for the trainer (weights 0 on padding).
-        """
+        """Encodes and right-pads a batch into torch tensors (weight 0 on padding)."""
         import torch
         es = [self.encode(x) for x in exs]
         n = max(len(e["ids"]) for e in es)
@@ -119,9 +95,8 @@ class Collator:
 
 def weighted_loss(logits, labels, w):
     """
-    Returns the batch loss: per example, the sum over tokens of weight times cross-entropy (mean_dec + lam *
-    mean_acc under the Collator's weights), averaged over the examples. Position t of logits predicts token t + 1,
-    and cross-entropy runs in float32 on the weighted positions only.
+    Returns the batch loss: per example the weighted sum of token cross-entropies (mean_dec + lam * mean_acc),
+    averaged over examples, in float32 on the weighted positions only.
     """
     import torch
     import torch.nn.functional as F
@@ -134,9 +109,8 @@ def weighted_loss(logits, labels, w):
 
 def token_stats(col, rows):
     """
-    Returns token counts over rows under col's condition: all tokens, answer tokens, account tokens, supervised
-    tokens, truncated rows, the fraction of answer tokens masked out of the loss, and the realized weight sums on
-    the decision and account tokens (total and per row).
+    Returns token counts, truncated rows, the masked fraction of answer tokens and the realized weight sums over
+    rows.
     """
     t = {"rows": len(rows), "tokens": 0, "answer": 0, "account": 0, "supervised": 0, "truncated": 0, "w_dec": 0.0,
             "w_acc": 0.0}
@@ -156,11 +130,63 @@ def token_stats(col, rows):
     return t
 
 
+def export(argv):
+    """
+    Writes the SFT rows of one split ({id, messages: [system, user, assistant], mask_spans}), mask_spans covering
+    everything after the Decision line, shuffled under --seed, and prints counts per view and decision.
+    """
+    from collections import Counter, defaultdict
+    from infer import build_prompt, format_target, root
+
+    views = ["table", "prose", "prose_derive"]
+    ap = argparse.ArgumentParser(prog="train.py export")
+    ap.add_argument("--data", default=str(ROOT / "data/v1.jsonl"))
+    ap.add_argument("--split", required=True, choices=["train", "dev"])
+    ap.add_argument("--view", nargs="+", default=views, choices=views)
+    ap.add_argument("--out", required=True)
+    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--cases-per-family", type=int, default=0, help="base cases kept per family (0 keeps all)")
+    ap.add_argument("--drop-flagged", metavar="PATH", help="file of item ids to drop, one per line")
+    a = ap.parse_args(argv)
+    recs = [json.loads(ln) for ln in Path(a.data).read_text().splitlines() if ln.strip()]
+    by, drop = {r["id"]: r for r in recs}, set(Path(a.drop_flagged).read_text().split()) if a.drop_flagged else set()
+    sel = [r for r in recs if r["split"] == a.split and r["view"] in a.view]
+    nd, sel = len(sel), [r for r in sel if r["id"] not in drop]
+    nd -= len(sel)
+    rng = random.Random(a.seed)
+    if a.cases_per_family:
+        fams, keep = defaultdict(set), set()
+        for r in sel:
+            if r["variant"] == "base":
+                fams[r["template_family"]].add(r["id"].rsplit(":", 1)[0])
+        for f in sorted(fams):
+            bs = sorted(fams[f])
+            rng.shuffle(bs)
+            keep.update(bs[:a.cases_per_family])
+        sel = [r for r in sel if root(r, by) in keep]
+    rows = []
+    for r in sorted(sel, key=lambda r: r["id"]):
+        (sys_, usr), tgt = build_prompt(r), format_target(r)
+        rows.append({"id": r["id"], "messages": [{"role": "system", "content": sys_}, {"role": "user", "content": usr},
+                {"role": "assistant", "content": tgt}], "mask_spans": [[tgt.index("\n") + 1, len(tgt)]]})
+    rng.shuffle(rows)
+    Path(a.out).parent.mkdir(parents=True, exist_ok=True)
+    Path(a.out).write_text("".join(json.dumps(x) + "\n" for x in rows))
+    cnt, decs = Counter((r["view"], r["gold"]["decision"]) for r in sel), ["approve", "deny", "cannot determine"]
+    print(f"{len(rows)} examples ({a.split}, views {', '.join(a.view)}, {nd} flagged dropped) -> {a.out}")
+    print("view".ljust(14) + "".join(d.rjust(18) for d in decs) + "total".rjust(8))
+    for v in a.view:
+        print(v.ljust(14) + "".join(str(cnt[v, d]).rjust(18) for d in decs) +
+                str(sum(cnt[v, d] for d in decs)).rjust(8))
+
+
 def main():
     """
-    Parses flags, loads the model through Unsloth, checks the masking and weights, trains with the weighted loss,
-    saves and writes train_meta.json.
+    Parses flags, loads the model through Unsloth, checks masking and weights, trains with the weighted loss, saves
+    and writes train_meta.json.
     """
+    if sys.argv[1:2] == ["export"]:
+        return export(sys.argv[2:])
     ap = argparse.ArgumentParser()
     ap.add_argument("--condition", required=True, choices=["account", "decision"])
     ap.add_argument("--data", required=True)
@@ -219,22 +245,18 @@ def main():
     print(json.dumps(meta["train_tokens"]))
 
     class WeightedTrainer(SFTTrainer):
-        """
-        SFTTrainer whose loss is weighted_loss over the Collator's weights instead of the token-mean cross-entropy.
-        """
+        """SFTTrainer whose loss is weighted_loss over the Collator's weights."""
 
         def __init__(self, *args, **kw):
             """
-            Builds the trainer and marks the model as not taking loss kwargs, so the Trainer divides each
-            micro-batch mean by the accumulation steps and the step loss is the mean over all its examples.
+            Builds the trainer with model_accepts_loss_kwargs False, so the step loss is the mean over all
+            its examples.
             """
             super().__init__(*args, **kw)
             self.model_accepts_loss_kwargs = False
 
         def compute_loss(self, model, inputs, return_outputs=False, num_items_in_batch=None):
-            """
-            Runs the model without labels and returns the weighted loss (and the outputs when asked).
-            """
+            """Runs the model without labels and returns the weighted loss (and the outputs when asked)."""
             o = model(**{k: v for k, v in inputs.items() if k not in ("labels", "weights")})
             loss = weighted_loss(o.logits, inputs["labels"], inputs["weights"])
             return (loss, o) if return_outputs else loss
