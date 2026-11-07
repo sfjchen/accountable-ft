@@ -1,51 +1,82 @@
-# Accountable model training: why, how, what
+# Accountable model training: the walkthrough
 
-Jon Chen and Eitan Green, CS 224V, mentor Cyrus Zhou. One page. Full detail and sources in `PLAN.md`.
+Jon Chen and Eitan Green, CS 224V, mentor Cyrus Zhou. Read top to bottom, each level adds detail. Everything here is in `PLAN.md` with sources.
 
-## Why
+## 1. Why
 
-A model can give a convincing explanation and still decide for other reasons. For decisions that have to follow written rules (eligibility, compliance, review), that makes the explanation useless: you cannot tell what the model relied on, what it assumed, or what would change its answer. We ask: does supervising the reasons, not just the decision, make a model's stated reasons actually track its decisions?
+- Models explain decisions, but the explanation may not be what drove the decision.
+  - A model can cite rule 3 and actually decide on rule 7, or on a fact it never mentions.
+  - For rule-based decisions (eligibility, compliance, review) that makes the explanation useless for audit.
+- Question: can fine-tuning make the stated reasons actually track the decisions?
+  - Not "are the reasons plausible", but "do they predict what the model does when the facts change".
 
-## Claim we can test by Dec 4
+## 2. What we claim and what we do not
 
-Fine-tuning on verified accounts (which facts, which rules, which defaults) improves how well a model's account predicts its own behavior under edits, beyond fine-tuning on decisions alone, at no real accuracy cost. We measure 2 properties and claim nothing about a 3rd:
+- Claim: training on verified accounts beats training on decisions alone at making accounts predictive, with no real accuracy loss.
+  - An account = which facts, which rules, which defaults the decision rests on, plus the smallest change that would reverse it.
+  - "Verified" = checked by a rule engine, not by a human or an LLM.
+- Two properties we measure.
+  - Policy-grounded: the cited facts and rules justify the decision under the policy. The engine checks this.
+  - Behaviorally faithful: the account predicts the model's own answer after an edit it has not seen. We rerun the model to check.
+- One property we do not claim.
+  - Causal: that the account is how the model computed the answer. That needs interpretability tools we are not using.
 
-- Policy-grounded: the cited facts and rules justify the decision under the policy. Checked by a rule engine.
-- Behaviorally faithful: the account predicts the model's own answer after an independent edit. Checked by rerunning the model.
-- Not claimed: that the account is causally how the model computed the decision.
+## 3. How: the 4 design decisions
 
-## How: 4 structural decisions
+- Invented policy domains with an exact oracle.
+  - 4 made-up domains (grant, trial, review, permit), 8 to 15 rules each, exceptions and defaults, facts with small finite domains.
+  - A Python rule engine gives the gold decision, gold account, smallest flip, and "which facts suffice". z3 is a cross check only.
+  - Why invented: nothing leaks from pretraining, every label is exact. Cost: no claim about real policy text. A 40-item realism check is a descriptive aside.
+- A matched control.
+  - Account SFT and decision-only SFT see the same cases, prompts and target sequences.
+  - The only difference is the loss: the control zeroes the account tokens. Decision tokens carry equal weight in both.
+  - So any gap is from account supervision, not from more data or a different format.
+- Three views, split by rule family.
+  - Each case appears as a table, as prose, and as prose with derived facts (date gaps, sums).
+  - Train/dev/test split by rule family (which rule templates a policy uses), so test policies are new combinations and thresholds.
+  - Permit is a whole held-out domain: the real transfer test. "Unseen family" is only threshold-and-combination transfer.
+- A behavioral endpoint, no LLM judge.
+  - Primary: dSim. A frozen external simulator sees the policy, the model's decision, its account and an edit, never the case, and predicts the model's fresh post-edit decision.
+  - Score = accuracy with the model's own account minus accuracy with another case's account from the same policy (same decision line kept). Format earns nothing, only content.
+  - Guardrails: an always-"unchanged" baseline and an oracle baseline sit next to every simulator number. Self-prediction (the model predicting itself) is secondary, because a model with the case in view just re-solves it.
+  - Accuracy is a constraint, not the goal: the account model must stay within 3 points of the control.
+  - Every number comes with a 95% CI clustered by rule family, and flips are read against a repeat-without-edit control.
 
-1. Invented policy domains, exact oracle. 4 made-up domains (grant, trial, review, permit) with 8 to 15 rules each, exceptions and defaults, over small finite facts. A Python rule engine gives the gold decision, a gold account, the smallest edit that flips the decision, and whether a set of facts suffices. Everything is checkable, nothing leaks from pretraining. Cost: no claim about real policy text, so we add a 40-item realism check as a descriptive aside.
-2. Matched control. Account SFT and decision-only SFT see the same cases, the same prompts and the same sequences. The only difference is whether account tokens are in the loss. Any gap is then attributable to account supervision, not to more data or a better format.
-3. Three views of each case, split by rule family. Table, prose, prose with derived facts. Held-out rule families and a held-out domain (permit) test transfer across policy structure and vocabulary. "Unseen family" means new threshold and rule combinations, not new rule shapes. Permit is the honest transfer test.
-4. Behavioral endpoint, no LLM judge. Primary endpoint dSim: a frozen external simulator that sees only the policy, the model's decision, its account and an edit (never the case) predicts the model's fresh post-edit decision. We score own account minus a shuffled account from the same policy, so format alone earns nothing. Self-prediction (the model predicting itself) is secondary, since a model with the case in view just re-solves it. Accuracy is a non-inferiority constraint (3-point margin), and every number comes with family-clustered CIs and a repeat-without-edit control.
+## 4. The pipeline, step by step
 
-## What exists now
+- Generate: `gen.py` samples policies and cases per domain, the engine labels them, Gemini writes the prose, an extraction check drops prose that distorts a fact.
+- Export: `scripts/sft_data.py` turns cases into chat examples with the account span marked, flagged items dropped.
+- Train: `train.py`, LoRA on Qwen3.5-9B, condition account or decision, 3 seeds each, same fixed epoch for both.
+- Answer: `infer.py` runs the trained model on held-out cases and on the edit bank.
+- Edit bank: 782 edits built by the engine, 40% flip a decision, 30% should not, 15% remove a fact, 15% reveal a missing one. Flip edits are chosen to differ from the gold "smallest change" so the model cannot have memorized them.
+- Simulate and evaluate: `infer.py --mode simulate`, then `evaluate.py` produces the table with CIs. `runs/README.md` has the exact commands.
 
-- Dataset v1: about 5,000 cases, 3 views, 72 held-out families, 60 permit families, prose written by Gemini and checked by extraction, 100-item blind sample for hand labeling.
-- Harness: generation, answering, edit bank, self-prediction, external simulation, evaluation with clustered CIs. 44 tests. Repo `sfjchen/accountable-ft`.
-- 2 prompting pilots on the same 150 held-out cases (logs `v1-lite-eval-145ad3c-20261105-1758`, `qwen9b-lite-eval-c479313-20261107-0147`; simulator rows rerun at 52322ce, logs `v1-lite-simulate-52322ce-20261107-0252`, `v1-lite-eval-52322ce-20261107-0253`, `qwen9b-lite-simulate-52322ce-20261107-0253`, `qwen9b-lite-eval-52322ce-20261107-0254`, n=176 shared bank items):
+## 5. Where we are (Nov 7)
 
-|                       | Gemini 3.5 Flash-Lite      | Qwen3.5-9B base           |
-| --------------------- | -------------------------- | ------------------------- |
-| accuracy              | 0.77                       | 0.60                      |
-| account validity      | 0.22                       | 0.07                      |
-| sim_acct              | 0.68 [0.60, 0.74]          | 0.82 [0.76, 0.89]         |
-| sim_shuf              | 0.64 [0.55, 0.72]          | 0.73 [0.66, 0.81]         |
-| sim_const_unchanged   | 0.69 [0.60, 0.78]          | 0.85 [0.78, 0.92]         |
-| sim_oracle            | 0.62 [0.56, 0.69]          | 0.52 [0.46, 0.58]         |
-| dSim                  | 0.04 [-0.06, 0.13]         | 0.09 [0.04, 0.15]         |
-| dSim [changed]        | 0.15 [0.00, 0.26] n=55     | 0.19 [0.03, 0.40] n=26    |
-| dSim [unchanged]      | -0.01 [-0.13, 0.13] n=121  | 0.07 [0.02, 0.13] n=150   |
-| gross (acct - noacc)  | 0.24 [0.14, 0.34]          | 0.41 [0.33, 0.50]         |
+- Data v1: about 5,000 cases, 3 views, 72 held-out families, 60 permit families, 100-item blind sample for us to hand-label.
+- Harness: 55 tests, end to end on two prompting pilots, same 150 held-out cases (logs `v1-lite-eval-52322ce-20261107-0253`, `qwen9b-lite-eval-52322ce-20261107-0254`).
 
-Both models never say "cannot determine" and both give mostly invalid accounts, so accounts are where the headroom is. That is the shape the comparison needs.
+| | Gemini 3.5 Flash-Lite | Qwen3.5-9B base |
+|---|---|---|
+| accuracy | 0.77 | 0.60 |
+| account validity | 0.22 | 0.07 |
+| dSim | 0.04 [-0.06, 0.13] | 0.09 [0.04, 0.15] |
+| always-"unchanged" baseline | 0.69 | 0.85 |
 
-## Next
+  - Both never say "cannot determine". Both give mostly invalid accounts. The simulator does not beat the trivial baseline yet.
+  - Reading: accounts are where the headroom is, accuracy has some too. That is the shape the comparison needs.
+- Compute: FarmShare (Stanford, free), 6 nodes with 4 L40S 48 GB each, 4 GPUs per user. Environment and data are on the cluster, smoke jobs submitted Nov 7.
 
-Nov 9-16: account SFT vs decision-only SFT on Qwen3.5-9B, 3 seeds each, LoRA, GPU via FarmShare or RunPod. Nov 17-23: held-out and permit evaluation, error analysis. Nov 24-30: report and slides. Relabel round (CREDIT-style) only if account SFT is not already at the accuracy ceiling.
+## 6. Next
 
-## Risks
+- Nov 9-16: 6 training runs (2 conditions x 3 seeds), about 2 hours each on an L40S, then evaluation on the held-out families.
+- Nov 17-23: permit transfer, error analysis, a second simulator family as a robustness check.
+- Nov 24-30: report and slides.
+- Relabel round (CREDIT-style) only if account SFT is below the accuracy ceiling.
 
-Gains that come from accuracy rather than accounts (handled by the matched control and the non-inferiority margin), sampling noise read as flips (greedy decoding plus the repeat control), too few clusters for dSim (72 families, measured ICC, power redone on the next clean run), GPU access.
+## 7. Risks, one line each
+
+- Gains that come from accuracy rather than accounts: matched control and the 3-point margin.
+- Noise read as flips: greedy decoding, repeat control, a planned paraphrase-edit noise floor.
+- dSim underpowered: 72 families, ICC measured, power redone on the first clean run.
+- Queue time on FarmShare: RunPod ($1.19/h A100) as the fallback.

@@ -1,40 +1,65 @@
-# Domains: what we have and what to pick
+# Domains and rules: what to decide with Eitan
 
-For the check-in with Eitan. 4 invented domains exist in `domains/*.yaml`. Suggestion: train on grant, trial and review, hold permit out as the transfer domain, which is the current split. Below is what each looks like and how a rule becomes logic the engine checks.
+4 invented domains exist in `domains/*.yaml`. Suggestion: train on grant, trial and review, hold out permit. Below: how a rule becomes logic, what each domain contains, what is open.
 
-## How a rule becomes formal logic
+## 1. From yaml to logic
 
-Every policy is a conjunction of rules over typed facts with small finite domains (ints bucketed to at most 8 values, enums, bools). The yaml is the single source. The engine compiles each rule to a lambda over a fact dict. Conversion rules:
+- A policy is a conjunction of rules over typed facts.
+  - Facts are ints bucketed to at most 8 values, enums, or bools. Small domains keep every check exact.
+  - The yaml is the single source. The engine compiles each rule condition to a lambda over a fact dict.
+- Conversion table.
 
 | Yaml | Logic | Example (grant) |
 |---|---|---|
-| `cond` | the rule holds iff cond | `requested_amount <= 90000` |
+| `cond` | rule holds iff cond | `requested_amount <= 90000` |
 | `unless: cond2` | rule := cond ∨ cond2 (exception waives it) | `… ∨ (institution_type = community_lab ∧ requested_amount <= 120000)` |
-| `scoped` rule `A or B` | conditional rule, trigger ¬A, requirement B. `near` marks the distractor case (trigger off, B false) | `institution_type ≠ hospital ∨ travel_amount <= 5000` |
-| `derived_facts` | named expression over source facts, never edited directly | `duration_weeks = (end_day - start_day) // 7` |
+| `scoped`, written `A or B` | conditional rule: trigger ¬A, requirement B. `near` marks the distractor (trigger off, B false) | `institution_type ≠ hospital ∨ travel_amount <= 5000` |
+| `derived_facts` | named expression over source facts, never edited directly | `duration_weeks = (end_day − start_day) // 7` |
 | `defaults` | fill a missing fact before evaluation, the account must cite them as assumptions | `letter_of_support := false` |
-| `params` | threshold placeholders, one family = a choice of templates and exceptions, one policy = a choice of thresholds | `t ∈ {70000, 90000, 110000}` |
+| `params` | threshold placeholders | `t ∈ {70000, 90000, 110000}` |
 
-Decision: approve if every rule holds, deny if some rule fails. With facts missing (after defaults), approve if every admissible completion approves, deny if every one denies, else "cannot determine". A gold account is a sufficient set: the cited facts fix the decision under every completion. The smallest flip is the fewest fact changes that reverse the decision. All checks are exact backtracking searches with a time budget, z3 is a cross check only.
+- Family vs policy vs case.
+  - Family = which rule templates, exceptions and defaults a policy uses, before thresholds.
+  - Policy = a family with thresholds filled in.
+  - Case = one applicant's facts under one policy, rendered in 3 views.
+- Decision semantics.
+  - All facts known: approve if every rule holds, else deny.
+  - Facts missing (after defaults): approve if every admissible completion approves, deny if every one denies, else "cannot determine".
+  - Gold account = a sufficient set of cited facts, rules and defaults: it fixes the decision under every completion.
+  - Smallest flip = fewest fact changes that reverse the decision. All of this is exact backtracking with a time budget.
 
-## The 3 training domains
+## 2. The 4 domains
 
-Grant (Halbrecht Early Inquiry Grants). 12 facts, 12 rule templates. Rules: years since PhD cap with a career-break exception, amount cap with a community-lab exception, letter of support unless university host, open data plan unless hospital, allowed host types, earliest start date, equipment cap, ethics approval if human subjects, hospital travel cap, big requests need a letter, project length, equipment plus travel cap. Defaults: no letter, no career break, no data plan, host is an institute, no ethics approval.
+- Grant (Halbrecht Early Inquiry Grants). 12 facts, 12 templates, 5 defaults.
+  - Rules: years since PhD cap (career-break exception), amount cap (community-lab exception), letter of support unless university, open-data plan unless hospital, allowed host types, earliest start, equipment cap, ethics approval if human subjects, hospital travel cap, big requests need a letter, project length, equipment plus travel cap.
+  - Defaults: no letter, no career break, no data plan, host is an institute, no ethics approval.
+- Trial (Protocol VX-118 enrollment). 12 facts, 13 templates, 4 defaults.
+  - Rules: age range, biomarker floor (index exception), index ceiling, clearance floor (tier-A exception), washout, no prior drug, no anticoagulant unless tier A, tier-C age cap, no anticoagulant with bleeding history, older patients need higher clearance, heart-rate cap on anticoagulants, consent window, composite score cap.
+  - Defaults: no anticoagulant, no prior drug, site tier B, no bleeding history.
+- Review (SQM 2027 submissions). 16 facts, 14 templates, 6 defaults.
+  - Rules: page limit (position-track exception), anonymity unless position, no dual submission unless non-archival, deadline (extension exception), supplement size (applied exception), anonymized supplement, author cap for position papers, reference cap for applied, no same-institution reviewer, extension page cap, ethics statement if human subjects, artifact license, total pages, coauthor conflict window.
+  - Defaults: no ethics statement, no license, no conflict, no extension, supplement not anonymized, venue archival.
+- Permit (Marrowgate street equipment), held out. 12 facts, 10 templates, 3 defaults.
+  - Rules: weight cap (operator-level exception), insurance floor unless class K1, no night work unless non-residential, operator level, crane needs insurance, sidewalk closure needs notice, residential weight cap, night crew minimum, lead time, placement length.
+  - Defaults: no notice, no night work, residential zone.
 
-Trial (Protocol VX-118 enrollment). 12 facts, 13 templates. Rules: age range, biomarker floor with an index exception, index ceiling, creatinine clearance floor with a tier-A site exception, washout weeks, no prior drug, no anticoagulant unless tier A, tier-C age cap, no anticoagulant with bleeding history, older patients need higher clearance, heart rate cap on anticoagulants, consent window, composite score cap. Defaults: no anticoagulant, no prior drug, site tier B, no bleeding history.
+## 3. Why these 3 for training
 
-Review (SQM 2027 submissions). 16 facts, 14 templates. Rules: page limit with a position-track exception, anonymity unless position track, no dual submission unless non-archival, deadline with an extension exception, supplement size with an applied-track exception, anonymized supplement, author cap for position papers, reference cap for applied, no same-institution reviewer, extension page cap, ethics statement for human subjects, artifact license, total pages, coauthor conflict window. Defaults: no ethics statement, no license, no conflict, no extension, supplement not anonymized, venue archival.
+- Same rule shapes everywhere (threshold, bool requirement, exception, conditional, derived, default).
+  - So a held-out family is a new combination with new thresholds, and permit is the real vocabulary transfer.
+- Every domain has 2 derived facts and several defaults.
+  - Assumptions and multi-fact reasoning show up in every case, which is where accounts matter.
+- Three registers (funding, clinical, academic) keep the prose varied without changing the schema.
 
-Permit (Marrowgate street equipment), held out. 12 facts, 10 templates: weight cap with an operator-level exception, insurance floor unless class K1, no night work unless non-residential, operator level, crane needs insurance, sidewalk closure needs notice, residential weight cap, night crew minimum, lead time, placement length. Defaults: no notice, no night work, residential zone.
+## 4. Known data issues (audit Nov 7, `docs/audit_cd.md`)
 
-## Why these 3 for training
+- Engine labels are sound: every "cannot determine" item has a valid witness pair.
+- Gemini prose distorts about 10% of cannot-determine items.
+  - "university" rendered as "an academic institution" (lossy enum), and prose implying supplementary files exist when the size fact is missing.
+  - Fix in place: 222 items flagged and dropped at export, generator now rejects lossy enum sentences.
 
-- Same rule shapes everywhere (threshold, bool requirement, exception, conditional, derived, default), so a held-out family is a new combination and new thresholds. The permit vocabulary is the real transfer test.
-- Each has 2 derived facts and 4 to 6 defaults (permit has 3), so every case can exercise assumptions and multi-fact reasoning, which is where accounts matter.
-- Different surface registers (funding, clinical, academic) keep prose variety high without changing the schema.
+## 5. Open with Eitan
 
-## What to decide with Eitan
-
-- Keep permit as the held-out domain, or swap in a 5th (for example housing benefit or visa) and hold out 2. A 5th domain costs about $3 of Gemini prose and an afternoon of yaml.
-- Whether to hold whole rule templates out of training too (a cheap follow-up that would make "unseen" mean new rule shapes).
-- Who labels which half of the 100-item blind sample.
+- Keep permit as the held-out domain, or add a 5th (housing benefit, visa) and hold out 2. A 5th costs about $3 of prose and an afternoon of yaml.
+- Hold whole rule templates out of training too, so "unseen" means new rule shapes. Cheap follow-up.
+- Split the 100-item blind labeling.
