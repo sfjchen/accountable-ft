@@ -28,7 +28,7 @@ Each base case draws from its own RNG (seed, domain, policy, case), so a search 
 budget changes only that case's variants, never the cases after it. Gemini replies are cached on disk
 (--cache) keyed by model and prompt, so an interrupted run resumes, and --workers calls run in parallel.
 
-Usage: python gen.py --domains all --n-policies 4 --cases-per-family 5 --seed 0 --prose template --out data/smoke.jsonl
+Usage: python gen.py --domains all --n-policies 4 --cases-per-family 10 --seed 0 --prose template --out data/smoke.jsonl
 """
 import argparse
 import collections

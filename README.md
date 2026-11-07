@@ -21,7 +21,7 @@ Details and reasoning in `PLAN.md`.
 - `gen.py` — generator: template families, policies, base cases and flip/invariant/missing variants in 3 views (table, prose, prose_derive), optional Gemini prose. `render_case()` re-renders edited cases for interventions.
 - `domains/*.yaml` — 4 invented domains (grant, permit, trial, review): facts, derived facts, rule templates, defaults, prose vocabulary. Permit is the held-out domain.
 - `tests/test_engine.py` — engine tests on hand-written policies plus brute-force cross-checks.
-- Smoke run: `python gen.py --domains all --n-policies 4 --cases-per-policy 5 --seed 0 --prose template --out data/smoke.jsonl`
+- Smoke run: `python gen.py --domains all --n-policies 4 --cases-per-family 10 --seed 0 --prose template --out data/smoke.jsonl`
 - `infer.py` — one `Runner` over OpenAI-compatible endpoints (vLLM serve, OpenRouter), Gemini and offline vLLM, with fixed decoding, a response cache, `--rep` for the repeat control, `--mode bank` (intervention bank, `data/<name>.bank.jsonl`) and `--mode predict` (self-prediction with or without the frozen account).
 - `evaluate.py` — all metrics with cluster bootstrap CIs, slices (primary: prose, unseen families, training vocabularies), paired comparisons, seed aggregates, coverage, checkpoint selection. Markdown to stdout, every number in JSON.
 - `tests/test_evaluate.py`, `tests/fixtures/mini.jsonl` — parser, metric math on a 12-record hand-made fixture, bank, selection, bootstrap.
