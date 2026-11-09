@@ -1,0 +1,45 @@
+{
+ "data": "data/mortgage.jsonl",
+ "slice": "real_transfer",
+ "view": null,
+ "seed": 0,
+ "items": 2193,
+ "kinds": {
+  "add": 330,
+  "invariant_replace": 327,
+  "noncrossing_replace": 330,
+  "pivotal_replace": 876,
+  "remove": 330
+ },
+ "groups": {
+  "pivotal_replace": 0.399452804377565,
+  "invariant": 0.29958960328317374,
+  "remove": 0.15047879616963064,
+  "add": 0.15047879616963064
+ },
+ "sources": {
+  "engine_alt_disjoint": 660,
+  "engine_alt_overlap": 216,
+  "engine_noncrossing": 330,
+  "variant_record": 987
+ },
+ "candidates": {
+  "prose/add": 292,
+  "prose/invariant_replace": 292,
+  "prose/noncrossing_replace": 194,
+  "prose/pivotal_replace": 292,
+  "prose/remove": 292,
+  "prose_derive/add": 292,
+  "prose_derive/invariant_replace": 292,
+  "prose_derive/noncrossing_replace": 194,
+  "prose_derive/pivotal_replace": 292,
+  "prose_derive/remove": 292,
+  "table/add": 292,
+  "table/invariant_replace": 292,
+  "table/noncrossing_replace": 194,
+  "table/pivotal_replace": 292,
+  "table/remove": 292
+ },
+ "drop_reasons": {},
+ "drops": []
+}

@@ -131,7 +131,7 @@ for m in ("unsloth/Qwen3.5-9B", "Qwen/Qwen3.5-9B"):
 else:
     sys.exit("neither unsloth/Qwen3.5-9B nor Qwen/Qwen3.5-9B is available")
 PY
-    [[ -s data/v1.jsonl ]] || gunzip -k data/v1.jsonl.gz
+    for z in data/*.jsonl.gz; do [[ -s ${z%.gz} ]] || gunzip -k "$z"; done  # v1, mortgage
     sha256sum data/v1.jsonl data/v1.bank.jsonl data/v1.flagged.txt
     for s in train dev; do
       python train.py export --split "$s" --drop-flagged data/v1.flagged.txt --out "data/v1.sft.$s.jsonl"
