@@ -243,6 +243,33 @@ def test_generated_policies_and_rendering():
     assert gen.render_case(rec, f, "trial-t-c00:prose") == gen.render_case(p, f, "trial-t-c00")
 
 
+
+def test_counter_templates(tmp_path):
+    """
+    Checks one counter template per training domain, sampled only when asked and engine-valid, and that gen.py
+    --counter gives every record prior_conflict, true exactly when a policy uses a counter template.
+    """
+    for dname in gen.DOMAINS:
+        dom, rng = gen.load_domain(dname), random.Random(dname)
+        ck = [t["key"] for t in dom["rules"] if t.get("counter")]
+        assert len(ck) == (dname != gen.HELD_OUT)
+        fams = [gen.sample_family(dom, rng, [], False, counter=c) for c in [False] * 20 + [True] * 20]
+        assert not {k for f in fams[:20] for k, _ in f["core"]} & set(ck)
+        for i, f in enumerate(fams[20:] if ck else []):
+            p = gen.instantiate(dname, f, f"{dname}-c{i}", rng)
+            assert p.counter == (ck[0] in {k for k, _ in f["core"]})
+        assert not ck or any(ck[0] in {k for k, _ in f["core"]} for f in fams[20:])
+    out = tmp_path / "c.jsonl"
+    subprocess.run([sys.executable, str(ROOT / "gen.py"), "--domains", "review", "--n-policies", "6",
+            "--cases-per-family", "2", "--prose", "template", "--counter", "--out", str(out)], check=True,
+            capture_output=True, cwd=ROOT)
+    rs = [json.loads(ln) for ln in out.read_text().splitlines()]
+    pc, ck = {r["policy_id"]: r["prior_conflict"] for r in rs}, next(t["key"] for t in gen.load_domain("review")[
+            "rules"] if t.get("counter"))
+    assert all(isinstance(r["prior_conflict"], bool) for r in rs) and set(pc.values()) == {True, False}
+    assert all(pc[r["policy_id"]] == any(q.get("key") == ck for q in r["policy_spec"]["rules"]) for r in rs)
+
+
 MESSY = [
     ("Decision: approve\nPolicy support: site zone=industrial (R4); operator certificate=current (R2)\n"
      "Assumptions: none\nSmallest change to make this deny: operator certificate -> lapsed; site zone -> residential",
@@ -408,6 +435,17 @@ def test_domain_groups(stub, capsys):
     out = capsys.readouterr().out.splitlines()
     assert out[3] == "| metric | r | r grant | r permit |"
     assert out[5].startswith("| acc_maj | 0.75 [") and "| 0.50 [" in out[5] and out[5].endswith("n=2 |")
+
+
+def test_prior_conflict_split(stub):
+    """Checks that accuracy and account validity split by prior_conflict when records carry it, and only then."""
+    assert not any("prior_conflict" in m for g in aggregate(score(RECS, fake_rows(), {})[0]).values() for m in g)
+    recs = {i: r | {"prior_conflict": r["domain"] == "grant"} for i, r in RECS.items()}
+    ag = aggregate(score(recs, fake_rows(), {})[0])
+    for m in evaluate.PC_SPLIT:
+        assert ag["all"][f"{m}[prior_conflict=true]"] == ag["domain=grant"][m]
+        assert ag["all"][f"{m}[prior_conflict=false]"] == ag["domain=permit"][m]
+    assert not [m for m in ag["all"] if "prior_conflict" in m and m.split("[")[0] not in evaluate.PC_SPLIT]
 
 
 def test_refusals(stub, tmp_path, monkeypatch):

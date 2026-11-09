@@ -1,5 +1,6 @@
 """Scores infer.py run files and their companions (<run>.{repeat,answers,predict,predict_noacc,simulate,simulate_noacc,
-simulate_shuf}.jsonl) against engine-labeled records, with family-clustered bootstrap CIs per slice, view and domain.
+simulate_shuf}.jsonl) against engine-labeled records, with family-clustered bootstrap CIs per slice, view and domain
+(accuracy and account validity also by prior_conflict when records carry it).
 Entry point: main (markdown tables to stdout, every number to --json; --render writes <run>.edits.jsonl, --power
 prints the intra-cluster correlation and power table). parse, load and bank_recs are shared with infer.py.
 """
@@ -26,6 +27,8 @@ DEC_KEYS = ["temperature", "top_p", "top_k", "max_tokens", "thinking"]
 PRIME = ("unseen_family_train_vocab", "prose")
 PRIMARY = f"slice={PRIME[0]} view={PRIME[1]}"
 COMPANIONS = ("repeat", "answers", "predict", "predict_noacc", "simulate", "simulate_noacc", "simulate_shuf")
+# metrics also split by the record's prior_conflict flag (gen.py --counter): decision accuracy and account validity
+PC_SPLIT = ("acc_maj", "expl_valid")
 PRED = {"predict": "self_S", "predict_noacc": "self_S_noacc", "simulate": "sim_acct", "simulate_noacc": "sim_noacc",
         "simulate_shuf": "sim_shuf"}
 ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_gross", "sim_noacc", "sim_const_unchanged", "sim_oracle", "self_V",
@@ -221,9 +224,15 @@ def score(recs, rows, aux, bank=()):
     U, cov, ivs = defaultdict(list), Counter(), []
 
     def add(m, v, rec, bc=None, uid=None):
-        """Appends one unit value for metric m, tagged with the record's cluster, slice, view, a unit id and domain."""
-        U[m].append((float(v), rec.get("template_family") or rec["policy_id"], rec.get("slice") or rec["split"],
-                rec.get("view", "prose"), bc, uid or rec["id"], rec.get("domain") or rec["policy_id"].split("-")[0]))
+        """
+        Appends one unit value for metric m, tagged with the record's cluster, slice, view, a unit id and domain, and
+        for a PC_SPLIT metric on a record with prior_conflict also under m[prior_conflict=true|false].
+        """
+        u = (float(v), rec.get("template_family") or rec["policy_id"], rec.get("slice") or rec["split"],
+                rec.get("view", "prose"), bc, uid or rec["id"], rec.get("domain") or rec["policy_id"].split("-")[0])
+        for mm in [m] + [f"{m}[prior_conflict={str(rec.get('prior_conflict')).lower()}]"] * (m in PC_SPLIT and
+                "prior_conflict" in rec):
+            U[mm].append(u)
 
     for r in rows:
         rec = recs.get(r["id"])

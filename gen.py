@@ -118,15 +118,16 @@ def template_refs(dom, t, exc=None):
     return out & set(dom["facts"])
 
 
-def sample_family(dom, rng, hold, want_hold, prev=()):
+def sample_family(dom, rng, hold, want_hold, prev=(), counter=False):
     """
     Returns a template family {"core", "derived", "defaults", "parts"}: 5-8 core templates with 2-4 exceptions and
     2+ scoped rules, 1-2 derived-fact rules, 1-2 defaults on live facts, 8-15 rules, at most MAX_FACTS facts.
     want_hold forces a held-out exception/default pair in, else keeps all out; families within MIN_FAM_DIST parts of
-    one in prev are rejected.
+    one in prev are rejected. Counter (prior-conflicting) templates are candidates only when counter is set.
     """
+    rules = [t for t in dom["rules"] if counter or not t.get("counter")]
     for _ in range(50000):
-        core = rng.sample(dom["rules"], rng.randint(5, min(8, len(dom["rules"]))))
+        core = rng.sample(rules, rng.randint(5, min(8, len(rules))))
         exc = [t["key"] for t in core if t.get("unless")]
         if len(exc) < 2 or sum(bool(t.get("scoped")) for t in core) < 2:
             continue
@@ -164,7 +165,8 @@ def sample_params(params, rng, vals):
 def instantiate(dname, fam, pid, rng):
     """
     Returns a Policy for a family with sampled thresholds and shuffled rule order, with .domain, .spec, .text,
-    .labels and .near set. Every rule must be able to hold and to fail, and approval must be reachable.
+    .labels, .near and .counter (any counter template active) set. Every rule must be able to hold and to fail, and
+    approval must be reachable.
     """
     dom = load_domain(dname)
     byk = {t["key"]: t for t in dom["rules"] + dom["derived"]}
@@ -203,6 +205,7 @@ def instantiate(dname, fam, pid, rng):
             continue
         pol.domain, pol.spec = dname, {"domain": dname, "rules": specs, "valid": list(dom.get("valid", ())),
                                        "derived": derived}
+        pol.counter = any(byk[k].get("counter") for k, _ in fam["core"])
         pol.labels = {n: s["label"] for n, s in dom["facts"].items()}
         pol.labels.update({n: d["label"] for n, d in dom["derived_facts"].items()})
         pol.near = {sp["id"]: E.compile_cond(sp["near"], set(dom["facts"]), derived)[0] for sp in specs
@@ -835,6 +838,8 @@ def main():
     ap.add_argument("--train-cases-per-family", type=int, default=0,
                     help="base cases per train-split family (0 uses --cases-per-family)")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--counter", action="store_true", help="let families use counter: true (prior-conflicting) rule "
+                    "templates and give every record prior_conflict")
     ap.add_argument("--out", default="data/out.jsonl")
     ap.add_argument("--prose", choices=["template", "gemini"], default="template")
     ap.add_argument("--limit", type=int, default=0,
@@ -868,7 +873,7 @@ def main():
         nf = max(1, -(-a.n_policies // a.policies_per_family))
         fams = []
         for i in range(nf):
-            fams.append(sample_family(dom, drng, hold, nf > 1 and i == 0, fams))
+            fams.append(sample_family(dom, drng, hold, nf > 1 and i == 0, fams, a.counter))
         rest = list(range(1, nf)) if nf > 1 else [0]
         drng.shuffle(rest)
         nt, nd = max(0, round(FRAC_TEST * nf) - (nf > 1)), round(FRAC_DEV * nf) if nf >= 5 else 0
@@ -970,7 +975,8 @@ def main():
                                      "fact_states": fs,
                                      "fact_sources": {n: refs for n, (_, refs) in pol.dfn.items()},
                                      "policy_spec": pol.spec, "changed_facts": changed,
-                                     "removed_fact": removed, "removed_effect": eff, "gold": gi})
+                                     "removed_fact": removed, "removed_effect": eff, "gold": gi} |
+                                    ({"prior_conflict": pol.counter} if a.counter else {}))
                 tcase.append(time.time() - tc)
             pol.cache.clear()
 

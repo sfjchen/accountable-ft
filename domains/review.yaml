@@ -1,6 +1,8 @@
 # Submission and review policy of the invented Twelfth Symposium on Quorian Methods (SQM 2027).
 # Facts (ints bucketed to at most 8 values), derived facts, rule templates, defaults and prose vocabulary.
 # Dates are day offsets from ref_date. Scoped rules carry a "near" condition for near-miss distractors.
+# A rule template with counter: true reads against common sense (prior-conflicting), and gen.py samples it
+# only with --counter.
 name: review
 title: "Twelfth Symposium on Quorian Methods (SQM 2027): submission and review policy"
 preamble: "A submission is admitted to review with its assigned reviewer (approved) only if it meets every rule below. Rules marked as defaults say what to assume when the submission record is silent on a point."
@@ -227,6 +229,11 @@ rules:
     cond: "supp_mb == 0 or artifact_license"
     near: "supp_mb == 0 and not artifact_license"
     text: "Any supplementary artifacts must be released under an open license"
+  - key: early_upload
+    counter: true
+    cond: "submission_day >= {t}"
+    text: "Submissions uploaded before {t:date} are rejected"
+    params: {t: [4, 8]}
 derived:
   - key: total_length
     cond: "total_pages <= {t}"
