@@ -68,8 +68,9 @@ train_one() {
 }
 
 # Serves a model with vllm on this job's GPU and runs the answer, repeat and both predict passes on the primary
-# slice (CASES=N for a stratified subset, THINKING=on|off, DATA and SLICE for another data file, e.g. the mortgage
-# domain: DATA=data/mortgage.jsonl SLICE=real_transfer). Usage: run_passes <model path> <run name> <cache tag>
+# slice (CASES=N for a stratified subset, THINKING=on|off, CONC=N parallel requests, default 32, DATA and SLICE for
+# another data file, e.g. the mortgage domain: DATA=data/mortgage.jsonl SLICE=real_transfer).
+# Usage: run_passes <model path> <run name> <cache tag>
 run_passes() {
   local model=$1 run=$2 tag=$3 data=${DATA:-data/v1.jsonl} slc=${SLICE:-unseen_family_train_vocab}
   local port=$((8000 + SLURM_JOB_ID % 1000)) vlog=$REPO/runs/slurm/vllm_$SLURM_JOB_ID.log  # 1-GPU jobs share nodes
@@ -88,7 +89,7 @@ run_passes() {
   local S=(--data "$data" --bank "${data%.jsonl}.bank.jsonl" --slice "$slc" --view prose)
   [[ ${CASES:-0} -gt 0 ]] && S+=(--cases "$CASES")
   S+=(--backend openai --base-url "http://127.0.0.1:$port/v1" --model "$run" --cache-tag "$tag"
-    --cache "runs/cache.$run.jsonl" --conc 32 --max-tokens "$MAX_TOKENS" --thinking "${THINKING:-off}")
+    --cache "runs/cache.$run.jsonl" --conc "${CONC:-32}" --max-tokens "$MAX_TOKENS" --thinking "${THINKING:-off}")
   python infer.py "${S[@]}" --out "runs/$run.jsonl"
   python infer.py "${S[@]}" --rep 1 --out "runs/$run.repeat.jsonl"
   python infer.py --mode predict "${S[@]}" --frozen "runs/$run.jsonl" --out "runs/$run.predict.jsonl"
