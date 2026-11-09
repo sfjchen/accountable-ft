@@ -158,21 +158,23 @@ Smallest change that would reverse this decision: total requested amount (dollar
 
 Gold: approve, R2 and R5 waived, every other rule passes. Minimum sufficient facts: pi_years_since_phd, career_break, institution_type, requested_amount, start_day, end_day, letter_of_support, open_data_plan, human_subjects. No defaults. Smallest flip: pi_years_since_phd to 11 (target deny).
 
-## 7. Where we are (Nov 7)
+## 7. Where we are (Nov 9)
 
-- Data v1: about 5,000 cases, 3 views, 72 held-out families, 60 permit families.
-- Harness: end to end on two prompting pilots, same 150 held-out cases (logs `v1-lite-eval-52322ce-20261107-0253`, `qwen9b-lite-eval-52322ce-20261107-0254`).
+- Data v1: about 5,000 cases, 3 views, 72 held-out families, 60 permit families. 222 flagged items dropped at export.
+- Harness: 27 tests, end to end on two prompting pilots, same 150 held-out cases (logs `v1-lite-eval-domain-be2b788-20261108-2102`, `qwen9b-lite-eval-domain-be2b788-20261108-2102`).
 
 | | Gemini 3.5 Flash-Lite | Qwen3.5-9B base |
 |---|---|---|
-| accuracy | 0.77 | 0.60 |
+| accuracy, all | 0.77 | 0.60 |
+| accuracy, grant / trial / review | 0.86 / 0.80 / 0.64 | 0.68 / 0.64 / 0.48 |
 | account validity | 0.22 | 0.07 |
 | dSim | 0.04 [-0.06, 0.13] | 0.09 [0.04, 0.15] |
 | always-"unchanged" baseline | 0.69 | 0.85 |
 
-- Both never say "cannot determine". Both give mostly invalid accounts. The simulator does not beat the trivial baseline yet.
-  - Reading: accounts are where the headroom is, accuracy has some too. That is the shape the comparison needs.
-- Compute: FarmShare (Stanford, free), 6 nodes with 4 L40S 48 GB each, 4 GPUs per user. Environment, data and model are on the cluster, smoke jobs queued Nov 7. RunPod ($1.19/h A100) is the fallback.
+- Both never say "cannot determine". Both give mostly invalid accounts. Review is the hardest domain.
+- Training on FarmShare (L40S 48 GB, `farmshare.sh`): account SFT seed 0 finished Nov 7, 79 minutes, 692 steps, train loss 0.074, dev loss 0.048 (job 1951241_0, meta in `outputs/account-s0/train_meta.json` on the cluster).
+  - The other 5 runs and the 2 evaluation jobs for seed 0 are queued (jobs 1957278, 1957283, 1957284). The cluster has been saturated since Nov 7 (about 160 pending GPU jobs); 2-hour limits were set so they backfill.
+  - Fallback if the queue does not clear by Nov 11: RunPod A100 at $1.19/h, about $25 for the remaining runs.
 
 ## 8. Next
 
