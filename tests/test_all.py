@@ -396,6 +396,20 @@ def test_metrics(stub):
                                   "Deny.")] == ["approve", None, "cannot determine", "deny"]
 
 
+def test_domain_groups(stub, capsys):
+    """Checks that every group is also split by domain and that each table gets a column per condition and domain."""
+    ag = aggregate(score(RECS, fake_rows(), {})[0])
+    for d, gk in (("grant", "slice=unseen_family_train_vocab"), ("permit", "slice=combined_transfer")):
+        assert ag[f"domain={d}"] == ag[gk] == ag[f"{gk} domain={d}"] and ag[f"{gk} view=prose domain={d}"] == ag[gk]
+    check(ag["domain=grant"], {"acc_maj": 1 / 2}, 2)
+    check(ag["domain=permit"], {"acc_maj": 1.0}, 2)
+    assert f"{evaluate.PRIMARY} domain=permit" not in ag
+    evaluate.table("t", {"r": ag}, "all", lambda m: m == "acc_maj")
+    out = capsys.readouterr().out.splitlines()
+    assert out[3] == "| metric | r | r grant | r permit |"
+    assert out[5].startswith("| acc_maj | 0.75 [") and "| 0.50 [" in out[5] and out[5].endswith("n=2 |")
+
+
 def test_refusals(stub, tmp_path, monkeypatch):
     """Checks that evaluate.main refuses an old-shuffle shuf file and a companion from another model."""
     rows = [r | {"model": "m", "backend": "b"} for r in fake_rows()]

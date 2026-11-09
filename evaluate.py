@@ -1,5 +1,5 @@
 """Scores infer.py run files and their companions (<run>.{repeat,answers,predict,predict_noacc,simulate,simulate_noacc,
-simulate_shuf}.jsonl) against engine-labeled records, with family-clustered bootstrap CIs per slice and view.
+simulate_shuf}.jsonl) against engine-labeled records, with family-clustered bootstrap CIs per slice, view and domain.
 Entry point: main (markdown tables to stdout, every number to --json; --render writes <run>.edits.jsonl, --power
 prints the intra-cluster correlation and power table). parse, load and bank_recs are shared with infer.py.
 """
@@ -216,14 +216,14 @@ def policy(rec):
 def score(recs, rows, aux, bank=()):
     """
     Returns (units, coverage, interventions) for one condition: units maps metric -> [(value, cluster, slice, view,
-    correct or None, unit id)], aux maps COMPANIONS names to companion rows.
+    correct or None, unit id, domain)], aux maps COMPANIONS names to companion rows.
     """
     U, cov, ivs = defaultdict(list), Counter(), []
 
     def add(m, v, rec, bc=None, uid=None):
-        """Appends one unit value for metric m, tagged with the record's cluster, slice, view and a unit id."""
+        """Appends one unit value for metric m, tagged with the record's cluster, slice, view, a unit id and domain."""
         U[m].append((float(v), rec.get("template_family") or rec["policy_id"], rec.get("slice") or rec["split"],
-                rec.get("view", "prose"), bc, uid or rec["id"]))
+                rec.get("view", "prose"), bc, uid or rec["id"], rec.get("domain") or rec["policy_id"].split("-")[0]))
 
     for r in rows:
         rec = recs.get(r["id"])
@@ -436,12 +436,21 @@ def boot(vals, clus, B=1000, seed=0):
     return {"mean": float(v.mean()), "lo": float(lo), "hi": float(hi), "n": int(len(v)), "n_clus": int(len(up))}
 
 
+def dkey(gk, d):
+    """Returns the key of group gk restricted to domain d: "domain=<d>" for "all", else "<gk> domain=<d>"."""
+    return f"domain={d}" if gk == "all" else f"{gk} domain={d}"
+
+
 def groups(us):
-    """Returns {group: units} for "all", "slice=<s>", "view=<v>" and "slice=<s> view=<v>"."""
+    """
+    Returns {group: units} for "all", "slice=<s>", "view=<v>" and "slice=<s> view=<v>", each also restricted to every
+    domain under its dkey.
+    """
     out = defaultdict(list)
     for u in us:
         for gk in ("all", f"slice={u[2]}", f"view={u[3]}", f"slice={u[2]} view={u[3]}"):
             out[gk].append(u)
+            out[dkey(gk, u[6])].append(u)
     return out
 
 
@@ -508,15 +517,19 @@ def okey(m):
 
 
 def table(title, res, gk, keep):
-    """Prints one markdown table of the metrics kept by keep, conditions as columns, for group gk."""
-    conds = list(res)
+    """
+    Prints one markdown table of the metrics kept by keep for group gk: per condition, a column over all domains,
+    then one per domain.
+    """
+    doms = sorted({k.rsplit("domain=", 1)[1] for r in res.values() for k in r if k.startswith(dkey(gk, ""))})
+    cols = [(f"{c} {d}" if d else c, dkey(gk, d) if d else gk, c) for c in res for d in [""] + doms]
     ms = sorted({m for r in res.values() for m in r.get(gk, {}) if keep(m)}, key=okey)
     if not ms:
         return
-    print(f"\n### {title}\n\n| metric | " + " | ".join(conds) + " |\n|---|" + "---|" * len(conds))
+    print(f"\n### {title}\n\n| metric | " + " | ".join(h for h, _, _ in cols) + " |\n|---|" + "---|" * len(cols))
     for m in ms:
         fm = ".0f" if m.startswith("len") else ".2f"
-        cells = [res[c].get(gk, {}).get(m) for c in conds]
+        cells = [res[c].get(k, {}).get(m) for _, k, c in cols]
         print(f"| {LABEL.get(m, m)} | " + " | ".join(f"{x['mean']:{fm}} [{x['lo']:{fm}}, {x['hi']:{fm}}] n={x['n']}"
                 if x and x["n"] else "-" for x in cells) + " |")
 
@@ -686,7 +699,8 @@ def main():
             "decoding": {c: sorted(s) for c, s in sigs.items()}}, indent=1))
     for c, s in sigs.items():
         print(f"{c}: decoding {sorted(s)}; compute {comp[c]}")
-    gks = sorted({g for r in res.values() for g in r}, key=lambda g: (g != PRIMARY, g != "all", g))
+    gks = sorted({g for r in res.values() for g in r if "domain=" not in g},
+            key=lambda g: (g != PRIMARY, g != "all", g))
     for gk in gks:
         table(("PRIMARY " if gk == PRIMARY else "secondary: " if gk != "all" else "") + gk, res, gk,
                 lambda m: "|" not in m)
@@ -696,7 +710,8 @@ def main():
     for k in sorted({k for cv in covs.values() for k in cv}):
         print(f"| {k} | " + " | ".join(str(covs[c].get(k, 0)) for c in conds) + " |")
     for gname, s in seeds.items():
-        for gk in (PRIMARY, "all"):
+        doms = sorted({g.rsplit("domain=", 1)[1] for g in s["metrics"] if "domain=" in g})
+        for gk in [k for g in (PRIMARY, "all") for d in [""] + doms if (k := dkey(g, d) if d else g) in s["metrics"]]:
             print(f"\n### seed aggregate {gname} {gk} ({', '.join(s['seeds'])}): mean of per-seed means [min, max]\n")
             for m in sorted((m for m in s["metrics"].get(gk, {}) if "|" not in m), key=okey):
                 x = s["metrics"][gk][m]
