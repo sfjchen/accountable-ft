@@ -1,0 +1,300 @@
+# Conforming purchase mortgages, manual underwriting. Real-rules domain, held out: rule shapes and thresholds follow
+# the Fannie Mae Selling Guide and Eligibility Matrix (Aug 5, 2026) and FHFA's 2026 conforming loan limits; see
+# pilots/mortgage/policy.md for sources. Unlike the 4 invented domains, the model's priors about lending can pull
+# against the rules here (the point of this domain). Simplifications: one property value (the lower of price and
+# appraisal), ratios rounded down to whole numbers, waiting periods bucketed into the derogatory_event enum, and ints
+# bucketed to at most 8 values like every other domain. Scoped rules carry a "near" condition for near-miss distractors.
+name: mortgage
+title: "Conforming purchase loans, manual underwriting: eligibility rules (2026)"
+preamble: "A loan application is approved only if it meets every rule below. Ratios are whole percentages rounded down. Rules marked as defaults say what to assume when the file is silent on a point."
+ref_date: 2026-11-02
+# a purchase loan never exceeds the property value, and a file that cannot cover the cash to close never reaches
+# underwriting (so reserves are never negative)
+valid: ["loan_amount <= property_value", "liquid_assets + gift_funds >= cash_to_close"]
+facts:
+  credit_score:
+    type: int
+    values: [600, 620, 640, 660, 680, 700, 720, 760]
+    label: "representative credit score"
+    say:
+      - "The representative credit score on the file is {v}."
+      - "The credit report gives a representative score of {v}."
+      - "The middle of the three bureau scores is {v}."
+  monthly_income:
+    type: int
+    values: [4000, 5000, 6000, 7000, 8000, 9000, 10000, 12000]
+    label: "stable gross monthly income (dollars)"
+    say:
+      - "Stable gross income comes to {v:money} a month."
+      - "The borrower's documented gross monthly income is {v:money}."
+      - "Pay stubs and tax returns support gross income of {v:money} per month."
+  housing_payment:
+    type: int
+    values: [1200, 1500, 1800, 2100, 2400, 2700, 3000]
+    label: "new monthly housing payment, with taxes, insurance and HOA (dollars)"
+    say:
+      - "The new monthly payment, including taxes, insurance and HOA dues, would be {v:money}."
+      - "Principal, interest, taxes, insurance and association dues on the new loan total {v:money} a month."
+  monthly_debts:
+    type: int
+    values: [0, 150, 300, 450, 600, 900, 1200, 1500]
+    label: "other monthly debt payments, excluding the car loan (dollars)"
+    say:
+      - "Card minimums, student loans and other recurring debts, apart from the car loan, add up to {v:money} a month."
+      - "Besides any car loan, the credit report shows {v:money} a month in required debt payments."
+  car_payment:
+    type: int
+    values: [0, 250, 350, 450, 550]
+    label: "monthly car loan payment (dollars)"
+    say:
+      - "The car loan payment is {v:money} a month."
+      - "An auto loan on the credit report requires {v:money} a month."
+  car_payments_left:
+    type: int
+    values: [3, 8, 11, 24, 40]
+    label: "payments left on the car loan"
+    say:
+      - "The car loan has {v} payments left."
+      - "According to the lender's statement, {v} monthly payments remain on the auto loan."
+  loan_amount:
+    type: int
+    values: [180000, 300000, 420000, 540000, 660000, 810000, 990000, 1300000]
+    label: "loan amount (dollars)"
+    say:
+      - "The requested loan amount is {v:money}."
+      - "The borrower is asking to borrow {v:money}."
+  property_value:
+    type: int
+    values: [200000, 320000, 450000, 560000, 700000, 850000, 1050000, 1400000]
+    label: "property value, the lower of price and appraisal (dollars)"
+    say:
+      - "The property is valued at {v:money}, the lower of the purchase price and the appraisal."
+      - "For lending purposes the home's value is {v:money}."
+  liquid_assets:
+    type: int
+    values: [15000, 30000, 45000, 60000, 80000, 100000, 130000, 160000]
+    label: "the borrower's own eligible liquid assets (dollars)"
+    say:
+      - "Checking, savings and vested retirement accounts hold {v:money} in total."
+      - "The borrower's own eligible liquid assets come to {v:money}."
+  gift_funds:
+    type: int
+    values: [0, 10000, 20000, 40000]
+    label: "gift funds from a relative (dollars)"
+    say:
+      - "A relative is giving {v:money} toward the purchase."
+      - "Gift funds of {v:money} from family are part of the assets."
+  cash_to_close:
+    type: int
+    values: [20000, 35000, 50000, 70000, 90000, 120000]
+    label: "cash needed to close (dollars)"
+    say:
+      - "The down payment and closing costs require {v:money} at closing."
+      - "Cash needed to close is {v:money}."
+  years_in_field:
+    type: int
+    values: [0, 1, 2, 3, 5, 10]
+    label: "years of income history in the same line of work"
+    say:
+      - "The borrower has worked in the same line of work for {v} years."
+      - "Employment records show {v} years in the current field."
+  recent_graduate:
+    type: bool
+    label: "finished school or training for the current field within the past year"
+    say_true:
+      - "The borrower finished a degree in the current field within the past year."
+      - "A training program for the current job was completed less than a year ago."
+    say_false:
+      - "The borrower has not been in school or training recently."
+      - "No recent schooling or training for the field is reported."
+  first_time_buyer:
+    type: bool
+    label: "first-time home buyer"
+    say_true:
+      - "The borrower has not owned a home in the past three years and qualifies as a first-time buyer."
+      - "This is the borrower's first home purchase."
+    say_false:
+      - "The borrower has owned a home within the past three years."
+      - "The borrower is not a first-time home buyer."
+  high_cost_area:
+    type: bool
+    label: "property in a designated high-cost area"
+    say_true:
+      - "The property sits in a county designated as a high-cost area."
+      - "The home is in an area with an elevated loan limit for high housing costs."
+    say_false:
+      - "The property is in a standard-cost county."
+      - "The county carries the baseline loan limit."
+  derogatory_event:
+    type: enum
+    values: [none, ch7_1y, ch7_3y, ch7_5y, fc_2y, fc_5y, fc_8y, ss_3y]
+    names:
+      none: "no bankruptcy, foreclosure or short sale on record"
+      ch7_1y: "a Chapter 7 bankruptcy discharged 1 year ago"
+      ch7_3y: "a Chapter 7 bankruptcy discharged 3 years ago"
+      ch7_5y: "a Chapter 7 bankruptcy discharged 5 years ago"
+      fc_2y: "a foreclosure completed 2 years ago"
+      fc_5y: "a foreclosure completed 5 years ago"
+      fc_8y: "a foreclosure completed 8 years ago"
+      ss_3y: "a short sale completed 3 years ago"
+    label: "most recent bankruptcy, foreclosure or short sale"
+    say:
+      - "The credit history shows {v:e}."
+      - "On the derogatory credit section, the report lists {v:e}."
+  extenuating:
+    type: bool
+    label: "documented extenuating circumstances for the credit event"
+    say_true:
+      - "Documentation shows the credit event followed a sudden job loss outside the borrower's control."
+      - "The file documents extenuating circumstances, a medical emergency that cut household income."
+    say_false:
+      - "No extenuating circumstances are documented for the credit history."
+      - "The borrower offers no documented explanation of circumstances beyond their control."
+  gift_letter:
+    type: bool
+    label: "signed gift letter"
+    say_true:
+      - "A signed gift letter confirms the gift does not have to be repaid."
+      - "The donor has signed a gift letter stating no repayment is expected."
+    say_false:
+      - "No signed gift letter is in the file."
+      - "The donor has not provided a gift letter."
+  non_occupant_coborrower:
+    type: bool
+    label: "co-borrower who will not live in the home"
+    say_true:
+      - "A parent who will not live in the home is co-signing as a borrower."
+      - "One co-borrower will keep living elsewhere and not occupy the property."
+    say_false:
+      - "Every borrower on the loan will live in the home."
+      - "There is no co-borrower who lives elsewhere."
+derived_facts:
+  dti:
+    expr: "(housing_payment + monthly_debts + car_payment * (car_payments_left > 10)) * 100 // monthly_income"
+    label: "debt-to-income ratio (percent, rounded down)"
+    say: ["Counting the new payment, the debt-to-income ratio works out to {v}%."]
+  reserves_months:
+    expr: "(liquid_assets + gift_funds - cash_to_close) // housing_payment"
+    label: "reserves in months of the new payment (rounded down)"
+    say: ["After closing, assets would cover {v} months of the new payment."]
+  ltv:
+    expr: "loan_amount * 100 // property_value"
+    label: "loan-to-value ratio (percent, rounded down)"
+    say: ["The loan-to-value ratio is {v}%."]
+rules:
+  - key: min_score
+    cond: "credit_score >= {t}"
+    text: "The representative credit score must be at least {t}"
+    params: {t: [640, 660]}
+    unless:
+      - cond: "credit_score >= {t2} and reserves_months >= {r}"
+        text: "the score is at least {t2} and reserves after closing cover at least {r} months of the new payment"
+        params: {t2: "t - 20", r: [2, 6]}
+  - key: ltv_cap
+    cond: "ltv <= {t}"
+    text: "The loan-to-value ratio (loan amount over property value) may not exceed {t}%"
+    params: {t: [90, 95]}
+    unless:
+      - cond: "first_time_buyer and ltv <= 97"
+        text: "the borrower is a first-time home buyer and the loan-to-value ratio is at most 97%"
+  - key: loan_limit
+    cond: "loan_amount <= {t}"
+    text: "The loan amount may not exceed the conforming limit of {t:money}"
+    params: {t: [766550, 806500, 832750]}
+    unless:
+      - cond: "high_cost_area and loan_amount <= {t2}"
+        text: "the property is in a designated high-cost area and the loan is at most {t2:money}"
+        params: {t2: "t * 3 // 2"}
+  - key: income_history
+    cond: "years_in_field >= {t}"
+    text: "The borrower must have at least {t} years of income history in the same line of work"
+    params: {t: [2]}
+    unless:
+      - cond: "recent_graduate"
+        text: "the borrower finished school or training for the field within the past year"
+  - key: dti_limit
+    cond: "dti <= 36"
+    text: "The debt-to-income ratio may not exceed 36%. Car loan payments count only when more than 10 payments are left"
+    unless:
+      - cond: "credit_score >= {s} and reserves_months >= 6 and dti <= 45"
+        text: "the credit score is at least {s}, reserves cover at least 6 months, and the ratio is at most 45%"
+        params: {s: [700, 720]}
+  - key: chapter7
+    cond: "derogatory_event not in ['ch7_1y', 'ch7_3y']"
+    text: "At least 4 years must have passed since a Chapter 7 bankruptcy was discharged"
+    unless:
+      - cond: "extenuating and derogatory_event == 'ch7_3y'"
+        text: "extenuating circumstances are documented and at least 2 years have passed"
+  - key: foreclosure
+    cond: "derogatory_event not in ['fc_2y', 'fc_5y']"
+    text: "At least 7 years must have passed since a foreclosure was completed"
+    unless:
+      - cond: "extenuating and derogatory_event == 'fc_5y' and ltv <= 90"
+        text: "extenuating circumstances are documented, at least 3 years have passed, and the loan-to-value ratio is at most 90%"
+  - key: high_ltv_score
+    scoped: true
+    cond: "ltv <= 75 or credit_score >= {t}"
+    near: "ltv <= 75 and credit_score < {t}"
+    text: "When the loan-to-value ratio is above 75%, the credit score must be at least {t}"
+    params: {t: [680, 700]}
+  - key: short_sale
+    scoped: true
+    cond: "derogatory_event != 'ss_3y' or extenuating"
+    near: "derogatory_event != 'ss_3y' and not extenuating"
+    text: "A short sale must be at least 4 years old, or at least 2 years old with documented extenuating circumstances"
+  - key: non_occupant
+    scoped: true
+    cond: "not non_occupant_coborrower or ltv <= 90"
+    near: "not non_occupant_coborrower and ltv > 90"
+    text: "If a co-borrower will not live in the home, the loan-to-value ratio may not exceed 90%"
+  - key: gift_letter
+    scoped: true
+    cond: "gift_funds == 0 or gift_letter"
+    near: "gift_funds == 0 and not gift_letter"
+    text: "Gift funds require a signed gift letter stating they do not have to be repaid"
+derived:
+  - key: reserves_min
+    cond: "reserves_months >= {t}"
+    text: "After paying the cash needed to close, the borrower's assets including gifts must cover at least {t} months of the new housing payment"
+    params: {t: [1, 2, 6]}
+  - key: dti_cap
+    cond: "dti <= {t}"
+    text: "Monthly debts including the new housing payment may not exceed {t}% of stable gross monthly income, counting a car loan only when more than 10 payments are left"
+    params: {t: [43, 45, 50]}
+defaults:
+  - fact: gift_letter
+    value: false
+    text: "If the file does not mention a gift letter, treat it as having none"
+  - fact: extenuating
+    value: false
+    text: "If extenuating circumstances are not documented, assume there were none"
+  - fact: first_time_buyer
+    value: false
+    text: "If first-time buyer status is not stated, treat the borrower as a repeat buyer"
+  - fact: high_cost_area
+    value: false
+    text: "If the property's county is not identified as high-cost, apply the baseline loan limit"
+  - fact: non_occupant_coborrower
+    value: false
+    text: "If the file does not mention a co-borrower living elsewhere, assume every borrower will live in the home"
+  - fact: recent_graduate
+    value: false
+    text: "If recent schooling or training is not mentioned, assume there was none"
+  - fact: derogatory_event
+    value: none
+    text: "If the credit history section is silent, assume no bankruptcy, foreclosure or short sale"
+names: ["Denise Walker", "Marcus Chen", "Robert Alvarez", "Priya Natarajan", "Samuel Okafor", "Elena Kowalczyk", "Tomas Reyes", "Hannah Lindqvist"]
+intro:
+  - "Loan file {num} is a purchase application from {name}."
+  - "The following summarizes mortgage application {num}, submitted by {name}."
+  - "{name} applied this month for a conforming purchase loan, file {num}."
+color:
+  - "The borrower is 58 and recently divorced."
+  - "The borrower is a 31-year-old single parent."
+  - "The borrower moved to the United States from abroad eleven years ago."
+  - "The borrower writes that they have never missed a payment in their life."
+  - "The loan officer notes the borrower asked for a decision before school starts."
+  - "The borrower works as an ICU nurse at a regional hospital."
+  - "The borrower volunteers on weekends at a youth soccer league."
+  - "The borrower attends services weekly at a local mosque, the letter of explanation mentions."
+  - "The listing agent says another buyer is interested in the property."

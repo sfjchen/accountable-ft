@@ -65,9 +65,10 @@ train_one() {
 }
 
 # Serves a model with vllm on this job's GPU and runs the answer, repeat and both predict passes on the primary
-# slice (CASES=N for a stratified subset, THINKING=on|off). Usage: run_passes <model path> <run name> <cache tag>
+# slice (CASES=N for a stratified subset, THINKING=on|off, DATA and SLICE for another data file, e.g. the mortgage
+# domain: DATA=data/mortgage.jsonl SLICE=real_transfer). Usage: run_passes <model path> <run name> <cache tag>
 run_passes() {
-  local model=$1 run=$2 tag=$3
+  local model=$1 run=$2 tag=$3 data=${DATA:-data/v1.jsonl} slc=${SLICE:-unseen_family_train_vocab}
   local port=$((8000 + SLURM_JOB_ID % 1000)) vlog=$REPO/runs/slurm/vllm_$SLURM_JOB_ID.log  # 1-GPU jobs share nodes
   vllm serve "$model" --served-model-name "$run" --host 127.0.0.1 --port "$port" --dtype bfloat16 \
       --max-model-len "$MAX_LEN" --gpu-memory-utilization 0.9 --seed 0 > "$vlog" 2>&1 &
@@ -79,7 +80,7 @@ run_passes() {
     sleep 5
   done
   curl -sf "http://127.0.0.1:$port/v1/models" > /dev/null || die "vllm not up after 20 min, see $vlog"
-  local S=(--data data/v1.jsonl --bank data/v1.bank.jsonl --slice unseen_family_train_vocab --view prose)
+  local S=(--data "$data" --bank "${data%.jsonl}.bank.jsonl" --slice "$slc" --view prose)
   [[ ${CASES:-0} -gt 0 ]] && S+=(--cases "$CASES")
   S+=(--backend openai --base-url "http://127.0.0.1:$port/v1" --model "$run" --cache-tag "$tag"
     --cache "runs/cache.$run.jsonl" --conc 32 --max-tokens "$MAX_TOKENS" --thinking "${THINKING:-off}")
@@ -222,6 +223,7 @@ PY
   base)  # prompted base model, the same passes as eval: THINKING=on|off, CASES=N for a stratified subset
     [[ -s $MODEL_FILE ]] || die "$MODEL_FILE missing, run bash farmshare.sh setup first"
     model_id=$(cat "$MODEL_FILE") run=base-think${THINKING:-off}
+    [[ -n ${DATA:-} ]] && run=$(basename "${DATA%.jsonl}")-$run
     [[ ${CASES:-0} -gt 0 ]] && run=$run-c$CASES
     cd "$REPO"
     echo "job $SLURM_JOB_ID: $run ($model_id) on $(hostname), commit $(git rev-parse --short HEAD)"

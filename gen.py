@@ -24,9 +24,12 @@ import engine as E
 
 ROOT = Path(__file__).resolve().parent
 DOMAINS = ["grant", "permit", "trial", "review"]
-HELD_OUT = "permit"
+# Held-out domains and their split: permit (invented vocabulary) and mortgage (real rules, not in "all", generated with
+# --domains mortgage) each get their own transfer slice, never train or dev.
+HELD_OUT = {"permit": "test_domain", "mortgage": "test_real"}
 VIEWS = ["table", "prose", "prose_derive"]
-SLICE = {"train": "train", "dev": "dev", "test_policy": "unseen_family_train_vocab", "test_domain": "combined_transfer"}
+SLICE = {"train": "train", "dev": "dev", "test_policy": "unseen_family_train_vocab", "test_domain": "combined_transfer",
+         "test_real": "real_transfer"}
 EDIT_KIND = {"base": None, "flip": "replace", "invariant": "replace", "missing": "remove", "reveal": "add"}
 P_APPROVE, P_CD, P_DEFAULT, MIN_FAM_DIST = 0.43, 0.6, 0.25, 4
 FRAC_TEST, FRAC_DEV = 0.4, 0.1
@@ -880,7 +883,7 @@ def main():
             rng = random.Random(f"{a.seed}-{dname}-{p}")
             pol = instantiate(dname, fams[fi], f"{dname}-p{p:03d}", rng)
             pols.append(pol)
-            ncase = a.train_cases_per_family if a.train_cases_per_family and dname != HELD_OUT and \
+            ncase = a.train_cases_per_family if a.train_cases_per_family and dname not in HELD_OUT and \
                 split.get(fi) == "train" else a.cases_per_family
             j, npf = p % a.policies_per_family, min(a.policies_per_family, a.n_policies - fi * a.policies_per_family)
             ncase = ncase // npf + (j < ncase % npf)
@@ -945,7 +948,7 @@ def main():
                         eff = "cannot determine" if gi["decision"] == "cannot determine" else \
                             "default applied" if removed in gi["defaults_applied"] else \
                             "unchanged" if gi["decision"] == g["decision"] else "changed"
-                    sp = "test_domain" if dname == HELD_OUT else split[fi]
+                    sp = HELD_OUT[dname] if dname in HELD_OUT else split[fi]
                     inter = not gi["single_condition"] and len(gi["sufficient_sets"]) >= 2 \
                         if variant == "base" else None
                     fs = E.fact_states(pol, facts)
