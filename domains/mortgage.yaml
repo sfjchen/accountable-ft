@@ -11,6 +11,8 @@ ref_date: 2026-11-02
 # a purchase loan never exceeds the property value, and a file that cannot cover the cash to close never reaches
 # underwriting (so reserves are never negative)
 valid: ["loan_amount <= property_value", "liquid_assets + gift_funds >= cash_to_close"]
+# Rules every sampled policy keeps, so no policy approves a file a real lender would never see past.
+required: [min_score, ltv_cap, dti_limit]
 facts:
   credit_score:
     type: int
@@ -38,24 +40,10 @@ facts:
   monthly_debts:
     type: int
     values: [0, 150, 300, 450, 600, 900, 1200, 1500]
-    label: "other monthly debt payments, excluding the car loan (dollars)"
+    label: "monthly debt payments other than housing (dollars)"
     say:
-      - "Card minimums, student loans and other recurring debts, apart from the car loan, add up to {v:money} a month."
-      - "Besides any car loan, the credit report shows {v:money} a month in required debt payments."
-  car_payment:
-    type: int
-    values: [0, 250, 350, 450, 550]
-    label: "monthly car loan payment (dollars)"
-    say:
-      - "The car loan payment is {v:money} a month."
-      - "An auto loan on the credit report requires {v:money} a month."
-  car_payments_left:
-    type: int
-    values: [3, 8, 11, 24, 40]
-    label: "payments left on the car loan"
-    say:
-      - "The car loan has {v} payments left."
-      - "According to the lender's statement, {v} monthly payments remain on the auto loan."
+      - "Card minimums, student loans, the car loan and other recurring debts add up to {v:money} a month."
+      - "The credit report shows {v:money} a month in required debt payments."
   loan_amount:
     type: int
     values: [180000, 300000, 420000, 540000, 660000, 810000, 990000, 1300000]
@@ -170,7 +158,7 @@ facts:
       - "There is no co-borrower who lives elsewhere."
 derived_facts:
   dti:
-    expr: "(housing_payment + monthly_debts + car_payment * (car_payments_left > 10)) * 100 // monthly_income"
+    expr: "(housing_payment + monthly_debts) * 100 // monthly_income"
     label: "debt-to-income ratio (percent, rounded down)"
     say: ["Counting the new payment, the debt-to-income ratio works out to {v}%."]
   reserves_months:
@@ -214,7 +202,7 @@ rules:
         text: "the borrower finished school or training for the field within the past year"
   - key: dti_limit
     cond: "dti <= 36"
-    text: "The debt-to-income ratio may not exceed 36%. Car loan payments count only when more than 10 payments are left"
+    text: "The debt-to-income ratio may not exceed 36%"
     unless:
       - cond: "credit_score >= {s} and reserves_months >= 6 and dti <= 45"
         text: "the credit score is at least {s}, reserves cover at least 6 months, and the ratio is at most 45%"
@@ -259,7 +247,7 @@ derived:
     params: {t: [1, 2, 6]}
   - key: dti_cap
     cond: "dti <= {t}"
-    text: "Monthly debts including the new housing payment may not exceed {t}% of stable gross monthly income, counting a car loan only when more than 10 payments are left"
+    text: "Monthly debts including the new housing payment may not exceed {t}% of stable gross monthly income"
     params: {t: [43, 45, 50]}
 defaults:
   - fact: gift_letter
@@ -289,8 +277,8 @@ intro:
   - "The following summarizes mortgage application {num}, submitted by {name}."
   - "{name} applied this month for a conforming purchase loan, file {num}."
 color:
-  - "The borrower is 58 and recently divorced."
-  - "The borrower is a 31-year-old single parent."
+  - "The borrower recently went through a divorce."
+  - "The borrower is a single parent of two."
   - "The borrower moved to the United States from abroad eleven years ago."
   - "The borrower writes that they have never missed a payment in their life."
   - "The loan officer notes the borrower asked for a decision before school starts."

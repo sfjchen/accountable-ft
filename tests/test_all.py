@@ -245,12 +245,15 @@ def test_generated_policies_and_rendering():
 
 def test_mortgage_domain():
     """Checks the real-rules mortgage domain: held out of "all" with its own slice, generated policies meet the
-    validity conditions and certify flips, and a hand-worked case gets the car-loan, gift and ratio rules right."""
+    validity conditions, keep the required score, LTV and DTI rules and certify flips, and a hand-worked case gets
+    the gift and ratio rules right."""
     assert "mortgage" not in gen.DOMAINS and gen.SLICE[gen.HELD_OUT["mortgage"]] == "real_transfer"
     dom = gen.load_domain("mortgage")
     for s in range(3):
         rng = random.Random(f"mortgage-{s}")
-        p = gen.instantiate("mortgage", gen.sample_family(dom, rng, [], False), f"mortgage-t{s}", rng)
+        fam = gen.sample_family(dom, rng, [], False)
+        assert set(dom["required"]) <= {k for k, _ in fam["core"]}
+        p = gen.instantiate("mortgage", fam, f"mortgage-t{s}", rng)
         assert 8 <= len(p.requires) + len(p.defaults) <= 15
         for want in ["approve", "deny"]:
             f = gen.sample_case(p, rng, want)
@@ -263,13 +266,13 @@ def test_mortgage_domain():
              {"id": "R3", "kind": "require", "cond": "reserves_months >= 6"}]
     p = E.Policy("m", dom["facts"], rules, dom["valid"], {n: d["expr"] for n, d in dom["derived_facts"].items()})
     f = {"credit_score": 700, "monthly_income": 9000, "housing_payment": 2100, "monthly_debts": 1500,
-         "car_payment": 550, "car_payments_left": 8, "loan_amount": 420000, "property_value": 450000,
+         "loan_amount": 420000, "property_value": 450000,
          "liquid_assets": 60000, "gift_funds": 20000, "cash_to_close": 50000}
-    # 8 payments left: the car loan does not count, (2100 + 1500) / 9000 = 40%; 420k / 450k = 93% rounds down;
+    # (2100 + 1500) / 9000 = 40%; 420k / 450k = 93% rounds down;
     # (60k + 20k gift - 50k) / 2100 = 14.3 months rounds down
     assert p.derived_values(f) == {"dti": 40, "reserves_months": 14, "ltv": 93}
     assert E.decide(p, f)["decision"] == "approve"
-    for edit in ({"car_payments_left": 11}, {"credit_score": 680}, {"gift_funds": 0}):  # DTI 46%, R2, 4 months
+    for edit in ({"monthly_income": 7000}, {"credit_score": 680}, {"gift_funds": 0}):  # DTI 51%, R2, 4 months
         assert E.decide(p, {**f, **edit})["decision"] == "deny"
     assert E.min_flip(p, f)["radius"] == 1
 

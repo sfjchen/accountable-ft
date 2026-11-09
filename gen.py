@@ -125,11 +125,13 @@ def sample_family(dom, rng, hold, want_hold, prev=()):
     """
     Returns a template family {"core", "derived", "defaults", "parts"}: 5-8 core templates with 2-4 exceptions and
     2+ scoped rules, 1-2 derived-fact rules, 1-2 defaults on live facts, 8-15 rules, at most MAX_FACTS facts.
-    want_hold forces a held-out exception/default pair in, else keeps all out; families within MIN_FAM_DIST parts of
-    one in prev are rejected.
+    The domain's "required" rules (mortgage: score, LTV, DTI) are in every family. want_hold forces a held-out
+    exception/default pair in, else keeps all out; families within MIN_FAM_DIST parts of one in prev are rejected.
     """
+    req = [t for t in dom["rules"] if t["key"] in dom.get("required", ())]
+    rest = [t for t in dom["rules"] if t not in req]
     for _ in range(50000):
-        core = rng.sample(dom["rules"], rng.randint(5, min(8, len(dom["rules"]))))
+        core = req + rng.sample(rest, rng.randint(5, min(8, len(dom["rules"]))) - len(req))
         exc = [t["key"] for t in core if t.get("unless")]
         if len(exc) < 2 or sum(bool(t.get("scoped")) for t in core) < 2:
             continue
