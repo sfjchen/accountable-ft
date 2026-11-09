@@ -39,9 +39,12 @@ die() {
 }
 
 set +u  # Lmod's scripts read unset variables
-if ! type module &>/dev/null && [[ -f /etc/profile.d/lmod.sh ]]; then
-  # shellcheck disable=SC1091
-  source /etc/profile.d/lmod.sh
+if ! type module &>/dev/null; then
+  # FarmShare names it z00_lmod.sh; without it a job submitted from a non-login shell gets no nvcc
+  for f in /etc/profile.d/lmod.sh /etc/profile.d/z00_lmod.sh; do
+    # shellcheck disable=SC1090
+    [[ -f $f ]] && { source "$f"; break; }
+  done
 fi
 # CUDA toolkit for JIT kernels (triton, flashinfer), torch wheels bring their own runtime
 type module &>/dev/null && { module load cuda/12.9.0 &>/dev/null || true; }
