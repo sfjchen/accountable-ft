@@ -703,3 +703,52 @@ def test_batch_and_weighted_loss(rows, tok):
             per.append(ce[dm].mean() + lam * ce[am].mean())
         assert weighted_loss(lg, b["labels"], b["weights"]).item() == pytest.approx(torch.stack(per).mean().item(),
                                                                                     rel=1e-5)
+
+
+def test_chunked_resume_matches_one_run(tmp_path):
+    """
+    Trains a toy dropout regressor for 2 epochs once, and as chunk 1 (stop_cb(1)) plus chunk 2 (resume from the
+    epoch-1 checkpoint), under train.py's schedule settings (cosine, warmup, data_seed, epoch saves), and checks the
+    chunks stop at the epoch boundary and match the single run in steps, learning rates, losses and final weights.
+    """
+    torch = pytest.importorskip("torch")
+    tf = pytest.importorskip("transformers")
+    from train import stop_cb
+
+    class Toy(torch.nn.Module):
+        """Linear regressor with dropout, so the loss depends on the restored RNG state."""
+
+        def __init__(self):
+            """Builds the layers from a fixed seed."""
+            super().__init__()
+            torch.manual_seed(0)
+            self.lin, self.drop = torch.nn.Linear(4, 1), torch.nn.Dropout(0.5)
+
+        def forward(self, x, y):
+            """Returns the mean squared error of the dropout-masked prediction."""
+            return {"loss": torch.nn.functional.mse_loss(self.lin(self.drop(x)).squeeze(-1), y)}
+
+    g = torch.Generator().manual_seed(1)
+    ds = [{"x": torch.randn(4, generator=g).tolist(), "y": float(i % 3)} for i in range(22)]
+
+    def fit(out, cb=None, ck=None):
+        """Runs one Trainer call into out and returns the trainer and its model."""
+        m = Toy()
+        cfg = tf.TrainingArguments(output_dir=str(out), num_train_epochs=2, learning_rate=0.05, seed=0, data_seed=0,
+                per_device_train_batch_size=2, gradient_accumulation_steps=2, warmup_steps=0.1,
+                lr_scheduler_type="cosine", logging_steps=1, save_strategy="epoch", report_to="none", use_cpu=True,
+                remove_unused_columns=False, disable_tqdm=True)
+        tr = tf.Trainer(model=m, args=cfg, train_dataset=ds, callbacks=[cb] if cb else None)
+        tr.train(resume_from_checkpoint=ck)
+        return tr, m
+
+    one, m1 = fit(tmp_path / "one")
+    c1, _ = fit(tmp_path / "ch", stop_cb(1))
+    n = one.state.max_steps
+    assert c1.state.epoch == pytest.approx(1) and c1.state.global_step == n // 2 < c1.state.max_steps == n
+    assert sorted(p.name for p in (tmp_path / "ch").glob("checkpoint-*")) == [f"checkpoint-{n // 2}"]
+    c2, m2 = fit(tmp_path / "ch", ck=str(tmp_path / "ch" / f"checkpoint-{n // 2}"))
+    assert c2.state.global_step == c2.state.max_steps == n and c2.state.epoch == pytest.approx(2)
+    lg = lambda t: [h[k] for h in t.state.log_history if "loss" in h for k in ("step", "learning_rate", "loss")]
+    assert len(lg(one)) == 3 * n and lg(c2) == pytest.approx(lg(one), rel=1e-6)
+    assert all(torch.equal(a, b) for a, b in zip(m1.state_dict().values(), m2.state_dict().values()))

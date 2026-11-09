@@ -2,7 +2,9 @@
 # farmshare.sh: setup, cluster probe, smoke check, the 6 training runs and their evaluation on FarmShare, from
 # /scratch/users/$USER/accountable-ft. smoke, train and eval submit this script itself to Slurm with their resources
 # (extra sbatch options in SB), and the job runs the body inside the allocation.
-# Usage: bash farmshare.sh setup | probe | smoke [account|decision] | train | eval <cond>-s<seed> <epoch>
+# train --chunks splits each 2-epoch run into 2 dependent 55-minute 1-epoch jobs, which fit backfill windows.
+# Usage: bash farmshare.sh setup | probe | smoke [account|decision] | train [--chunks [--runs <cond>-s<seed>,...]] |
+#   eval <cond>-s<seed> <epoch>
 set -euo pipefail
 {
 cmd=${1:?usage: bash farmshare.sh setup|probe|smoke|train|eval}
@@ -14,6 +16,41 @@ export SCRATCH REPO VENV MODEL_FILE META_HOME PATH=$HOME/.local/bin:$PATH
 export HF_HOME=$SCRATCH/hf UV_CACHE_DIR=$SCRATCH/.uv/cache UV_PYTHON_INSTALL_DIR=$SCRATCH/.uv/python
 export XDG_CACHE_HOME=$SCRATCH/.cache TRITON_CACHE_DIR=$SCRATCH/.cache/triton VLLM_CACHE_ROOT=$SCRATCH/.cache/vllm
 OUT=/scratch/users/%u/accountable-ft/runs/slurm
+
+# Prints a message to stderr and exits.
+die() {
+  echo "error: $*" >&2
+  exit 1
+}
+
+if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
+  # chunk 1 stops after epoch 1, chunk 2 resumes from its checkpoint, the first run to submit goes to normal
+  runs=account-s0,account-s1,account-s2,decision-s0,decision-s1,decision-s2
+  [[ ${2:-} == --runs ]] && runs=${3:?usage: bash farmshare.sh train --chunks --runs account-s1,decision-s0}
+  mkdir -p "$REPO/runs/slurm"
+  n=0
+  printf '%-12s %-9s %-10s %-10s\n' run partition chunk1 chunk2
+  for r in ${runs//,/ }; do
+    [[ $r =~ ^(account|decision)-s([0-2])$ ]] || die "bad run $r, want <account|decision>-s<0-2>"
+    if [[ -d $REPO/outputs/$r/merged ]]; then
+      printf '%-12s %s\n' "$r" "skipped, outputs/$r/merged exists"
+      continue
+    fi
+    p=(--partition=gpu)
+    ((n++ == 0)) && p=(--partition=normal --qos=normal)
+    dep='' ids=()
+    for c in 1 2; do
+      # shellcheck disable=SC2086
+      j=$(sbatch --parsable "${p[@]}" --gpus=1 --cpus-per-task=8 --mem=48G --time=00:55:00 --job-name="aft-$r-c$c" \
+          --output="$OUT/${r}_c${c}_%j.out" ${dep:+"$dep"} ${SB:-} "$0" train "${BASH_REMATCH[1]}" \
+          "${BASH_REMATCH[2]}" "$c")
+      ids+=("${j%%;*}")
+      dep=--dependency=afterok:${j%%;*}
+    done
+    printf '%-12s %-9s %-10s %-10s\n' "$r" "${p[0]#--partition=}" "${ids[@]}"
+  done
+  exit
+fi
 case $cmd in
   smoke) res="--job-name=aft-smoke --mem=48G --time=00:15:00 --output=$OUT/smoke_%j.out" ;;
   train) res="--job-name=aft-train --mem=48G --time=08:00:00 --array=0-5 --output=$OUT/%A_%a.out" ;;
@@ -26,12 +63,6 @@ if [[ -n $res && -z ${SLURM_JOB_ID:-} ]]; then
   sbatch --partition=gpu --gpus=1 --cpus-per-task=8 $res ${SB:-} "$0" "$cmd" "$@"
   exit
 fi
-
-# Prints a message to stderr and exits.
-die() {
-  echo "error: $*" >&2
-  exit 1
-}
 
 set +u  # Lmod's scripts read unset variables
 if ! type module &>/dev/null && [[ -f /etc/profile.d/lmod.sh ]]; then
@@ -145,11 +176,18 @@ PY
     head -n 64 "$REPO/data/v1.sft.train.jsonl" > "$out/train.jsonl"
     head -n 16 "$REPO/data/v1.sft.dev.jsonl" > "$out/dev.jsonl"
     train_one "$cond" 0 "$out" "$out/train.jsonl" "$out/dev.jsonl" --epochs 1 --grad-accum 1 ;;
-  train)  # array index i: condition account (0-2) or decision (3-5), seed i % 3, a checkpoint per epoch
-    i=${SLURM_ARRAY_TASK_ID:?submit as an array job}
-    conds=(account decision)
-    train_one "${conds[i / 3]}" $((i % 3)) "$REPO/outputs/${conds[i / 3]}-s$((i % 3))" data/v1.sft.train.jsonl \
-        data/v1.sft.dev.jsonl ;;
+  train)  # array index i: account (0-2) or decision (3-5), seed i % 3, or one chunk: train <cond> <seed> 1|2
+    if [[ -n ${SLURM_ARRAY_TASK_ID:-} ]]; then
+      conds=(account decision) i=$SLURM_ARRAY_TASK_ID
+      set -- "${conds[i / 3]}" $((i % 3))
+    fi
+    cond=${1:?usage: train <cond> <seed> [1|2]} seed=${2:?missing seed}
+    case ${3:-} in
+      1) fl=(--epochs 2 --stop-after-epochs 1) ;;
+      2) fl=(--epochs 2 --resume) ;;
+      *) fl=(--epochs 2) ;;
+    esac
+    train_one "$cond" "$seed" "$REPO/outputs/$cond-s$seed" data/v1.sft.train.jsonl data/v1.sft.dev.jsonl "${fl[@]}" ;;
   eval)  # merges the epoch-k checkpoint, serves it with vllm, runs answer, repeat and both predict passes
     name=${1:?usage: bash farmshare.sh eval <cond>-s<seed> <epoch>} ep=${2:?missing epoch}
     out=$REPO/outputs/$name
