@@ -115,9 +115,12 @@ run_passes() {
   local port=$((8000 + SLURM_JOB_ID % 1000)) vlog=$REPO/runs/slurm/vllm_$SLURM_JOB_ID.log  # 1-GPU jobs share nodes
   # vllm serve runs from SERVE_VENV (VLLM overrides the binary): PyPI vllm 0.33 is built for CUDA 13 and dies on
   # .venv's cu126 torch (libcudart.so.13 not found), so serving has its own venv with the default cu130 torch.
-  # flashinfer's JIT ops dlopen libcudart.so.13, which only the serving venv's nvidia/cu13 wheel ships
+  # flashinfer's JIT ops dlopen libcudart.so.13, which only the serving venv's nvidia/cu13 wheel ships. Its sampling
+  # kernel is JIT-built with the module's CUDA 12.9 nvcc, links libcudart.so.12 and fails to load, and greedy decoding
+  # (temperature 0) never needs it, so vllm samples in PyTorch (VLLM_USE_FLASHINFER_SAMPLER=0)
   local cu13=("$SERVE_VENV"/lib/python3*/site-packages/nvidia/cu13/lib)
-  LD_LIBRARY_PATH=${cu13[0]}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} "${VLLM:-$SERVE_VENV/bin/vllm}" serve "$model" \
+  LD_LIBRARY_PATH=${cu13[0]}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} VLLM_USE_FLASHINFER_SAMPLER=0 \
+      "${VLLM:-$SERVE_VENV/bin/vllm}" serve "$model" \
       --served-model-name "$run" --host 127.0.0.1 --port "$port" --dtype bfloat16 --max-model-len "$MAX_LEN" \
       --gpu-memory-utilization 0.9 --seed 0 > "$vlog" 2>&1 &
   vpid=$!
