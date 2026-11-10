@@ -257,9 +257,11 @@ class Runner:
         self.cache = {}
         if self.cpath.exists():
             for ln in self.cpath.read_text().splitlines():
-                if ln.strip():
+                try:
                     row = json.loads(ln)
-                    self.cache[row.pop("key")] = row
+                except json.JSONDecodeError:  # blank, or a line cut off when a job was killed mid-write
+                    continue
+                self.cache[row.pop("key")] = row
         if backend == "openai":
             from openai import AsyncOpenAI
             key = os.environ.get(key_env or "", "") or "EMPTY"
@@ -276,9 +278,11 @@ class Runner:
     def key(self, sys_, prm, d):
         """
         Returns the cache key: sha256 over backend tag, base_url, model, extra, both prompt parts, decoding, rep
-        and a non-empty cache tag (an empty one keeps earlier keys).
+        and a non-empty cache tag (an empty one keeps earlier keys). A local base_url counts as empty, since its
+        port changes per Slurm job and a resubmitted job must hit the cache of the one that timed out.
         """
-        blob = json.dumps([self.tag, self.base_url, self.model, self.extra, sys_, prm, d, self.rep] +
+        url = None if "127.0.0.1" in (self.base_url or "") else self.base_url
+        blob = json.dumps([self.tag, url, self.model, self.extra, sys_, prm, d, self.rep] +
                 ([self.ctag] if self.ctag else []), sort_keys=True)
         return hashlib.sha256(blob.encode()).hexdigest()
 
@@ -293,15 +297,28 @@ class Runner:
             eb = {"chat_template_kwargs": {"enable_thinking": d["thinking"]}, "reasoning": {"enabled": d["thinking"]}}
             eb |= {"top_k": d["top_k"]} if d["top_k"] > 0 else {}
             eb = {k: v for k, v in (eb | self.extra).items() if v is not None}
-            r = await self.cli.chat.completions.create(model=self.model, messages=[{"role": "system", "content": sys_},
-                    {"role": "user", "content": prm}], temperature=d["temperature"], top_p=d["top_p"],
-                    max_tokens=d["max_tokens"], seed=d["seed"], extra_body=eb)
+            msgs, mt = [{"role": "system", "content": sys_}, {"role": "user", "content": prm}], d["max_tokens"]
+            for _ in range(2):
+                try:
+                    r = await self.cli.chat.completions.create(model=self.model, messages=msgs,
+                            temperature=d["temperature"], top_p=d["top_p"], max_tokens=mt, seed=d["seed"],
+                            extra_body=eb)
+                    break
+                except Exception as e:
+                    # a long prompt (a predict pass over a frozen answer that ran to the limit) plus max_tokens
+                    # can pass the server's context length: vllm's 400 names both, so the retry asks for what fits
+                    m = re.search(r"maximum context length is (\d+).*?(\d+) (?:input tokens|in the messages)", str(e))
+                    if getattr(e, "status_code", None) != 400 or not m or mt < d["max_tokens"]:
+                        raise
+                    mt = int(m[1]) - int(m[2]) - 1
+                    if mt < 1:
+                        raise
             m = r.choices[0].message
             return {"output": m.content or "", "reasoning": getattr(m, "reasoning_content", None) or
                     getattr(m, "reasoning", None), "in_tokens": r.usage.prompt_tokens if r.usage else None,
                     "out_tokens": r.usage.completion_tokens if r.usage else None,
                     "think_tokens": None, "finish": r.choices[0].finish_reason, "response_id": r.id,
-                    "model_version": r.model}
+                    "model_version": r.model, "max_tokens_sent": mt}
         from google.genai import types
         cfg = types.GenerateContentConfig(system_instruction=sys_, temperature=d["temperature"], top_p=d["top_p"],
                 top_k=d["top_k"] or None, max_output_tokens=d["max_tokens"], seed=d["seed"],
@@ -551,6 +568,8 @@ def main():
             print("error:", e)
         print(f"cost estimate: ${cost[0]:.4f} for {len(fresh)} fresh calls (${cost[1]:.4f} if uncached) at ${pr[0]}/"
                 f"${pr[1]} per 1M in/out tokens" if pr else f"cost estimate: no price for {a.model} in PRICES")
+        if len(errs) > len(rows) / 2:  # a dead server or a bad model dir: fail the job instead of scoring empties
+            raise SystemExit(f"{len(errs)} of {len(rows)} requests failed, see the errors above")
 
 
 if __name__ == "__main__":

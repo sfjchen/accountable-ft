@@ -7,6 +7,7 @@ __pycache__/
 # over GitHub limits: raw v1 (the .gz is committed), the old v1.0, the Gemini cache (tarball on the data-v1 release)
 data/v1.jsonl
 data/mortgage.jsonl
+data/mortgage-split.jsonl
 data/mortgage.smoke.jsonl
 data/v1.0.jsonl
 data/.gemini_cache/

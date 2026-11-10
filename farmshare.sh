@@ -3,8 +3,11 @@
 # evaluation on FarmShare, from /scratch/users/$USER/accountable-ft. smoke, train, eval and base submit this script
 # itself to Slurm with their resources (extra sbatch options in SB), and the job runs the body inside the allocation.
 # train --chunks splits each 2-epoch run into 2 dependent 55-minute 1-epoch jobs, which fit backfill windows.
+# MIX picks the training mix data/$MIX.sft.{train,dev}.jsonl: v1 (default, outputs/<cond>-s<seed>), r2 (grant, trial
+# and mortgage, review held out) or mo (mortgage only), the last 2 under outputs/$MIX-<cond>-s<seed>.
 # Usage: bash farmshare.sh setup | probe | smoke [account|decision] | train [--chunks [--runs <cond>-s<seed>,...]] |
-#   eval <cond>-s<seed> <epoch> | base (THINKING=on|off, CASES=N for a stratified subset)
+#   eval [r2-|mo-]<cond>-s<seed> <epoch> (DATA=<file> for another data file) |
+#   base (THINKING=on|off, CASES=N for a stratified subset)
 set -euo pipefail
 {
 cmd=${1:?usage: bash farmshare.sh setup|probe|smoke|train|eval|base}
@@ -19,6 +22,9 @@ OUT=/scratch/users/%u/accountable-ft/runs/slurm
 # One decoding budget for every run served here (base, thinking on and off, trained): evaluate.py refuses to compare
 # runs whose max_tokens differ, and thinking answers run 5-10k tokens. Non-thinking answers stop long before it.
 MAX_TOKENS=${MAX_TOKENS:-16384} MAX_LEN=${MAX_LEN:-24576}
+MIX=${MIX:-v1}
+PRE=$([[ $MIX == v1 ]] || echo "$MIX-")
+export MIX
 
 # Prints a message to stderr and exits.
 die() {
@@ -32,11 +38,12 @@ if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
   [[ ${2:-} == --runs ]] && runs=${3:?usage: bash farmshare.sh train --chunks --runs account-s1,decision-s0}
   mkdir -p "$REPO/runs/slurm"
   n=0
+  echo "mix $MIX: data/$MIX.sft.{train,dev}.jsonl -> outputs/$PRE<run>"
   printf '%-12s %-9s %-10s %-10s\n' run partition chunk1 chunk2
   for r in ${runs//,/ }; do
     [[ $r =~ ^(account|decision)-s([0-2])$ ]] || die "bad run $r, want <account|decision>-s<0-2>"
-    if [[ -d $REPO/outputs/$r/merged ]]; then
-      printf '%-12s %s\n' "$r" "skipped, outputs/$r/merged exists"
+    if [[ -d $REPO/outputs/$PRE$r/merged ]]; then
+      printf '%-12s %s\n' "$r" "skipped, outputs/$PRE$r/merged exists"
       continue
     fi
     p=(--partition=gpu)
@@ -44,8 +51,8 @@ if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
     dep='' ids=()
     for c in 1 2; do
       # shellcheck disable=SC2086
-      j=$(sbatch --parsable "${p[@]}" --gpus=1 --cpus-per-task=8 --mem=48G --time=00:55:00 --job-name="aft-$r-c$c" \
-          --output="$OUT/${r}_c${c}_%j.out" ${dep:+"$dep"} ${SB:-} "$0" train "${BASH_REMATCH[1]}" \
+      j=$(sbatch --parsable "${p[@]}" --gpus=1 --cpus-per-task=8 --mem=48G --time=00:55:00 --job-name="aft-$PRE$r-c$c" \
+          --output="$OUT/$PRE${r}_c${c}_%j.out" ${dep:+"$dep"} ${SB:-} "$0" train "${BASH_REMATCH[1]}" \
           "${BASH_REMATCH[2]}" "$c")
       ids+=("${j%%;*}")
       dep=--dependency=afterok:${j%%;*}
@@ -177,6 +184,9 @@ PY
     sha256sum data/v1.jsonl data/v1.bank.jsonl data/v1.flagged.txt
     for s in train dev; do
       python train.py export --split "$s" --drop-flagged data/v1.flagged.txt --out "data/v1.sft.$s.jsonl"
+      python train.py export --split "$s" --data data/v1.jsonl data/mortgage-split.jsonl --domains grant trial \
+          mortgage --drop-flagged data/v1.flagged.txt --out "data/r2.sft.$s.jsonl"
+      python train.py export --split "$s" --data data/mortgage-split.jsonl --out "data/mo.sft.$s.jsonl"
     done
     python - <<'PY'
 import importlib.metadata as md
@@ -230,13 +240,15 @@ PY
       2) fl=(--epochs 2 --resume) ;;
       *) fl=(--epochs 2) ;;
     esac
-    train_one "$cond" "$seed" "$REPO/outputs/$cond-s$seed" data/v1.sft.train.jsonl data/v1.sft.dev.jsonl "${fl[@]}" ;;
+    train_one "$cond" "$seed" "$REPO/outputs/$PRE$cond-s$seed" "data/$MIX.sft.train.jsonl" "data/$MIX.sft.dev.jsonl" \
+        "${fl[@]}" ;;
   eval)  # merges the epoch-k checkpoint, serves it with vllm, runs answer, repeat and both predict passes
-    name=${1:?usage: bash farmshare.sh eval <cond>-s<seed> <epoch>} ep=${2:?missing epoch}
+    name=${1:?usage: bash farmshare.sh eval [r2-|mo-]<cond>-s<seed> <epoch>} ep=${2:?missing epoch}
     out=$REPO/outputs/$name
     [[ -f $out/train_meta.json ]] || die "$out has no train_meta.json, train it first"
     # run names follow evaluate.select_ckpt: <cond>-e<k>-s<seed> (smoke-<cond>-e<k> for smoke runs)
     if [[ $name =~ ^(.*)-s([0-9]+)$ ]]; then run=${BASH_REMATCH[1]}-e$ep-s${BASH_REMATCH[2]}; else run=$name-e$ep; fi
+    [[ -n ${DATA:-} ]] && run=$(basename "${DATA%.jsonl}")-$run  # as base does, so runs on 2 data files differ
     cd "$REPO"
     echo "job $SLURM_JOB_ID: $run on $(hostname), commit $(git rev-parse --short HEAD)"
     nvidia-smi --query-gpu=name,memory.total --format=csv,noheader || true

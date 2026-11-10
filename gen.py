@@ -844,6 +844,8 @@ def main():
     ap.add_argument("--train-cases-per-family", type=int, default=0,
                     help="base cases per train-split family (0 uses --cases-per-family)")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--train-domains", default="", help="comma list of held-out domains split into train, dev and "
+                    "unseen families like a training domain (e.g. mortgage for the round-2 mix)")
     ap.add_argument("--counter", action="store_true", help="let families use counter: true (prior-conflicting) rule "
                     "templates and give every record prior_conflict")
     ap.add_argument("--out", default="data/out.jsonl")
@@ -870,6 +872,7 @@ def main():
         return report(a) if a.report else audit(a)
     GEM.update(vertex=a.vertex, model=a.gemini_model, cache=a.cache)
     t0, recs, pols, tcase, invalid, norev = time.time(), [], [], [], 0, 0
+    held = {d: sp for d, sp in HELD_OUT.items() if d not in a.train_domains.split(",")}
     for dname in DOMAINS if a.domains == "all" else a.domains.split(","):
         dom = load_domain(dname)
         drng = random.Random(f"{a.seed}-{dname}-families")
@@ -891,7 +894,7 @@ def main():
             rng = random.Random(f"{a.seed}-{dname}-{p}")
             pol = instantiate(dname, fams[fi], f"{dname}-p{p:03d}", rng)
             pols.append(pol)
-            ncase = a.train_cases_per_family if a.train_cases_per_family and dname not in HELD_OUT and \
+            ncase = a.train_cases_per_family if a.train_cases_per_family and dname not in held and \
                 split.get(fi) == "train" else a.cases_per_family
             j, npf = p % a.policies_per_family, min(a.policies_per_family, a.n_policies - fi * a.policies_per_family)
             ncase = ncase // npf + (j < ncase % npf)
@@ -956,7 +959,7 @@ def main():
                         eff = "cannot determine" if gi["decision"] == "cannot determine" else \
                             "default applied" if removed in gi["defaults_applied"] else \
                             "unchanged" if gi["decision"] == g["decision"] else "changed"
-                    sp = HELD_OUT[dname] if dname in HELD_OUT else split[fi]
+                    sp = held[dname] if dname in held else split[fi]
                     inter = not gi["single_condition"] and len(gi["sufficient_sets"]) >= 2 \
                         if variant == "base" else None
                     fs = E.fact_states(pol, facts)

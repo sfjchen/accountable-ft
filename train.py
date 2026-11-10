@@ -153,15 +153,17 @@ def stop_cb(k):
 
 def export(argv):
     """
-    Writes the SFT rows of one split ({id, messages: [system, user, assistant], mask_spans}), mask_spans covering
-    everything after the Decision line, shuffled under --seed, and prints counts per view and decision.
+    Writes the SFT rows of one split ({id, messages: [system, user, assistant], mask_spans}) from one or more data
+    files, optionally only some domains, mask_spans covering everything after the Decision line, shuffled under
+    --seed, and prints counts per view and decision.
     """
     from collections import Counter, defaultdict
     from infer import build_prompt, format_target, root
 
     views = ["table", "prose", "prose_derive"]
     ap = argparse.ArgumentParser(prog="train.py export")
-    ap.add_argument("--data", default=str(ROOT / "data/v1.jsonl"))
+    ap.add_argument("--data", nargs="+", default=[str(ROOT / "data/v1.jsonl")])
+    ap.add_argument("--domains", nargs="+", help="domains kept (default all)")
     ap.add_argument("--split", required=True, choices=["train", "dev"])
     ap.add_argument("--view", nargs="+", default=views, choices=views)
     ap.add_argument("--out", required=True)
@@ -169,7 +171,8 @@ def export(argv):
     ap.add_argument("--cases-per-family", type=int, default=0, help="base cases kept per family (0 keeps all)")
     ap.add_argument("--drop-flagged", metavar="PATH", help="file of item ids to drop, one per line")
     a = ap.parse_args(argv)
-    recs = [json.loads(ln) for ln in Path(a.data).read_text().splitlines() if ln.strip()]
+    recs = [json.loads(ln) for f in a.data for ln in Path(f).read_text().splitlines() if ln.strip()]
+    recs = [r for r in recs if not a.domains or r["domain"] in a.domains]
     by, drop = {r["id"]: r for r in recs}, set(Path(a.drop_flagged).read_text().split()) if a.drop_flagged else set()
     sel = [r for r in recs if r["split"] == a.split and r["view"] in a.view]
     nd, sel = len(sel), [r for r in sel if r["id"] not in drop]
