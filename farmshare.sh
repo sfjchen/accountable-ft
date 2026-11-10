@@ -108,8 +108,9 @@ run_passes() {
   # .venv's cu126 torch (libcudart.so.13 not found), so serving has its own venv with the default cu130 torch.
   # flashinfer's JIT ops dlopen libcudart.so.13, which only the serving venv's nvidia/cu13 wheel ships
   local cu13=("$SERVE_VENV"/lib/python3*/site-packages/nvidia/cu13/lib)
-  LD_LIBRARY_PATH=${cu13[0]}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} "${VLLM:-$SERVE_VENV/bin/vllm}" serve "$model" --served-model-name "$run" --host 127.0.0.1 --port "$port" \
-      --dtype bfloat16 --max-model-len "$MAX_LEN" --gpu-memory-utilization 0.9 --seed 0 > "$vlog" 2>&1 &
+  LD_LIBRARY_PATH=${cu13[0]}${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH} "${VLLM:-$SERVE_VENV/bin/vllm}" serve "$model" \
+      --served-model-name "$run" --host 127.0.0.1 --port "$port" --dtype bfloat16 --max-model-len "$MAX_LEN" \
+      --gpu-memory-utilization 0.9 --seed 0 > "$vlog" 2>&1 &
   vpid=$!
   trap 'kill "$vpid" 2>/dev/null || true' EXIT
   for _ in $(seq 240); do
