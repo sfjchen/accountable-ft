@@ -167,7 +167,44 @@ Smallest change that would reverse this decision: total requested amount (dollar
 
 Correct: approve, R2 and R5 waived, every other rule passes. Minimum sufficient facts: pi_years_since_phd, career_break, institution_type, requested_amount, start_day, end_day, letter_of_support, open_data_plan, human_subjects. No defaults. Minimal counterfactual: pi_years_since_phd to 11 (target deny).
 
-## 7. Where we are (Nov 9)
+## 7. Where we are (Nov 10)
+
+### Round 1 results
+
+- Qwen3.5-9B, LoRA SFT on grant, trial and review, epoch 2, 3 seeds per condition, every model on the same items. Simulator: Gemini 3.5 Flash-Lite. Cells are means over the 3 seeds. Paired = explanation minus decision-only, seed by seed, pooled into one 95% CI clustered by rule family.
+- v1 held-out families: 72 families, 1,513 prose items, 748 scored edits (log `r1-v1-eval-7580c92-20261110-1454`, table `runs/r1-v1.eval.json`).
+
+| | explanation SFT | decision-only SFT | prompted base | paired, explanation - decision |
+|---|---|---|---|---|
+| accuracy | 0.976 | 0.972 | 0.627 | 0.004 [-0.008, 0.016] |
+| "cannot determine" right | 0.954 | 0.945 | 0.000 | 0.010 [-0.013, 0.032] |
+| explanation validity | 0.756 | 0.000 | 0.067 | 0.756 [0.729, 0.781] |
+| decision follows own explanation | 0.968 | | 0.550 | |
+| simulator with own explanation | 0.695 | 0.586 | 0.791 | 0.109 [0.075, 0.144] |
+| simulatability gain | 0.106 | 0.024 | 0.048 | 0.081 [0.043, 0.123] |
+| always-"unchanged" baseline | 0.412 | 0.425 | 0.856 | -0.013 [-0.023, -0.004] |
+
+- Mortgage held-out families, which round 1 never trained on: 24 families, 287 scored edits (log `r1-mortgage-eval-2bb23e2-20261110-1457`, table `runs/r1-mortgage.eval.json`).
+
+| | explanation SFT | decision-only SFT | prompted base | paired, explanation - decision |
+|---|---|---|---|---|
+| accuracy | 0.817 | 0.803 | 0.687 | 0.014 [-0.020, 0.049] |
+| "cannot determine" right | 0.848 | 0.724 | 0.000 | 0.124 [0.064, 0.185] |
+| explanation validity | 0.371 | 0.000 | 0.082 | 0.372 [0.326, 0.420] |
+| decision follows own explanation | 0.847 | | 0.674 | |
+| simulator with own explanation | 0.620 | 0.481 | 0.676 | 0.139 [0.085, 0.191] |
+| simulatability gain | 0.050 | 0.011 | 0.105 | 0.038 [-0.018, 0.094] |
+| always-"unchanged" baseline | 0.557 | 0.558 | 0.749 | -0.001 [-0.028, 0.027] |
+
+- The main claim holds on v1. Explanation SFT makes explanations more predictive than decision-only SFT (+0.081, CI above 0), with no accuracy loss (+0.004, inside the 3-point margin). The gain is the same in each domain: 0.10 to 0.11 for grant, trial and review.
+- Both SFT conditions fix the base model's 2 failure modes. Accuracy goes from 0.63 to 0.97, and "cannot determine" from 0 to 0.95. So accuracy comes from the shared training data, and the explanation loss adds predictiveness on top.
+- On trained models the simulator now beats always-"unchanged" by about 0.28. The base model's 0.79 is below its own always-"unchanged" 0.86, because it rarely changes its answer after an edit.
+- Mortgage transfer is weaker. Explanations stay valid 37% of the time, against 76% in domain. The simulatability gain is +0.038 with a CI that crosses 0, and seed 2 is near 0. The prompted base scores 0.105 here, but its simulator accuracy is below always-"unchanged", so that gain is on few changed answers.
+- Caveat on the control: the decision-only model still prints the explanation lines, as unlearned placeholders like `<fact>=university (R4)`. So part of the paired gap is a well-formed explanation versus a malformed one. The 2nd simulator family and a prompted-explanation control (the base model's own explanation on the SFT model's decision) will separate the two.
+- Epoch: 2, the end of the fixed 2-epoch schedule. The planned rule picks it on dev decision accuracy of the control, but no dev eval was run, so epoch 2 was fixed when the jobs were submitted, before any explanation metric was read. The epoch 1 runs on v1 are kept for an exploratory table.
+- Power (`--power`, log `r1-v1-power-1332e96-20261110-1459`): the minimum detectable simulatability-gain difference at 80% power is 5 to 8 points per seed pair, so the pooled +8.1 is in range and per-seed differences are borderline.
+
+### Before training
 
 - Data: v1 has about 5,000 cases, 3 views, 72 held-out families and 60 permit families, with 222 flagged items dropped at export. Mortgage has 1,348 prose items over 60 families, all on `real_transfer`.
 - Harness: 29 tests. 3 prompting baselines on 150 held-out cases each (logs `v1-lite-eval-b0b29ad-20261109-2209`, `qwen9b-lite-eval-b0b29ad-20261109-2209`, `mortgage-lite-eval-b0b29ad-20261109-2209`).
@@ -200,11 +237,12 @@ Correct: approve, R2 and R5 waived, every other rule passes. Minimum sufficient 
 
 ## 8. Next
 
-- Once the evals land: Gemini simulator passes on every run, then the primary table (explanation vs decision SFT vs base) per domain, with seeds.
+- Round 2 and mortgage-only evals: the same 2 tables when their notify email arrives, paired with round 1 on the same items.
+- The prompted-explanation control above, and the epoch 1 table.
 - Nov 17-23: permit and mortgage transfer, error analysis of 50 failures, a second simulator family as a robustness check.
 - Round 2 (Nov 9 decision log): train on grant, trial and mortgage with review held out, both conditions x 3 seeds (`MIX=r2`), and mortgage only, both conditions at seed 0 (`MIX=mo`). Every model is then scored on the v1 unseen slice and on the mortgage unseen families (`DATA=data/mortgage-split.jsonl`), so each round 1 vs round 2 comparison is paired on the same items.
 - Nov 24-30: report and slides. Dec 1-4: rehearse, freeze the repo.
-- Relabel round (CREDIT-style) only if explanation SFT is below the accuracy ceiling.
+- Relabel round (CREDIT-style) only if explanation SFT is below the accuracy ceiling. Round 1 is at 0.976, so it is not triggered.
 
 ## 9. Risks, one line each
 
