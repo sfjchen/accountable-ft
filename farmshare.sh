@@ -6,7 +6,7 @@
 # MIX picks the training mix data/$MIX.sft.{train,dev}.jsonl: v1 (default, outputs/<cond>-s<seed>), r2 (grant, trial
 # and mortgage, review held out) or mo (mortgage only), the last 2 under outputs/$MIX-<cond>-s<seed>.
 # Usage: bash farmshare.sh setup | probe | smoke [account|decision] | train [--chunks [--runs <cond>-s<seed>,...]] |
-#   eval [r2-|mo-]<cond>-s<seed> <epoch> (DATA=<file> for another data file) |
+#   eval [r2-|mo-]<cond>-s<seed> <epoch> (DATA=<file>[,<file>] for other data files) |
 #   base (THINKING=on|off, CASES=N for a stratified subset)
 set -euo pipefail
 {
@@ -33,11 +33,11 @@ die() {
 }
 
 if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
-  # chunk 1 stops after epoch 1, chunk 2 resumes from its checkpoint, the first run to submit goes to normal
+  # chunk 1 stops after epoch 1, chunk 2 resumes from its checkpoint. Everything stays on gpu: normal shares its
+  # nodes at PriorityTier 1 (gpu has 5), so a GPU job there only gets a GPU the gpu queue leaves idle
   runs=account-s0,account-s1,account-s2,decision-s0,decision-s1,decision-s2
   [[ ${2:-} == --runs ]] && runs=${3:?usage: bash farmshare.sh train --chunks --runs account-s1,decision-s0}
   mkdir -p "$REPO/runs/slurm"
-  n=0
   echo "mix $MIX: data/$MIX.sft.{train,dev}.jsonl -> outputs/$PRE<run>"
   printf '%-12s %-9s %-10s %-10s\n' run partition chunk1 chunk2
   for r in ${runs//,/ }; do
@@ -47,7 +47,6 @@ if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
       continue
     fi
     p=(--partition=gpu)
-    ((n++ == 0)) && p=(--partition=normal --qos=normal)
     dep='' ids=()
     for c in 1 2; do
       # shellcheck disable=SC2086
@@ -63,7 +62,8 @@ if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
 fi
 case $cmd in
   smoke) res="--job-name=aft-smoke --mem=48G --time=00:15:00 --output=$OUT/smoke_%j.out" ;;
-  train) res="--job-name=aft-train --mem=48G --time=08:00:00 --array=0-5 --output=$OUT/%A_%a.out" ;;
+  train) res="--job-name=aft-train-$MIX --mem=48G --time=${TIME:-08:00:00} --array=${ARRAY:-0-5}
+    --output=$OUT/$PRE%A_%a.out" ;;
   eval) res="--job-name=aft-eval --mem=64G --time=${TIME:-02:00:00} --output=$OUT/eval_%j.out" ;;
   base) res="--job-name=aft-base --mem=36G --time=${TIME:-02:00:00} --output=$OUT/base_%j.out" ;;
   *) res= ;;
@@ -105,11 +105,13 @@ train_one() {
 }
 
 # Serves a model with vllm on this job's GPU and runs the answer, repeat and both predict passes on the primary
-# slice (CASES=N for a stratified subset, THINKING=on|off, CONC=N parallel requests, default 32, DATA and SLICE for
-# another data file, e.g. the mortgage domain: DATA=data/mortgage.jsonl SLICE=real_transfer).
+# slice of each data file (CASES=N for a stratified subset, THINKING=on|off, CONC=N parallel requests, default 32,
+# DATA a comma list of data files, default data/v1.jsonl, SLICE for another slice, e.g. DATA=data/mortgage.jsonl
+# SLICE=real_transfer). Runs on a file other than v1 are named <file stem>-<run>, so 1 served model covers several
+# files without their outputs colliding.
 # Usage: run_passes <model path> <run name> <cache tag>
 run_passes() {
-  local model=$1 run=$2 tag=$3 data=${DATA:-data/v1.jsonl} slc=${SLICE:-unseen_family_train_vocab}
+  local model=$1 run=$2 tag=$3 dl=${DATA:-data/v1.jsonl} data r slc=${SLICE:-unseen_family_train_vocab}
   local port=$((8000 + SLURM_JOB_ID % 1000)) vlog=$REPO/runs/slurm/vllm_$SLURM_JOB_ID.log  # 1-GPU jobs share nodes
   # vllm serve runs from SERVE_VENV (VLLM overrides the binary): PyPI vllm 0.33 is built for CUDA 13 and dies on
   # .venv's cu126 torch (libcudart.so.13 not found), so serving has its own venv with the default cu130 torch.
@@ -126,15 +128,20 @@ run_passes() {
     sleep 5
   done
   curl -sf "http://127.0.0.1:$port/v1/models" > /dev/null || die "vllm not up after 20 min, see $vlog"
-  local S=(--data "$data" --bank "${data%.jsonl}.bank.jsonl" --slice "$slc" --view prose)
-  [[ ${CASES:-0} -gt 0 ]] && S+=(--cases "$CASES")
-  S+=(--backend openai --base-url "http://127.0.0.1:$port/v1" --model "$run" --cache-tag "$tag"
-    --cache "runs/cache.$run.jsonl" --conc "${CONC:-32}" --max-tokens "$MAX_TOKENS" --thinking "${THINKING:-off}")
-  python infer.py "${S[@]}" --out "runs/$run.jsonl"
-  python infer.py "${S[@]}" --rep 1 --out "runs/$run.repeat.jsonl"
-  python infer.py --mode predict "${S[@]}" --frozen "runs/$run.jsonl" --out "runs/$run.predict.jsonl"
-  python infer.py --mode predict "${S[@]}" --frozen "runs/$run.jsonl" --no-account \
-      --out "runs/$run.predict_noacc.jsonl"
+  for data in ${dl//,/ }; do
+    r=$run
+    [[ $data == data/v1.jsonl ]] || r=$(basename "${data%.jsonl}")-$run
+    echo "passes: $data -> runs/$r.*"
+    local S=(--data "$data" --bank "${data%.jsonl}.bank.jsonl" --slice "$slc" --view prose)
+    [[ ${CASES:-0} -gt 0 ]] && S+=(--cases "$CASES")
+    S+=(--backend openai --base-url "http://127.0.0.1:$port/v1" --model "$run" --cache-tag "$tag"
+      --cache "runs/cache.$r.jsonl" --conc "${CONC:-32}" --max-tokens "$MAX_TOKENS" --thinking "${THINKING:-off}")
+    python infer.py "${S[@]}" --out "runs/$r.jsonl"
+    python infer.py "${S[@]}" --rep 1 --out "runs/$r.repeat.jsonl"
+    python infer.py --mode predict "${S[@]}" --frozen "runs/$r.jsonl" --out "runs/$r.predict.jsonl"
+    python infer.py --mode predict "${S[@]}" --frozen "runs/$r.jsonl" --no-account \
+        --out "runs/$r.predict_noacc.jsonl"
+  done
 }
 
 case $cmd in
@@ -248,7 +255,6 @@ PY
     [[ -f $out/train_meta.json ]] || die "$out has no train_meta.json, train it first"
     # run names follow evaluate.select_ckpt: <cond>-e<k>-s<seed> (smoke-<cond>-e<k> for smoke runs)
     if [[ $name =~ ^(.*)-s([0-9]+)$ ]]; then run=${BASH_REMATCH[1]}-e$ep-s${BASH_REMATCH[2]}; else run=$name-e$ep; fi
-    [[ -n ${DATA:-} ]] && run=$(basename "${DATA%.jsonl}")-$run  # as base does, so runs on 2 data files differ
     cd "$REPO"
     echo "job $SLURM_JOB_ID: $run on $(hostname), commit $(git rev-parse --short HEAD)"
     nvidia-smi --query-gpu=name,memory.total --format=csv,noheader || true
@@ -280,11 +286,10 @@ model.save_pretrained_merged(sys.argv[2], tok, save_method="merged_16bit")
 PY
     run_passes "$merged" "$run" "$tag"
     [[ ${KEEP_MERGED:-0} == 1 ]] || rm -rf "$merged"
-    echo "done: runs/$run.{jsonl,repeat.jsonl,predict.jsonl,predict_noacc.jsonl}, tag $tag" ;;
+    echo "done: $run on ${DATA:-data/v1.jsonl}, tag $tag" ;;
   base)  # prompted base model, the same passes as eval: THINKING=on|off, CASES=N for a stratified subset
     [[ -s $MODEL_FILE ]] || die "$MODEL_FILE missing, run bash farmshare.sh setup first"
     model_id=$(cat "$MODEL_FILE") run=base-think${THINKING:-off}
-    [[ -n ${DATA:-} ]] && run=$(basename "${DATA%.jsonl}")-$run
     [[ ${CASES:-0} -gt 0 ]] && run=$run-c$CASES
     cd "$REPO"
     echo "job $SLURM_JOB_ID: $run ($model_id) on $(hostname), commit $(git rev-parse --short HEAD)"
@@ -293,7 +298,7 @@ PY
     model=$(python -c "import sys; from huggingface_hub import snapshot_download as s; print(s(sys.argv[1], \
 local_files_only=True))" "$model_id")
     run_passes "$model" "$run" "$run-$model_id-mt$MAX_TOKENS"
-    echo "done: runs/$run.{jsonl,repeat.jsonl,predict.jsonl,predict_noacc.jsonl}" ;;
+    echo "done: $run on ${DATA:-data/v1.jsonl}" ;;
   *) die "unknown command $cmd" ;;
 esac
 exit
