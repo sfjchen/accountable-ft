@@ -173,7 +173,8 @@ Gold: approve, R2 and R5 waived, every other rule passes. Minimum sufficient fac
 
 - Both never say "cannot determine". Both give mostly invalid accounts. Review is the hardest domain.
 - Training on FarmShare (L40S 48 GB, `farmshare.sh`): account SFT seed 0 finished Nov 7, 79 minutes, 692 steps, train loss 0.074, dev loss 0.048 (job 1951241_0, meta in `outputs/account-s0/train_meta.json` on the cluster).
-  - The other 5 runs and the 2 evaluation jobs for seed 0 are queued (jobs 1957278, 1957283, 1957284). The cluster has been saturated since Nov 7 (about 160 pending GPU jobs); 2-hour limits were set so they backfill.
+  - All 6 runs finished by Nov 9 (jobs 1951241_0 and 1957278_[1-5], about 81 minutes each). The first 2 eval jobs (1957283, 1957284) died at vllm startup on libcudart.so.13: PyPI vllm 0.33 needs CUDA 13, the training venv pins cu126 torch. `setup` now builds `.venv-serve` for vllm alone, and eval serves from it.
+  - Queued Nov 9: 12 evals (6 runs x 2 epochs, jobs 1967426-1967437), prompted base thinking off on v1 (1967438) and on mortgage (1967439).
   - Fallback if the queue does not clear by Nov 11: RunPod A100 at $1.19/h, about $25 for the remaining runs.
 
 ## 8. Next
