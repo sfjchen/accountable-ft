@@ -572,7 +572,8 @@ def main():
     ap.add_argument("--data", nargs="+", required=True)
     ap.add_argument("--bank", help="intervention bank from infer.py --mode bank")
     ap.add_argument("--json", default="runs/eval.json")
-    ap.add_argument("--compare", help="reference condition (run stem) for paired differences")
+    ap.add_argument("--compare", help="reference run stem, or a condition name (decision) to pair each run with "
+            "that condition's run at the same epoch and seed")
     ap.add_argument("--allow-thinking-diff", action="store_true", help="allow thinking on vs off across runs")
     ap.add_argument("--render", action="store_true", help="write <run>.edits.jsonl via gen.policy_for/render_case")
     ap.add_argument("--epoch", type=int, help="checkpoint selection: the fixed epoch k taken for every condition "
@@ -688,16 +689,26 @@ def main():
                 if xs:
                     seeds[gname]["metrics"][gk][m] = {"mean": float(np.mean(xs)), "min": min(xs), "max": max(xs),
                             "k": len(xs)}
-    paired = {}
+    # paired differences against the --compare run, or, when --compare names a condition, against that condition's
+    # run at the same epoch and seed (account-e2-s1 - decision-e2-s1); seed pairs are also pooled into one
+    # family-clustered CI per condition group
+    paired, pool = {}, defaultdict(lambda: defaultdict(list))
     for c in res if a.compare else []:
-        if c == a.compare:
+        r = a.compare if a.compare in res else re.sub(r"[^-]+(?=-e\d+-s\d+$)", a.compare, c)
+        if r == c or r not in res:
             continue
-        paired[c] = defaultdict(dict)
-        for m in set(units[c]) & set(units[a.compare]):
-            ref = {u[5]: u for u in units[a.compare][m]}
+        paired[f"{c} - {r}"] = defaultdict(dict)
+        for m in set(units[c]) & set(units[r]):
+            ref = {u[5]: u for u in units[r][m]}
             pu = [(u[0] - ref[u[5]][0],) + u[1:] for u in units[c][m] if u[5] in ref]
+            pool[" - ".join(re.sub(r"-s\d+$", "", x) for x in (c, r)) + " (seeds pooled)"][m] += pu
             for gk, sel in groups(pu).items():
-                paired[c][gk][m] = boot([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed)
+                paired[f"{c} - {r}"][gk][m] = boot([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed)
+    for name, ms in pool.items() if len(paired) > 1 else []:
+        paired[name] = defaultdict(dict)
+        for m, pu in ms.items():
+            for gk, sel in groups(pu).items():
+                paired[name][gk][m] = boot([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed)
     if a.select_by and not a.select_control:
         sys.exit("--select-by needs --select-control")
     cands, sel = [c for c in res if re.search(a.select, c)], {}
@@ -732,7 +743,8 @@ def main():
                 x = s["metrics"][gk][m]
                 print(f"- {m}: {x['mean']:.2f} [{x['min']:.2f}, {x['max']:.2f}] k={x['k']}")
     for c, pg in paired.items():
-        table(f"paired difference {c} - {a.compare} (all)", {c: pg}, "all", lambda m: "|" not in m)
+        for gk in (PRIMARY, "all"):
+            table(f"paired difference {c} ({gk})", {c: pg}, gk, lambda m: "|" not in m)
     if "chosen" in sel:
         print(f"\ncheckpoint selection: {sel['rule']}; chose {sel['chosen']}")
     if "exploratory" in sel:
