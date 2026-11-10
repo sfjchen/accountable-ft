@@ -19,6 +19,8 @@ export SCRATCH REPO VENV SERVE_VENV MODEL_FILE META_HOME PATH=$HOME/.local/bin:$
 export HF_HOME=$SCRATCH/hf UV_CACHE_DIR=$SCRATCH/.uv/cache UV_PYTHON_INSTALL_DIR=$SCRATCH/.uv/python
 export XDG_CACHE_HOME=$SCRATCH/.cache TRITON_CACHE_DIR=$SCRATCH/.cache/triton VLLM_CACHE_ROOT=$SCRATCH/.cache/vllm
 OUT=/scratch/users/%u/accountable-ft/runs/slurm
+# every job mails its end or failure (MAIL=<address>, default the SUNet address), so nobody has to poll the queue
+MAILF=("--mail-type=END,FAIL" "--mail-user=${MAIL:-$USER@stanford.edu}")
 # One decoding budget for every run served here (base, thinking on and off, trained): evaluate.py refuses to compare
 # runs whose max_tokens differ, and thinking answers run 5-10k tokens. Non-thinking answers stop long before it.
 MAX_TOKENS=${MAX_TOKENS:-16384} MAX_LEN=${MAX_LEN:-24576}
@@ -50,8 +52,8 @@ if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
     dep='' ids=()
     for c in 1 2; do
       # shellcheck disable=SC2086
-      j=$(sbatch --parsable "${p[@]}" --gpus=1 --cpus-per-task=8 --mem=48G --time=00:55:00 --job-name="aft-$PRE$r-c$c" \
-          --output="$OUT/$PRE${r}_c${c}_%j.out" ${dep:+"$dep"} ${SB:-} "$0" train "${BASH_REMATCH[1]}" \
+      j=$(sbatch --parsable "${p[@]}" "${MAILF[@]}" --gpus=1 --cpus-per-task=8 --mem=48G --time=00:55:00 \
+          --job-name="aft-$PRE$r-c$c" --output="$OUT/$PRE${r}_c${c}_%j.out" ${dep:+"$dep"} ${SB:-} "$0" train "${BASH_REMATCH[1]}" \
           "${BASH_REMATCH[2]}" "$c")
       ids+=("${j%%;*}")
       dep=--dependency=afterok:${j%%;*}
@@ -71,7 +73,7 @@ esac
 if [[ -n $res && -z ${SLURM_JOB_ID:-} ]]; then
   mkdir -p "$REPO/runs/slurm"
   # shellcheck disable=SC2086
-  sbatch --partition=gpu --gpus=1 --cpus-per-task=8 $res ${SB:-} "$0" "$cmd" "$@"
+  sbatch --partition=gpu --gpus=1 --cpus-per-task=8 "${MAILF[@]}" $res ${SB:-} "$0" "$cmd" "$@"
   exit
 fi
 
