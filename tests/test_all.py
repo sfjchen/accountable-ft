@@ -275,6 +275,12 @@ def test_mortgage_domain():
     for edit in ({"monthly_income": 7000}, {"credit_score": 680}, {"gift_funds": 0}):  # DTI 51%, R2, 4 months
         assert E.decide(p, {**f, **edit})["decision"] == "deny"
     assert E.min_flip(p, f)["radius"] == 1
+    # the account's own numbers imply deny (DTI 51%), and a value off the fact's buckets or a wrong derived value is
+    # unscored
+    assert E.implied_decision(p, f, {"monthly_income": "7000"}, {}) == "deny"
+    assert E.implied_decision(p, f, {"credit_score": 700, "dti": 40}, {}) == "approve"
+    assert E.implied_decision(p, f, {"credit_score": 701}, {}) is None
+    assert E.implied_decision(p, f, {"dti": 30}, {}, ["dti"]) is None
 
 def test_counter_templates(tmp_path):
     """
@@ -347,6 +353,7 @@ def stub(monkeypatch):
         "valid": any(set(s) <= set(cit) for s in p["gold"]["sufficient_sets"]),
         "minimal": None if p["gold"]["decision"] == "cannot determine" else
         any(set(s) == set(cit) for s in p["gold"]["sufficient_sets"])})
+    monkeypatch.setattr(evaluate.engine, "implied_decision", lambda p, f, cit, ass, wrong=(): p["gold"]["decision"])
 
 
 def fake_rows(over=None):
@@ -396,7 +403,8 @@ def test_metrics(stub):
                       "flip[approve->deny]": 1.0, "flip[deny->approve]": 1 / 2, "flip_to_cd": 1 / 4,
                       "flip_to_cd[deny->approve]": 1 / 2, "cf_pair_acc": 1 / 2, "flip~noise": 1 / 4,
                       "invariance": 1 / 2, "inv_pair_acc": 1 / 2, "invariance~noise": 0.0, "flip|correct": 2 / 3,
-                      "flip|wrong": 1.0, "expl_valid": 2 / 11, "expl_minimal": 2 / 10, "cite_distractor": 1 / 12,
+                      "flip|wrong": 1.0, "expl_valid": 2 / 11, "acct_consistent": 29 / 36, "expl_minimal": 2 / 10,
+                      "cite_distractor": 1 / 12,
                       "cite_p_nec": 11 / 12, "cite_r_nec": 35 / 132, "assume_dec": 1.0, "assume_val": 1.0,
                       "none_claim_disproved": 1.0, "none_claim_unresolved": 0.0, "fmt_err": 3 / 36})
     assert ag["all"]["acc_maj"]["n"] == 4 and ag["all"]["acc_maj"]["n_clus"] == 2

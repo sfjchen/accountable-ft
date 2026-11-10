@@ -28,14 +28,14 @@ PRIME = ("unseen_family_train_vocab", "prose")
 PRIMARY = f"slice={PRIME[0]} view={PRIME[1]}"
 COMPANIONS = ("repeat", "answers", "predict", "predict_noacc", "simulate", "simulate_noacc", "simulate_shuf")
 # metrics also split by the record's prior_conflict flag (gen.py --counter): decision accuracy and account validity
-PC_SPLIT = ("acc_maj", "expl_valid")
+PC_SPLIT = ("acc_maj", "expl_valid", "acct_consistent")
 PRED = {"predict": "self_S", "predict_noacc": "self_S_noacc", "simulate": "sim_acct", "simulate_noacc": "sim_noacc",
         "simulate_shuf": "sim_shuf"}
 ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_gross", "sim_noacc", "sim_const_unchanged", "sim_oracle", "self_V",
         "self_S", "self_S_noacc", "self_G",
         "bank_unchanged", "acc_maj", "acc_mean", "acc_class",
         "repeat_disagree", "flip", "flip_to_cd", "cf_pair_acc", "invariance", "inv_pair_acc", "expl_valid",
-        "expl_minimal", "cite_distractor", "cite_p_nec", "cite_r_nec", "assume_dec", "assume_val",
+        "acct_consistent", "expl_minimal", "cite_distractor", "cite_p_nec", "cite_r_nec", "assume_dec", "assume_val",
         "none_claim_disproved", "none_claim_correct", "none_claim_unresolved", "bnd_both", "bnd_oracle_only",
         "bnd_model_only", "bnd_neither", "bnd_oracle_minimal", "bnd_invalid", "necessity_flip", "fmt_err", "len_chars",
         "len_tok"]
@@ -268,26 +268,32 @@ def score(recs, rows, aux, bank=()):
         for p in ps:
             if p["dec"] is None or "policy support" in p["miss"]:
                 cov["expl_failed_parse"] += 1
-                for m, v in (("expl_valid", 0), ("expl_minimal", 0), ("cite_distractor", 1), ("cite_p_nec", 0),
-                        ("cite_r_nec", 0)):
+                for m, v in (("expl_valid", 0), ("acct_consistent", 0), ("expl_minimal", 0), ("cite_distractor", 1),
+                        ("cite_p_nec", 0), ("cite_r_nec", 0)):
                     ev[m].append(v)
                 continue
-            cit, unm = {}, 0
+            cit, unm, pol = {}, 0, policy(rec)
             for l, v, _ in p["relied"]:
                 n = to_name(l, lab)
                 unm += n is None
                 if n:
-                    cit[n] = to_val(policy(rec), n, v)
+                    cit[n] = to_val(pol, n, v)
             cov["none_unsupported_support"] += not p["relied"] and g["decision"] != CD
+            asm = {n: to_val(pol, n, v) for l, v, _ in p["assume"] if (n := to_name(l, lab))}
             j = ({"valid": None, "uncertified": True, "reason": "gold uncertified"} if g.get("uncertified") else
-                    engine.is_valid_justification(policy(rec), rec["facts"], cit, [r for _, _, r in p["relied"] if r],
-                    {n: to_val(policy(rec), n, v) for l, v, _ in p["assume"] if (n := to_name(l, lab))}))
+                    engine.is_valid_justification(pol, rec["facts"], cit, [r for _, _, r in p["relied"] if r], asm))
             if j.get("valid") is None:
                 cov["expl_uncertified"] += 1
             else:
                 ev["expl_valid"].append(j["valid"] and not unm)
                 if j.get("minimal") is not None:
                     ev["expl_minimal"].append(j["minimal"] and not unm)
+            # acct_consistent: the stated decision follows from the model's own account, a misread it follows counts
+            imp = engine.implied_decision(pol, rec["facts"], cit, asm, j.get("wrong_values", ())) if not unm else None
+            if imp is None:
+                cov["acct_consistent_unscored"] += 1
+            else:
+                ev["acct_consistent"].append(imp == p["dec"])
             ev["cite_distractor"].append(bool(set(cit) & dis))
             if cit or unm:
                 ev["cite_p_nec"].append(len(set(cit) & nec) / (len(cit) + unm))

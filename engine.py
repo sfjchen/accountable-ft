@@ -487,6 +487,35 @@ def coerce(pol, n, v):
 
 
 @budgeted
+def implied_decision(pol, facts, cited_facts, assumptions, wrong_values=()):
+    """
+    Returns the decision the engine reaches on facts with an account's cited source values, and its assumptions for
+    missing facts, in place of the true ones: the decision the account implies, which separates a misread the stated
+    decision follows from a decision that contradicts its own account. A cited "not stated" removes the fact. Returns
+    None when a cited value is not a value of its fact, a derived fact in wrong_values is cited, or the substituted
+    record has no admissible completion.
+    """
+    sub = dict(facts)
+    for n, v in [*cited_facts.items(), *((n, v) for n, v in assumptions.items() if facts.get(n) is None)]:
+        if n in pol.dfn:
+            if n in wrong_values:
+                return None
+            continue
+        if n not in pol.facts:
+            return None
+        v = coerce(pol, n, v)
+        if str(v).strip().lower() in ("not stated", "missing", "unknown", "none"):
+            sub[n] = None
+        elif not (isinstance(v, bool) if pol.facts[n]["type"] == "bool" else v in pol.dom[n]):
+            return None
+        else:
+            sub[n] = v
+    try:
+        return decide(pol, sub)["decision"]
+    except InvalidRecord:
+        return None
+
+
 def is_valid_justification(pol, facts, cited_facts, cited_rules, assumptions):
     """
     Returns {"valid", "sufficient", "minimal", "could_decide", "covers_needed", "wrong_rules", "wrong_assumptions",
