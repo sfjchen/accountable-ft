@@ -57,8 +57,8 @@ fi
 case $cmd in
   smoke) res="--job-name=aft-smoke --mem=48G --time=00:15:00 --output=$OUT/smoke_%j.out" ;;
   train) res="--job-name=aft-train --mem=48G --time=08:00:00 --array=0-5 --output=$OUT/%A_%a.out" ;;
-  eval) res="--job-name=aft-eval --mem=64G --time=06:00:00 --output=$OUT/eval_%j.out" ;;
-  base) res="--job-name=aft-base --mem=36G --time=${TIME:-06:00:00} --output=$OUT/base_%j.out" ;;
+  eval) res="--job-name=aft-eval --mem=64G --time=${TIME:-02:00:00} --output=$OUT/eval_%j.out" ;;
+  base) res="--job-name=aft-base --mem=36G --time=${TIME:-02:00:00} --output=$OUT/base_%j.out" ;;
   *) res= ;;
 esac
 if [[ -n $res && -z ${SLURM_JOB_ID:-} ]]; then

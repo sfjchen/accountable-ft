@@ -1,6 +1,6 @@
 # Conforming purchase mortgages, manual underwriting. Real-rules domain, held out: rule shapes and thresholds follow
 # the Fannie Mae Selling Guide and Eligibility Matrix (Aug 5, 2026) and FHFA's 2026 conforming loan limits; see
-# pilots/mortgage/policy.md for sources. Unlike the 4 invented domains, the model's priors about lending can pull
+# domains/mortgage.md for sources. Unlike the 4 invented domains, the model's priors about lending can pull
 # against the rules here (the point of this domain). Simplifications: one property value (the lower of price and
 # appraisal), ratios rounded down to whole numbers, waiting periods bucketed into the derogatory_event enum, and ints
 # bucketed to at most 8 values like every other domain. Scoped rules carry a "near" condition for near-miss distractors.
