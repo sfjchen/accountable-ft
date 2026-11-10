@@ -1,0 +1,38 @@
+{
+ "model": "base-thinkoff",
+ "backend": "openai",
+ "vertex": null,
+ "mode": "predict_noacc",
+ "no_account": true,
+ "shuffle_accounts": false,
+ "shuf_missing": null,
+ "cases": 0,
+ "cache_tag": "base-thinkoff-unsloth/Qwen3.5-9B-mt16384",
+ "sample_seed": 0,
+ "decoding": {
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "top_k": 0,
+  "max_tokens": 16384,
+  "seed": 0,
+  "thinking": false
+ },
+ "n": 1,
+ "rows": 782,
+ "cached": 0,
+ "errors": 0,
+ "fresh_calls": 782,
+ "wall_s": 47.9,
+ "in_tokens": 597427,
+ "out_tokens": 21332,
+ "think_tokens": 0,
+ "finish": {
+  "stop": 782
+ },
+ "model_versions": [
+  "base-thinkoff"
+ ],
+ "mean_latency_s": 1.898,
+ "cost_usd_fresh": null,
+ "cost_usd_if_uncached": null
+}
