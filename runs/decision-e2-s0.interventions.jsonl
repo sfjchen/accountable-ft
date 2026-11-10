@@ -1,0 +1,10 @@
+{"iid": "grant-p026-c01:prose|necessity|open_data_plan", "id": "grant-p026-c01:prose", "kind": "necessity", "edits": {"open_data_plan": null}, "target": "deny"}
+{"iid": "grant-p050-c00:prose|necessity|letter_of_support", "id": "grant-p050-c00:prose", "kind": "necessity", "edits": {"letter_of_support": null}, "target": "deny"}
+{"iid": "grant-p050-c00:prose|necessity|requested_amount", "id": "grant-p050-c00:prose", "kind": "necessity", "edits": {"requested_amount": null}, "target": "deny"}
+{"iid": "grant-p050-c00:prose|necessity|travel_amount", "id": "grant-p050-c00:prose", "kind": "necessity", "edits": {"travel_amount": null}, "target": "deny"}
+{"iid": "grant-p099-c00:prose|necessity|open_data_plan", "id": "grant-p099-c00:prose", "kind": "necessity", "edits": {"open_data_plan": null}, "target": "deny"}
+{"iid": "grant-p100-c00:prose|necessity|human_subjects", "id": "grant-p100-c00:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "approve"}
+{"iid": "grant-p100-c00:prose|necessity|letter_of_support", "id": "grant-p100-c00:prose", "kind": "necessity", "edits": {"letter_of_support": null}, "target": "approve"}
+{"iid": "grant-p101-c01:prose|necessity|human_subjects", "id": "grant-p101-c01:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "grant-p101-c01:prose|necessity|letter_of_support", "id": "grant-p101-c01:prose", "kind": "necessity", "edits": {"letter_of_support": null}, "target": "deny"}
+{"iid": "grant-p101-c01:prose|necessity|open_data_plan", "id": "grant-p101-c01:prose", "kind": "necessity", "edits": {"open_data_plan": null}, "target": "deny"}
