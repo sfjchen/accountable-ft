@@ -192,7 +192,8 @@ Gold: approve, R2 and R5 waived, every other rule passes. Minimum sufficient fac
 - Training on FarmShare (L40S 48 GB, `farmshare.sh`): all 6 runs finished by Nov 9, about 81 minutes each (jobs 1951241_0 and 1957278_[1-5]). Account seed 0: 692 steps, train loss 0.074, dev loss 0.048.
   - The first 2 eval jobs (1957283, 1957284) died at vllm startup on libcudart.so.13, fixed with `.venv-serve` (FarmShare section).
   - Queued Nov 9 at 2 h each: 12 evals (6 runs x 2 epochs, jobs 1967626-1967637), Qwen base thinking off on v1 (1967638) and on mortgage (1967639), and a 13-case smoke of the full serve path (1967678). The earlier ids died on a flashinfer library path and were resubmitted after the fix.
-  - Round 2 and mortgage-only training (section 8) are next in the queue.
+  - Round 2 and mortgage-only, queued Nov 9: training chunks 1967748-1967763 (r2 x 6, mo x 2), round 1 models on the mortgage unseen families 1967764-1967769, and r2 and mo evals on v1 and on mortgage 1967770-1967786, each waiting on its training job. The submit log is `runs/slurm/submit-r2.txt` on the cluster.
+  - The gpu partition caps a user at 32 queued and 4 running jobs. The normal partition has 24 L40S GPUs and allows 1024 queued, so jobs past the cap go there.
   - Fallback if the queue does not clear by Nov 11: RunPod A100 at $1.19/h.
 
 ## 8. Next
