@@ -263,7 +263,8 @@ class Runner:
         if backend == "openai":
             from openai import AsyncOpenAI
             key = os.environ.get(key_env or "", "") or "EMPTY"
-            self.cli = AsyncOpenAI(base_url=base_url, api_key=key, max_retries=0)
+            # thinking answers on a busy local server take 10-20 min; the client's 600 s default aborts and resends them
+            self.cli = AsyncOpenAI(base_url=base_url, api_key=key, max_retries=0, timeout=3600)
         elif backend == "gemini":
             self.cli = gen.gemini_client(vertex)
         elif backend == "vllm":
