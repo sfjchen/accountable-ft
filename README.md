@@ -189,6 +189,7 @@ Gold: approve, R2 and R5 waived, every other rule passes. Minimum sufficient fac
   - Qwen: 298 of 305 scored wrong answers contradict it.
   - So the account lines are mostly true but do not support the decision, which is the gap account SFT targets.
 - Mortgage vs invented, Gemini: accuracy is a bit higher (priors help), validity and consistency about the same, and the simulator again does not beat always-"unchanged".
+- Gemini on the 24 held-out mortgage families (the test set every round shares, log `mortgage-split-lite-eval-dd068d4-20261110-0150`): accuracy 0.80, "cannot determine" right 0.03, account validity 0.24, acct_consistent 0.72, dSim 0.05 [-0.01, 0.09], about the same as on all mortgage cases.
 - Training on FarmShare (L40S 48 GB, `farmshare.sh`): all 6 runs finished by Nov 9, about 81 minutes each (jobs 1951241_0 and 1957278_[1-5]). Account seed 0: 692 steps, train loss 0.074, dev loss 0.048.
   - The first 2 eval jobs (1957283, 1957284) died at vllm startup on libcudart.so.13, fixed with `.venv-serve` (FarmShare section).
   - Nov 9 the first serve jobs (base 1967638 and 1967639, smoke 1967678) died in vllm startup: flashinfer's sampling kernel was JIT-built with the module's CUDA 12.9 nvcc and could not load next to the serving venv's CUDA 13 runtime. Greedy decoding never needs it, so serving now samples in PyTorch (`VLLM_USE_FLASHINFER_SAMPLER=0`). Every queued eval was cancelled and resubmitted.
