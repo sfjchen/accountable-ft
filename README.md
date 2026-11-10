@@ -191,9 +191,10 @@ Gold: approve, R2 and R5 waived, every other rule passes. Minimum sufficient fac
 - Mortgage vs invented, Gemini: accuracy is a bit higher (priors help), validity and consistency about the same, and the simulator again does not beat always-"unchanged".
 - Training on FarmShare (L40S 48 GB, `farmshare.sh`): all 6 runs finished by Nov 9, about 81 minutes each (jobs 1951241_0 and 1957278_[1-5]). Account seed 0: 692 steps, train loss 0.074, dev loss 0.048.
   - The first 2 eval jobs (1957283, 1957284) died at vllm startup on libcudart.so.13, fixed with `.venv-serve` (FarmShare section).
-  - Queued Nov 9 at 2 h each: 12 evals (6 runs x 2 epochs, jobs 1967626-1967637), Qwen base thinking off on v1 (1967638) and on mortgage (1967639), and a 13-case smoke of the full serve path (1967678). The earlier ids died on a flashinfer library path and were resubmitted after the fix.
-  - Round 2 and mortgage-only, queued Nov 9: training chunks 1967748-1967763 (r2 x 6, mo x 2), round 1 models on the mortgage unseen families 1967764-1967769, and r2 and mo evals on v1 and on mortgage 1967770-1967786, each waiting on its training job. The submit log is `runs/slurm/submit-r2.txt` on the cluster.
-  - The gpu partition caps a user at 32 queued and 4 running jobs. The normal partition has 24 L40S GPUs and allows 1024 queued, so jobs past the cap go there.
+  - Nov 9 the first serve jobs (base 1967638 and 1967639, smoke 1967678) died in vllm startup: flashinfer's sampling kernel was JIT-built with the module's CUDA 12.9 nvcc and could not load next to the serving venv's CUDA 13 runtime. Greedy decoding never needs it, so serving now samples in PyTorch (`VLLM_USE_FLASHINFER_SAMPLER=0`). Every queued eval was cancelled and resubmitted.
+  - Queued Nov 10, all on the gpu partition: smoke 1967803 (13 cases), r2 training array 1967804 (6 runs), mo array 1967805 (account and decision, seed 0), base on both files 1967806, round 1 epoch 2 on both files and epoch 1 on v1 1967807-1967818, r2 evals 1967819-1967824, mo evals 1967825-1967826. Every eval waits on the smoke job and its own training, so a broken serve path costs 1 short job. Submit log: `runs/slurm/submit-r2.txt` on the cluster.
+  - One eval job serves 1 model and runs every data file in `DATA`, which halves the merges, vllm startups and queue waits.
+  - Partition choice: the gpu partition caps a user at 32 queued and 4 running jobs. The normal partition shares the same 6 GPU nodes at PriorityTier 1 (gpu has 5), so a GPU job there only gets a GPU the gpu queue leaves idle. Consolidated, the whole plan is 30 jobs, under the cap.
   - Fallback if the queue does not clear by Nov 11: RunPod A100 at $1.19/h.
 
 ## 8. Next
