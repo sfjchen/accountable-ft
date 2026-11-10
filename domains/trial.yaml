@@ -1,6 +1,8 @@
 # Invented clinical trial protocol VX-118 (study drug celvorex, biomarkers PRX-7 and the Kelman index).
 # Facts (ints bucketed to at most 8 values), derived facts, rule templates, defaults and prose vocabulary.
 # Dates are day offsets from ref_date. Scoped rules carry a "near" condition for near-miss distractors.
+# A rule template with counter: true reads against common sense (prior-conflicting), and gen.py samples it
+# only with --counter.
 name: trial
 title: "Protocol VX-118 (celvorex in Tarrant fibrosis): enrollment criteria"
 preamble: "A participant is enrolled (approved) only if every criterion below is met. Criteria marked as defaults say what to assume when the screening record is silent on a point."
@@ -169,6 +171,11 @@ rules:
     near: "not anticoagulant and heart_rate > {t}"
     text: "Participants on an anticoagulant must have a resting heart rate of at most {t} beats per minute"
     params: {t: [75, 85]}
+  - key: crcl_max
+    counter: true
+    cond: "crcl <= {t}"
+    text: "Participants with a creatinine clearance above {t} mL/min are excluded"
+    params: {t: [90, 105]}
 derived:
   - key: consent_window
     cond: "0 <= consent_gap <= {t}"

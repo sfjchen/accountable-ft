@@ -276,6 +276,31 @@ def test_mortgage_domain():
         assert E.decide(p, {**f, **edit})["decision"] == "deny"
     assert E.min_flip(p, f)["radius"] == 1
 
+def test_counter_templates(tmp_path):
+    """
+    Checks one counter template per training domain, sampled only when asked and engine-valid, and that gen.py
+    --counter gives every record prior_conflict, true exactly when a policy uses a counter template.
+    """
+    for dname in gen.DOMAINS:
+        dom, rng = gen.load_domain(dname), random.Random(dname)
+        ck = [t["key"] for t in dom["rules"] if t.get("counter")]
+        assert len(ck) == (dname not in gen.HELD_OUT)
+        fams = [gen.sample_family(dom, rng, [], False, counter=c) for c in [False] * 20 + [True] * 20]
+        assert not {k for f in fams[:20] for k, _ in f["core"]} & set(ck)
+        for i, f in enumerate(fams[20:] if ck else []):
+            p = gen.instantiate(dname, f, f"{dname}-c{i}", rng)
+            assert p.counter == (ck[0] in {k for k, _ in f["core"]})
+        assert not ck or any(ck[0] in {k for k, _ in f["core"]} for f in fams[20:])
+    out = tmp_path / "c.jsonl"
+    subprocess.run([sys.executable, str(ROOT / "gen.py"), "--domains", "review", "--n-policies", "6",
+            "--cases-per-family", "2", "--prose", "template", "--counter", "--out", str(out)], check=True,
+            capture_output=True, cwd=ROOT)
+    rs = [json.loads(ln) for ln in out.read_text().splitlines()]
+    pc, ck = {r["policy_id"]: r["prior_conflict"] for r in rs}, next(t["key"] for t in gen.load_domain("review")[
+            "rules"] if t.get("counter"))
+    assert all(isinstance(r["prior_conflict"], bool) for r in rs) and set(pc.values()) == {True, False}
+    assert all(pc[r["policy_id"]] == any(q.get("key") == ck for q in r["policy_spec"]["rules"]) for r in rs)
+
 
 MESSY = [
     ("Decision: approve\nPolicy support: site zone=industrial (R4); operator certificate=current (R2)\n"
@@ -428,6 +453,31 @@ def test_metrics(stub):
     assert (cov["truncated"], cov["parse_fail"], cov["flip_parse_fail_pairs"]) == (6, 6, 1)
     assert [norm_dec(x) for x in ("cannot determine whether to approve", "approve or deny", "insufficient facts",
                                   "Deny.")] == ["approve", None, "cannot determine", "deny"]
+
+
+def test_domain_groups(stub, capsys):
+    """Checks that every group is also split by domain and that each table gets a column per condition and domain."""
+    ag = aggregate(score(RECS, fake_rows(), {})[0])
+    for d, gk in (("grant", "slice=unseen_family_train_vocab"), ("permit", "slice=combined_transfer")):
+        assert ag[f"domain={d}"] == ag[gk] == ag[f"{gk} domain={d}"] and ag[f"{gk} view=prose domain={d}"] == ag[gk]
+    check(ag["domain=grant"], {"acc_maj": 1 / 2}, 2)
+    check(ag["domain=permit"], {"acc_maj": 1.0}, 2)
+    assert f"{evaluate.PRIMARY} domain=permit" not in ag
+    evaluate.table("t", {"r": ag}, "all", lambda m: m == "acc_maj")
+    out = capsys.readouterr().out.splitlines()
+    assert out[3] == "| metric | r | r grant | r permit |"
+    assert out[5].startswith("| acc_maj | 0.75 [") and "| 0.50 [" in out[5] and out[5].endswith("n=2 |")
+
+
+def test_prior_conflict_split(stub):
+    """Checks that accuracy and account validity split by prior_conflict when records carry it, and only then."""
+    assert not any("prior_conflict" in m for g in aggregate(score(RECS, fake_rows(), {})[0]).values() for m in g)
+    recs = {i: r | {"prior_conflict": r["domain"] == "grant"} for i, r in RECS.items()}
+    ag = aggregate(score(recs, fake_rows(), {})[0])
+    for m in evaluate.PC_SPLIT:
+        assert ag["all"][f"{m}[prior_conflict=true]"] == ag["domain=grant"][m]
+        assert ag["all"][f"{m}[prior_conflict=false]"] == ag["domain=permit"][m]
+    assert not [m for m in ag["all"] if "prior_conflict" in m and m.split("[")[0] not in evaluate.PC_SPLIT]
 
 
 def test_refusals(stub, tmp_path, monkeypatch):
@@ -685,3 +735,52 @@ def test_batch_and_weighted_loss(rows, tok):
             per.append(ce[dm].mean() + lam * ce[am].mean())
         assert weighted_loss(lg, b["labels"], b["weights"]).item() == pytest.approx(torch.stack(per).mean().item(),
                                                                                     rel=1e-5)
+
+
+def test_chunked_resume_matches_one_run(tmp_path):
+    """
+    Trains a toy dropout regressor for 2 epochs once, and as chunk 1 (stop_cb(1)) plus chunk 2 (resume from the
+    epoch-1 checkpoint), under train.py's schedule settings (cosine, warmup, data_seed, epoch saves), and checks the
+    chunks stop at the epoch boundary and match the single run in steps, learning rates, losses and final weights.
+    """
+    torch = pytest.importorskip("torch")
+    tf = pytest.importorskip("transformers")
+    from train import stop_cb
+
+    class Toy(torch.nn.Module):
+        """Linear regressor with dropout, so the loss depends on the restored RNG state."""
+
+        def __init__(self):
+            """Builds the layers from a fixed seed."""
+            super().__init__()
+            torch.manual_seed(0)
+            self.lin, self.drop = torch.nn.Linear(4, 1), torch.nn.Dropout(0.5)
+
+        def forward(self, x, y):
+            """Returns the mean squared error of the dropout-masked prediction."""
+            return {"loss": torch.nn.functional.mse_loss(self.lin(self.drop(x)).squeeze(-1), y)}
+
+    g = torch.Generator().manual_seed(1)
+    ds = [{"x": torch.randn(4, generator=g).tolist(), "y": float(i % 3)} for i in range(22)]
+
+    def fit(out, cb=None, ck=None):
+        """Runs one Trainer call into out and returns the trainer and its model."""
+        m = Toy()
+        cfg = tf.TrainingArguments(output_dir=str(out), num_train_epochs=2, learning_rate=0.05, seed=0, data_seed=0,
+                per_device_train_batch_size=2, gradient_accumulation_steps=2, warmup_steps=0.1,
+                lr_scheduler_type="cosine", logging_steps=1, save_strategy="epoch", report_to="none", use_cpu=True,
+                remove_unused_columns=False, disable_tqdm=True)
+        tr = tf.Trainer(model=m, args=cfg, train_dataset=ds, callbacks=[cb] if cb else None)
+        tr.train(resume_from_checkpoint=ck)
+        return tr, m
+
+    one, m1 = fit(tmp_path / "one")
+    c1, _ = fit(tmp_path / "ch", stop_cb(1))
+    n = one.state.max_steps
+    assert c1.state.epoch == pytest.approx(1) and c1.state.global_step == n // 2 < c1.state.max_steps == n
+    assert sorted(p.name for p in (tmp_path / "ch").glob("checkpoint-*")) == [f"checkpoint-{n // 2}"]
+    c2, m2 = fit(tmp_path / "ch", ck=str(tmp_path / "ch" / f"checkpoint-{n // 2}"))
+    assert c2.state.global_step == c2.state.max_steps == n and c2.state.epoch == pytest.approx(2)
+    lg = lambda t: [h[k] for h in t.state.log_history if "loss" in h for k in ("step", "learning_rate", "loss")]
+    assert len(lg(one)) == 3 * n and lg(c2) == pytest.approx(lg(one), rel=1e-6)
+    assert all(torch.equal(a, b) for a, b in zip(m1.state_dict().values(), m2.state_dict().values()))

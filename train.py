@@ -1,7 +1,8 @@
 """LoRA SFT of Qwen3.5-9B for the 2 matched conditions (account, decision) with per-token loss weights, and the SFT
 export. Entry points: python train.py --condition ... (Unsloth and TRL, CUDA; writes <out>/train_meta.json) and
 python train.py export --split train|dev --out ... (chat rows with the account span, from infer.build_prompt and
-infer.format_target). Collator and weighted_loss import without CUDA.
+infer.format_target). --stop-after-epochs and --resume split one run into chunk jobs on the same schedule. Collator,
+weighted_loss and stop_cb import without CUDA.
 """
 import argparse
 import importlib.metadata
@@ -130,6 +131,26 @@ def token_stats(col, rows):
     return t
 
 
+def stop_cb(k):
+    """
+    Returns a TrainerCallback that stops training at the first epoch end with state.epoch >= k. The epoch-end save
+    and eval still run, so the next chunk resumes from that checkpoint with the same optimizer, scheduler, RNG and
+    data order (the sampler is reseeded per epoch from data_seed).
+    """
+    from transformers import TrainerCallback
+
+    class Stop(TrainerCallback):
+        """Stops training at the end of epoch k."""
+
+        def on_epoch_end(self, args, state, control, **kw):
+            """Sets should_training_stop once state.epoch reaches k."""
+            if state.epoch >= k - 1e-6:
+                control.should_training_stop = True
+            return control
+
+    return Stop()
+
+
 def export(argv):
     """
     Writes the SFT rows of one split ({id, messages: [system, user, assistant], mask_spans}), mask_spans covering
@@ -199,7 +220,9 @@ def main():
     ap.add_argument("--alpha", type=int, default=32)
     ap.add_argument("--dropout", type=float, default=0.0)
     ap.add_argument("--lr", type=float, default=2e-4)
-    ap.add_argument("--epochs", type=float, default=2)
+    ap.add_argument("--epochs", type=float, default=2, help="total epochs of the run, also on a resumed chunk")
+    ap.add_argument("--stop-after-epochs", type=int, help="ends this chunk after epoch K, saves no adapter")
+    ap.add_argument("--resume", action="store_true", help="resumes from the latest checkpoint-* in --out")
     ap.add_argument("--max-len", type=int, default=4096)
     ap.add_argument("--batch", type=int, default=4)
     ap.add_argument("--grad-accum", type=int, default=4)
@@ -210,6 +233,10 @@ def main():
     a = ap.parse_args()
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
+    ck = max(out.glob("checkpoint-*"), key=lambda c: int(c.name.split("-")[1]), default=None) if a.resume else None
+    assert ck or not a.resume, f"--resume but no checkpoint-* in {out}"
+    st0 = json.loads((ck / "trainer_state.json").read_text()) if ck else {"epoch": 0.0, "global_step": 0}
+    chunks = json.loads((out / "train_meta.json").read_text()).get("chunks", []) if ck else []
     rows = [json.loads(ln) for ln in Path(a.data).read_text().splitlines() if ln.strip()]
     ev = [json.loads(ln) for ln in Path(a.eval_data).read_text().splitlines() if ln.strip()] if a.eval_data else []
 
@@ -240,7 +267,8 @@ def main():
             "gpu": torch.cuda.get_device_name(0) if torch.cuda.is_available() else None, "bf16": True,
             "enable_thinking": False, "check_rows": min(16, len(rows)), "train_tokens": token_stats(col, rows),
             "eval_tokens": token_stats(col, ev) if ev else None,
-            "trainable_params": sum(p.numel() for p in model.parameters() if p.requires_grad)}
+            "trainable_params": sum(p.numel() for p in model.parameters() if p.requires_grad),
+            "resumed_from": ck.name if ck else None, "chunks": chunks}
     (out / "train_meta.json").write_text(json.dumps(meta, indent=2))
     print(json.dumps(meta["train_tokens"]))
 
@@ -268,11 +296,17 @@ def main():
             eval_strategy="epoch" if ev else "no", max_length=a.max_len, remove_unused_columns=False,
             prediction_loss_only=True, dataset_kwargs={"skip_prepare_dataset": True}, report_to="none")
     tr = WeightedTrainer(model=model, args=cfg, train_dataset=Dataset.from_list(rows),
-            eval_dataset=Dataset.from_list(ev) if ev else None, data_collator=col, processing_class=tok)
-    res = tr.train()
-    model.save_pretrained(str(out / "adapter"))
-    tok.save_pretrained(str(out / "adapter"))
-    model.save_pretrained_merged(str(out / "merged"), tok, save_method="merged_16bit")
+            eval_dataset=Dataset.from_list(ev) if ev else None, data_collator=col, processing_class=tok,
+            callbacks=[stop_cb(a.stop_after_epochs)] if a.stop_after_epochs else None)
+    res = tr.train(resume_from_checkpoint=str(ck) if ck else None)
+    # the last chunk is the one that reaches max_steps, i.e. --epochs, and only it saves the adapter and merged model
+    fin = tr.state.global_step >= tr.state.max_steps
+    if fin:
+        model.save_pretrained(str(out / "adapter"))
+        tok.save_pretrained(str(out / "adapter"))
+        model.save_pretrained_merged(str(out / "merged"), tok, save_method="merged_16bit")
+    chunks.append({"job": os.environ.get("SLURM_JOB_ID", "local"), "epochs": [round(st0["epoch"], 4),
+            round(tr.state.epoch, 4)], "steps": [st0["global_step"], tr.state.global_step], "final": fin})
     meta.update(train_metrics=res.metrics, log_history=tr.state.log_history,
             peak_mem_gb=round(torch.cuda.max_memory_allocated() / 2 ** 30, 2) if torch.cuda.is_available() else None)
     (out / "train_meta.json").write_text(json.dumps(meta, indent=2))

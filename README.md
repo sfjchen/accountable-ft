@@ -84,6 +84,20 @@ Commands, from the repo root. Once per shell: `export PATH=/opt/homebrew/share/g
 - Why grant, trial and review train and permit is held out.
   - Same rule shapes everywhere, so a held-out family is a new combination and permit is the real vocabulary transfer.
   - Every domain has derived facts and defaults, so assumptions show up in every case.
+- Is the task rigorous enough.
+  - What the evaluator must do on one case.
+    - Apply 8 to 15 rules at once, any one of which can deny.
+    - Compute derived facts (date gaps in weeks or days, budget sums) before a threshold can be checked.
+    - Read boundary values exactly, since a threshold often equals a fact bucket (a $5,000 travel cap, travel budgets in $5,000 steps).
+    - Check exception conjunctions ("community laboratory and at most $120,000"), not just the exception's trigger.
+    - Fill missing facts from defaults and cite them as assumptions.
+    - For "cannot determine", reason over every completion of the missing facts, not just the facts given.
+  - Pilot evidence: Gemini 3.5 Flash-Lite 0.77 and Qwen3.5-9B 0.60 accuracy, 0 of 97 "cannot determine" items right for both, account validity 0.22 and 0.07 (section 7). Review is the hardest domain for both, 0.64 and 0.48 (per-domain columns of `runs/v1-lite.eval.md`, `runs/qwen9b-lite.eval.md`).
+  - Known gaps.
+    - Rules combine as an independent conjunction, so no rule's output feeds another rule.
+    - Derived facts are one arithmetic step over source facts.
+    - No multi-hop chains (fact to intermediate status to rule).
+  - Planned fix: a chained-rule family (a rule whose condition is another rule's outcome, e.g. "applications that need ethics approval must also ...") and a 2-step derived fact (a derived fact computed from another derived fact).
 - Known data issues, from the "cannot determine" audit (`python gen.py --audit data/v1.jsonl --run runs/v1-lite.jsonl --sample 30 --flagged data/v1.flagged.txt`, logs `audit_cd-e856952-20261107-0241`, train slice `audit_cd-train-e856952-20261107-0241`).
   - Engine labels are sound: 205 of 205 witness pairs hold on the primary slice and the removed fact is always needed.
   - Gemini prose distorts about 10% of "cannot determine" items: grant.institution_type loses its value ("university" as "an academic institution", 138 uses), and 13 primary items imply supplementary files whose size is missing.
@@ -144,21 +158,23 @@ Smallest change that would reverse this decision: total requested amount (dollar
 
 Gold: approve, R2 and R5 waived, every other rule passes. Minimum sufficient facts: pi_years_since_phd, career_break, institution_type, requested_amount, start_day, end_day, letter_of_support, open_data_plan, human_subjects. No defaults. Smallest flip: pi_years_since_phd to 11 (target deny).
 
-## 7. Where we are (Nov 7)
+## 7. Where we are (Nov 9)
 
-- Data v1: about 5,000 cases, 3 views, 72 held-out families, 60 permit families.
-- Harness: end to end on two prompting pilots, same 150 held-out cases (logs `v1-lite-eval-52322ce-20261107-0253`, `qwen9b-lite-eval-52322ce-20261107-0254`).
+- Data v1: about 5,000 cases, 3 views, 72 held-out families, 60 permit families. 222 flagged items dropped at export.
+- Harness: 27 tests, end to end on two prompting pilots, same 150 held-out cases (logs `v1-lite-eval-domain-be2b788-20261108-2102`, `qwen9b-lite-eval-domain-be2b788-20261108-2102`).
 
 | | Gemini 3.5 Flash-Lite | Qwen3.5-9B base |
 |---|---|---|
-| accuracy | 0.77 | 0.60 |
+| accuracy, all | 0.77 | 0.60 |
+| accuracy, grant / trial / review | 0.86 / 0.80 / 0.64 | 0.68 / 0.64 / 0.48 |
 | account validity | 0.22 | 0.07 |
 | dSim | 0.04 [-0.06, 0.13] | 0.09 [0.04, 0.15] |
 | always-"unchanged" baseline | 0.69 | 0.85 |
 
-- Both never say "cannot determine". Both give mostly invalid accounts. The simulator does not beat the trivial baseline yet.
-  - Reading: accounts are where the headroom is, accuracy has some too. That is the shape the comparison needs.
-- Compute: FarmShare (Stanford, free), 6 nodes with 4 L40S 48 GB each, 4 GPUs per user. Environment, data and model are on the cluster, smoke jobs queued Nov 7. RunPod ($1.19/h A100) is the fallback.
+- Both never say "cannot determine". Both give mostly invalid accounts. Review is the hardest domain.
+- Training on FarmShare (L40S 48 GB, `farmshare.sh`): account SFT seed 0 finished Nov 7, 79 minutes, 692 steps, train loss 0.074, dev loss 0.048 (job 1951241_0, meta in `outputs/account-s0/train_meta.json` on the cluster).
+  - The other 5 runs and the 2 evaluation jobs for seed 0 are queued (jobs 1957278, 1957283, 1957284). The cluster has been saturated since Nov 7 (about 160 pending GPU jobs); 2-hour limits were set so they backfill.
+  - Fallback if the queue does not clear by Nov 11: RunPod A100 at $1.19/h, about $25 for the remaining runs.
 
 ## 8. Next
 
@@ -212,14 +228,65 @@ The account condition's loss per example is mean_dec + λ mean_acc (mean token l
 
 Everything lives in `/scratch/users/$USER/accountable-ft` (purged after 90 idle days), model under `/scratch/users/$USER/hf`, `train_meta.json` copies in `~/accountable-ft-meta`. Log in with `ssh $USER@login.farmshare.stanford.edu` (Duo) or the Open OnDemand shell, inside `tmux new -s aft`. `smoke`, `train` and `eval` submit `farmshare.sh` itself to Slurm, extra sbatch options go in `SB`.
 
-- Jobs queued before Nov 7's switch to `farmshare.sh` source `farmshare/env.sh` when they start, so pull only after they are running.
+- Do not `git pull` the cluster checkout while any job submitted from the old `farmshare/` scripts is still pending. Those jobs source `farmshare/env.sh` when they start, and the pull deletes it. Pull once `squeue -u $USER` shows them running or finished.
 - Setup, idempotent (about 40 GB of wheels and weights in scratch, rerun to update): `git clone https://github.com/sfjchen/accountable-ft /scratch/users/$USER/accountable-ft && cd /scratch/users/$USER/accountable-ft && bash farmshare.sh setup`. It ends with the import, `train.PINS` and Collator checks.
 - Probe: `bash farmshare.sh probe | tee ~/probe.txt`. Need gpu MaxTime and qos MaxWall of at least 8 h, GPU memory of at least 40 GB. If gpu caps time, add `SB="--partition=normal --qos=long"` to the train command (only if normal shows gpu gres).
 - Smoke (15 min): `bash farmshare.sh smoke`, after it ends `CASES=13 bash farmshare.sh eval smoke-account 1`. Logs in `runs/slurm/smoke_*.out` and `eval_*.out`.
 - The 6-run array (account and decision, seeds 0-2, 8 h each): `jid=$(SB=--parsable bash farmshare.sh train)`. One run: `SB=--array=4 bash farmshare.sh train`. Watch with `squeue -u $USER` and `tail -f runs/slurm/${jid}_0.out`.
-- Eval every run at both epochs once training ends: `for r in {account,decision}-s{0,1,2}; do for k in 1 2; do SB=--dependency=afterok:$jid bash farmshare.sh eval $r $k; done; done`. Eval runs are named `<cond>-e<k>-s<seed>`, the cache tag adds the adapter hash, each run has its own `runs/cache.<run>.jsonl`, and the merged model is deleted afterwards unless `KEEP_MERGED=1`. A timed-out train run restarts from scratch (no resume).
+- Chunked runs (preferred): 8 h GPU jobs wait behind the queue, while 55-minute jobs fit the gaps Slurm backfills, so `train --chunks` splits each 2-epoch run into 2 1-epoch jobs. Chunk 1 runs `train.py --epochs 2 --stop-after-epochs 1`, chunk 2 runs `--epochs 2 --resume` with `--dependency=afterok:<chunk 1>` and continues the same seed, data order and LR (learning rate) schedule from the epoch-1 checkpoint, and only chunk 2 saves `adapter/` and `merged/`.
+- The 5 runs left: `bash farmshare.sh train --chunks --runs account-s1,account-s2,decision-s0,decision-s1,decision-s2`. It prints run, partition and the 2 job ids, puts the first run on `--partition=normal --qos=normal` (1 GPU per user) and the rest on gpu, and skips runs whose `outputs/<run>/merged` exists. Logs in `runs/slurm/<run>_c<k>_<jobid>.out`, chunk boundaries in `train_meta.json` under `chunks`.
+- For eval after chunked runs, use the chunk-2 id of each run as the `afterok` dependency.
+- Eval every run at both epochs once training ends: `for r in {account,decision}-s{0,1,2}; do for k in 1 2; do SB=--dependency=afterok:$jid bash farmshare.sh eval $r $k; done; done`. Eval runs are named `<cond>-e<k>-s<seed>`, the cache tag adds the adapter hash, each run has its own `runs/cache.<run>.jsonl`, and the merged model is deleted afterwards unless `KEEP_MERGED=1`. A timed-out train job restarts from scratch (no resume outside `--chunks`).
 - Prompted base, the same 4 passes with no checkpoint: `bash farmshare.sh base` (thinking off, full primary slice) and `THINKING=on CASES=150 bash farmshare.sh base` (thinking answers run 5-10k tokens, so a subset). Runs are named `base-think<on|off>[-c<N>]`. `DATA=data/mortgage.jsonl SLICE=real_transfer bash farmshare.sh base` runs the same passes on the mortgage domain (run name prefixed `mortgage-`). Every run served here uses `--max-tokens 16384` (`MAX_TOKENS`, model length `MAX_LEN` 24576), because evaluate.py refuses to compare runs whose max_tokens differ, so base and trained runs stay comparable. Earlier API pilots used 4096.
 - Back on the Mac: `rsync -av --exclude slurm $USER@login.farmshare.stanford.edu:/scratch/users/$USER/accountable-ft/runs/ runs/`, then the simulate and score commands of section 4 on `data/v1.jsonl`, e.g. `python evaluate.py runs/*-e2-s*.jsonl --data data/v1.jsonl --bank data/v1.bank.jsonl --epoch 2`.
+
+## Working with a second domain (Eitan)
+
+- Route 1, a domain yaml in our schema (`domains/<name>.yaml`, copy `domains/grant.yaml` as the template).
+  - `facts`: each int bucketed to at most 8 `values` (engine `MAX_DOM`), enums with `names`, bools. A policy may read at most 12 facts (`MAX_FACTS`).
+  - `derived_facts`: an `expr` over source facts, with a `label` and `say` strings.
+  - `rules`: `cond` (holds iff true), optional `unless` exceptions with their own `cond`, `scoped: true` with a `near` condition for conditional rules, `params` for thresholds, `counter: true` only for a prior-conflicting template. `derived` holds rules over derived facts.
+  - `defaults`: fact, value and the rule text.
+  - Prose: `say` strings per fact (`say_true` / `say_false` for bools, `{v:money}`, `{v:date}`, `{v:e}` format specs), plus `names`, `intro` and `color` filler.
+  - The generator checks every rule can hold and fail and approval is reachable, and rejects the family otherwise.
+- Route 2, a converter from Fannie Mae text straight to the record schema (the keys of a `data/v1.jsonl` record). It must fill `policy_spec` (rules as engine `cond`/`unless` strings), `facts`, `gold` from `gen.gold_for`, `slice`, `split`, `view` and `template_family`, or evaluate cannot score accounts.
+- Commands for a yaml domain `<name>`, from the repo root.
+  - Smoke: `python gen.py --domains <name> --n-policies 4 --cases-per-family 10 --seed 0 --prose template --out data/<name>.smoke.jsonl`.
+  - Generate: `python gen.py --domains <name> --n-policies 120 --cases-per-family 5 --seed 0 --prose gemini --vertex --gemini-model gemini-3.5-flash-lite --workers 8 --out data/<name>.jsonl > data/<name>.gen.log`.
+  - Bank: `python infer.py --mode bank --data data/<name>.jsonl`.
+  - Export: `for s in train dev; do python train.py export --data data/<name>.jsonl --split $s --out data/<name>.sft.$s.jsonl; done`.
+  - Train: `python train.py --condition account --data data/<name>.sft.train.jsonl --eval-data data/<name>.sft.dev.jsonl --seed 0 --out outputs/qwen9b-<name>-acct-s0`, and the same with `--condition decision`.
+  - Evaluate: the answer, simulate and score commands of section 4 with `--data data/<name>.jsonl --bank data/<name>.bank.jsonl`. The tables then carry a `<name>` column. `farmshare.sh eval` reads `data/v1.jsonl` (`farmshare.sh:199`), so point that line at the new file for cluster runs.
+- The 2x2 cross-evaluation: train on invented or real, test on invented or real, same conditions and seeds.
+  - Prediction, written down before any run: invented gives cleaner account metrics, real gives higher raw accuracy from priors but weaker account validity, and account SFT narrows the validity gap on real.
+- Caveat: account metrics on his domain are comparable to ours only with an exact oracle (route 1 gives it) or a hand-checked subset of gold accounts.
+
+## Decision log
+
+- Nov 4: invented domains over real policy text.
+  - Real text has no exact oracle, so gold accounts and smallest flips cannot be certified.
+  - Real policies leak from pretraining, so accuracy mixes reading with recall.
+  - Existing benchmarks have no edit banks for behavioral tests.
+- Nov 5: primary endpoint moved from self-prediction V to the external simulator's dSim.
+  - A no-account self-predictor already scored 0.77-0.84, because it re-solves the case from the policy and facts.
+  - The simulator never sees the case, so its only route to the answer is the account.
+- Nov 7: protocol and stack fixes.
+  - Shuffled control keeps the item's own Decision line and swaps only the account lines. The old version swapped decisions, which made most of the pilot dSim.
+  - Always-"unchanged" and oracle-label baselines sit next to every simulator number, since always-"unchanged" beat the simulator on both pilots.
+  - Checkpoints: one fixed epoch for every condition, chosen before any account metric is read. Best-of-k on dSim stays as an exploratory table.
+  - Loss weighting mean_dec + λ mean_acc, so decision tokens carry the same weight in both conditions.
+  - Stack pinned in `train.PINS` (unsloth 2026.11.3 caps trl and transformers).
+  - FarmShare over RunPod: free, 4 L40S per user, RunPod as the fallback.
+  - Data audit: engine labels sound, about 10% of "cannot determine" prose lossy, 222 items in `data/v1.flagged.txt` dropped from export.
+- Nov 7: "cannot determine" kept as a third class.
+  - Missing facts test whether the account states its assumptions.
+  - A binary task forces a guess the account cannot honestly justify.
+  - Both base models score 0.00 on it (0 of 97 items).
+  - A prompt-only control will check that SFT gains on it are not a prompt artifact.
+- Nov 7: counter-intuitive rule templates planned, and review to be dropped when Eitan's Fannie Mae domain lands.
+  - Counter templates (`counter: true`, `gen.py --counter`) defeat priors, so accuracy on them tests following the text.
+  - Swapping review for Fannie Mae keeps 3 training domains and the cluster counts, and review's families are the cheapest to replace.
+  - Not before the current runs finish.
 
 ## Related work
 

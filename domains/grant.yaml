@@ -2,6 +2,8 @@
 # Facts (ints bucketed to at most 8 values), derived facts, rule templates, defaults and prose vocabulary.
 # Dates are day offsets from ref_date. Scoped rules carry a "near" condition: the rule is inactive (its
 # trigger is off) but its other facts would violate it, which makes a near-miss distractor.
+# A rule template with counter: true reads against common sense (prior-conflicting), and gen.py samples it
+# only with --counter.
 name: grant
 title: "Ostrava-Lune Foundation, Halbrecht Early Inquiry Grants: eligibility rules (2027 cycle)"
 preamble: "An application is approved only if it meets every rule below. Rules marked as defaults say what to assume when an application is silent on a point."
@@ -172,6 +174,10 @@ rules:
     near: "requested_amount <= {t} and not letter_of_support"
     text: "Requests above {t:money} must include a letter of support from the host"
     params: {t: [50000, 70000]}
+  - key: no_university
+    counter: true
+    cond: "institution_type != 'university'"
+    text: "The host institution must not be a university"
 derived:
   - key: duration
     cond: "duration_weeks <= {w}"
