@@ -265,10 +265,11 @@ print(hit[0])
 PY
 )
     # the adapter hash in the cache tag keeps retrained weights under one name from hitting old answers
-    tag=$run-$(sha256sum "$ckpt/adapter_model.safetensors" | cut -c1-12) merged=$out/merged-e$ep
-    if [[ ! $merged/config.json -nt $ckpt/adapter_model.safetensors ]]; then
-      echo "merging $ckpt -> $merged"
-      python - "$ckpt" "$merged" <<'PY'
+    tag=$run-$(sha256sum "$ckpt/adapter_model.safetensors" | cut -c1-12) merged=$out/merged-e$ep-j$SLURM_JOB_ID
+    # each job merges into its own dir and removes it, so evals of one checkpoint on 2 data files never write or
+    # delete each other's weights
+    echo "merging $ckpt -> $merged"
+    python - "$ckpt" "$merged" <<'PY'
 import sys
 from unsloth import FastLanguageModel
 import torch
@@ -277,7 +278,6 @@ model, tok = FastLanguageModel.from_pretrained(sys.argv[1], dtype=torch.bfloat16
         max_seq_length=4096)
 model.save_pretrained_merged(sys.argv[2], tok, save_method="merged_16bit")
 PY
-    fi
     run_passes "$merged" "$run" "$tag"
     [[ ${KEEP_MERGED:-0} == 1 ]] || rm -rf "$merged"
     echo "done: runs/$run.{jsonl,repeat.jsonl,predict.jsonl,predict_noacc.jsonl}, tag $tag" ;;
