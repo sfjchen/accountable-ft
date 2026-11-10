@@ -7,7 +7,7 @@
 # and mortgage, review held out) or mo (mortgage only), the last 2 under outputs/$MIX-<cond>-s<seed>.
 # Usage: bash farmshare.sh setup | probe | smoke [account|decision] | train [--chunks [--runs <cond>-s<seed>,...]] |
 #   eval [r2-|mo-]<cond>-s<seed> <epoch> (DATA=<file>[,<file>] for other data files) |
-#   base (THINKING=on|off, CASES=N for a stratified subset)
+#   base (THINKING=on|off, CASES=N for a stratified subset) | notify <group> <jobid>[,<jobid>...]
 set -euo pipefail
 {
 cmd=${1:?usage: bash farmshare.sh setup|probe|smoke|train|eval|base}
@@ -19,8 +19,10 @@ export SCRATCH REPO VENV SERVE_VENV MODEL_FILE META_HOME PATH=$HOME/.local/bin:$
 export HF_HOME=$SCRATCH/hf UV_CACHE_DIR=$SCRATCH/.uv/cache UV_PYTHON_INSTALL_DIR=$SCRATCH/.uv/python
 export XDG_CACHE_HOME=$SCRATCH/.cache TRITON_CACHE_DIR=$SCRATCH/.cache/triton VLLM_CACHE_ROOT=$SCRATCH/.cache/vllm
 OUT=/scratch/users/%u/accountable-ft/runs/slurm
-# every job mails its end or failure (MAIL=<address>, default the SUNet address), so nobody has to poll the queue
-MAILF=("--mail-type=END,FAIL" "--mail-user=${MAIL:-$USER@stanford.edu}")
+# a job mails only when it fails (MAIL=<address>, default the SUNet address), and notify sends 1 mail when a whole
+# group has ended, so the inbox only gets mail that needs action
+MAIL=${MAIL:-$USER@stanford.edu}
+MAILF=("--mail-type=FAIL" "--mail-user=$MAIL")
 # One decoding budget for every run served here (base, thinking on and off, trained): evaluate.py refuses to compare
 # runs whose max_tokens differ, and thinking answers run 5-10k tokens. Non-thinking answers stop long before it.
 MAX_TOKENS=${MAX_TOKENS:-16384} MAX_LEN=${MAX_LEN:-24576}
@@ -60,6 +62,15 @@ if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
     done
     printf '%-12s %-9s %-10s %-10s\n' "$r" "${p[0]#--partition=}" "${ids[@]}"
   done
+  exit
+fi
+if [[ $cmd == notify ]]; then
+  # a 1-minute CPU job that waits for every listed job (array ids cover all tasks) to end in any state, writes their
+  # states to runs/slurm/done-<group>_<id>.out and mails once, named aft-done-<group>
+  grp=${1:?usage: bash farmshare.sh notify <group> <jobid>[,<jobid>...]} ids=${2:?missing job ids}
+  sbatch --partition=normal --cpus-per-task=1 --mem=1G --time=00:05:00 --mail-type=END --mail-user="$MAIL" \
+      --job-name="aft-done-$grp" --dependency="afterany:${ids//,/:}" --output="$OUT/done-${grp}_%j.out" \
+      --wrap "sacct -X -j $ids -o JobID%16,JobName%20,State,Elapsed,ExitCode"
   exit
 fi
 case $cmd in
