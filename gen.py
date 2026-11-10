@@ -233,7 +233,7 @@ def policy_for(record):
 
 def sample_case(pol, rng, want):
     """
-    Returns a complete admissible fact dict with decision want: a random draw repaired until every rule holds, some
+    Returns a complete, allowed fact dict with decision want: a random draw repaired until every rule holds, some
     rules moved into their waived or near-miss state, then for deny 1-2 rules broken.
     """
 
@@ -350,7 +350,7 @@ def render_case(policy, facts, seed, prose="template", view="prose", base=None):
 
 def gold_for(pol, facts, rid=None):
     """
-    Returns the gold labels of a record: decision, trace, minimal sufficient sets (source level) with the minimum
+    Returns the correct labels of a record: decision, trace, minimal sufficient sets (source level) with the minimum
     ones, necessary facts, flip target and min_flip, defaults, case-level distractor facts and rules, and for
     "cannot determine" the witnesses, needs_facts and min_reveal. Over-budget searches mark it uncertified with
     reasons.
@@ -528,7 +528,7 @@ def report(a):
            "Prose items per unseen family (unseen_family_train_vocab): " +
            ", ".join(f"{k} {v}" for k, v in sorted(collections.Counter(
                r["template_family"] for r in pro if r["slice"] == "unseen_family_train_vocab").items())), "",
-           "## Gold properties (prose view)", ""]
+           "## Label properties (prose view)", ""]
     flips = collections.Counter(len(r["changed_facts"]) for r in pro if r["variant"] == "flip")
     md += [f"- interaction bases (no single condition, 2+ sufficient sets): "
            f"{sum(bool(r['interaction']) for r in base)} of {len(base)}",
@@ -536,7 +536,7 @@ def report(a):
            "- flip radius: " + ", ".join(f"{k}: {v}" for k, v in sorted(flips.items())),
            f"- items certified with no flip within radius 4 (none are bases): "
            f"{sum('exhausted_radius' in r['gold']['min_flip'] for r in pro)}",
-           f"- uncertified gold (search over budget): {sum(r['gold']['uncertified'] for r in pro)}",
+           f"- uncertified labels (search over budget): {sum(r['gold']['uncertified'] for r in pro)}",
            f"- holdout_structure items: {sum(r['holdout_structure'] for r in pro)}",
            "- missing-fact effects: " + ", ".join(f"{k}: {v}" for k, v in sorted(collections.Counter(
                r["removed_effect"] for r in pro if r["variant"] == "missing").items())), "",
@@ -592,7 +592,7 @@ def report(a):
                                  "defaults_applied": r["gold"]["defaults_applied"],
                                  "changed_facts": r["changed_facts"], "removed_fact": r["removed_fact"]}) + "\n")
     md += ["## Blind validation sample", "",
-           f"`{bl.name}` ({len(picks)} prose items, at most 1 per base family, gold in `{ans.name}`). Each of us fills "
+           f"`{bl.name}` ({len(picks)} prose items, at most 1 per base family, answers in `{ans.name}`). Each of us fills "
            "label_decision (approve, deny, cannot determine) and label_facts without opening the answer file.", "",
            crosstab(picks, lambda r: r["domain"], dec, DECISIONS), "",
            "By variant: " + ", ".join(f"{k} {v}" for k, v in sorted(collections.Counter(
@@ -829,7 +829,7 @@ def audit(a):
                 rules = {q["id"]: q["text"] for q in r["policy_spec"]["rules"]}
                 print(f"### {r['id']} missing {r['gold']['needs_facts']} for "
                       f"{[(i, rules[i]) for i in r['gold']['needs_fact_for']]}")
-                print(f"witnesses {r['gold']['cd_witnesses']}; model {out.get(r['id']) if a.run else '-'}")
+                print(f"completions {r['gold']['cd_witnesses']}; model {out.get(r['id']) if a.run else '-'}")
                 print("trace", r["gold"]["rule_trace"], "defaults", r["gold"]["defaults_applied"])
                 print(r["case_text"] + "\n")
 

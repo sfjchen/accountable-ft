@@ -42,7 +42,7 @@ def pol(facts, *rules, valid=()):
 
 
 def brute(p, known):
-    """Returns the decisions over every admissible completion of known, by full enumeration."""
+    """Returns the decisions over every possible completion of known, by full enumeration."""
     free = [n for n in p.order if n not in known]
     return {"approve" if all(r.holds(z) for r in p.requires) else "deny"
             for vals in itertools.product(*(p.dom[n] for n in free)) if p.ok(z := {**known, **dict(zip(free, vals))})}
@@ -80,7 +80,7 @@ def test_decide_states_and_sets():
     p = pol(se, "end >= 20", valid=["end > start"])
     assert E.sufficient_sets(p, {"start": 20, "end": 25}) == [["start"], ["end"]]
     assert E.sufficient_sets(p, {"start": 10, "end": 15}) == [["end"]]
-    p = pol(se, "end >= 25", valid=["end > start"])  # an edit with no admissible completion is skipped, not raised
+    p = pol(se, "end >= 25", valid=["end > start"])  # an edit with no possible completion is skipped, not raised
     assert E.min_flip(p, {"end": 15})["edits"] == {"end": 25}
     p = pol({"a": V5, "b": BOOL, "c": BOOL, "d": V5}, ("a <= 4", "b"), "c or d >= 6")
     assert E.sufficient_sets(p, {"a": 2, "b": True, "c": True, "d": 8}) == [["a", "c"], ["a", "d"], ["b", "c"],
@@ -596,7 +596,7 @@ def test_to_val_and_format_target():
 
 
 def test_bank():
-    """Checks the bank mix, ids, determinism, engine oracles and pivotal edits independent of gold.min_flip."""
+    """Checks the bank mix, ids, determinism, engine labels and pivotal edits independent of gold.min_flip."""
     bk, meta = build_bank(PRIM)
     grp = {"noncrossing_replace": "invariant", "invariant_replace": "invariant"}
     assert bk and (bk, meta) == build_bank(PRIM) and len({b["bank_id"] for b in bk}) == len(bk)

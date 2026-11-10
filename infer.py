@@ -117,7 +117,7 @@ def show(dom, n, v):
 
 def format_target(rec):
     """
-    Returns the gold account of rec in FORMAT, decision first: the SFT target. Policy support is the first minimum
+    Returns the correct explanation of rec in FORMAT, decision first: the SFT target. Policy support is the first minimum
     sufficient set (stated facts) with the rule each fact triggers, or the missing facts behind the undecided rules
     as "not stated"; Assumptions are the defaults applied; the last line is min_flip, min_reveal for cannot
     determine, else "no change within 4 edits".
@@ -158,7 +158,7 @@ def build_prompt(rec, item=None, frozen=None, sim=False):
 
 def build_bank(recs, seed=0):
     """
-    Returns (bank, meta) with every edit chosen independently of the gold account. Kinds: pivotal_replace (a
+    Returns (bank, meta) with every edit chosen independently of the correct explanation. Kinds: pivotal_replace (a
     certified engine flip whose fact set differs from gold.min_flip and that repeats none of its edits, radius 3),
     invariant_replace (the invariant variant), noncrossing_replace (the smallest move of a necessary fact that keeps
     decision and trace), remove and add (base <-> missing variant). Per view 40% pivotal, 30% invariant, 15% remove,

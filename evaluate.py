@@ -280,7 +280,7 @@ def score(recs, rows, aux, bank=()):
                     cit[n] = to_val(pol, n, v)
             cov["none_unsupported_support"] += not p["relied"] and g["decision"] != CD
             asm = {n: to_val(pol, n, v) for l, v, _ in p["assume"] if (n := to_name(l, lab))}
-            j = ({"valid": None, "uncertified": True, "reason": "gold uncertified"} if g.get("uncertified") else
+            j = ({"valid": None, "uncertified": True, "reason": "label uncertified"} if g.get("uncertified") else
                     engine.is_valid_justification(pol, rec["facts"], cit, [r for _, _, r in p["relied"] if r], asm))
             if j.get("valid") is None:
                 cov["expl_uncertified"] += 1
@@ -609,7 +609,7 @@ def main():
                 if k == "simulate_shuf" and not all(r.get("shuf_src") == "frozen" and "shuf_decision_match" in r
                         for r in aux[k]):
                     sys.exit(f"refusing {cp.name}: rows without shuf_src frozen and shuf_decision_match come from "
-                            f"the old shuffle (partner decision or gold accounts); rerun infer.py --mode simulate "
+                            f"the old shuffle (partner decision or correct explanations); rerun infer.py --mode simulate "
                             f"--all-sim")
                 if k.startswith("simulate"):
                     simsig |= {s for r in aux[k] for s in sig([r], DEC_KEYS)}
@@ -622,7 +622,7 @@ def main():
         if a.power:
             # ICC by template family on the primary population, applied to the full primary design: design effect
             # DE = 1 + (m(1 + CV^2) - 1) * max(ICC, 0), accuracy CI half-width at 20% discordance and the minimum
-            # detectable paired dSim difference at 80% power with Var(dSim_A - dSim_B) = 2 Var(sim_delta unit)
+            # detectable paired sim_delta difference at 80% power with Var(delta_A - delta_B) = 2 Var(sim_delta unit)
             rng, prim = np.random.default_rng(a.seed), lambda us: [u for u in us if (u[2], u[3]) == PRIME]
             sz = {"prose items": Counter(r["template_family"] for r in recs.values() if (r.get("slice"),
                     r.get("view")) == PRIME and not r.get("intervention")), "bank items": Counter(recs[b["case_id"]][
@@ -631,10 +631,10 @@ def main():
                     prim(x)], "prose items"), "sim correct, own account (sim_acct)": (prim(U["sim_acct"]),
                     "bank items"), "sim own - shuf (sim_delta)": (prim(U["sim_delta"]), "bank items")}
             var_d = 2 * np.var([u[0] for u in us["sim own - shuf (sim_delta)"][0]], ddof=1)
-            print(f"run={rp.stem} population=slice={PRIME[0]} view={PRIME[1]}; Var(dSim_A - dSim_B) = 2 * "
+            print(f"run={rp.stem} population=slice={PRIME[0]} view={PRIME[1]}; Var(delta_A - delta_B) = 2 * "
                     f"Var(sim_delta) = {var_d:.3f}\n")
             print("| metric | units / families (run) | mean | ICC [95% cluster boot] | design | m | CV | DE | n_eff | "
-                    "acc CI half-width (20% disc.) | MDE dSim (80%) |\n|---|---|---|---|---|---|---|---|---|---|---|")
+                    "acc CI half-width (20% disc.) | MDE sim_delta (80%) |\n|---|---|---|---|---|---|---|---|---|---|---|")
             for name, (uu, kind) in us.items():
                 rho, k, N = icc([u[0] for u in uu], [u[1] for u in uu])
                 byc = defaultdict(list)

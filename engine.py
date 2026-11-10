@@ -12,7 +12,7 @@ MAX_DOM, MAX_FACTS, MAX_RADIUS, BUDGET = 8, 12, 4, 2.0
 
 
 class InvalidRecord(ValueError):
-    """Signals a (partial) record with no admissible completion."""
+    """Signals a (partial) record with no possible completion."""
 
 
 class Timeout(RuntimeError):
@@ -80,7 +80,7 @@ class Policy:
         """
         Builds a policy. facts: {name: {"type": "int", "values"} (or lo/hi/step) | {"type": "enum", "values"} |
         {"type": "bool"}}. rules: {"id", "kind": "require", "cond", "unless"?} or {"id", "kind": "default",
-        "fact", "value"}. valid: conditions every admissible assignment meets.
+        "fact", "value"}. valid: conditions every allowed assignment meets.
         """
         self.id, self.facts, self.order, self.derived = pid, facts, list(facts), dict(derived or {})
         self.dom = {}
@@ -235,13 +235,13 @@ def solve(pol, keys, known):
 
 
 def sat(pol, keys, known):
-    """Returns True when some admissible completion of `known` meets the constraints in `keys`."""
+    """Returns True when some possible completion of `known` meets the constraints in `keys`."""
     return solve(pol, keys, known) is not None
 
 
 def possible(pol, known):
     """
-    Returns the decisions ("approve", "deny") admissible completions of `known` reach; raises InvalidRecord on none.
+    Returns the decisions ("approve", "deny") possible completions of `known` reach; raises InvalidRecord on none.
     """
     key = ("p", fkey(known))
     if key not in pol.cache:
@@ -251,7 +251,7 @@ def possible(pol, known):
         if any(sat(pol, ["-" + r.id], known) for r in pol.requires):
             out.add("deny")
         if not out:
-            raise InvalidRecord(f"no admissible completion of {sorted(known)} under {pol.id}")
+            raise InvalidRecord(f"no possible completion of {sorted(known)} under {pol.id}")
         pol.cache[key] = out
     return pol.cache[key]
 
@@ -259,9 +259,9 @@ def possible(pol, known):
 def decide(pol, facts, rid=None):
     """
     Returns {"decision", "rule_trace", "defaults_applied", "needs_fact_for"} for a partial record. Approve if every
-    admissible completion approves, deny if every one denies, else "cannot determine". rule_trace maps each require
+    possible completion approves, deny if every one denies, else "cannot determine". rule_trace maps each require
     rule to pass, fail, waived or unknown, needs_fact_for lists the unknown rules for "cannot determine". Raises
-    InvalidRecord naming `rid` when no completion is admissible.
+    InvalidRecord naming `rid` when no completion is possible.
     """
     known, applied = known_facts(pol, facts)
     try:
@@ -281,7 +281,7 @@ def decide(pol, facts, rid=None):
 
 def cd_witnesses(pol, facts):
     """
-    Returns {"approve": {...}, "deny": {...}}: admissible completions of the omitted facts with that decision, None
+    Returns {"approve": {...}, "deny": {...}}: possible completions of the omitted facts with that decision, None
     for a side without one (both exist exactly for "cannot determine").
     """
     known, _ = known_facts(pol, facts)
@@ -349,7 +349,7 @@ def min_flip(pol, facts, target=None, radius=MAX_RADIUS, exclude=(), prefer_disj
     """
     Returns the smallest "replace" edit of stated source facts that makes the decision `target` (default
     flip_target), by increasing edit count up to `radius`, then smallest total move in bucket steps, then schema
-    order. Edits stay admissible, and for deny they touch every failed rule. exclude: fact names never edited, or a
+    order. Edits stay within each fact's allowed values, and for deny they touch every failed rule. exclude: fact names never edited, or a
     {fact: value} dict of edits never made that also rules out every edit of exactly its fact set. prefer_disjoint:
     a flip sharing no fact with it wins at any radius, else the smallest overlapping one, and the result gains
     "disjoint". Returns {"kind": "replace", "edits", "radius", "certified_minimum", "target"}, {"edits": None,
@@ -444,7 +444,7 @@ def min_reveal(pol, facts, radius=2):
 
 def invariant_edit(pol, facts, rng, sets=None):
     """
-    Returns an admissible one-fact "replace" edit outside every minimal sufficient set that keeps the decision
+    Returns an allowed one-fact "replace" edit outside every minimal sufficient set that keeps the decision
     (facts some rule reads first), or None.
     """
     dec = decide(pol, facts)["decision"]
@@ -493,7 +493,7 @@ def implied_decision(pol, facts, cited_facts, assumptions, wrong_values=()):
     missing facts, in place of the true ones: the decision the account implies, which separates a misread the stated
     decision follows from a decision that contradicts its own account. A cited "not stated" removes the fact. Returns
     None when a cited value is not a value of its fact, a derived fact in wrong_values is cited, or the substituted
-    record has no admissible completion.
+    record has no possible completion.
     """
     sub = dict(facts)
     for n, v in [*cited_facts.items(), *((n, v) for n, v in assumptions.items() if facts.get(n) is None)]:
