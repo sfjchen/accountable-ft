@@ -53,8 +53,8 @@ if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
     for c in 1 2; do
       # shellcheck disable=SC2086
       j=$(sbatch --parsable "${p[@]}" "${MAILF[@]}" --gpus=1 --cpus-per-task=8 --mem=48G --time=00:55:00 \
-          --job-name="aft-$PRE$r-c$c" --output="$OUT/$PRE${r}_c${c}_%j.out" ${dep:+"$dep"} ${SB:-} "$0" train "${BASH_REMATCH[1]}" \
-          "${BASH_REMATCH[2]}" "$c")
+          --job-name="aft-$PRE$r-c$c" --output="$OUT/$PRE${r}_c${c}_%j.out" ${dep:+"$dep"} ${SB:-} "$0" train \
+          "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" "$c")
       ids+=("${j%%;*}")
       dep=--dependency=afterok:${j%%;*}
     done
