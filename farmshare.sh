@@ -66,11 +66,13 @@ if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
 fi
 if [[ $cmd == notify ]]; then
   # a 1-minute CPU job that waits for every listed job (array ids cover all tasks) to end in any state, writes their
-  # states to runs/slurm/done-<group>_<id>.out and mails once, named aft-done-<group>
+  # states to runs/slurm/done-<group>_<id>.out and mails once, named aft-done-<group>: the subject says COMPLETED
+  # when every job completed and FAILED when any did not
   grp=${1:?usage: bash farmshare.sh notify <group> <jobid>[,<jobid>...]} jl=${2:?missing job ids}
   sbatch --partition=normal --cpus-per-task=1 --mem=1G --time=00:05:00 --mail-type=END --mail-user="$MAIL" \
       --job-name="aft-done-$grp" --dependency="afterany:${jl//,/:}" --output="$OUT/done-${grp}_%j.out" \
-      --wrap "sacct -X -j $jl -o JobID%16,JobName%20,State,Elapsed,ExitCode"
+      --wrap "sacct -X -j $jl -o JobID%16,JobName%20,State,Elapsed,ExitCode
+! sacct -X -n -j $jl -o State | grep -qv COMPLETED"
   exit
 fi
 case $cmd in
