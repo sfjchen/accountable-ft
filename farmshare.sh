@@ -11,8 +11,8 @@ cmd=${1:?usage: bash farmshare.sh setup|probe|smoke|train|eval|base}
 shift
 SCRATCH=${SCRATCH:-/scratch/users/$USER}
 REPO=$SCRATCH/accountable-ft
-VENV=$REPO/.venv MODEL_FILE=$REPO/outputs/model_id META_HOME=$HOME/accountable-ft-meta
-export SCRATCH REPO VENV MODEL_FILE META_HOME PATH=$HOME/.local/bin:$PATH
+VENV=$REPO/.venv SERVE_VENV=$REPO/.venv-serve MODEL_FILE=$REPO/outputs/model_id META_HOME=$HOME/accountable-ft-meta
+export SCRATCH REPO VENV SERVE_VENV MODEL_FILE META_HOME PATH=$HOME/.local/bin:$PATH
 export HF_HOME=$SCRATCH/hf UV_CACHE_DIR=$SCRATCH/.uv/cache UV_PYTHON_INSTALL_DIR=$SCRATCH/.uv/python
 export XDG_CACHE_HOME=$SCRATCH/.cache TRITON_CACHE_DIR=$SCRATCH/.cache/triton VLLM_CACHE_ROOT=$SCRATCH/.cache/vllm
 OUT=/scratch/users/%u/accountable-ft/runs/slurm
@@ -104,10 +104,10 @@ train_one() {
 run_passes() {
   local model=$1 run=$2 tag=$3 data=${DATA:-data/v1.jsonl} slc=${SLICE:-unseen_family_train_vocab}
   local port=$((8000 + SLURM_JOB_ID % 1000)) vlog=$REPO/runs/slurm/vllm_$SLURM_JOB_ID.log  # 1-GPU jobs share nodes
-  # VLLM: a vllm binary from another venv. PyPI vllm 0.33 is built for CUDA 13 and dies on .venv's cu126 torch
-  # (libcudart.so.13 not found), so serving needs its own venv with the default cu130 torch.
-  "${VLLM:-vllm}" serve "$model" --served-model-name "$run" --host 127.0.0.1 --port "$port" --dtype bfloat16 \
-      --max-model-len "$MAX_LEN" --gpu-memory-utilization 0.9 --seed 0 > "$vlog" 2>&1 &
+  # vllm serve runs from SERVE_VENV (VLLM overrides the binary): PyPI vllm 0.33 is built for CUDA 13 and dies on
+  # .venv's cu126 torch (libcudart.so.13 not found), so serving has its own venv with the default cu130 torch.
+  "${VLLM:-$SERVE_VENV/bin/vllm}" serve "$model" --served-model-name "$run" --host 127.0.0.1 --port "$port" \
+      --dtype bfloat16 --max-model-len "$MAX_LEN" --gpu-memory-utilization 0.9 --seed 0 > "$vlog" 2>&1 &
   vpid=$!
   trap 'kill "$vpid" 2>/dev/null || true' EXIT
   for _ in $(seq 240); do
@@ -149,6 +149,9 @@ case $cmd in
     uv pip install -c "$VENV/torch-pin.txt" --extra-index-url "$CU" --index-strategy unsafe-best-match \
         unsloth==2026.11.3 trl==1.15.0 transformers==5.17.0 peft==0.21.2 vllm==0.33.0 huggingface_hub \
         -r requirements.txt
+    # serving venv: vllm with its own default (CUDA 13) torch, apart from unsloth's cu126 pin
+    [[ -x $SERVE_VENV/bin/vllm ]] || { uv venv --python 3.12 "$SERVE_VENV" &&
+        VIRTUAL_ENV=$SERVE_VENV uv pip install vllm==0.33.0; }
     python - <<'PY'
 import os
 import sys
