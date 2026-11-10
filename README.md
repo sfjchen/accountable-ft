@@ -191,14 +191,15 @@ Gold: approve, R2 and R5 waived, every other rule passes. Minimum sufficient fac
 - Mortgage vs invented, Gemini: accuracy is a bit higher (priors help), validity and consistency about the same, and the simulator again does not beat always-"unchanged".
 - Training on FarmShare (L40S 48 GB, `farmshare.sh`): all 6 runs finished by Nov 9, about 81 minutes each (jobs 1951241_0 and 1957278_[1-5]). Account seed 0: 692 steps, train loss 0.074, dev loss 0.048.
   - The first 2 eval jobs (1957283, 1957284) died at vllm startup on libcudart.so.13, fixed with `.venv-serve` (FarmShare section).
-  - Queued Nov 9 at 2 h each: 12 evals (6 runs x 2 epochs, jobs 1967426-1967437), Qwen base thinking off on v1 (1967438) and on mortgage (1967439).
+  - Queued Nov 9 at 2 h each: 12 evals (6 runs x 2 epochs, jobs 1967626-1967637), Qwen base thinking off on v1 (1967638) and on mortgage (1967639), and a 13-case smoke of the full serve path (1967678). The earlier ids died on a flashinfer library path and were resubmitted after the fix.
+  - Round 2 and mortgage-only training (section 8) are next in the queue.
   - Fallback if the queue does not clear by Nov 11: RunPod A100 at $1.19/h.
 
 ## 8. Next
 
 - Once the evals land: Gemini simulator passes on every run, then the primary table (account vs decision SFT vs base) per domain, with seeds.
 - Nov 17-23: permit and mortgage transfer, error analysis of 50 failures, a second simulator family as a robustness check.
-- Then the 2x2 cross-evaluation: train with review or with mortgage in the mix, test on both.
+- Round 2 (Nov 9 decision log): train on grant, trial and mortgage with review held out, both conditions x 3 seeds (`MIX=r2`), and mortgage only, both conditions at seed 0 (`MIX=mo`). Every model is then scored on the v1 unseen slice and on the mortgage unseen families (`DATA=data/mortgage-split.jsonl`), so each round 1 vs round 2 comparison is paired on the same items.
 - Nov 24-30: report and slides. Dec 1-4: rehearse, freeze the repo.
 - Relabel round (CREDIT-style) only if account SFT is below the accuracy ceiling.
 
@@ -230,6 +231,7 @@ Gold: approve, R2 and R5 waived, every other rule passes. Minimum sufficient fac
 - v1: `python gen.py --domains all --n-policies 120 --cases-per-family 5 --seed 0 --prose gemini --vertex --gemini-model gemini-3.5-flash-lite --workers 8 --out data/v1.jsonl > data/v1.gen.log`, with gcloud ADC on our GCP project. Gemini replies are cached in `data/.gemini_cache/`, so a rerun with the same seed costs nothing. Facts and gold depend only on the seed, except that a search can hit its 2 s budget on a loaded machine and mark that one item uncertified.
 - `python gen.py --report data/v1.jsonl --log data/v1.gen.log` writes `data/v1.stats.md` (counts, class balance, families, spend) and the blind sample `data/v1.blind100.jsonl`, gold in `data/v1.blind100.answers.jsonl`. We each label the blind file before opening the answers.
 - Mortgage (real rules, own slice `real_transfer`, never train or dev): `python gen.py --domains mortgage --n-policies 24 --cases-per-family 6 --seed 0 --prose template --out data/mortgage.smoke.jsonl` for a smoke set, `--prose gemini ...` as in v1 for the real one, then `python infer.py --mode bank --data data/mortgage.jsonl --wide-bank --slice real_transfer`. Ratios (DTI, LTV, months of reserves) are derived and rounded down.
+- Mortgage split for round 2: `data/mortgage-split.jsonl` (gz committed) is `data/mortgage.jsonl` with each family relabeled 30/6/24 into train/dev/unseen, the same family split `gen.py --train-domains mortgage` computes, so Eitan's Gemini prose is kept. Its bank: `python infer.py --mode bank --data data/mortgage-split.jsonl` (287 items).
 - Each domain has 60 families of 2 policies with 5 base cases per family. Grant, trial and review split their families 30/6/24 into train/dev/unseen, so the unseen slice has 72 families (24 per domain) and train stays near 5.5k records. Permit's 60 families are the transfer slice.
 
 ## Training
@@ -317,6 +319,12 @@ Everything lives in `/scratch/users/$USER/accountable-ft` (purged after 90 idle 
   - His pilot showed thinking-off answers contradicting their own numbers, so `acct_consistent` was added: the engine's decision on the case with the model's cited values substituted, compared with its stated decision. It separates misreading from misreasoning, which `expl_valid` merges.
   - The pilot folder was flattened: the policy write-up became `domains/mortgage.md`, cases, prompt and outputs moved to `runs/mortgage-pilot.*`, and the one-off vLLM runner, sbatch and transcript were dropped (they are in git history at b80ef6c), since `farmshare.sh base` now covers them.
   - PLAN.md merged into this README.
+- Nov 9: round 2 design, instead of the 2x2 cross-evaluation.
+  - Train grant + trial + mortgage, hold review out entirely, 2 conditions x 3 seeds. Review's unseen families stay the v1 ones, so round 1 and round 2 models answer the same review items, paired.
+  - Mortgage families split 30/6/24 like the invented domains. Its unseen families test round 1 (never saw mortgage), round 2 (saw other mortgage families) and mortgage-only models on the same items.
+  - Mortgage only (account and decision, seed 0, more seeds if the queue allows) is exploratory: does real-rule training alone teach accounts, or does it need the invented domains.
+  - The 2x2 needed 4 trainings per seed and reused nothing. This needs 1 new mix, reuses all 6 round 1 runs as the "review in" arm and costs about 8 GPU-hours.
+- Nov 9: eval path hardened after an audit. A predict prompt over a frozen answer that hit the token limit gets max_tokens clamped to the context left (vllm's 400 says how much), the cache key ignores the local server's per-job port so a timed-out job resumes, and `infer.py` exits nonzero when more than half the requests fail.
 
 # Design detail
 
@@ -406,6 +414,11 @@ All on Qwen3.5-9B with 3 training seeds and the same held-out items. Retention o
 A perfectly accurate model leaves no room for G, a limit of the diagnostic, not a flaw of the model. Correct-vs-wrong base splits are descriptive only.
 
 ## Models and stack (verified Nov 4 and Nov 7)
+
+- Gemini 3.5 Flash-Lite (`gemini-3.5-flash-lite`, Vertex, thinking off, temperature 0) does 3 jobs: writes the case prose, is the external reference model, and is the frozen simulator behind dSim.
+  - Why: it was the cheapest Flash model on Vertex (v1 prose about $9, a full pilot about $1.50), billed to the education credits. Thinking off at temperature 0 gives fixed decoding, so every run is scored by the same simulator.
+  - It is a different model family from Qwen, so the simulator cannot share the trained model's quirks, and it never sees the case text.
+  - Picked as gen's default on cost, not tuned. A second simulator family is the planned robustness check (Yu et al.).
 
 - Qwen3.5-9B (Apache-2.0, Feb 2026, bf16 LoRA about 22 GB, Unsloth advises against 4-bit for this family, thinking off via `enable_thinking: False`). Qwen's card gives mode-specific sampling, and we fix ours from the pilot. Unsloth's "keep 75% reasoning examples" is guidance for preserving thinking mode, and account lines are not reasoning traces.
 - Qwen3.8-27B (dense, Aug 2026): deferred. Qwen3-8B and Qwen3.6-27B dropped as stale, not disqualified.
