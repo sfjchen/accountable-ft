@@ -169,27 +169,36 @@ Gold: approve, R2 and R5 waived, every other rule passes. Minimum sufficient fac
 
 ## 7. Where we are (Nov 9)
 
-- Data v1: about 5,000 cases, 3 views, 72 held-out families, 60 permit families. 222 flagged items dropped at export.
-- Harness: 27 tests, end to end on two prompting pilots, same 150 held-out cases (logs `v1-lite-eval-domain-be2b788-20261108-2102`, `qwen9b-lite-eval-domain-be2b788-20261108-2102`).
+- Data: v1 has about 5,000 cases, 3 views, 72 held-out families and 60 permit families, with 222 flagged items dropped at export. Mortgage has 1,348 prose items over 60 families, all on `real_transfer`.
+- Harness: 29 tests. 3 prompting baselines on 150 held-out cases each (logs `v1-lite-eval-b0b29ad-20261109-2209`, `qwen9b-lite-eval-b0b29ad-20261109-2209`, `mortgage-lite-eval-b0b29ad-20261109-2209`).
 
-| | Gemini 3.5 Flash-Lite | Qwen3.5-9B base |
-|---|---|---|
-| accuracy, all | 0.77 | 0.60 |
-| accuracy, grant / trial / review | 0.86 / 0.80 / 0.64 | 0.68 / 0.64 / 0.48 |
-| account validity | 0.22 | 0.07 |
-| dSim | 0.04 [-0.06, 0.13] | 0.09 [0.04, 0.15] |
-| always-"unchanged" baseline | 0.69 | 0.85 |
+| | Gemini 3.5 Flash-Lite, v1 | Qwen3.5-9B base, v1 | Gemini 3.5 Flash-Lite, mortgage |
+|---|---|---|---|
+| accuracy, all | 0.77 | 0.60 | 0.81 |
+| accuracy, grant / trial / review | 0.86 / 0.80 / 0.64 | 0.68 / 0.64 / 0.48 | |
+| "cannot determine" right | 0.00 | 0.00 | 0.09 |
+| account validity | 0.22 | 0.07 | 0.24 |
+| decision follows own account (`acct_consistent`) | 0.68 | 0.54 | 0.70 |
+| dSim | 0.04 [-0.06, 0.13] | 0.09 [0.04, 0.15] | 0.01 [-0.06, 0.09] |
+| simulator with account | 0.68 | 0.82 | 0.61 |
+| always-"unchanged" baseline | 0.69 | 0.85 | 0.65 |
 
-- Both never say "cannot determine". Both give mostly invalid accounts. Review is the hardest domain.
-- Training on FarmShare (L40S 48 GB, `farmshare.sh`): account SFT seed 0 finished Nov 7, 79 minutes, 692 steps, train loss 0.074, dev loss 0.048 (job 1951241_0, meta in `outputs/account-s0/train_meta.json` on the cluster).
-  - All 6 runs finished by Nov 9 (jobs 1951241_0 and 1957278_[1-5], about 81 minutes each). The first 2 eval jobs (1957283, 1957284) died at vllm startup on libcudart.so.13: PyPI vllm 0.33 needs CUDA 13, the training venv pins cu126 torch. `setup` now builds `.venv-serve` for vllm alone, and eval serves from it.
-  - Queued Nov 9: 12 evals (6 runs x 2 epochs, jobs 1967426-1967437), prompted base thinking off on v1 (1967438) and on mortgage (1967439).
-  - Fallback if the queue does not clear by Nov 11: RunPod A100 at $1.19/h, about $25 for the remaining runs.
+- Both models almost never say "cannot determine", and most accounts are invalid. Review is the hardest domain.
+- Wrong answers mostly contradict their own account (log `consistency-split-b0b29ad-20261109-2209`). The cited facts are read right, and the rules are applied wrong.
+  - Gemini: 201 of 219 scored wrong answers contradict the account. Every scored right answer is consistent.
+  - Qwen: 298 of 305 scored wrong answers contradict it.
+  - So the account lines are mostly true but do not support the decision, which is the gap account SFT targets.
+- Mortgage vs invented, Gemini: accuracy is a bit higher (priors help), validity and consistency about the same, and the simulator again does not beat always-"unchanged".
+- Training on FarmShare (L40S 48 GB, `farmshare.sh`): all 6 runs finished by Nov 9, about 81 minutes each (jobs 1951241_0 and 1957278_[1-5]). Account seed 0: 692 steps, train loss 0.074, dev loss 0.048.
+  - The first 2 eval jobs (1957283, 1957284) died at vllm startup on libcudart.so.13, fixed with `.venv-serve` (FarmShare section).
+  - Queued Nov 9 at 2 h each: 12 evals (6 runs x 2 epochs, jobs 1967426-1967437), Qwen base thinking off on v1 (1967438) and on mortgage (1967439).
+  - Fallback if the queue does not clear by Nov 11: RunPod A100 at $1.19/h.
 
 ## 8. Next
 
-- Nov 9-16: 6 training runs (2 conditions x 3 seeds), about 2 hours each on an L40S, then evaluation on the held-out families.
-- Nov 17-23: permit transfer, error analysis, a second simulator family as a robustness check.
+- Once the evals land: Gemini simulator passes on every run, then the primary table (account vs decision SFT vs base) per domain, with seeds.
+- Nov 17-23: permit and mortgage transfer, error analysis of 50 failures, a second simulator family as a robustness check.
+- Then the 2x2 cross-evaluation: train with review or with mortgage in the mix, test on both.
 - Nov 24-30: report and slides. Dec 1-4: rehearse, freeze the repo.
 - Relabel round (CREDIT-style) only if account SFT is below the accuracy ceiling.
 
@@ -384,6 +393,7 @@ All on Qwen3.5-9B with 3 training seeds and the same held-out items. Retention o
 | Counterfactual pair accuracy | base and flip decisions both match gold, a flip must reach the gold target label |
 | Invariance pair accuracy | both decisions correct and unchanged when the oracle says unchanged |
 | Explanation validity | cited facts, rules and defaults form a valid justification under the engine, minimality and distractor citation separately |
+| Account consistency (`acct_consistent`) | the engine's decision on the case with the model's cited values and assumptions substituted equals its stated decision. Unscored when a cited value is off its fact's values or a derived fact is cited wrong |
 | S, self-prediction validity | predicted label equals the fresh decision on the edited case |
 | G | S minus P(oracle label on the edited case equals the fresh decision), an oracle-copying predictor scores 0 |
 | dSim, primary | simulator accuracy with the own account minus with another case's account under the same policy, gross gain over decision-and-edit only beside it |
