@@ -1,5 +1,5 @@
 """Compares two simulators (e.g. Gemini in runs/ and Opus in runs/sim-opus/) on the same frozen runs: item-level
-agreement per pass, and simulator accuracy split by whether the model's own post-edit decision is correct, which is
+agreement per pass (an unreadable prediction never agrees), and simulator accuracy split by whether the model's own post-edit decision is correct, which is
 where a simulator that just solves the edited case stops tracking the model.
 Usage: python3 compare_sims.py --data data/v1.jsonl --bank data/v1.bank.jsonl --sims runs runs/sim-opus
     --labels gemini opus --runs account-e2-s0 account-e2-s1 ...
@@ -45,14 +45,18 @@ def main():
         _, maj = votes(load(f"{a.sims[0]}/{run}.jsonl"))
         fresh = {b["bank_id"]: maj.get(b["edited_id"]) for b in bank}
         P = {(lb, k): preds(f"{d}/{run}.{k}.jsonl") for d, lb in zip(a.sims, a.labels) for k in PASSES}
+        # like evaluate.py, every pass and simulator is scored on the items all of them share, so the shuffled pass
+        # (which drops cases without a partner) does not compare a different item set
+        shared = set.intersection(*(set(d) for d in P.values()))
         for k, ps in PASSES.items():
             pa, pb = P[(a.labels[0], k)], P[(a.labels[1], k)]
-            for i in sorted(set(pa) & set(pb)):
+            for i in sorted(shared):
                 v, c = agree[(cond, ps)]
-                v.append(float(pa[i] == pb[i]))
+                v.append(float(pa[i] is not None and pa[i] == pb[i]))
                 c.append(fam[i])
             for lb in a.labels:
-                for i, p in P[(lb, k)].items():
+                for i in sorted(shared):
+                    p = P[(lb, k)][i]
                     if fresh.get(i) is None:
                         continue
                     sub = "post-edit correct" if fresh[i] == orc[i] else "post-edit wrong"
