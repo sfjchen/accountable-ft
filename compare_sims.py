@@ -1,6 +1,6 @@
 """Compares two simulators (e.g. Gemini in runs/ and Opus in runs/sim-opus/) on the same frozen runs: item-level
-agreement per pass (an unreadable prediction never agrees), and simulator accuracy split by whether the model's own post-edit decision is correct, which is
-where a simulator that just solves the edited case stops tracking the model.
+agreement per pass (an unreadable prediction never agrees), and simulator accuracy split by whether the model's own
+post-edit decision is correct, which is where a simulator that predicts the correct label stops tracking the model.
 Usage: python3 compare_sims.py --data data/v1.jsonl --bank data/v1.bank.jsonl --sims runs runs/sim-opus
     --labels gemini opus --runs account-e2-s0 account-e2-s1 ...
 """
