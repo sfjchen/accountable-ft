@@ -167,7 +167,7 @@ Smallest change that would reverse this decision: total requested amount (dollar
 
 Correct: approve, R2 and R5 waived, every other rule passes. Minimum sufficient facts: pi_years_since_phd, career_break, institution_type, requested_amount, start_day, end_day, letter_of_support, open_data_plan, human_subjects. No defaults. Minimal counterfactual: pi_years_since_phd to 11 (target deny).
 
-## 7. Where we are (Nov 10)
+## 7. Where we are (Nov 11)
 
 ### Round 1 results
 
@@ -200,9 +200,37 @@ Correct: approve, R2 and R5 waived, every other rule passes. Minimum sufficient 
 - Both SFT conditions fix the base model's 2 failure modes. Accuracy goes from 0.63 to 0.97, and "cannot determine" from 0 to 0.95. So accuracy comes from the shared training data, and the explanation loss adds predictiveness on top.
 - On trained models the simulator now beats always-"unchanged" by about 0.28. The base model's 0.79 is below its own always-"unchanged" 0.86, because it rarely changes its answer after an edit.
 - Mortgage transfer is weaker. Explanations stay valid 37% of the time, against 76% in domain. The simulatability gain is +0.038 with a CI that crosses 0, and seed 2 is near 0. The prompted base scores 0.105 here, but its simulator accuracy is below always-"unchanged", so that gain is on few changed answers.
-- Caveat on the control: the decision-only model still prints the explanation lines, as unlearned placeholders like `<fact>=university (R4)`. So part of the paired gap is a well-formed explanation versus a malformed one. The 2nd simulator family and a prompted-explanation control (the base model's own explanation on the SFT model's decision) will separate the two.
+- Caveat on the control: the decision-only model still prints the explanation lines, as unlearned placeholders like `<fact>=university (R4)`. So part of the paired gap is a well-formed explanation versus a malformed one. The Opus rescoring below points the same way: shuffling a placeholder costs little. A prompted-explanation control (the base model's own explanation on the SFT model's decision) will separate the two.
 - Epoch: 2, the end of the fixed 2-epoch schedule. The planned rule picks it on dev decision accuracy of the control, but no dev eval was run, so epoch 2 was fixed when the jobs were submitted, before any explanation metric was read. The epoch 1 runs on v1 are kept for an exploratory table.
 - Power (`--power`, log `r1-v1-power-1332e96-20261110-1459`): the minimum detectable simulatability-gain difference at 80% power is 5 to 8 points per seed pair, so the pooled +8.1 is in range and per-seed differences are borderline.
+
+#### 2nd simulator: Claude Opus 5.5
+
+- Same frozen answers and edits, rescored by Claude Opus 5.5 (`infer.py --backend claude-cli`, Claude Code headless on the subscription). Low effort, short thinking left on, and no temperature control, so a rerun can differ slightly. 14 runs, 22,211 scored rows, about 12,000 fresh calls (the rest cache hits), 0 errors. Outputs in `runs/sim-opus/`, cache `runs/cache-opus.jsonl`.
+- Logs `r1-v1-opus-eval-7505100-20261111-1116` and `r1-mortgage-opus-eval-7505100-20261111-1117`, tables `runs/r1-v1-opus.eval.json` and `runs/r1-mortgage-opus.eval.json`. Means over 3 seeds, paired as above.
+
+| | v1 explanation | v1 decision-only | v1 base | v1 paired | mortgage paired |
+|---|---|---|---|---|---|
+| simulator with own explanation | 0.908 | 0.883 | 0.790 | 0.025 [0.004, 0.045] | 0.060 [0.024, 0.097] |
+| simulator with a shuffled explanation | 0.701 | 0.837 | 0.782 | -0.136 [-0.167, -0.106] | -0.030 [-0.076, 0.007] |
+| simulator with no explanation | 0.890 | 0.878 | 0.563 | | |
+| simulatability gain (own - shuffled) | 0.207 | 0.046 | 0.008 | 0.161 [0.129, 0.195] | 0.091 [0.048, 0.137] |
+| own - no explanation | 0.017 | 0.005 | 0.227 | 0.012 [-0.005, 0.030] | 0.043 [0.014, 0.074] |
+
+- The main comparison holds and is larger. Paired explanation minus decision-only is +0.161 on v1 (Gemini +0.081) and +0.091 on mortgage (Gemini +0.038, CI crossing 0). All 6 seed pairs have CIs above 0. On v1 the paired gain sits on edits that change the answer (0.27 [0.22, 0.33]), not on edits that keep it (0.02 [-0.02, 0.05]).
+- But Opus mostly predicts the correct label from the policy, the frozen decision and the edit. The simulator never sees the case, and with no explanation Opus still tracks the trained models at 0.890 on v1, since they are 97% right. So for explanation SFT a true explanation adds only 0.017 over none, and the gain comes from a shuffled explanation pulling Opus off (0.701). Decision-only placeholders carry nothing, so shuffling them costs little (0.837).
+- So with a strong simulator the gain reads as "the explanation is specific to this case", not "the explanation tells you something the policy and edit do not". Gemini (7580c92, log `r1-v1-eval-7580c92-20261110-1454`), which cannot predict the label alone (0.460 with no explanation), shows both: own minus none is 0.235 for explanation SFT.
+- This also changes the Nov 5 assumption in the decision log that the explanation is the simulator's only route to the answer. It holds for Gemini, not for Opus.
+- Where the model is wrong after the edit, a simulator that predicts the correct label fails, so only the explanation can carry the error (`compare_sims.py`, all passes on the same items, logs `r1-v1-simcompare-7505100-20261111-1116` and `r1-mortgage-simcompare-7505100-20261111-1116`). Share of these items where Opus predicts the model's actual answer:
+
+| post-edit wrong items | n | own explanation | no explanation | shuffled explanation |
+|---|---|---|---|---|
+| v1 explanation SFT | 79 | 0.367 | 0.342 | 0.494 |
+| v1 prompted base | 337 | 0.656 | 0.300 | 0.703 |
+| mortgage explanation SFT | 194 | 0.443 | 0.361 | 0.639 |
+
+- Own explanations do not reveal the model's errors. On these items a shuffled explanation tracks the model at least as well as its own, so what helps is any explanation that pulls Opus off the correct label. Gemini shows the same on v1 explanation SFT: 0.392 own, 0.481 shuffled.
+- The 2 simulators agree on 0.704 of items for explanation SFT and 0.616 for decision-only on v1 (own explanation), so they differ item by item, and Opus scores higher on every condition.
 
 ### Before training
 
@@ -239,7 +267,7 @@ Correct: approve, R2 and R5 waived, every other rule passes. Minimum sufficient 
 
 - Round 2 and mortgage-only evals: the same 2 tables when their notify email arrives, paired with round 1 on the same items.
 - The prompted-explanation control above, and the epoch 1 table.
-- Nov 17-23: permit and mortgage transfer, error analysis of 50 failures, a second simulator family as a robustness check.
+- Nov 17-23: permit and mortgage transfer, error analysis of 50 failures. The 2nd simulator (Opus) is done for round 1 and runs on round 2 with the same setup.
 - Round 2 (Nov 9 decision log): train on grant, trial and mortgage with review held out, both conditions x 3 seeds (`MIX=r2`), and mortgage only, both conditions at seed 0 (`MIX=mo`). Every model is then scored on the v1 unseen slice and on the mortgage unseen families (`DATA=data/mortgage-split.jsonl`), so each round 1 vs round 2 comparison is paired on the same items.
 - Nov 24-30: report and slides. Dec 1-4: rehearse, freeze the repo.
 - Relabel round (CREDIT-style) only if explanation SFT is below the accuracy ceiling. Round 1 is at 0.976, so it is not triggered.
@@ -258,11 +286,12 @@ Correct: approve, R2 and R5 waived, every other rule passes. Minimum sufficient 
 - `engine.py`: rule engine. Decide, minimal sufficient sets (exact, over possible completions), minimal flips up to radius 4, reveals, invariant edits, `is_valid_justification`.
 - `gen.py`: generator. Template families, policies, base cases and flip, invariant, missing and reveal variants in 3 views (table, prose, prose_derive), optional Gemini prose. `--report` writes the stats and blind sample, `--audit` the "cannot determine" audit. `render_case()` re-renders edited cases.
 - `domains/*.yaml`: the 4 domains (facts, derived facts, rule templates, defaults, prose vocabulary), plus `mortgage.yaml`, the real-rules domain outside `--domains all`, with its sources in `mortgage.md`.
-- `infer.py`: one `Runner` over OpenAI-compatible endpoints (vLLM serve, OpenRouter), Gemini and offline vLLM, with fixed decoding, a response cache, `--rep` for the repeat control, and the `bank` (edit set), predict and simulate modes.
+- `infer.py`: one `Runner` over OpenAI-compatible endpoints (vLLM serve, OpenRouter), Gemini, offline vLLM and Claude Code headless (`claude-cli`, on a signed-in subscription), with fixed decoding, a response cache, `--rep` for the repeat control, and the `bank` (edit set), predict and simulate modes.
 - `evaluate.py`: all metrics with cluster bootstrap CIs, slices (primary: prose, unseen families, training vocabularies), paired comparisons, seed aggregates, coverage, checkpoint selection, `--power`.
+- `compare_sims.py`: 2 simulators on the same runs, item agreement and accuracy split by whether the model's post-edit decision is correct.
 - `train.py`: LoRA SFT with the matched loss, and `train.py export` for the SFT rows.
 - `farmshare.sh`: setup and Slurm jobs on FarmShare: train (chunked or whole), eval, prompted base (`base`).
-- `runs/`: every run with its companions and eval tables, `data/`: datasets, banks, blind samples and stats.
+- `runs/`: every run with its companions and eval tables (`runs/sim-opus/`: the same runs linked in, with Opus simulator passes), `data/`: datasets, banks, blind samples and stats.
 - `tests/test_all.py`, `tests/mini.jsonl`: engine against brute force and the acceptance cases, the generator, the parser and every metric on a 12-record hand-made fixture, bank, prompts, cache key, shuffled control, export, masking and loss weights. Run `python -m pytest -q`.
 
 ## Data
@@ -459,7 +488,7 @@ A perfectly accurate model leaves no room for G, a limit of the diagnostic, not 
 - Gemini 3.5 Flash-Lite (`gemini-3.5-flash-lite`, Vertex, thinking off, temperature 0) does 3 jobs: writes the case prose, is the external reference model, and is the frozen simulator behind simulatability gain.
   - Why: it was the cheapest Flash model on Vertex (v1 prose about $9, a full pilot about $1.50), billed to the education credits. Thinking off at temperature 0 gives fixed decoding, so every run is scored by the same simulator.
   - It is a different model family from Qwen, so the simulator cannot share the trained model's quirks, and it never sees the case text.
-  - Picked as gen's default on cost, not tuned. A second simulator family is the planned robustness check (Yu et al.).
+  - Picked as gen's default on cost, not tuned. Claude Opus 5.5 is the 2nd simulator family (Yu et al.), run through `--backend claude-cli`.
 
 - Qwen3.5-9B (Apache-2.0, Feb 2026, bf16 LoRA about 22 GB, Unsloth advises against 4-bit for this family, thinking off via `enable_thinking: False`). Qwen's card gives mode-specific sampling, and we fix ours from the pilot. Unsloth's "keep 75% reasoning examples" is guidance for preserving thinking mode, and explanation lines are not reasoning traces.
 - Qwen3.8-27B (dense, Aug 2026): deferred. Qwen3-8B and Qwen3.6-27B dropped as stale, not disqualified.
