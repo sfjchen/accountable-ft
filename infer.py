@@ -10,6 +10,8 @@ import json
 import os
 import random
 import re
+import shutil
+import tempfile
 import time
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -269,6 +271,11 @@ class Runner:
             self.cli = AsyncOpenAI(base_url=base_url, api_key=key, max_retries=0, timeout=3600)
         elif backend == "gemini":
             self.cli = gen.gemini_client(vertex)
+        elif backend == "claude-cli":
+            # Claude Code headless on the signed-in subscription: no API key, no base URL, none of the env of a
+            # parent Claude Code session (its host-auth vars make the child fail to sign in)
+            self.cli = {k: v for k, v in os.environ.items() if not k.startswith(("CLAUDE", "ANTHROPIC"))}
+            self.exe = shutil.which("claude") or "claude"
         elif backend == "vllm":
             from vllm import LLM
             self.cli = LLM(model=model, seed=dec["seed"], **self.extra)
@@ -319,6 +326,33 @@ class Runner:
                     "out_tokens": r.usage.completion_tokens if r.usage else None,
                     "think_tokens": None, "finish": r.choices[0].finish_reason, "response_id": r.id,
                     "model_version": r.model, "max_tokens_sent": mt}
+        if self.backend == "claude-cli":
+            # the CLI takes no sampling params (current Claude models reject them): decoding is the default at low
+            # effort, so temperature, top_p, top_k, seed and max_tokens are recorded but not sent
+            pr = await asyncio.create_subprocess_exec(self.exe, "-p", "--model", self.model, "--system-prompt", sys_,
+                    "--tools", "", "--effort", "low", "--output-format", "json", "--no-session-persistence",
+                    "--strict-mcp-config", "--setting-sources", "", "--disable-slash-commands",
+                    stdin=asyncio.subprocess.PIPE, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE,
+                    env=self.cli, cwd=tempfile.gettempdir())
+            try:
+                # the CLI retries a rate limit inside itself for up to ~10 min; a cap hands the retry back to one()
+                out, err = await asyncio.wait_for(pr.communicate(prm.encode()), 240)
+            except asyncio.TimeoutError:
+                pr.kill()
+                raise RuntimeError("claude: no answer in 240 s (rate limited)")
+            try:
+                r = json.loads(out)
+            except json.JSONDecodeError:
+                raise RuntimeError(f"claude exit {pr.returncode}: {(err or out).decode()[:300]}")
+            if r.get("is_error"):
+                raise RuntimeError(f"claude: {r.get('result')}")
+            u, mu = r.get("usage") or {}, r.get("modelUsage") or {}
+            return {"output": r.get("result") or "", "reasoning": None,
+                    "in_tokens": sum(u.get(k) or 0 for k in ("input_tokens", "cache_creation_input_tokens",
+                        "cache_read_input_tokens")), "out_tokens": u.get("output_tokens"),
+                    "think_tokens": (u.get("output_tokens_details") or {}).get("thinking_tokens"),
+                    "finish": r.get("stop_reason"), "response_id": r.get("session_id"),
+                    "model_version": ",".join(mu) or self.model}
         from google.genai import types
         cfg = types.GenerateContentConfig(system_instruction=sys_, temperature=d["temperature"], top_p=d["top_p"],
                 top_k=d["top_k"] or None, max_output_tokens=d["max_tokens"], seed=d["seed"],
@@ -438,7 +472,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data", required=True)
     ap.add_argument("--mode", choices=["answer", "bank", "predict", "simulate"], default="answer")
-    ap.add_argument("--backend", choices=["openai", "gemini", "vllm"])
+    ap.add_argument("--backend", choices=["openai", "gemini", "vllm", "claude-cli"])
     ap.add_argument("--model")
     ap.add_argument("--out")
     ap.add_argument("--bank", help="answer: also answer the bank's edited cases; predict, simulate: the bank")
