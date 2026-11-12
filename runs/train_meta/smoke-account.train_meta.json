@@ -1,0 +1,143 @@
+{
+  "args": {
+    "condition": "account",
+    "data": "/scratch/users/jchen04/accountable-ft/outputs/smoke-account/train.jsonl",
+    "eval_data": "/scratch/users/jchen04/accountable-ft/outputs/smoke-account/dev.jsonl",
+    "out": "/scratch/users/jchen04/accountable-ft/outputs/smoke-account",
+    "model": "unsloth/Qwen3.5-9B",
+    "seed": 0,
+    "acc_weight": 1.0,
+    "rank": 16,
+    "alpha": 32,
+    "dropout": 0.0,
+    "lr": 0.0002,
+    "epochs": 1.0,
+    "max_len": 4096,
+    "batch": 4,
+    "grad_accum": 1,
+    "warmup": 0.03,
+    "weight_decay": 0.0,
+    "scheduler": "cosine",
+    "optim": "adamw_torch"
+  },
+  "lam": 1.0,
+  "loss": "per example mean_dec + lam * mean_acc, mean over the batch",
+  "commit": "ed3faf8d3ca06005c7c79c30221daa50577671f9",
+  "dirty": true,
+  "argv": [
+    "train.py",
+    "--condition",
+    "account",
+    "--data",
+    "/scratch/users/jchen04/accountable-ft/outputs/smoke-account/train.jsonl",
+    "--eval-data",
+    "/scratch/users/jchen04/accountable-ft/outputs/smoke-account/dev.jsonl",
+    "--seed",
+    "0",
+    "--model",
+    "unsloth/Qwen3.5-9B",
+    "--out",
+    "/scratch/users/jchen04/accountable-ft/outputs/smoke-account",
+    "--epochs",
+    "1",
+    "--grad-accum",
+    "1"
+  ],
+  "pins": {
+    "unsloth": "2026.11.3",
+    "trl": "1.15.0",
+    "transformers": "5.17.0",
+    "peft": "0.21.2",
+    "torch": "2.14.0+cu126",
+    "vllm": "0.33.0"
+  },
+  "versions": {
+    "unsloth": "2026.11.3",
+    "unsloth_zoo": "2026.11.3",
+    "torch": "2.14.0+cu126",
+    "transformers": "5.17.0",
+    "trl": "1.15.0",
+    "peft": "0.21.2",
+    "vllm": "0.33.0",
+    "datasets": "4.8.5",
+    "accelerate": "1.15.0",
+    "bitsandbytes": "0.50.2"
+  },
+  "pins_match": true,
+  "python": "3.12.3",
+  "lora_targets": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+  ],
+  "gpu": "NVIDIA L40S",
+  "bf16": true,
+  "enable_thinking": false,
+  "check_rows": 16,
+  "train_tokens": {
+    "rows": 64,
+    "tokens": 71826,
+    "answer": 5693,
+    "account": 5366,
+    "supervised": 5693,
+    "truncated": 0,
+    "w_dec": 64.0,
+    "w_acc": 64.0,
+    "masked_frac": 0.0,
+    "w_dec_per_row": 1.0,
+    "w_acc_per_row": 1.0
+  },
+  "eval_tokens": {
+    "rows": 16,
+    "tokens": 18042,
+    "answer": 1269,
+    "account": 1188,
+    "supervised": 1269,
+    "truncated": 0,
+    "w_dec": 16.0,
+    "w_acc": 16.0,
+    "masked_frac": 0.0,
+    "w_dec_per_row": 1.0,
+    "w_acc_per_row": 1.0
+  },
+  "trainable_params": 29097984,
+  "train_metrics": {
+    "train_runtime": 154.6691,
+    "train_samples_per_second": 0.414,
+    "train_steps_per_second": 0.103,
+    "total_flos": 3848422022035200.0,
+    "train_loss": 0.5264161676168442,
+    "epoch": 1.0
+  },
+  "log_history": [
+    {
+      "loss": 0.5797462940216065,
+      "grad_norm": 1.1704049110412598,
+      "learning_rate": 8.954715367323468e-05,
+      "epoch": 0.625,
+      "step": 10
+    },
+    {
+      "eval_loss": 0.3422079384326935,
+      "eval_runtime": 16.2479,
+      "eval_samples_per_second": 0.985,
+      "eval_steps_per_second": 0.246,
+      "epoch": 1.0,
+      "step": 16
+    },
+    {
+      "train_runtime": 154.6691,
+      "train_samples_per_second": 0.414,
+      "train_steps_per_second": 0.103,
+      "total_flos": 3848422022035200.0,
+      "train_loss": 0.5264161676168442,
+      "epoch": 1.0,
+      "step": 16
+    }
+  ],
+  "peak_mem_gb": 27.72
+}
