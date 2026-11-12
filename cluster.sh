@@ -24,6 +24,9 @@ if [[ $CLUSTER == sc ]]; then
   PART=(--partition=sc-loprio --account=nlp) CPUPART=(--partition=sc-loprio --account=nlp)
   # any GPU with 48 GB or more that the cu126 training stack supports (not Blackwell)
   GPU=(--gres=gpu:1 "--constraint=48G|80G|141G")
+  # node /tmp can be full (viscam5, Nov 12), which kills triton's gcc build inside vllm startup
+  export TMPDIR=$SCRATCH/tmp
+  mkdir -p "$TMPDIR"
 else
   SCRATCH=${SCRATCH:-/scratch/users/$USER} META_HOME=$HOME/accountable-ft-meta BIN=$HOME/.local/bin
   PART=(--partition=gpu) CPUPART=(--partition=normal) GPU=(--gpus=1)
