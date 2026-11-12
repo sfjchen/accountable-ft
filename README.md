@@ -297,7 +297,7 @@ Correct: approve, R2 and R5 waived, every other rule passes. Minimum sufficient 
   - Mixes at 3,600 train rows (400 dev), every domain an equal share: `rm-inv` grant + trial, `rm-real` mortgage + SNAP, `rm-mix` all 4. Both conditions x 3 seeds = 18 runs, epoch 2.
   - Tests: unseen families of the 4 training domains, review (invented, held out from every mix) and IRS dependent (real, held out from every mix).
   - Main score: paired simulatability gain (Gemini) on IRS dependent. Secondary: the same on review, explanation validity on both, Opus as the 2nd simulator.
-  - 3 contrasts per test (mix - real, mix - inv, real - inv) with `--contrast rm-mix rm-real rm-inv`, Holm-corrected.
+  - 3 contrasts per test (mix - real, mix - inv, real - inv), Holm-corrected: `--contrast rm-mix rm-real rm-inv` on v1 and `--contrast <file>-rm-mix <file>-rm-real <file>-rm-inv` on the other files (run names carry the data file prefix, e.g. `dependent-rm-mix-account-e2-s0`).
   - Prediction: mix >= real > inv on IRS dependent, inv >= mix > real on review.
 - The prompted-explanation control (base model's explanation on the SFT model's decision), and the epoch 1 table.
 - Simulatability gain on hard edits only, the ones the simulator gets wrong with no explanation.

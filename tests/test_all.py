@@ -301,6 +301,7 @@ def test_snap_and_dependent_domains():
                 if mf["edits"]:
                     assert E.decide(p, {**f, **mf["edits"]})["decision"] == mf["target"]
                     assert "claim_type" not in mf["edits"]
+                assert "claim_type" not in (E.invariant_edit(p, f, rng) or {})
     dom = gen.load_domain("snap")
     assert {"earned_income", "unearned_income", "household_size", "shelter_costs", "elderly_or_disabled"} == \
         gen.template_refs(dom, dom["derived"][0]) - {"categorical"}
@@ -605,7 +606,7 @@ def test_holm_and_boot_p():
     assert evaluate.holm({"a": 0.01, "b": 0.04, "c": 0.03}) == {"a": 0.03, "c": 0.06, "b": 0.06}
     assert evaluate.holm({"a": 0.6, "b": 0.9}) == {"a": 1.0, "b": 1.0}
     clus = [i // 3 for i in range(60)]
-    assert evaluate.boot_p([1.0] * 60, clus) == 0.0 and evaluate.boot_p([0.0] * 60, clus) == 1.0
+    assert evaluate.boot_p([1.0] * 60, clus) == 1 / 1001 and evaluate.boot_p([0.0] * 60, clus) == 1.0
 
 
 def test_select_recs():

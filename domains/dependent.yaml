@@ -286,7 +286,7 @@ derived:
   - key: qr_income
     cond: "claim_type != 'qr' or gross_income < {t}"
     text: "A qualifying relative's gross income, which counts wages, taxable interest and rent received before expenses, must be less than {t:money}"
-    params: {t: [5050, 5200, 5300]}
+    params: {t: [5300]}
   - key: qc_younger
     cond: "claim_type != 'qc' or disabled or age_gap >= 1"
     text: "A qualifying child must be younger than the taxpayer, unless permanently and totally disabled"

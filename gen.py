@@ -920,9 +920,11 @@ def main():
                 if inv:
                     items.append((bid + "-inv", "invariant", {**f, **inv}, inv, None, bid))
                 used = {n for s in g["sufficient_sets"] for n in s}
-                nec = g["necessary_facts"] or sorted(used, key=pol.order.index)
+                # fixed facts (dependent: claim_type) are never removed, as they are never flipped or replaced
+                fx = set(getattr(pol, "fixed", ()))
+                nec = [x for x in g["necessary_facts"] or sorted(used, key=pol.order.index) if x not in fx]
                 pools = [[x for x in nec if x not in pol.defaults], [x for x in nec if x in pol.defaults],
-                         [x for x in pol.order if x not in used]]
+                         [x for x in pol.order if x not in used and x not in fx]]
                 u = crng.random()
                 first = 0 if u < P_CD else 1 if u < P_CD + P_DEFAULT else 2
                 pool = next((pl for pl in [pools[first]] + pools if pl), [])

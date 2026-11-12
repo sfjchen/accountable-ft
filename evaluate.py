@@ -452,12 +452,15 @@ def boot(vals, clus, B=1000, seed=0):
 
 
 def boot_p(vals, clus, B=1000, seed=0):
-    """Returns the 2-sided cluster-bootstrap p-value of mean 0: twice the smaller share of resampled means on 1 side."""
+    """
+    Returns the 2-sided cluster-bootstrap p-value of mean 0: twice the smaller share of resampled means on 1 side,
+    floored at 1 / (B + 1), since B resamples cannot show a p below that.
+    """
     v, clus = np.asarray(vals, float), np.asarray(clus)
     up, inv = np.unique(clus, return_inverse=True)
     S, C = np.bincount(inv, v), np.bincount(inv)
     m = S[idx := np.random.default_rng(seed).integers(0, len(up), (B, len(up)))].sum(1) / C[idx].sum(1)
-    return float(min(1.0, 2 * min((m <= 0).mean(), (m >= 0).mean())))
+    return float(min(1.0, max(1 / (B + 1), 2 * min((m <= 0).mean(), (m >= 0).mean()))))
 
 
 def holm(ps):

@@ -457,7 +457,8 @@ def invariant_edit(pol, facts, rng, sets=None):
     for s in sets:
         used.update(s)
     live = set(pol.referenced())
-    cand = [n for n in pol.order if n in facts and facts[n] is not None and n not in used]
+    fx = set(getattr(pol, "fixed", ()))
+    cand = [n for n in pol.order if n in facts and facts[n] is not None and n not in used and n not in fx]
     cand.sort(key=lambda n: (n not in live, rng.random()))
     for n in cand:
         vals = [v for v in pol.dom[n] if v != facts[n]]
