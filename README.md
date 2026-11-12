@@ -372,6 +372,7 @@ Used from Nov 12 for the row-matched grid, through Cyrus's account. `cluster.sh`
 - Setup runs as a CPU job (8 CPUs, 32 GB, 3 h): `MAIL=<address> bash cluster.sh setup`. It also exports the 3 grid mixes.
 - Grid: `MAIL=<address> bash cluster.sh grid`, array 0-17 with `%2`. Each task trains `outputs/rm-<mix>-<cond>-s<seed>`, deletes the merged model, then answers v1, mortgage-split, SNAP and dependent (answer pass only). A requeued task skips a finished adapter and resumes from its last checkpoint.
 - Simulator passes and scoring run on the Mac after `rsync` through the data transfer node.
+- Queued Nov 12 at 00227d7: setup 18470254, smoke 18470266 (after setup), grid array 18470267 (after smoke), 1 mail when the grid ends (18470268).
 
 ## Adding a domain
 
