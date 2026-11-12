@@ -487,6 +487,8 @@ Used from Nov 12 for the row-matched grid, through Cyrus's account. `cluster.sh`
   - Task 1 (rm-inv-account-s1, RTX A6000) finished in 2 h 11 min: training, then answers on v1 (1,944 rows, 453 s), mortgage-split (687, 198 s), SNAP (915, 268 s) and dependent (747, 205 s).
   - Task 0 failed at vllm startup on viscam5: node /tmp was full ("No space left on device"), so triton's gcc build died. Task 2 sat on the same node. Fix at 4794e06: `TMPDIR` on scratch for every sc job.
   - Slurm runs the script as copied at submit, so the pending tasks could not pick up the fix. Array 18475001 was cancelled and resubmitted as 18477875 (tasks 0 and 2-17, `%2`), mail 18477878. Task 0 skips its finished adapter, task 2 resumes from its epoch-1 checkpoint.
+  - Nov 12, 13:00: split the grid for speed. sc keeps tasks 0 and 2-9 (array 18478220, resubmitted so it picks up the merge fix, throttled to 1 until task 0 ends by job 18478224, so the account never runs more than 2). FarmShare runs tasks 10-17 as `train --chunks` (55-min jobs that backfill) plus `eval ... 2` with `REUSE_MERGED=1`, jobs 1977618-1977641, mail 1977642. Same torch 2.14, unsloth 2026.11.3, trl 1.15.0, transformers 5.17.0, vllm 0.33.0 on both, and all 12 data and edit-set files sha256-identical.
+  - Merge fix (732c4d7): each grid run merged twice, about 9 min in train.py and again in eval. Eval now serves train.py's merge of the final weights (`REUSE_MERGED=1`), and train.py writes it as `merged.part` and renames it when complete, so a killed job never leaves a partial model.
 
 ## Pipeline commands
 

@@ -20,7 +20,10 @@ Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 9
 ## Status (Nov 12)
 
 - Row-matched grid on the sc cluster: 3 mixes (`rm-inv` grant + trial, `rm-real` mortgage + SNAP, `rm-mix` all 4) at 3,600 train rows x 2 conditions x 3 seeds = 18 runs. Tests: unseen families of the 4 training domains, review and IRS dependent (both held out from every mix). Pre-registration in DECISIONS.md.
-- Task 1 done (2 h 11 min). The rest run as array 18477875 (tasks 0 and 2-17, 2 at a time), 1 mail at the end (job 18477878).
+- Split over 2 clusters to finish sooner. Task 1 done on sc (2 h 11 min).
+  - sc: task 0 (18477875_0, answers only) and tasks 2-9 (array 18478220, 2 at a time with task 0 counted), mail 18478223.
+  - FarmShare: tasks 10-17 (`rm-real-decision-s1,s2` and all 6 `rm-mix`) as 1-epoch chunks then 1 eval each, jobs 1977618-1977641, mail 1977642. Submit log `runs/slurm/submit-grid-fs.txt` there.
+  - Both clusters run the same package versions and byte-identical data (sha256 checked Nov 12).
 - 2 failures fixed on the way: the smoke job outran its 15-min limit during the weight merge (now 40 min), and a full `/tmp` on node viscam5 killed vllm startup (`TMPDIR` now on scratch).
 - Then: simulator passes and scoring on the Mac, contrasts per test file.
 
