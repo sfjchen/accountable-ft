@@ -331,7 +331,7 @@ PY
       printf '\n== %s\n' "$c"
       eval "$c" 2>&1 || echo "(exit $?)"
     done ;;
-  smoke)  # 40 min (loading and merging take about 10 min on sc's network disk): load, train 1 epoch (16 steps) on 64 train and 16 dev rows, save, merge
+  smoke)  # 40 min (sc's network disk makes load and merge slow): load, train 1 epoch (16 steps) on 64 train and 16 dev rows, save, merge
     cond=${1:-account} out=$REPO/outputs/smoke-$cond
     mkdir -p "$out"
     head -n 64 "$REPO/data/v1.sft.train.jsonl" > "$out/train.jsonl"
