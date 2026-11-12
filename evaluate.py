@@ -737,7 +737,9 @@ def main():
         per = {}
         for pre in a.contrast or ():
             # "<pre>-<cond>-e<k> - ..." only, so prefix "mortgage-split" (round 1) leaves out "mortgage-split-r2-..."
-            hit = [ms[m] for n, ms in pool.items() if re.match(rf"{re.escape(pre)}-[a-z]+-e\d+ - ", n) and m in ms]
+            # and the empty prefix (round 1 on v1, "account-e2 - ...") leaves out "r2-..." and "mo-..."
+            lead = re.escape(pre) + "-" if pre else ""
+            hit = [ms[m] for n, ms in pool.items() if re.match(rf"{lead}[a-z]+-e\d+ - ", n) and m in ms]
             if len(hit) != 1:
                 sys.exit(f"--contrast {pre}: expected 1 seed-pooled paired group with {m}, found {len(hit)}")
             by = defaultdict(list)
@@ -748,7 +750,7 @@ def main():
             for y in (a.contrast or ())[i + 1:]:
                 pu = [(per[x][k][0] - per[y][k][0],) + per[x][k][1:] for k in sorted(set(per[x]) & set(per[y]))]
                 for gk, sel in groups(pu).items():
-                    contrasts[gk][m][f"{x} - {y}"] = boot([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed) | \
+                    contrasts[gk][m][f"{x or 'round1'} - {y or 'round1'}"] = boot([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed) | \
                         {"p": boot_p([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed)}
     for gk in contrasts:
         for m, cs in contrasts[gk].items():
