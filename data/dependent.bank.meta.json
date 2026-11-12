@@ -3,35 +3,35 @@
  "slice": "unseen_family_train_vocab",
  "view": "prose",
  "seed": 0,
- "items": 260,
+ "items": 258,
  "kinds": {
   "add": 39,
-  "invariant_replace": 39,
+  "invariant_replace": 38,
   "noncrossing_replace": 39,
-  "pivotal_replace": 104,
+  "pivotal_replace": 103,
   "remove": 39
  },
  "groups": {
-  "pivotal_replace": 0.4,
-  "invariant": 0.3,
-  "remove": 0.15,
-  "add": 0.15
+  "pivotal_replace": 0.3992248062015504,
+  "invariant": 0.29844961240310075,
+  "remove": 0.1511627906976744,
+  "add": 0.1511627906976744
  },
  "sources": {
-  "engine_alt_disjoint": 69,
-  "engine_alt_overlap": 35,
+  "engine_alt_disjoint": 67,
+  "engine_alt_overlap": 36,
   "engine_noncrossing": 39,
-  "variant_record": 117
+  "variant_record": 116
  },
  "candidates": {
-  "prose/add": 140,
-  "prose/invariant_replace": 140,
-  "prose/noncrossing_replace": 78,
-  "prose/pivotal_replace": 104,
-  "prose/remove": 140
+  "prose/add": 138,
+  "prose/invariant_replace": 138,
+  "prose/noncrossing_replace": 77,
+  "prose/pivotal_replace": 103,
+  "prose/remove": 138
  },
  "drop_reasons": {
-  "no certified flip within radius 3 other than gold.min_flip": 36
+  "no certified flip within radius 3 other than gold.min_flip": 35
  },
  "drops": [
   {
@@ -96,10 +96,6 @@
   },
   {
    "case_id": "dependent-p043-c02:prose",
-   "reason": "no certified flip within radius 3 other than gold.min_flip"
-  },
-  {
-   "case_id": "dependent-p062-c03:prose",
    "reason": "no certified flip within radius 3 other than gold.min_flip"
   },
   {
