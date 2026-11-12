@@ -373,7 +373,7 @@ Used from Nov 12 for the row-matched grid, through Cyrus's account. `cluster.sh`
 - Grid: `MAIL=<address> bash cluster.sh grid`, array 0-17 with `%2`. Each task trains `outputs/rm-<mix>-<cond>-s<seed>`, deletes the merged model, then answers v1, mortgage-split, SNAP and dependent (answer pass only). A requeued task skips a finished adapter and resumes from its last checkpoint.
 - Simulator passes and scoring run on the Mac after `rsync` through the data transfer node.
 - Queued Nov 12 at 00227d7: setup 18470254, smoke 18470266 (after setup), grid array 18470267 (after smoke), 1 mail when the grid ends (18470268).
-  - Smoke 18470266 trained fine (eval loss 0.34) but hit its 15-min limit while merging: loading the model and merging each of 4 shards take about 3 and 1 min on sc's network disk. The grid and its mail never ran. Smoke now gets 40 min.
+  - Smoke 18470266 trained fine (eval loss 0.34) but hit its 15-min limit while merging: loading the model and merging each of 4 shards take about 3 and 1 min on sc's network disk. The grid and its mail never ran. Smoke now gets 40 min. Requeued Nov 12 at 83b512c: smoke 18475000, grid array 18475001 (after smoke), mail 18475002.
 
 ## Adding a domain
 
