@@ -11,3 +11,5 @@ data/mortgage-split.jsonl
 data/mortgage.smoke.jsonl
 data/v1.0.jsonl
 data/.gemini_cache/
+data/snap.jsonl
+data/dependent.jsonl
