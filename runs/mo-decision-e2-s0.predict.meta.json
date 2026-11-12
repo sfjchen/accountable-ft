@@ -1,0 +1,38 @@
+{
+ "model": "mo-decision-e2-s0",
+ "backend": "openai",
+ "vertex": null,
+ "mode": "predict",
+ "no_account": false,
+ "shuffle_accounts": false,
+ "shuf_missing": null,
+ "cases": 0,
+ "cache_tag": "mo-decision-e2-s0-8eb155abd87a",
+ "sample_seed": 0,
+ "decoding": {
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "top_k": 0,
+  "max_tokens": 16384,
+  "seed": 0,
+  "thinking": false
+ },
+ "n": 1,
+ "rows": 782,
+ "cached": 0,
+ "errors": 0,
+ "fresh_calls": 782,
+ "wall_s": 50.98,
+ "in_tokens": 606739,
+ "out_tokens": 21335,
+ "think_tokens": 0,
+ "finish": {
+  "stop": 782
+ },
+ "model_versions": [
+  "mo-decision-e2-s0"
+ ],
+ "mean_latency_s": 2.022,
+ "cost_usd_fresh": null,
+ "cost_usd_if_uncached": null
+}
