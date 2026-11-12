@@ -355,7 +355,7 @@ Everything lives in `/scratch/users/$USER/accountable-ft` (purged after 90 idle 
 - Serving: `setup` builds `.venv-serve` with vllm alone, since PyPI vllm 0.33 is built for CUDA 13 and dies on the training venv's cu126 torch (libcudart.so.13). `eval` and `base` serve from it, `VLLM=<binary>` overrides.
 - Setup, idempotent (about 40 GB of wheels and weights in scratch, rerun to update): `git clone https://github.com/sfjchen/accountable-ft /scratch/users/$USER/accountable-ft && cd /scratch/users/$USER/accountable-ft && bash cluster.sh setup`. It ends with the import, `train.PINS` and Collator checks.
 - Probe: `bash cluster.sh probe | tee ~/probe.txt`. Need gpu MaxTime and qos MaxWall of at least 8 h, GPU memory of at least 40 GB. If gpu caps time, add `SB="--partition=normal --qos=long"` to the train command (only if normal shows gpu gres).
-- Smoke (15 min): `bash cluster.sh smoke`, after it ends `CASES=13 bash cluster.sh eval smoke-account 1`. Logs in `runs/slurm/smoke_*.out` and `eval_*.out`.
+- Smoke (40 min): `bash cluster.sh smoke`, after it ends `CASES=13 bash cluster.sh eval smoke-account 1`. Logs in `runs/slurm/smoke_*.out` and `eval_*.out`.
 - The 6-run array (explanation and decision, seeds 0-2, 8 h each): `jid=$(SB=--parsable bash cluster.sh train)`. One run: `SB=--array=4 bash cluster.sh train`. Watch with `squeue -u $USER` and `tail -f runs/slurm/${jid}_0.out`.
 - Chunked runs (preferred): 8 h GPU jobs wait behind the queue, while 55-minute jobs fit the gaps Slurm backfills, so `train --chunks` splits each 2-epoch run into 2 1-epoch jobs. Chunk 1 runs `train.py --epochs 2 --stop-after-epochs 1`, chunk 2 runs `--epochs 2 --resume` with `--dependency=afterok:<chunk 1>` and continues the same seed, data order and LR (learning rate) schedule from the epoch-1 checkpoint, and only chunk 2 saves `adapter/` and `merged/`.
 - A subset: `bash cluster.sh train --chunks --runs account-s1,decision-s0`. It prints run, partition and the 2 job ids, puts the first run on `--partition=normal --qos=normal` (1 GPU per user) and the rest on gpu, and skips runs whose `outputs/<run>/merged` exists. Logs in `runs/slurm/<run>_c<k>_<jobid>.out`, chunk boundaries in `train_meta.json` under `chunks`.
@@ -373,6 +373,7 @@ Used from Nov 12 for the row-matched grid, through Cyrus's account. `cluster.sh`
 - Grid: `MAIL=<address> bash cluster.sh grid`, array 0-17 with `%2`. Each task trains `outputs/rm-<mix>-<cond>-s<seed>`, deletes the merged model, then answers v1, mortgage-split, SNAP and dependent (answer pass only). A requeued task skips a finished adapter and resumes from its last checkpoint.
 - Simulator passes and scoring run on the Mac after `rsync` through the data transfer node.
 - Queued Nov 12 at 00227d7: setup 18470254, smoke 18470266 (after setup), grid array 18470267 (after smoke), 1 mail when the grid ends (18470268).
+  - Smoke 18470266 trained fine (eval loss 0.34) but hit its 15-min limit while merging: loading the model and merging each of 4 shards take about 3 and 1 min on sc's network disk. The grid and its mail never ran. Smoke now gets 40 min.
 
 ## Adding a domain
 

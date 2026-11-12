@@ -92,7 +92,7 @@ if [[ $cmd == notify ]]; then
   exit
 fi
 case $cmd in
-  smoke) res="--job-name=aft-smoke --mem=48G --time=00:15:00 --output=$OUT/smoke_%j.out" ;;
+  smoke) res="--job-name=aft-smoke --mem=48G --time=00:40:00 --output=$OUT/smoke_%j.out" ;;
   train) res="--job-name=aft-train-$MIX --mem=48G --time=${TIME:-08:00:00} --array=${ARRAY:-0-5}
     --output=$OUT/$PRE%A_%a.out" ;;
   eval) res="--job-name=aft-eval --mem=64G --time=${TIME:-02:00:00} --output=$OUT/eval_%j.out" ;;
@@ -331,7 +331,7 @@ PY
       printf '\n== %s\n' "$c"
       eval "$c" 2>&1 || echo "(exit $?)"
     done ;;
-  smoke)  # 15 min: load, train 1 epoch (16 steps) on 64 train and 16 dev rows, save, merge
+  smoke)  # 40 min (loading and merging take about 10 min on sc's network disk): load, train 1 epoch (16 steps) on 64 train and 16 dev rows, save, merge
     cond=${1:-account} out=$REPO/outputs/smoke-$cond
     mkdir -p "$out"
     head -n 64 "$REPO/data/v1.sft.train.jsonl" > "$out/train.jsonl"
