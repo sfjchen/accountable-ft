@@ -85,6 +85,8 @@ Commands, from the repo root. Once per shell: `export PATH=/opt/homebrew/share/g
   - Review, SQM 2027 submissions: 16 / 14 / 6. Page limit with position-track exception, anonymity, dual submission, deadline with extension, supplement rules, author and reference caps, reviewer conflict, ethics statement, artifact license, total pages, coauthor window.
   - Permit, Marrowgate street equipment, held out: 12 / 10 / 3. Weight cap with operator exception, insurance, night work, operator level, crane, sidewalk notice, residential weight, night crew, lead time, placement length.
   - Mortgage, conforming purchase loans under manual underwriting, held out (Eitan): 17 / 13 / 7. Rules and thresholds from Fannie Mae's Selling Guide and Eligibility Matrix (Aug 5, 2026) and FHFA's 2026 loan limit. Credit score, LTV (loan-to-value) and DTI (debt-to-income) rules are in every policy. LTV, DTI and months of reserves are derived and rounded down. Sources and simplifications in `domains/mortgage.md`.
+  - SNAP household eligibility, fiscal year 2027, real rules for the row-matched grid: 20 / 12 / 8. Gross and net income tests with categorical (TANF or SSI) and elderly or disabled waivers, resource limit, ABAWD (able-bodied adult without dependents) work rule, student, immigration, SSN (Social Security number), program violation, striker, residency, fleeing felon and job-quit rules. Gross income, adjusted income, excess shelter costs and net income are derived, net income through 3 steps. The gross test is in every policy. Sources (FY2027 COLA memo, 7 CFR 273, P.L. 119-21) and simplifications in `domains/snap.md`.
+  - IRS dependent, tax year 2026, real rules and test only: 22 / 13 / 8. Qualifying child tests (relationship, age, younger than the taxpayer, residency, support) and qualifying relative tests (not a qualifying child, household, gross income, support), plus citizen, joint return, dependent taxpayer and tie-breaker. Each test is scoped to the claim type, so the other type's tests are near-miss distractors, and the claim type is fixed (`fixed:` in the yaml), so edits never flip it. Sources (Pub. 501, Rev. Proc. 2025-32) in `domains/dependent.md`.
 - Why grant, trial and review train and permit and mortgage are held out.
   - Same rule shapes everywhere, so a held-out family is a new combination and permit is the real vocabulary transfer.
   - Mortgage is the real-rules transfer test, on its own slice `real_transfer`, never train or dev.
@@ -167,7 +169,7 @@ Smallest change that would reverse this decision: total requested amount (dollar
 
 Correct: approve, R2 and R5 waived, every other rule passes. Minimum sufficient facts: pi_years_since_phd, career_break, institution_type, requested_amount, start_day, end_day, letter_of_support, open_data_plan, human_subjects. No defaults. Minimal counterfactual: pi_years_since_phd to 11 (target deny).
 
-## 7. Where we are (Nov 11)
+## 7. Where we are (Nov 12)
 
 ### Round 1 results
 
@@ -232,6 +234,32 @@ Correct: approve, R2 and R5 waived, every other rule passes. Minimum sufficient 
 - Own explanations do not reveal the model's errors. On these items a shuffled explanation tracks the model at least as well as its own, so what helps is any explanation that pulls Opus off the correct label. Gemini shows the same on v1 explanation SFT: 0.392 own, 0.481 shuffled.
 - The 2 simulators agree on 0.704 of items for explanation SFT and 0.616 for decision-only on v1 (own explanation), so they differ item by item, and Opus scores higher on every condition.
 
+### Round 2 and mortgage-only results
+
+- Round 2 (`r2`): grant, trial and mortgage, review held out, 3 seeds. Mortgage-only (`mo`): seed 0. Same items, epochs and pairing as round 1. Logs `final-v1-gemini-eval-053d9ef-20261112-0351`, `final-mortgage-gemini-eval-053d9ef-20261112-0351`, `final-v1-opus-eval-053d9ef-20261112-0353`, `final-mortgage-opus-eval-053d9ef-20261112-0353` (every round in each, so round 1 rows match the tables above).
+
+| paired, explanation - decision | v1, round 2 | v1, mortgage-only | mortgage, round 2 | mortgage, mortgage-only |
+|---|---|---|---|---|
+| accuracy | 0.033 [0.020, 0.049] | 0.006 [-0.018, 0.031] | 0.012 [-0.006, 0.034] | 0.017 [-0.035, 0.070] |
+| explanation validity | 0.630 [0.580, 0.677] | 0.279 [0.243, 0.316] | 0.528 [0.489, 0.565] | 0.472 [0.427, 0.515] |
+| simulatability gain, Gemini | 0.041 [0.007, 0.078] | -0.005 [-0.044, 0.036] | 0.094 [0.036, 0.151] | 0.066 [-0.018, 0.150] |
+| simulatability gain, Opus | 0.120 [0.086, 0.151] | 0.009 [-0.038, 0.056] | 0.170 [0.129, 0.211] | 0.024 [-0.036, 0.083] |
+
+- Mix contrasts (`evaluate.py --contrast`): difference of seed-pooled paired gains on shared items, family-clustered CI, Holm over the 3 pairs per test. Round 1 is the empty prefix on v1 and `mortgage-split` on mortgage.
+
+| contrast, simulatability gain | v1, Gemini | v1, Opus | mortgage, Gemini | mortgage, Opus |
+|---|---|---|---|---|
+| round 1 - round 2 | 0.040 [0.009, 0.071] | 0.041 [0.011, 0.073] | -0.056 [-0.127, 0.007] | -0.079 [-0.130, -0.027] |
+| round 1 - mortgage-only | 0.086 [0.038, 0.132] | 0.152 [0.095, 0.206] | -0.028 [-0.111, 0.055] | 0.066 [-0.014, 0.145] |
+| round 2 - mortgage-only | 0.047 [-0.002, 0.092] | 0.111 [0.051, 0.169] | 0.028 [-0.050, 0.106] | 0.145 [0.085, 0.210] |
+
+- Explanation validity contrasts (simulator-free), round 1 - round 2 / round 1 - mortgage-only / round 2 - mortgage-only: v1 0.126 / 0.477 / 0.351, mortgage -0.156 / -0.101 / 0.055, every CI clear of 0.
+- Reading.
+  - Explanation SFT beats decision-only on accuracy in every mix (0.004 to 0.033) and is the only condition with valid explanations, so the explanation loss carries the gain.
+  - On mortgage the mixed model has the most valid explanations and, with Opus, the largest gain, ahead of both single-kind mixes after Holm. Gemini's mortgage contrasts all cross 0 (24 families).
+  - On v1 round 1 wins, partly because it trains on review, a third of v1.
+  - Round 2 vs mortgage-only confounds mix with size (3x rows) and seeds (3 vs 1). The row-matched grid removes both.
+
 ### Before training
 
 - Data: v1 has about 5,000 cases, 3 views, 72 held-out families and 60 permit families, with 222 flagged items dropped at export. Mortgage has 1,348 prose items over 60 families, all on `real_transfer`.
@@ -265,11 +293,15 @@ Correct: approve, R2 and R5 waived, every other rule passes. Minimum sufficient 
 
 ## 8. Next
 
-- Round 2 and mortgage-only evals: the same 2 tables when their notify email arrives, paired with round 1 on the same items.
-- The prompted-explanation control above, and the epoch 1 table.
-- Nov 17-23: permit and mortgage transfer, error analysis of 50 failures. The 2nd simulator (Opus) is done for round 1 and runs on round 2 with the same setup.
-- Round 2 (Nov 9 decision log): train on grant, trial and mortgage with review held out, both conditions x 3 seeds (`MIX=r2`), and mortgage only, both conditions at seed 0 (`MIX=mo`). Every model is then scored on the v1 unseen slice and on the mortgage unseen families (`DATA=data/mortgage-split.jsonl`), so each round 1 vs round 2 comparison is paired on the same items.
-- Nov 24-30: report and slides. Dec 1-4: rehearse, freeze the repo.
+- Row-matched grid on the sc cluster (`cluster.sh grid`), pre-registered Nov 12 before any grid run.
+  - Mixes at 3,600 train rows (400 dev), every domain an equal share: `rm-inv` grant + trial, `rm-real` mortgage + SNAP, `rm-mix` all 4. Both conditions x 3 seeds = 18 runs, epoch 2.
+  - Tests: unseen families of the 4 training domains, review (invented, held out from every mix) and IRS dependent (real, held out from every mix).
+  - Main score: paired simulatability gain (Gemini) on IRS dependent. Secondary: the same on review, explanation validity on both, Opus as the 2nd simulator.
+  - 3 contrasts per test (mix - real, mix - inv, real - inv) with `--contrast rm-mix rm-real rm-inv`, Holm-corrected.
+  - Prediction: mix >= real > inv on IRS dependent, inv >= mix > real on review.
+- The prompted-explanation control (base model's explanation on the SFT model's decision), and the epoch 1 table.
+- Simulatability gain on hard edits only, the ones the simulator gets wrong with no explanation.
+- Nov 17-23: permit transfer, error analysis of 50 failures. Nov 24-30: report and slides. Dec 1-4: rehearse, freeze the repo.
 - Relabel round (CREDIT-style) only if explanation SFT is below the accuracy ceiling. Round 1 is at 0.976, so it is not triggered.
 
 ## 9. Risks, one line each
@@ -290,7 +322,7 @@ Correct: approve, R2 and R5 waived, every other rule passes. Minimum sufficient 
 - `evaluate.py`: all metrics with cluster bootstrap CIs, slices (primary: prose, unseen families, training vocabularies), paired comparisons, seed aggregates, coverage, checkpoint selection, `--power`.
 - `compare_sims.py`: 2 simulators on the same runs, item agreement and accuracy split by whether the model's post-edit decision is correct.
 - `train.py`: LoRA SFT with the matched loss, and `train.py export` for the SFT rows.
-- `cluster.sh`: setup and Slurm jobs on FarmShare: train (chunked or whole), eval, prompted base (`base`).
+- `cluster.sh`: setup and Slurm jobs on FarmShare or the NLP sc cluster: train (chunked or whole), eval, prompted base (`base`), the row-matched grid (`grid`).
 - `runs/`: every run with its companions and eval tables (`runs/sim-opus/`: the same runs linked in, with Opus simulator passes), `data/`: datasets, banks, blind samples and stats.
 - `tests/test_all.py`, `tests/mini.jsonl`: engine against brute force and the acceptance cases, the generator, the parser and every metric on a 12-record hand-made fixture, bank, prompts, cache key, shuffled control, export, masking and loss weights. Run `python -m pytest -q`.
 
@@ -331,6 +363,15 @@ Everything lives in `/scratch/users/$USER/accountable-ft` (purged after 90 idle 
 - Eval every run at both epochs once training ends: `for r in {account,decision}-s{0,1,2}; do for k in 1 2; do SB=--dependency=afterok:$jid bash cluster.sh eval $r $k; done; done`. Eval runs are named `<cond>-e<k>-s<seed>`, the cache tag adds the adapter hash, each run has its own `runs/cache.<run>.jsonl`, and the merged model is deleted afterwards unless `KEEP_MERGED=1`. Eval and base jobs ask for 2 h (`TIME` overrides) so they backfill, and a timed-out one resumes from its cache when resubmitted. A timed-out train job restarts from scratch (no resume outside `--chunks`).
 - Prompted base, the same 4 passes with no checkpoint: `bash cluster.sh base` (thinking off, full primary slice) and `THINKING=on CASES=150 bash cluster.sh base` (thinking answers run 5-10k tokens, so a subset). Runs are named `base-think<on|off>[-c<N>]`. `DATA=data/mortgage.jsonl SLICE=real_transfer bash cluster.sh base` runs the same passes on the mortgage domain (run name prefixed `mortgage-`). Every run served here uses `--max-tokens 16384` (`MAX_TOKENS`, model length `MAX_LEN` 24576), because evaluate.py refuses to compare runs whose max_tokens differ, so base and trained runs stay comparable. Earlier API pilots used 4096.
 - Back on the Mac: `rsync -av --exclude slurm $USER@login.farmshare.stanford.edu:/scratch/users/$USER/accountable-ft/runs/ runs/`, then the simulate and score commands of section 4 on `data/v1.jsonl`, e.g. `python evaluate.py runs/*-e2-s*.jsonl --data data/v1.jsonl --bank data/v1.bank.jsonl --epoch 2`.
+
+## sc cluster
+
+Used from Nov 12 for the row-matched grid, through Cyrus's account. `cluster.sh` detects sc from `/juice2/scr2/nlp/cs224v` and keeps everything in `/juice2/scr2/nlp/cs224v/jchen04-aft` (repo, venvs, model, uv, run metadata).
+
+- Jobs run on `--partition=sc-loprio --account=nlp`, 1 GPU of at least 48 GB each, at most 2 at once. `MAIL` must be set, since the account is shared.
+- Setup runs as a CPU job (8 CPUs, 32 GB, 3 h): `MAIL=<address> bash cluster.sh setup`. It also exports the 3 grid mixes.
+- Grid: `MAIL=<address> bash cluster.sh grid`, array 0-17 with `%2`. Each task trains `outputs/rm-<mix>-<cond>-s<seed>`, deletes the merged model, then answers v1, mortgage-split, SNAP and dependent (answer pass only). A requeued task skips a finished adapter and resumes from its last checkpoint.
+- Simulator passes and scoring run on the Mac after `rsync` through the data transfer node.
 
 ## Adding a domain
 
