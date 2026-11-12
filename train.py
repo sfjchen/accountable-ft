@@ -170,6 +170,8 @@ def export(argv):
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--cases-per-family", type=int, default=0, help="base cases kept per family (0 keeps all)")
     ap.add_argument("--drop-flagged", metavar="PATH", help="file of item ids to drop, one per line")
+    ap.add_argument("--rows-per-domain", type=int, default=0, help="exactly N rows per domain, whole base cases dealt "
+                    "round-robin over template families, the last case cut to fit (0 keeps all)")
     a = ap.parse_args(argv)
     recs = [json.loads(ln) for f in a.data for ln in Path(f).read_text().splitlines() if ln.strip()]
     recs = [r for r in recs if not a.domains or r["domain"] in a.domains]
@@ -188,6 +190,24 @@ def export(argv):
             rng.shuffle(bs)
             keep.update(bs[:a.cases_per_family])
         sel = [r for r in sel if root(r, by) in keep]
+    if a.rows_per_domain:
+        # cases of each domain are dealt 1 per family per round, so a small cap still spreads over every family
+        keep = []
+        for d in sorted({r["domain"] for r in sel}):
+            byc = defaultdict(list)
+            for r in sorted(sel, key=lambda r: r["id"]):
+                if r["domain"] == d:
+                    byc[root(r, by)].append(r)
+            fams = defaultdict(list)
+            for c in sorted(byc):
+                fams[byc[c][0]["template_family"]].append(c)
+            for f in sorted(fams):
+                rng.shuffle(fams[f])
+            order = [c for i in range(max(map(len, fams.values()))) for f in sorted(fams) for c in fams[f][i:i + 1]]
+            got = [r for c in order for r in byc[c]]
+            assert len(got) >= a.rows_per_domain, f"{d} has {len(got)} {a.split} rows, fewer than {a.rows_per_domain}"
+            keep += got[:a.rows_per_domain]
+        sel = keep
     rows = []
     for r in sorted(sel, key=lambda r: r["id"]):
         (sys_, usr), tgt = build_prompt(r), format_target(r)

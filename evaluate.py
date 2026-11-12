@@ -451,6 +451,24 @@ def boot(vals, clus, B=1000, seed=0):
     return {"mean": float(v.mean()), "lo": float(lo), "hi": float(hi), "n": int(len(v)), "n_clus": int(len(up))}
 
 
+def boot_p(vals, clus, B=1000, seed=0):
+    """Returns the 2-sided cluster-bootstrap p-value of mean 0: twice the smaller share of resampled means on 1 side."""
+    v, clus = np.asarray(vals, float), np.asarray(clus)
+    up, inv = np.unique(clus, return_inverse=True)
+    S, C = np.bincount(inv, v), np.bincount(inv)
+    m = S[idx := np.random.default_rng(seed).integers(0, len(up), (B, len(up)))].sum(1) / C[idx].sum(1)
+    return float(min(1.0, 2 * min((m <= 0).mean(), (m >= 0).mean())))
+
+
+def holm(ps):
+    """Returns Holm-adjusted p-values for {name: p}, in the same keys."""
+    out, run = {}, 0.0
+    for i, (k, v) in enumerate(sorted(ps.items(), key=lambda x: x[1])):
+        run = max(run, min(1.0, (len(ps) - i) * v))
+        out[k] = run
+    return out
+
+
 def dkey(gk, d):
     """Returns the key of group gk restricted to domain d: "domain=<d>" for "all", else "<gk> domain=<d>"."""
     return f"domain={d}" if gk == "all" else f"{gk} domain={d}"
@@ -582,6 +600,9 @@ def main():
     ap.add_argument("--select-by", help="exploratory only: also print the best-of-k checkpoint by this dev metric")
     ap.add_argument("--select-control", help="--select-by: decision-only control whose dev acc_maj bounds the pick")
     ap.add_argument("--power", action="store_true", help="print the ICC and power table on the primary population")
+    ap.add_argument("--contrast", nargs="+", metavar="GROUP", help="mix contrasts: run-name prefixes (rm-inv rm-real "
+                    "rm-mix) whose seed-pooled paired gains (vs --compare) are differenced on shared items, every pair, "
+                    "with family-clustered CIs and Holm-adjusted p-values per group")
     ap.add_argument("--boot", type=int, default=1000)
     ap.add_argument("--seed", type=int, default=0)
     a = ap.parse_args()
@@ -709,6 +730,30 @@ def main():
         for m, pu in ms.items():
             for gk, sel in groups(pu).items():
                 paired[name][gk][m] = boot([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed)
+    # difference in differences: each prefix's paired units averaged over seeds per item, then prefix X minus Y on
+    # the items both have, so a contrast is paired on items and clustered on families like every other CI here
+    contrasts = defaultdict(lambda: defaultdict(dict))
+    for m in ("sim_delta", "expl_valid", "acc_maj"):
+        per = {}
+        for pre in a.contrast or ():
+            # "<pre>-<cond>-e<k> - ..." only, so prefix "mortgage-split" (round 1) leaves out "mortgage-split-r2-..."
+            hit = [ms[m] for n, ms in pool.items() if re.match(rf"{re.escape(pre)}-[a-z]+-e\d+ - ", n) and m in ms]
+            if len(hit) != 1:
+                sys.exit(f"--contrast {pre}: expected 1 seed-pooled paired group with {m}, found {len(hit)}")
+            by = defaultdict(list)
+            for u in hit[0]:
+                by[u[5]].append(u)
+            per[pre] = {k: (float(np.mean([u[0] for u in us])),) + us[0][1:] for k, us in by.items()}
+        for i, x in enumerate(a.contrast or ()):
+            for y in (a.contrast or ())[i + 1:]:
+                pu = [(per[x][k][0] - per[y][k][0],) + per[x][k][1:] for k in sorted(set(per[x]) & set(per[y]))]
+                for gk, sel in groups(pu).items():
+                    contrasts[gk][m][f"{x} - {y}"] = boot([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed) | \
+                        {"p": boot_p([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed)}
+    for gk in contrasts:
+        for m, cs in contrasts[gk].items():
+            for k, hp in holm({k: c["p"] for k, c in cs.items()}).items():
+                cs[k]["p_holm"] = hp
     if a.select_by and not a.select_control:
         sys.exit("--select-by needs --select-control")
     cands, sel = [c for c in res if re.search(a.select, c)], {}
@@ -721,7 +766,7 @@ def main():
                 a.select_by)
     Path(a.json).parent.mkdir(parents=True, exist_ok=True)
     Path(a.json).write_text(json.dumps({"primary": PRIMARY, "conditions": res, "coverage": covs, "compute": comp,
-            "seed_groups": seeds, "paired_vs": a.compare, "paired": paired, "selection": sel,
+            "seed_groups": seeds, "paired_vs": a.compare, "paired": paired, "contrasts": contrasts, "selection": sel,
             "decoding": {c: sorted(s) for c, s in sigs.items()}}, indent=1))
     for c, s in sigs.items():
         print(f"{c}: decoding {sorted(s)}; compute {comp[c]}")
@@ -745,6 +790,14 @@ def main():
     for c, pg in paired.items():
         for gk in (PRIMARY, "all"):
             table(f"paired difference {c} ({gk})", {c: pg}, gk, lambda m: "|" not in m)
+    for gk in sorted(contrasts, key=lambda g: (g != PRIMARY, g)):
+        if gk not in (PRIMARY, "all") and not gk.startswith(PRIMARY + " domain="):
+            continue
+        print(f"\n### mix contrasts ({gk}): paired gain difference [95% CI], p, Holm p\n")
+        for m, cs in contrasts[gk].items():
+            for k, c in cs.items():
+                print(f"- {m} {k}: {c['mean']:+.3f} [{c['lo']:+.3f}, {c['hi']:+.3f}] n={c['n']} p={c['p']:.3f} "
+                      f"holm={c['p_holm']:.3f}")
     if "chosen" in sel:
         print(f"\ncheckpoint selection: {sel['rule']}; chose {sel['chosen']}")
     if "exploratory" in sel:

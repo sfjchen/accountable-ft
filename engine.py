@@ -365,7 +365,9 @@ def min_flip(pol, facts, target=None, radius=MAX_RADIUS, exclude=(), prefer_disj
     known, _ = known_facts(pol, facts)
     want, pd = tgt == "approve", set(prefer_disjoint or ())
     pairs = exclude if isinstance(exclude, dict) else {}
-    cand = [n for n in pol.referenced() if n in facts and facts[n] is not None and (pairs or n not in exclude)]
+    # a domain's fixed facts (dependent: the claim type) describe the claim itself, so no flip edits them
+    cand = [n for n in pol.referenced() if n in facts and facts[n] is not None and (pairs or n not in exclude)
+            and n not in getattr(pol, "fixed", ())]
     full = all(n in known for n in pol.referenced())
     failed = [r for r in pol.requires if d["rule_trace"][r.id] == "fail"] if want else []
 

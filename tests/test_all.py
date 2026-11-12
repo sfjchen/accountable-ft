@@ -282,6 +282,54 @@ def test_mortgage_domain():
     assert E.implied_decision(p, f, {"credit_score": 701}, {}) is None
     assert E.implied_decision(p, f, {"dti": 30}, {}, ["dti"]) is None
 
+def test_snap_and_dependent_domains():
+    """Checks the 2 added real-rules domains: held out of "all" with the real slice, generated policies keep their
+    required rules and certify flips, the dependent claim type is never edited, nested derived facts count their
+    source facts, and hand-worked cases match the FY2027 SNAP deductions and the 2026 dependent tests."""
+    for name in ("snap", "dependent"):
+        assert name not in gen.DOMAINS and gen.SLICE[gen.HELD_OUT[name]] == "real_transfer"
+        dom = gen.load_domain(name)
+        for s in range(3):
+            rng = random.Random(f"{name}-{s}")
+            fam = gen.sample_family(dom, rng, [], False)
+            assert set(dom["required"]) <= {k for k, _ in fam["core"]}
+            p = gen.instantiate(name, fam, f"{name}-t{s}", rng)
+            assert len(p.referenced()) <= E.MAX_FACTS and p.fixed == tuple(dom.get("fixed", ()))
+            for want in ["approve", "deny"]:
+                f = gen.sample_case(p, rng, want)
+                mf = E.min_flip(p, f)
+                if mf["edits"]:
+                    assert E.decide(p, {**f, **mf["edits"]})["decision"] == mf["target"]
+                    assert "claim_type" not in mf["edits"]
+    dom = gen.load_domain("snap")
+    assert {"earned_income", "unearned_income", "household_size", "shelter_costs", "elderly_or_disabled"} == \
+        gen.template_refs(dom, dom["derived"][0]) - {"categorical"}
+    der = {n: d["expr"] for n, d in dom["derived_facts"].items()}
+    net = [{"id": "R1", "kind": "require", "cond": "net_income <= 1330 + 474 * (household_size - 1)"}]
+    p = E.Policy("s", dom["facts"], net, (), der)
+    f = {"household_size": 3, "earned_income": 1800, "unearned_income": 300, "shelter_costs": 1500,
+         "elderly_or_disabled": False}
+    # 2100 - 1800 // 5 - 217 = 1523; shelter 1500 - 1523 // 2 = 739 (under the $769 cap); net 784 <= 2278
+    assert p.derived_values(f) == {"gross_income": 2100, "adjusted_income": 1523, "excess_shelter": 739,
+                                   "net_income": 784}
+    assert E.decide(p, f)["decision"] == "approve"
+    # 1 person, $1,900 shelter: the excess 1900 - 383 // 2 = 1709 is capped at 769 unless elderly or disabled
+    g = {"household_size": 1, "earned_income": 0, "unearned_income": 600, "shelter_costs": 1900}
+    assert E.Policy("s", dom["facts"], net, (), der).derived_values({**g, "elderly_or_disabled": False})[
+        "net_income"] == 383 - 769
+    dom = gen.load_domain("dependent")
+    der = {n: d["expr"] for n, d in dom["derived_facts"].items()}
+    rules = [{"id": "R1", "kind": "require", "cond": "claim_type != 'qr' or gross_income < 5300"},
+             {"id": "R2", "kind": "require", "cond": "claim_type != 'qc' or age < 19 or (full_time_student and "
+              "age < 24)"}]
+    p = E.Policy("d", dom["facts"], rules, (), der)
+    # rent counts before expenses: 4000 wages + 1200 rent + 250 interest = 5450, over the limit
+    f = {"claim_type": "qr", "wages": 4000, "rental_receipts": 1200, "interest_income": 250, "age": 22,
+         "full_time_student": False}
+    assert E.decide(p, f)["decision"] == "deny"
+    assert E.decide(p, {**f, "claim_type": "qc", "full_time_student": True})["decision"] == "approve"
+
+
 def test_counter_templates(tmp_path):
     """
     Checks one counter template per training domain, sampled only when asked and engine-valid, and that gen.py
@@ -549,6 +597,15 @@ def test_select_and_boot():
     assert r0 == boot(v, cl, seed=0) and r0["lo"] != r2["lo"] and r0["lo"] < r0["mean"] < r0["hi"]
     assert r0["n_clus"] == 12 and boot([0.5] * 10, ["a", "b"] * 5)["hi"] == 0.5 and boot(v - v, cl)["hi"] == 0.0
     assert boot([float("nan")], ["a"])["n"] == 0
+
+
+def test_holm_and_boot_p():
+    """Checks Holm adjustment (step-down, monotone, capped at 1) and that the bootstrap p is small for a clear
+    nonzero mean and 1 for an all-zero one."""
+    assert evaluate.holm({"a": 0.01, "b": 0.04, "c": 0.03}) == {"a": 0.03, "c": 0.06, "b": 0.06}
+    assert evaluate.holm({"a": 0.6, "b": 0.9}) == {"a": 1.0, "b": 1.0}
+    clus = [i // 3 for i in range(60)]
+    assert evaluate.boot_p([1.0] * 60, clus) == 0.0 and evaluate.boot_p([0.0] * 60, clus) == 1.0
 
 
 def test_select_recs():

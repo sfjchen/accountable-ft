@@ -1,0 +1,331 @@
+# Claiming a dependent, tax year 2026: the IRS qualifying child and qualifying relative tests. Real-rules domain:
+# rule shapes and thresholds follow IRS Publication 501 and Rev. Proc. 2025-32 (2026 gross income limit $5,300); see
+# domains/dependent.md for sources. One policy covers both claim types: the qualifying child and qualifying relative
+# tests are scoped rules keyed on claim_type, so the tests of the other type are near-miss distractors. Simplifications:
+# a temporary absence waives the residency count outright, the noncustodial parent release is one fact (a signed Form
+# 8332), the tie-breaker is reduced to "a claiming parent beats a non-parent", and ints are bucketed to at most 8
+# values like every other domain. Older years' income limits ($5,050 for 2024, $5,200 for 2025) are threshold choices.
+name: dependent
+title: "Claiming a dependent on a 2026 federal return: qualifying child and qualifying relative tests"
+preamble: "A taxpayer may claim the person as a dependent only if every rule below is met. Rules about a qualifying child apply only when the person is claimed as a qualifying child, and rules about a qualifying relative only when claimed as a qualifying relative. Rules marked as defaults say what to assume when the return is silent on a point."
+ref_date: 2027-02-15
+# every policy tests both claim types, so neither type passes by having no rules
+required: [citizen, qc_age, qr_support]
+# the claim type describes the claim, not the person, so flips never edit it
+fixed: [claim_type]
+facts:
+  claim_type:
+    type: enum
+    values: [qc, qr]
+    names: {qc: "a qualifying child", qr: "a qualifying relative"}
+    label: "type of dependent claimed"
+    say:
+      - "The taxpayer claims the person under the test for {v:e}."
+      - "On the return, the person is claimed as {v:e}, and only that test is used."
+  relationship:
+    type: enum
+    values: [child, foster_child, grandchild, sibling, nephew_niece, parent, in_law, cousin]
+    names:
+      child: "the taxpayer's son or daughter"
+      foster_child: "a foster child placed by an agency"
+      grandchild: "the taxpayer's grandchild"
+      sibling: "the taxpayer's brother or sister"
+      nephew_niece: "the taxpayer's niece or nephew"
+      parent: "the taxpayer's mother or father"
+      in_law: "the taxpayer's mother-in-law or father-in-law"
+      cousin: "the taxpayer's cousin"
+    label: "relationship to the taxpayer"
+    say:
+      - "The person is {v:e}."
+      - "By relationship, the person is {v:e}."
+  age:
+    type: int
+    values: [8, 18, 19, 22, 23, 24, 30, 68]
+    label: "the person's age at the end of 2026"
+    say:
+      - "The person was {v} years old at the end of 2026."
+      - "At year end the person's age was {v}."
+  taxpayer_age:
+    type: int
+    values: [20, 23, 26, 35, 50, 66]
+    label: "the taxpayer's age at the end of 2026"
+    say:
+      - "The taxpayer was {v} at the end of the year."
+      - "The taxpayer's own age at year end was {v}."
+  full_time_student:
+    type: bool
+    label: "full-time student during at least 5 months of 2026"
+    say_true:
+      - "The person was a full-time student for at least 5 months of the year."
+      - "School records show full-time enrollment in at least 5 calendar months of 2026."
+    say_false:
+      - "The person was not a full-time student for 5 months of the year."
+      - "The person was not enrolled full-time during 2026."
+  disabled:
+    type: bool
+    label: "permanently and totally disabled at some time in 2026"
+    say_true:
+      - "A doctor certified the person as permanently and totally disabled."
+      - "The person has been permanently and totally disabled since an accident."
+    say_false:
+      - "The person is not disabled."
+      - "No disability is reported for the person."
+  months_lived_with:
+    type: int
+    values: [0, 4, 6, 7, 9, 12]
+    label: "months the person lived in the taxpayer's home in 2026"
+    say:
+      - "The person lived in the taxpayer's home for {v} months of 2026."
+      - "Over the year, the person shared the taxpayer's home for {v} months."
+  temporary_absence:
+    type: bool
+    label: "time away from the home was a temporary absence (school, illness, military service)"
+    say_true:
+      - "The months away from the home were a temporary absence for school, with the person's room kept for them."
+      - "Time spent away was temporary, for a hospital stay, and the person was expected back."
+    say_false:
+      - "The time away was not a temporary absence: the person had moved elsewhere."
+      - "The person lived somewhere else during the other months, not on a temporary absence."
+  custody_release:
+    type: bool
+    label: "custodial parent signed a Form 8332 release to the taxpayer"
+    say_true:
+      - "The person's custodial parent signed Form 8332, releasing the claim to the taxpayer."
+      - "A signed Form 8332 from the custodial parent is attached to the return."
+    say_false:
+      - "No Form 8332 release has been signed."
+      - "The custodial parent has not released the claim on Form 8332."
+  own_support_pct:
+    type: int
+    values: [0, 20, 40, 50, 60, 80]
+    label: "share of the person's total support the person paid themselves (percent)"
+    say:
+      - "The person paid for {v}% of their own support during the year."
+      - "Out of their own earnings, the person covered {v}% of their total support."
+  taxpayer_support_pct:
+    type: int
+    values: [5, 15, 30, 45, 50, 55, 75, 100]
+    label: "share of the person's total support the taxpayer provided (percent)"
+    say:
+      - "The taxpayer provided {v}% of the person's total support."
+      - "Of everything spent supporting the person, {v}% came from the taxpayer."
+  multiple_support:
+    type: bool
+    label: "signed multiple support agreement (Form 2120) naming the taxpayer"
+    say_true:
+      - "The relatives who share the person's support signed a multiple support agreement letting the taxpayer claim the person."
+      - "A Form 2120 multiple support declaration naming the taxpayer is attached."
+    say_false:
+      - "There is no multiple support agreement."
+      - "No Form 2120 declaration was signed by the other supporters."
+  wages:
+    type: int
+    values: [0, 1500, 3000, 4000, 4800, 6000, 9000]
+    label: "the person's wages in 2026 (dollars)"
+    say:
+      - "The person earned {v:money} in wages."
+      - "A W-2 shows {v:money} in wages for the person."
+  interest_income:
+    type: int
+    values: [0, 250, 500]
+    label: "the person's taxable interest in 2026 (dollars)"
+    say:
+      - "Bank accounts paid the person {v:money} in taxable interest."
+      - "The person had {v:money} of taxable interest income."
+  rental_receipts:
+    type: int
+    values: [0, 1200, 2400]
+    label: "rent the person received in 2026, before expenses (dollars)"
+    say:
+      - "The person collected {v:money} in rent from a tenant, before any expenses."
+      - "Rent received by the person came to {v:money}, not counting upkeep costs."
+  files_joint:
+    type: bool
+    label: "the person files a joint return for 2026"
+    say_true:
+      - "The person is married and files a joint return with their spouse."
+      - "The person and their spouse file jointly for 2026."
+    say_false:
+      - "The person does not file a joint return."
+      - "The person is not filing jointly with anyone."
+  refund_only:
+    type: bool
+    label: "the person's joint return is filed only to claim a refund of withheld tax"
+    say_true:
+      - "The joint return is filed only to get back tax that was withheld, with no tax owed and no credits claimed."
+      - "The couple files jointly only to claim a refund of their withholding."
+    say_false:
+      - "The joint return claims credits and is not just a refund of withholding."
+      - "The joint return is filed for more than a refund of withheld tax."
+  citizen_resident:
+    type: bool
+    label: "U.S. citizen, U.S. national, U.S. resident alien, or resident of Canada or Mexico"
+    say_true:
+      - "The person is a U.S. citizen."
+      - "The person is a U.S. resident alien with a green card."
+    say_false:
+      - "The person is a citizen and resident of Brazil, not of the U.S., Canada or Mexico."
+      - "The person lives in India and is not a U.S. citizen, national or resident."
+  adopted:
+    type: bool
+    label: "legally adopted by the taxpayer, a U.S. citizen"
+    say_true:
+      - "The taxpayer, a U.S. citizen, legally adopted the person."
+      - "The person was legally adopted by the taxpayer, who is a U.S. citizen."
+    say_false:
+      - "The person has not been adopted by the taxpayer."
+      - "There is no adoption between the taxpayer and the person."
+  taxpayer_dependent:
+    type: bool
+    label: "the taxpayer can be claimed as someone else's dependent"
+    say_true:
+      - "The taxpayer's own parents can claim the taxpayer as their dependent."
+      - "Someone else can claim the taxpayer as a dependent this year."
+    say_false:
+      - "No one else can claim the taxpayer as a dependent."
+      - "The taxpayer is not anyone else's dependent."
+  qc_of_another:
+    type: bool
+    label: "the person is the qualifying child of another taxpayer"
+    say_true:
+      - "The person is also the qualifying child of another relative, who lives with them most of the year."
+      - "Another taxpayer has the person as their qualifying child."
+    say_false:
+      - "The person is not anyone else's qualifying child."
+      - "No other taxpayer has the person as a qualifying child."
+  parent_also_claims:
+    type: bool
+    label: "one of the person's parents also claims them as a qualifying child"
+    say_true:
+      - "One of the person's parents is also claiming them as a qualifying child this year."
+      - "The person's parent files a return claiming the same person as a qualifying child."
+    say_false:
+      - "No parent of the person is claiming them."
+      - "The person's parents are not claiming them on any return."
+derived_facts:
+  gross_income:
+    expr: "wages + interest_income + rental_receipts"
+    label: "the person's gross income: wages, taxable interest and rent received before expenses (dollars)"
+    say: ["Counting wages, taxable interest and rent before expenses, the person's gross income is {v:money}."]
+  age_gap:
+    expr: "taxpayer_age - age"
+    label: "years by which the taxpayer is older than the person"
+    say: ["The taxpayer is {v} years older than the person."]
+rules:
+  - key: citizen
+    cond: "citizen_resident"
+    text: "The person must be a U.S. citizen, U.S. national, U.S. resident alien, or a resident of Canada or Mexico"
+    unless:
+      - cond: "adopted and months_lived_with == 12"
+        text: "the taxpayer is a U.S. citizen who legally adopted the person and the person lived with the taxpayer all year"
+  - key: joint_return
+    cond: "not files_joint"
+    text: "The person may not file a joint return for the year"
+    unless:
+      - cond: "refund_only"
+        text: "the joint return is filed only to claim a refund of withheld tax"
+  - key: dependent_taxpayer
+    cond: "not taxpayer_dependent"
+    text: "A taxpayer who can be claimed as someone else's dependent may not claim any dependent"
+  - key: qc_relationship
+    scoped: true
+    cond: "claim_type != 'qc' or relationship in ['child', 'foster_child', 'grandchild', 'sibling', 'nephew_niece']"
+    near: "claim_type != 'qc' and relationship not in ['child', 'foster_child', 'grandchild', 'sibling', 'nephew_niece']"
+    text: "A qualifying child must be the taxpayer's child, stepchild, placed foster child, brother or sister, or a descendant of one of them (such as a grandchild, niece or nephew)"
+  - key: qc_age
+    scoped: true
+    cond: "claim_type != 'qc' or age < {t}"
+    near: "claim_type != 'qc' and age >= {t}"
+    text: "A qualifying child must be under age {t} at the end of the year"
+    params: {t: [19]}
+    unless:
+      - cond: "full_time_student and age < 24"
+        text: "the person was a full-time student for at least 5 months of the year and is under 24"
+      - cond: "disabled"
+        text: "the person was permanently and totally disabled at some time during the year"
+  - key: qc_residency
+    scoped: true
+    cond: "claim_type != 'qc' or months_lived_with >= {t}"
+    near: "claim_type != 'qc' and months_lived_with < {t}"
+    text: "A qualifying child must have lived with the taxpayer for more than half the year ({t} months or more)"
+    params: {t: [7]}
+    unless:
+      - cond: "temporary_absence"
+        text: "the time away was a temporary absence, such as for school, illness or military service"
+      - cond: "custody_release"
+        text: "the person's custodial parent signed Form 8332 releasing the claim to the taxpayer"
+  - key: qc_support
+    scoped: true
+    cond: "claim_type != 'qc' or own_support_pct <= 50"
+    near: "claim_type != 'qc' and own_support_pct > 50"
+    text: "A qualifying child may not have paid for more than half of their own support"
+  - key: qr_not_qc
+    scoped: true
+    cond: "claim_type != 'qr' or not qc_of_another"
+    near: "claim_type != 'qr' and qc_of_another"
+    text: "A qualifying relative may not be the qualifying child of any other taxpayer"
+  - key: qr_household
+    scoped: true
+    cond: "claim_type != 'qr' or relationship != 'cousin' or months_lived_with == 12"
+    near: "claim_type != 'qr' and relationship == 'cousin' and months_lived_with < 12"
+    text: "A qualifying relative who is not a listed relative (a cousin is not listed, but in-laws, parents, siblings, nieces and nephews are) must have lived with the taxpayer all year"
+  - key: qr_support
+    scoped: true
+    cond: "claim_type != 'qr' or taxpayer_support_pct > 50"
+    near: "claim_type != 'qr' and taxpayer_support_pct <= 50"
+    text: "The taxpayer must provide more than half of a qualifying relative's total support"
+    unless:
+      - cond: "multiple_support and taxpayer_support_pct > 10"
+        text: "a signed multiple support agreement (Form 2120) names the taxpayer, who provides more than 10% of the support"
+  - key: tie_break
+    scoped: true
+    cond: "not parent_also_claims or relationship == 'child'"
+    near: "not parent_also_claims and relationship != 'child'"
+    text: "If a parent of the person also claims them as a qualifying child, a taxpayer who is not the person's parent may not claim them"
+derived:
+  - key: qr_income
+    cond: "claim_type != 'qr' or gross_income < {t}"
+    text: "A qualifying relative's gross income, which counts wages, taxable interest and rent received before expenses, must be less than {t:money}"
+    params: {t: [5050, 5200, 5300]}
+  - key: qc_younger
+    cond: "claim_type != 'qc' or disabled or age_gap >= 1"
+    text: "A qualifying child must be younger than the taxpayer, unless permanently and totally disabled"
+defaults:
+  - fact: temporary_absence
+    value: false
+    text: "If the return does not describe the time away as a temporary absence, count it as time not lived with the taxpayer"
+  - fact: custody_release
+    value: false
+    text: "If no Form 8332 is mentioned, assume no release was signed"
+  - fact: refund_only
+    value: false
+    text: "If a joint return is not described as filed only for a refund, assume it is not"
+  - fact: multiple_support
+    value: false
+    text: "If no multiple support agreement is mentioned, assume there is none"
+  - fact: disabled
+    value: false
+    text: "If disability is not mentioned, assume the person is not permanently and totally disabled"
+  - fact: qc_of_another
+    value: false
+    text: "If the return does not say the person is another taxpayer's qualifying child, assume they are not"
+  - fact: parent_also_claims
+    value: false
+    text: "If no parent is said to claim the person, assume no parent does"
+  - fact: taxpayer_dependent
+    value: false
+    text: "If the return does not say someone else can claim the taxpayer, assume no one can"
+names: ["Angela Brooks", "Daniel Nguyen", "Luis Ortega", "Fatima Rahman", "Kevin O'Brien", "Mei Lin", "Jamal Washington", "Sofia Petrova"]
+intro:
+  - "Return {num} was prepared for {name}."
+  - "The following summarizes the dependent claim on 2026 return {num}, filed by {name}."
+  - "{name} is preparing 2026 return {num}."
+color:
+  - "The taxpayer uses a paid preparer for the first time this year."
+  - "The taxpayer asks whether the return can be filed electronically."
+  - "The person plays in a community orchestra on weekends."
+  - "The taxpayer's preparer notes the return is being filed early to get the refund sooner."
+  - "The person likes to cook for the household on weekends."
+  - "The taxpayer's preparer has worked with the family for years."
+  - "The family attends a local church every Sunday."
+  - "The taxpayer says the person is a big help around the house."

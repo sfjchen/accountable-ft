@@ -26,7 +26,7 @@ ROOT = Path(__file__).resolve().parent
 DOMAINS = ["grant", "permit", "trial", "review"]
 # Held-out domains and their split: permit (invented vocabulary) and mortgage (real rules, not in "all", generated with
 # --domains mortgage) each get their own transfer slice, never train or dev.
-HELD_OUT = {"permit": "test_domain", "mortgage": "test_real"}
+HELD_OUT = {"permit": "test_domain", "mortgage": "test_real", "snap": "test_real", "dependent": "test_real"}
 VIEWS = ["table", "prose", "prose_derive"]
 SLICE = {"train": "train", "dev": "dev", "test_policy": "unseen_family_train_vocab", "test_domain": "combined_transfer",
          "test_real": "real_transfer"}
@@ -112,13 +112,12 @@ def names_value(f, v, s):
 def template_refs(dom, t, exc=None):
     """Returns the source facts a rule template (and optionally one of its exceptions) reads."""
     src = t["cond"] + " " + (t["unless"][exc]["cond"] if exc is not None else "")
-    out = set()
-    for w in re.findall(r"[a-z_][a-z0-9_]*", src):
-        if w in dom["facts"]:
-            out.add(w)
-        elif w in dom["derived_facts"]:
-            out.update(re.findall(r"[a-z_][a-z0-9_]*", dom["derived_facts"][w]["expr"]))
-    return out & set(dom["facts"])
+    # derived facts may read other derived facts (snap: net income reads adjusted income), so they expand until only
+    # source facts are left
+    while ds := [w for w in re.findall(r"[a-z_][a-z0-9_]*", src) if w in dom["derived_facts"]]:
+        for w in set(ds):
+            src = re.sub(rf"\b{w}\b", f"({dom['derived_facts'][w]['expr']})", src)
+    return set(re.findall(r"[a-z_][a-z0-9_]*", src)) & set(dom["facts"])
 
 
 def sample_family(dom, rng, hold, want_hold, prev=(), counter=False):
@@ -212,6 +211,7 @@ def instantiate(dname, fam, pid, rng):
         pol.domain, pol.spec = dname, {"domain": dname, "rules": specs, "valid": list(dom.get("valid", ())),
                                        "derived": derived}
         pol.counter = any(byk[k].get("counter") for k, _ in fam["core"])
+        pol.fixed = tuple(dom.get("fixed", ()))
         pol.labels = {n: s["label"] for n, s in dom["facts"].items()}
         pol.labels.update({n: d["label"] for n, d in dom["derived_facts"].items()})
         pol.near = {sp["id"]: E.compile_cond(sp["near"], set(dom["facts"]), derived)[0] for sp in specs
@@ -226,6 +226,7 @@ def policy_for(record):
     sp, dom = record["policy_spec"], load_domain(record["domain"])
     pol = E.Policy(record["policy_id"], dom["facts"], sp["rules"], sp["valid"], sp["derived"])
     pol.domain, pol.spec, pol.labels, pol.text = record["domain"], sp, record["fact_labels"], record["policy_text"]
+    pol.fixed = tuple(dom.get("fixed", ()))
     pol.near = {r["id"]: E.compile_cond(r["near"], set(dom["facts"]), sp["derived"])[0] for r in sp["rules"]
                 if r.get("near")}
     return pol

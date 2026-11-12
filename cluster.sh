@@ -1,26 +1,42 @@
 #!/usr/bin/env bash
-# farmshare.sh: setup, cluster probe, smoke check, the 6 training runs, their evaluation and the prompted-base
-# evaluation on FarmShare, from /scratch/users/$USER/accountable-ft. smoke, train, eval and base submit this script
-# itself to Slurm with their resources (extra sbatch options in SB), and the job runs the body inside the allocation.
+# cluster.sh: setup, cluster probe, smoke check, the training runs, their evaluation and the prompted-base evaluation
+# on FarmShare (/scratch/users/$USER/accountable-ft) or the Stanford NLP sc cluster (CLUSTER=sc, detected from
+# /juice2: the project space, partition sc-loprio, account nlp, MAIL must be set since jobs run under a shared
+# account). smoke, train, eval, base and grid submit this script itself to Slurm with their resources (extra sbatch
+# options in SB), and the job runs the body inside the allocation.
 # train --chunks splits each 2-epoch run into 2 dependent 55-minute 1-epoch jobs, which fit backfill windows.
 # MIX picks the training mix data/$MIX.sft.{train,dev}.jsonl: v1 (default, outputs/<cond>-s<seed>), r2 (grant, trial
-# and mortgage, review held out) or mo (mortgage only), the last 2 under outputs/$MIX-<cond>-s<seed>.
-# Usage: bash farmshare.sh setup | probe | smoke [account|decision] | train [--chunks [--runs <cond>-s<seed>,...]] |
+# and mortgage, review held out) or mo (mortgage only), the last 2 under outputs/$MIX-<cond>-s<seed>. The row-matched
+# grid trains inv (grant + trial), real (mortgage + SNAP) and mix (all 4) at 3,600 rows each, every domain an equal
+# share, and tests on review and the dependent tests, which none of them trains on.
+# Usage: bash cluster.sh setup | probe | smoke [account|decision] | train [--chunks [--runs <cond>-s<seed>,...]] |
 #   eval [r2-|mo-]<cond>-s<seed> <epoch> (DATA=<file>[,<file>] for other data files) |
-#   base (THINKING=on|off, CASES=N for a stratified subset) | notify <group> <jobid>[,<jobid>...]
+#   base (THINKING=on|off, CASES=N for a stratified subset) | notify <group> <jobid>[,<jobid>...] |
+#   grid (18 jobs, at most 2 at once: inv, real, mix x account, decision x seeds 0-2, each trains then answers)
 set -euo pipefail
 {
-cmd=${1:?usage: bash farmshare.sh setup|probe|smoke|train|eval|base}
+cmd=${1:?usage: bash cluster.sh setup|probe|smoke|train|eval|base|grid|notify}
 shift
-SCRATCH=${SCRATCH:-/scratch/users/$USER}
+CLUSTER=${CLUSTER:-$([[ -d /juice2/scr2/nlp/cs224v ]] && echo sc || echo farmshare)}
+if [[ $CLUSTER == sc ]]; then
+  # everything, the uv binary and run metadata included, stays in the project folder, not the shared account's home
+  SCRATCH=${SCRATCH:-/juice2/scr2/nlp/cs224v/jchen04-aft} META_HOME=$SCRATCH/meta BIN=$SCRATCH/.local/bin
+  PART=(--partition=sc-loprio --account=nlp) CPUPART=(--partition=sc-loprio --account=nlp)
+  # any GPU with 48 GB or more that the cu126 training stack supports (not Blackwell)
+  GPU=(--gres=gpu:1 "--constraint=48G|80G|141G")
+else
+  SCRATCH=${SCRATCH:-/scratch/users/$USER} META_HOME=$HOME/accountable-ft-meta BIN=$HOME/.local/bin
+  PART=(--partition=gpu) CPUPART=(--partition=normal) GPU=(--gpus=1)
+fi
 REPO=$SCRATCH/accountable-ft
-VENV=$REPO/.venv SERVE_VENV=$REPO/.venv-serve MODEL_FILE=$REPO/outputs/model_id META_HOME=$HOME/accountable-ft-meta
-export SCRATCH REPO VENV SERVE_VENV MODEL_FILE META_HOME PATH=$HOME/.local/bin:$PATH
+VENV=$REPO/.venv SERVE_VENV=$REPO/.venv-serve MODEL_FILE=$REPO/outputs/model_id
+export CLUSTER SCRATCH REPO VENV SERVE_VENV MODEL_FILE META_HOME PATH=$BIN:$PATH
 export HF_HOME=$SCRATCH/hf UV_CACHE_DIR=$SCRATCH/.uv/cache UV_PYTHON_INSTALL_DIR=$SCRATCH/.uv/python
 export XDG_CACHE_HOME=$SCRATCH/.cache TRITON_CACHE_DIR=$SCRATCH/.cache/triton VLLM_CACHE_ROOT=$SCRATCH/.cache/vllm
-OUT=/scratch/users/%u/accountable-ft/runs/slurm
+OUT=$REPO/runs/slurm
 # a job mails only when it fails (MAIL=<address>, default the SUNet address), and notify sends 1 mail when a whole
 # group has ended, so the inbox only gets mail that needs action
+[[ $CLUSTER == sc && -z ${MAIL:-} ]] && { echo "error: set MAIL on sc, jobs run under a shared account" >&2; exit 1; }
 MAIL=${MAIL:-$USER@stanford.edu}
 MAILF=("--mail-type=FAIL" "--mail-user=$MAIL")
 # One decoding budget for every run served here (base, thinking on and off, trained): evaluate.py refuses to compare
@@ -40,7 +56,7 @@ if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
   # chunk 1 stops after epoch 1, chunk 2 resumes from its checkpoint. Everything stays on gpu: normal shares its
   # nodes at PriorityTier 1 (gpu has 5), so a GPU job there only gets a GPU the gpu queue leaves idle
   runs=account-s0,account-s1,account-s2,decision-s0,decision-s1,decision-s2
-  [[ ${2:-} == --runs ]] && runs=${3:?usage: bash farmshare.sh train --chunks --runs account-s1,decision-s0}
+  [[ ${2:-} == --runs ]] && runs=${3:?usage: bash cluster.sh train --chunks --runs account-s1,decision-s0}
   mkdir -p "$REPO/runs/slurm"
   echo "mix $MIX: data/$MIX.sft.{train,dev}.jsonl -> outputs/$PRE<run>"
   printf '%-12s %-9s %-10s %-10s\n' run partition chunk1 chunk2
@@ -50,11 +66,11 @@ if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
       printf '%-12s %s\n' "$r" "skipped, outputs/$PRE$r/merged exists"
       continue
     fi
-    p=(--partition=gpu)
+    p=("${PART[@]}")
     dep='' ids=()
     for c in 1 2; do
       # shellcheck disable=SC2086
-      j=$(sbatch --parsable "${p[@]}" "${MAILF[@]}" --gpus=1 --cpus-per-task=8 --mem=48G --time=00:55:00 \
+      j=$(sbatch --parsable "${p[@]}" "${MAILF[@]}" "${GPU[@]}" --cpus-per-task=8 --mem=48G --time=00:55:00 \
           --job-name="aft-$PRE$r-c$c" --output="$OUT/$PRE${r}_c${c}_%j.out" ${dep:+"$dep"} ${SB:-} "$0" train \
           "${BASH_REMATCH[1]}" "${BASH_REMATCH[2]}" "$c")
       ids+=("${j%%;*}")
@@ -68,8 +84,8 @@ if [[ $cmd == notify ]]; then
   # a 1-minute CPU job that waits for every listed job (array ids cover all tasks) to end in any state, writes their
   # states to runs/slurm/done-<group>_<id>.out and mails once, named aft-done-<group>: the subject says COMPLETED
   # when every job completed and FAILED when any did not
-  grp=${1:?usage: bash farmshare.sh notify <group> <jobid>[,<jobid>...]} jl=${2:?missing job ids}
-  sbatch --partition=normal --cpus-per-task=1 --mem=1G --time=00:05:00 --mail-type=END --mail-user="$MAIL" \
+  grp=${1:?usage: bash cluster.sh notify <group> <jobid>[,<jobid>...]} jl=${2:?missing job ids}
+  sbatch "${CPUPART[@]}" --cpus-per-task=1 --mem=1G --time=00:05:00 --mail-type=END --mail-user="$MAIL" \
       --job-name="aft-done-$grp" --dependency="afterany:${jl//,/:}" --output="$OUT/done-${grp}_%j.out" \
       --wrap "sacct -X -j $jl -o JobID%16,JobName%20,State,Elapsed,ExitCode
 ! sacct -X -n -j $jl -o State | grep -qv COMPLETED"
@@ -81,12 +97,21 @@ case $cmd in
     --output=$OUT/$PRE%A_%a.out" ;;
   eval) res="--job-name=aft-eval --mem=64G --time=${TIME:-02:00:00} --output=$OUT/eval_%j.out" ;;
   base) res="--job-name=aft-base --mem=36G --time=${TIME:-02:00:00} --output=$OUT/base_%j.out" ;;
+  grid) res="--job-name=aft-grid --mem=64G --time=${TIME:-08:00:00} --array=${ARRAY:-0-17%2} --requeue
+    --output=$OUT/grid_%A_%a.out" ;;
   *) res= ;;
 esac
+if [[ $cmd == setup && $CLUSTER == sc && -z ${SLURM_JOB_ID:-} ]]; then
+  # no heavy work on the shared login node: the install and checks run as a CPU job
+  mkdir -p "$REPO/runs/slurm"
+  sbatch "${CPUPART[@]}" --cpus-per-task=8 --mem=32G --time=03:00:00 "${MAILF[@]}" --job-name=aft-setup \
+      --output="$OUT/setup_%j.out" ${SB:-} "$0" setup
+  exit
+fi
 if [[ -n $res && -z ${SLURM_JOB_ID:-} ]]; then
   mkdir -p "$REPO/runs/slurm"
   # shellcheck disable=SC2086
-  sbatch --partition=gpu --gpus=1 --cpus-per-task=8 "${MAILF[@]}" $res ${SB:-} "$0" "$cmd" "$@"
+  sbatch "${PART[@]}" "${GPU[@]}" --cpus-per-task=8 "${MAILF[@]}" $res ${SB:-} "$0" "$cmd" "$@"
   exit
 fi
 
@@ -108,8 +133,14 @@ set -u
 train_one() {
   local cond=$1 seed=$2 out=$3 tr=$4 dv=$5
   shift 5
-  [[ -s $MODEL_FILE ]] || die "$MODEL_FILE missing, run bash farmshare.sh setup first"
+  [[ -s $MODEL_FILE ]] || die "$MODEL_FILE missing, run bash cluster.sh setup first"
   cd "$REPO"
+  if [[ -d $out/adapter ]]; then
+    echo "skip training: $out/adapter exists"
+    return
+  fi
+  # a requeued (preempted) job restarts here and resumes from its last epoch checkpoint
+  [[ ${RESUME_OK:-0} == 1 ]] && compgen -G "$out/checkpoint-*" > /dev/null && set -- "$@" --resume
   echo "job ${SLURM_JOB_ID:-local} $cond s$seed on $(hostname), commit $(git rev-parse --short HEAD), out $out"
   nvidia-smi --query-gpu=name,memory.total --format=csv,noheader || true
   python train.py --condition "$cond" --data "$tr" --eval-data "$dv" --seed "$seed" --model "$(cat "$MODEL_FILE")" \
@@ -122,7 +153,7 @@ train_one() {
 # Serves a model with vllm on this job's GPU and runs the answer, repeat and both predict passes on the primary
 # slice of each data file (CASES=N for a stratified subset, THINKING=on|off, CONC=N parallel requests, default 32,
 # DATA a comma list of data files, default data/v1.jsonl, SLICE for another slice, e.g. DATA=data/mortgage.jsonl
-# SLICE=real_transfer). Runs on a file other than v1 are named <file stem>-<run>, so 1 served model covers several
+# SLICE=real_transfer, PASSES=answer for the answer pass alone). Runs on a file other than v1 are named <file stem>-<run>, so 1 served model covers several
 # files without their outputs colliding.
 # Usage: run_passes <model path> <run name> <cache tag>
 run_passes() {
@@ -155,11 +186,54 @@ run_passes() {
     S+=(--backend openai --base-url "http://127.0.0.1:$port/v1" --model "$run" --cache-tag "$tag"
       --cache "runs/cache.$r.jsonl" --conc "${CONC:-32}" --max-tokens "$MAX_TOKENS" --thinking "${THINKING:-off}")
     python infer.py "${S[@]}" --out "runs/$r.jsonl"
+    [[ ${PASSES:-all} == answer ]] && continue
     python infer.py "${S[@]}" --rep 1 --out "runs/$r.repeat.jsonl"
     python infer.py --mode predict "${S[@]}" --frozen "runs/$r.jsonl" --out "runs/$r.predict.jsonl"
     python infer.py --mode predict "${S[@]}" --frozen "runs/$r.jsonl" --no-account \
         --out "runs/$r.predict_noacc.jsonl"
   done
+}
+
+# Merges the epoch-k checkpoint of outputs/<name>, serves it with vllm and runs the passes on DATA, then deletes the
+# merged weights unless KEEP_MERGED=1. Usage: eval_one <name> <epoch>
+eval_one() {
+  local name=${1:?usage: eval_one <name> <epoch>} ep=${2:?missing epoch} out run ckpt tag merged
+  out=$REPO/outputs/$name
+  [[ -f $out/train_meta.json ]] || die "$out has no train_meta.json, train it first"
+  # run names follow evaluate.select_ckpt: <cond>-e<k>-s<seed> (smoke-<cond>-e<k> for smoke runs)
+  if [[ $name =~ ^(.*)-s([0-9]+)$ ]]; then run=${BASH_REMATCH[1]}-e$ep-s${BASH_REMATCH[2]}; else run=$name-e$ep; fi
+  cd "$REPO"
+  echo "job $SLURM_JOB_ID: $run on $(hostname), commit $(git rev-parse --short HEAD)"
+  nvidia-smi --query-gpu=name,memory.total --format=csv,noheader || true
+  ckpt=$(python - "$out" "$ep" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+out, ep = Path(sys.argv[1]), int(sys.argv[2])
+hit = [c for c in out.glob("checkpoint-*") if round(json.loads((c / "trainer_state.json").read_text())["epoch"]) == ep]
+if len(hit) != 1:
+    sys.exit(f"expected 1 checkpoint at epoch {ep} in {out}, found {[c.name for c in hit]}")
+print(hit[0])
+PY
+)
+  # the adapter hash in the cache tag keeps retrained weights under one name from hitting old answers
+  tag=$run-$(sha256sum "$ckpt/adapter_model.safetensors" | cut -c1-12) merged=$out/merged-e$ep-j$SLURM_JOB_ID
+  # each job merges into its own dir and removes it, so evals of one checkpoint on 2 data files never write or
+  # delete each other's weights
+  echo "merging $ckpt -> $merged"
+  python - "$ckpt" "$merged" <<'PY'
+import sys
+from unsloth import FastLanguageModel
+import torch
+
+model, tok = FastLanguageModel.from_pretrained(sys.argv[1], dtype=torch.bfloat16, load_in_4bit=False,
+        max_seq_length=4096)
+model.save_pretrained_merged(sys.argv[2], tok, save_method="merged_16bit")
+PY
+  run_passes "$merged" "$run" "$tag"
+  [[ ${KEEP_MERGED:-0} == 1 ]] || rm -rf "$merged"
+  echo "done: $run on ${DATA:-data/v1.jsonl}, tag $tag"
 }
 
 case $cmd in
@@ -173,7 +247,7 @@ case $cmd in
     cd "$REPO"
     command -v uv &>/dev/null || module load uv &>/dev/null || true
     command -v uv &>/dev/null ||
-        curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="$HOME/.local/bin" UV_NO_MODIFY_PATH=1 sh
+        curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="$BIN" UV_NO_MODIFY_PATH=1 sh
     [[ -x $VENV/bin/python ]] || uv venv --python 3.12 "$VENV"
     # shellcheck disable=SC1091
     source "$VENV/bin/activate"
@@ -212,6 +286,15 @@ PY
       python train.py export --split "$s" --data data/v1.jsonl data/mortgage-split.jsonl --domains grant trial \
           mortgage --drop-flagged data/v1.flagged.txt --out "data/r2.sft.$s.jsonl"
       python train.py export --split "$s" --data data/mortgage-split.jsonl --out "data/mo.sft.$s.jsonl"
+      # row-matched grid: 3,600 train rows (400 dev) per mix, split evenly over its domains
+      n=$([[ $s == train ]] && echo 1800 || echo 200)
+      python train.py export --split "$s" --data data/v1.jsonl --domains grant trial --drop-flagged \
+          data/v1.flagged.txt --rows-per-domain "$n" --out "data/rm-inv.sft.$s.jsonl"
+      python train.py export --split "$s" --data data/mortgage-split.jsonl data/snap.jsonl --rows-per-domain "$n" \
+          --out "data/rm-real.sft.$s.jsonl"
+      python train.py export --split "$s" --data data/v1.jsonl data/mortgage-split.jsonl data/snap.jsonl --domains \
+          grant trial mortgage snap --drop-flagged data/v1.flagged.txt --rows-per-domain $((n / 2)) \
+          --out "data/rm-mix.sft.$s.jsonl"
     done
     python - <<'PY'
 import importlib.metadata as md
@@ -268,45 +351,18 @@ PY
     train_one "$cond" "$seed" "$REPO/outputs/$PRE$cond-s$seed" "data/$MIX.sft.train.jsonl" "data/$MIX.sft.dev.jsonl" \
         "${fl[@]}" ;;
   eval)  # merges the epoch-k checkpoint, serves it with vllm, runs answer, repeat and both predict passes
-    name=${1:?usage: bash farmshare.sh eval [r2-|mo-]<cond>-s<seed> <epoch>} ep=${2:?missing epoch}
-    out=$REPO/outputs/$name
-    [[ -f $out/train_meta.json ]] || die "$out has no train_meta.json, train it first"
-    # run names follow evaluate.select_ckpt: <cond>-e<k>-s<seed> (smoke-<cond>-e<k> for smoke runs)
-    if [[ $name =~ ^(.*)-s([0-9]+)$ ]]; then run=${BASH_REMATCH[1]}-e$ep-s${BASH_REMATCH[2]}; else run=$name-e$ep; fi
-    cd "$REPO"
-    echo "job $SLURM_JOB_ID: $run on $(hostname), commit $(git rev-parse --short HEAD)"
-    nvidia-smi --query-gpu=name,memory.total --format=csv,noheader || true
-    ckpt=$(python - "$out" "$ep" <<'PY'
-import json
-import sys
-from pathlib import Path
-
-out, ep = Path(sys.argv[1]), int(sys.argv[2])
-hit = [c for c in out.glob("checkpoint-*") if round(json.loads((c / "trainer_state.json").read_text())["epoch"]) == ep]
-if len(hit) != 1:
-    sys.exit(f"expected 1 checkpoint at epoch {ep} in {out}, found {[c.name for c in hit]}")
-print(hit[0])
-PY
-)
-    # the adapter hash in the cache tag keeps retrained weights under one name from hitting old answers
-    tag=$run-$(sha256sum "$ckpt/adapter_model.safetensors" | cut -c1-12) merged=$out/merged-e$ep-j$SLURM_JOB_ID
-    # each job merges into its own dir and removes it, so evals of one checkpoint on 2 data files never write or
-    # delete each other's weights
-    echo "merging $ckpt -> $merged"
-    python - "$ckpt" "$merged" <<'PY'
-import sys
-from unsloth import FastLanguageModel
-import torch
-
-model, tok = FastLanguageModel.from_pretrained(sys.argv[1], dtype=torch.bfloat16, load_in_4bit=False,
-        max_seq_length=4096)
-model.save_pretrained_merged(sys.argv[2], tok, save_method="merged_16bit")
-PY
-    run_passes "$merged" "$run" "$tag"
-    [[ ${KEEP_MERGED:-0} == 1 ]] || rm -rf "$merged"
-    echo "done: $run on ${DATA:-data/v1.jsonl}, tag $tag" ;;
+    eval_one "${1:?usage: bash cluster.sh eval [r2-|mo-]<cond>-s<seed> <epoch>}" "${2:?missing epoch}" ;;
+  grid)  # array index i: mix (inv, real, mix) i / 6, account (0-2) or decision (3-5) by i % 6, seed i % 3
+    mixes=(inv real mix) conds=(account decision) i=${SLURM_ARRAY_TASK_ID:?grid runs as an array job}
+    MIX=${mixes[i / 6]} cond=${conds[i % 6 / 3]} seed=$((i % 3))
+    RESUME_OK=1 train_one "$cond" "$seed" "$REPO/outputs/rm-$MIX-$cond-s$seed" "data/rm-$MIX.sft.train.jsonl" \
+        "data/rm-$MIX.sft.dev.jsonl" --epochs 2
+    rm -rf "$REPO/outputs/rm-$MIX-$cond-s$seed/merged"  # eval merges the epoch checkpoint itself
+    # every grid model answers the same 4 test files; the simulator passes run on the Mac
+    DATA=data/v1.jsonl,data/mortgage-split.jsonl,data/snap.jsonl,data/dependent.jsonl PASSES=answer \
+        eval_one "rm-$MIX-$cond-s$seed" 2 ;;
   base)  # prompted base model, the same passes as eval: THINKING=on|off, CASES=N for a stratified subset
-    [[ -s $MODEL_FILE ]] || die "$MODEL_FILE missing, run bash farmshare.sh setup first"
+    [[ -s $MODEL_FILE ]] || die "$MODEL_FILE missing, run bash cluster.sh setup first"
     model_id=$(cat "$MODEL_FILE") run=base-think${THINKING:-off}
     [[ ${CASES:-0} -gt 0 ]] && run=$run-c$CASES
     cd "$REPO"

@@ -1,0 +1,314 @@
+# SNAP (food assistance) household eligibility, fiscal year 2027 (Oct 1, 2026 - Sep 30, 2027), 48 states and DC.
+# Real-rules domain: income limits, deductions and the resource limit follow USDA's FY2027 cost-of-living memo, the
+# rules follow 7 CFR 273, and the work rule and non-citizen rule follow the 2025 changes in P.L. 119-21; see
+# domains/snap.md for sources. Simplifications: the income limit tables are written as a 1-person amount plus a
+# per-person step, so sizes 3-6 are off the official table by $1-3; net income uses the earned income, standard
+# and excess shelter deductions only (no dependent care, medical or child support deduction), assets are 1 fact; categorical eligibility
+# is one fact (the household receives TANF or SSI); the work and student rules apply to "a member"; ints are bucketed
+# to at most 8 values like every other domain.
+name: snap
+title: "Supplemental Nutrition Assistance Program (SNAP): household eligibility rules, fiscal year 2027"
+preamble: "A household is approved only if it meets every rule below. Income figures are monthly. Rules marked as defaults say what to assume when the application is silent on a point."
+ref_date: 2026-11-02
+required: [gross_test]
+facts:
+  household_size:
+    type: int
+    values: [1, 2, 3, 4, 5, 6]
+    label: "number of people in the household"
+    say:
+      - "The household has {v} members who buy and prepare food together."
+      - "{v} people live and eat together in the household."
+  earned_income:
+    type: int
+    values: [0, 600, 1200, 1800, 2400, 3000, 3600]
+    label: "monthly earned income, wages and self-employment (dollars)"
+    say:
+      - "Wages for the household come to {v:money} a month."
+      - "Pay stubs show monthly earnings of {v:money}."
+  unearned_income:
+    type: int
+    values: [0, 300, 600, 1000, 1500]
+    label: "monthly unearned income, such as Social Security or child support received (dollars)"
+    say:
+      - "The household also receives {v:money} a month in unearned income such as Social Security and child support."
+      - "Monthly unearned income, from benefits and support payments, is {v:money}."
+  elderly_or_disabled:
+    type: bool
+    label: "a member is aged 60 or older or disabled"
+    say_true:
+      - "One member of the household is 67 years old."
+      - "A household member receives disability benefits."
+    say_false:
+      - "No one in the household is 60 or older or disabled."
+      - "All members are under 60 and none is disabled."
+  categorical:
+    type: bool
+    label: "the household receives TANF cash assistance or SSI"
+    say_true:
+      - "The household receives monthly TANF cash assistance."
+      - "Every member of the household receives SSI."
+    say_false:
+      - "The household gets no TANF cash assistance or SSI."
+      - "No one in the household receives TANF or SSI."
+  shelter_costs:
+    type: int
+    values: [300, 600, 900, 1200, 1500, 1900]
+    label: "monthly shelter costs: rent or mortgage plus utilities (dollars)"
+    say:
+      - "Rent and utilities cost the household {v:money} a month."
+      - "Monthly shelter costs, counting rent and utility bills, total {v:money}."
+  resources:
+    type: int
+    values: [800, 2000, 2900, 3100, 4000, 4700, 4900, 6500]
+    label: "countable resources: bank accounts, stocks and bonds, not retirement accounts or the home (dollars)"
+    say:
+      - "Bank accounts, stocks and bonds add up to {v:money} in countable resources."
+      - "The household's countable resources, mainly checking and savings, total {v:money}."
+  abawd:
+    type: bool
+    label: "a member is an able-bodied adult aged 18 to 64 with no child under 14 in the household"
+    say_true:
+      - "One member is a healthy 35-year-old with no children under 14 at home."
+      - "The applicant is an able-bodied 52-year-old, and no child under 14 lives in the household."
+    say_false:
+      - "No member is an able-bodied adult without a young child in the home."
+      - "The adults in the household are caring for a child under 14."
+  work_hours:
+    type: int
+    values: [0, 20, 40, 79, 80, 120]
+    label: "monthly hours the able-bodied adult works or spends in an approved work program"
+    say:
+      - "That adult works or attends a work program {v} hours a month."
+      - "Records show {v} hours a month of work or job training for that adult."
+  abawd_months:
+    type: int
+    values: [0, 1, 2, 3, 6]
+    label: "months of benefits that adult received in the past 36 without meeting the work rule"
+    say:
+      - "That adult has received {v} months of benefits in the past three years without meeting the work rule."
+      - "In the last 36 months, the adult got benefits for {v} months while not meeting the work requirement."
+  student_status:
+    type: enum
+    values: [none, student, student_working, student_parent]
+    names:
+      none: "no member aged 18 to 49 enrolled at least half-time in college"
+      student: "a member aged 18 to 49 enrolled at least half-time in college who works under 20 hours a week and has no child under 6"
+      student_working: "a member aged 18 to 49 enrolled at least half-time in college who also works at least 20 hours a week"
+      student_parent: "a member aged 18 to 49 enrolled at least half-time in college who cares for their own child under 6"
+    label: "college students in the household"
+    say:
+      - "The household has {v:e}."
+      - "As for college enrollment, there is {v:e}."
+  immigration_status:
+    type: enum
+    values: [citizen, lpr_5plus, lpr_under5, cuban_haitian, cofa, refugee, visa]
+    names:
+      citizen: "a U.S. citizen"
+      lpr_5plus: "a green card holder for more than 5 years"
+      lpr_under5: "a green card holder for less than 5 years"
+      cuban_haitian: "a Cuban or Haitian entrant"
+      cofa: "a citizen of a Compact of Free Association nation (Marshall Islands, Micronesia or Palau)"
+      refugee: "a refugee without a green card"
+      visa: "on a temporary work visa"
+    label: "citizenship or immigration status of the applicant"
+    say:
+      - "The applicant is {v:e}."
+      - "Immigration records show the applicant is {v:e}."
+  work_quarters_40:
+    type: bool
+    label: "the applicant has 40 qualifying quarters of work"
+    say_true:
+      - "Social Security records credit the applicant with 40 quarters of work."
+      - "The applicant has 40 qualifying work quarters on record."
+    say_false:
+      - "The applicant has fewer than 40 qualifying work quarters."
+      - "Work history shows under 40 qualifying quarters."
+  ssn_provided:
+    type: bool
+    label: "every member applying gave a Social Security number or proof of applying for one"
+    say_true:
+      - "Each member applying has given a Social Security number."
+      - "Social Security numbers are on file for every applicant."
+    say_false:
+      - "One applying member has not given a Social Security number or proof of applying for one."
+      - "A Social Security number is missing for a member who is applying."
+  ipv_disqualified:
+    type: bool
+    label: "a member is serving a disqualification for an intentional program violation"
+    say_true:
+      - "A member is still serving a 12-month disqualification for an earlier intentional program violation."
+      - "State records show a member is disqualified for intentionally breaking program rules."
+    say_false:
+      - "No member has a program violation disqualification."
+      - "No intentional program violation is on record for the household."
+  on_strike:
+    type: bool
+    label: "a member is on strike"
+    say_true:
+      - "One member is currently on strike at a factory."
+      - "A member has been on strike since last month."
+    say_false:
+      - "No one in the household is on strike."
+      - "No member is involved in a strike."
+  eligible_before_strike:
+    type: bool
+    label: "the household was eligible the day before the strike began"
+    say_true:
+      - "Before the strike started, the household already qualified for benefits."
+      - "The household met every rule on the day before the strike."
+    say_false:
+      - "The household did not qualify on the day before the strike."
+      - "Before the strike, the household's income was too high to qualify."
+  state_resident:
+    type: bool
+    label: "the household lives in the state where it applied"
+    say_true:
+      - "The household lives in the state where it applied."
+      - "The family's home address is in this state."
+    say_false:
+      - "The household lives in a neighboring state, not the one where it applied."
+      - "The applicant's home is across the state line."
+  fleeing_felon:
+    type: bool
+    label: "a member is a fleeing felon or violating parole"
+    say_true:
+      - "A warrant shows one member is fleeing to avoid prosecution for a felony."
+      - "One member is currently violating the terms of their parole."
+    say_false:
+      - "No member is a fleeing felon or violating parole."
+      - "No warrants or parole violations are on record for the household."
+  quit_status:
+    type: enum
+    values: [none, quit_no_cause, quit_good_cause]
+    names:
+      none: "no member quit a job in the past 30 days"
+      quit_no_cause: "a member quit a job in the past 30 days without good cause"
+      quit_good_cause: "a member quit a job in the past 30 days for good cause, documented workplace discrimination"
+    label: "job quits in the past 30 days"
+    say:
+      - "Work history shows {v:e}."
+      - "On recent employment, the file shows {v:e}."
+derived_facts:
+  gross_income:
+    expr: "earned_income + unearned_income"
+    label: "gross monthly income (dollars)"
+    say: ["Earned and unearned income together give gross monthly income of {v:money}."]
+  adjusted_income:
+    expr: "earned_income + unearned_income - earned_income // 5 - 217 - (household_size >= 4) * 12 - (household_size >= 5) * 39 - (household_size >= 6) * 40"
+    label: "income after the earned income and standard deductions (dollars)"
+    say: ["After the earned income and standard deductions, income is {v:money}."]
+  excess_shelter:
+    expr: "shelter_costs - (earned_income + unearned_income - earned_income // 5 - 217 - (household_size >= 4) * 12 - (household_size >= 5) * 39 - (household_size >= 6) * 40) // 2"
+    label: "shelter costs above half of adjusted income (dollars, negative if none)"
+    say: ["Shelter costs exceed half of adjusted income by {v:money}."]
+  net_income:
+    expr: "adjusted_income - (excess_shelter > 0) * (elderly_or_disabled * excess_shelter + (1 - elderly_or_disabled) * ((excess_shelter > 769) * 769 + (excess_shelter <= 769) * excess_shelter))"
+    label: "net monthly income after all deductions (dollars)"
+    say: ["After all deductions, net monthly income is {v:money}."]
+rules:
+  - key: gross_test
+    cond: "gross_income <= 1729 + 616 * (household_size - 1)"
+    text: "Gross monthly income (earned plus unearned) may not exceed $1,729 for a 1-person household plus $616 for each additional member, which is 130% of the poverty line"
+    unless:
+      - cond: "elderly_or_disabled"
+        text: "a member is aged 60 or older or disabled"
+      - cond: "categorical"
+        text: "the household receives TANF cash assistance or SSI"
+  - key: resource_limit
+    cond: "resources <= {t} or (elderly_or_disabled and resources <= {t2})"
+    text: "Countable resources may not exceed {t:money}, or {t2:money} if a member is 60 or older or disabled"
+    params: {t: [3000], t2: [4750]}
+    unless:
+      - cond: "categorical"
+        text: "the household receives TANF cash assistance or SSI"
+  - key: abawd
+    scoped: true
+    cond: "not abawd or work_hours >= 80"
+    near: "not abawd and work_hours < 80"
+    text: "An able-bodied adult aged 18 to 64 with no child under 14 in the household must work or join a work program at least 80 hours a month"
+    unless:
+      - cond: "abawd_months < 3"
+        text: "that adult has received benefits for fewer than 3 months of the past 36 without meeting this rule"
+  - key: student
+    scoped: true
+    cond: "student_status == 'none'"
+    near: "student_status != 'none'"
+    text: "A member aged 18 to 49 enrolled at least half-time in college is not eligible"
+    unless:
+      - cond: "student_status == 'student_working'"
+        text: "the student works at least 20 hours a week"
+      - cond: "student_status == 'student_parent'"
+        text: "the student cares for their own child under 6"
+  - key: immigration
+    cond: "immigration_status in ['citizen', 'lpr_5plus', 'cuban_haitian', 'cofa']"
+    text: "The applicant must be a U.S. citizen, a green card holder of more than 5 years, a Cuban or Haitian entrant, or a citizen of a Compact of Free Association nation"
+    unless:
+      - cond: "immigration_status == 'lpr_under5' and work_quarters_40"
+        text: "the applicant is a green card holder with 40 qualifying quarters of work"
+  - key: ssn
+    cond: "ssn_provided"
+    text: "Every member applying must give a Social Security number or proof of applying for one"
+  - key: ipv
+    cond: "not ipv_disqualified"
+    text: "No member may be serving a disqualification for an intentional program violation"
+  - key: striker
+    scoped: true
+    cond: "not on_strike or eligible_before_strike"
+    near: "not on_strike and not eligible_before_strike"
+    text: "A household with a member on strike is eligible only if it was eligible on the day before the strike began"
+  - key: residency
+    cond: "state_resident"
+    text: "The household must live in the state where it applies"
+  - key: fleeing_felon
+    cond: "not fleeing_felon"
+    text: "No member may be a fleeing felon or a parole violator"
+  - key: voluntary_quit
+    scoped: true
+    cond: "quit_status == 'none'"
+    near: "quit_status != 'none'"
+    text: "The household is not eligible if a member quit a job in the past 30 days"
+    unless:
+      - cond: "quit_status == 'quit_good_cause'"
+        text: "the member left the job for good cause, such as discrimination, a required move, or caring for a family member"
+derived:
+  - key: net_test
+    cond: "categorical or net_income <= 1330 + 474 * (household_size - 1)"
+    text: "Unless the household receives TANF cash assistance or SSI, net monthly income may not exceed $1,330 for a 1-person household plus $474 for each additional member. Net income is gross income minus 20% of earned income, minus a standard deduction ($217 for 1 to 3 members, $229 for 4, $268 for 5, $308 for 6), minus shelter costs above half of the income left after those deductions (that shelter deduction is capped at $769 unless a member is 60 or older or disabled)"
+defaults:
+  - fact: quit_status
+    value: none
+    text: "If the application does not mention leaving a job, assume no member quit one in the past 30 days"
+  - fact: student_status
+    value: none
+    text: "If the application does not mention college enrollment, assume no member is a college student"
+  - fact: fleeing_felon
+    value: false
+    text: "If no warrant or parole violation is on record, assume no member is a fleeing felon or parole violator"
+  - fact: categorical
+    value: false
+    text: "If the application does not show TANF or SSI, treat the household as not receiving either"
+  - fact: elderly_or_disabled
+    value: false
+    text: "If no member's age or disability is given, assume no member is 60 or older or disabled"
+  - fact: eligible_before_strike
+    value: false
+    text: "If the application does not show eligibility before a strike, assume the household was not eligible"
+  - fact: work_quarters_40
+    value: false
+    text: "If qualifying work quarters are not documented, assume fewer than 40"
+  - fact: ipv_disqualified
+    value: false
+    text: "If no disqualification is on record, assume no member is disqualified"
+names: ["Maria Gonzalez", "James Carter", "Nguyen Thi Lan", "Aisha Mohamed", "Robert Kowalski", "Keisha Johnson", "Ahmed Hassan", "Linda Svensson"]
+intro:
+  - "Case {num}: {name} applied for SNAP food assistance for their household."
+  - "The following summarizes SNAP application {num}, filed by {name}."
+  - "{name} submitted SNAP application {num} this month."
+color:
+  - "The applicant asked whether the caseworker could speed up the interview."
+  - "The applicant says they have never needed help before and feel embarrassed to apply."
+  - "The caseworker notes the applicant was polite and well prepared."
+  - "One member volunteers at the local food bank."
+  - "The applicant brought every document on the checklist to the interview."
+  - "The applicant attends a nearby church."
