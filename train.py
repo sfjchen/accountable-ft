@@ -9,6 +9,7 @@ import importlib.metadata
 import json
 import os
 import random
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -327,7 +328,13 @@ def main():
     if fin:
         model.save_pretrained(str(out / "adapter"))
         tok.save_pretrained(str(out / "adapter"))
-        model.save_pretrained_merged(str(out / "merged"), tok, save_method="merged_16bit")
+        # written under a temporary name and renamed when complete, so a job killed mid-merge never leaves a
+        # partial merged/ that an eval would serve
+        part = out / "merged.part"
+        shutil.rmtree(part, ignore_errors=True)
+        model.save_pretrained_merged(str(part), tok, save_method="merged_16bit")
+        shutil.rmtree(out / "merged", ignore_errors=True)
+        part.rename(out / "merged")
     chunks.append({"job": os.environ.get("SLURM_JOB_ID", "local"), "epochs": [round(st0["epoch"], 4),
             round(tr.state.epoch, 4)], "steps": [st0["global_step"], tr.state.global_step], "final": fin})
     meta.update(train_metrics=res.metrics, log_history=tr.state.log_history,

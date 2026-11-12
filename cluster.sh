@@ -198,7 +198,9 @@ run_passes() {
 }
 
 # Merges the epoch-k checkpoint of outputs/<name>, serves it with vllm and runs the passes on DATA, then deletes the
-# merged weights unless KEEP_MERGED=1. Usage: eval_one <name> <epoch>
+# merged weights unless KEEP_MERGED=1. With REUSE_MERGED=1 and k the final epoch it serves the merged/ that train.py
+# wrote from the same weights instead (saves a model load and merge, about 10 min on sc). Only for 1 eval per run,
+# since it deletes that dir. Usage: eval_one <name> <epoch>
 eval_one() {
   local name=${1:?usage: eval_one <name> <epoch>} ep=${2:?missing epoch} out run ckpt tag merged
   out=$REPO/outputs/$name
@@ -217,15 +219,22 @@ out, ep = Path(sys.argv[1]), int(sys.argv[2])
 hit = [c for c in out.glob("checkpoint-*") if round(json.loads((c / "trainer_state.json").read_text())["epoch"]) == ep]
 if len(hit) != 1:
     sys.exit(f"expected 1 checkpoint at epoch {ep} in {out}, found {[c.name for c in hit]}")
-print(hit[0])
+st = json.loads((hit[0] / "trainer_state.json").read_text())
+print(hit[0], int(st["global_step"] >= st["max_steps"]))
 PY
 )
+  local fin=${ckpt##* }
+  ckpt=${ckpt% *}
   # the adapter hash in the cache tag keeps retrained weights under one name from hitting old answers
   tag=$run-$(sha256sum "$ckpt/adapter_model.safetensors" | cut -c1-12) merged=$out/merged-e$ep-j$SLURM_JOB_ID
   # each job merges into its own dir and removes it, so evals of one checkpoint on 2 data files never write or
   # delete each other's weights
-  echo "merging $ckpt -> $merged"
-  python - "$ckpt" "$merged" <<'PY'
+  if [[ ${REUSE_MERGED:-0} == 1 && $fin == 1 && -f $out/merged/config.json ]]; then
+    merged=$out/merged
+    echo "serving $merged, train.py's merge of the final weights in $ckpt"
+  else
+    echo "merging $ckpt -> $merged"
+    python - "$ckpt" "$merged" <<'PY'
 import sys
 from unsloth import FastLanguageModel
 import torch
@@ -234,6 +243,7 @@ model, tok = FastLanguageModel.from_pretrained(sys.argv[1], dtype=torch.bfloat16
         max_seq_length=4096)
 model.save_pretrained_merged(sys.argv[2], tok, save_method="merged_16bit")
 PY
+  fi
   run_passes "$merged" "$run" "$tag"
   [[ ${KEEP_MERGED:-0} == 1 ]] || rm -rf "$merged"
   echo "done: $run on ${DATA:-data/v1.jsonl}, tag $tag"
@@ -360,9 +370,8 @@ PY
     MIX=${mixes[i / 6]} cond=${conds[i % 6 / 3]} seed=$((i % 3))
     RESUME_OK=1 train_one "$cond" "$seed" "$REPO/outputs/rm-$MIX-$cond-s$seed" "data/rm-$MIX.sft.train.jsonl" \
         "data/rm-$MIX.sft.dev.jsonl" --epochs 2
-    rm -rf "$REPO/outputs/rm-$MIX-$cond-s$seed/merged"  # eval merges the epoch checkpoint itself
     # every grid model answers the same 4 test files; the simulator passes run on the Mac
-    DATA=data/v1.jsonl,data/mortgage-split.jsonl,data/snap.jsonl,data/dependent.jsonl PASSES=answer \
+    DATA=data/v1.jsonl,data/mortgage-split.jsonl,data/snap.jsonl,data/dependent.jsonl PASSES=answer REUSE_MERGED=1 \
         eval_one "rm-$MIX-$cond-s$seed" 2 ;;
   base)  # prompted base model, the same passes as eval: THINKING=on|off, CASES=N for a stratified subset
     [[ -s $MODEL_FILE ]] || die "$MODEL_FILE missing, run bash cluster.sh setup first"
