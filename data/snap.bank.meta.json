@@ -1,0 +1,210 @@
+{
+ "data": "data/snap.jsonl",
+ "slice": "unseen_family_train_vocab",
+ "view": "prose",
+ "seed": 0,
+ "items": 313,
+ "kinds": {
+  "add": 47,
+  "invariant_replace": 47,
+  "noncrossing_replace": 47,
+  "pivotal_replace": 125,
+  "remove": 47
+ },
+ "groups": {
+  "pivotal_replace": 0.3993610223642173,
+  "invariant": 0.3003194888178914,
+  "remove": 0.1501597444089457,
+  "add": 0.1501597444089457
+ },
+ "sources": {
+  "engine_alt_disjoint": 106,
+  "engine_alt_overlap": 19,
+  "engine_noncrossing": 47,
+  "variant_record": 141
+ },
+ "candidates": {
+  "prose/add": 168,
+  "prose/invariant_replace": 168,
+  "prose/noncrossing_replace": 95,
+  "prose/pivotal_replace": 125,
+  "prose/remove": 168
+ },
+ "drop_reasons": {
+  "no certified flip within radius 3 other than gold.min_flip": 43
+ },
+ "drops": [
+  {
+   "case_id": "snap-p000-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p001-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p002-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p002-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p003-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p008-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p008-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p014-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p015-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p027-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p027-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p028-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p029-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p032-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p033-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p036-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p036-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p041-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p041-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p043-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p046-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p046-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p047-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p052-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p052-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p052-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p055-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p068-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p068-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p068-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p072-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p072-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p073-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p073-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p087-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p094-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p095-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p102-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p104-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p105-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p105-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p113-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "snap-p115-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  }
+ ]
+}
