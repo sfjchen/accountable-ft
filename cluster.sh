@@ -12,7 +12,8 @@
 # Usage: bash cluster.sh setup | probe | smoke [account|decision] | train [--chunks [--runs <cond>-s<seed>,...]] |
 #   eval [r2-|mo-]<cond>-s<seed> <epoch> (DATA=<file>[,<file>] for other data files) |
 #   base (THINKING=on|off, CASES=N for a stratified subset) | notify <group> <jobid>[,<jobid>...] |
-#   grid (18 jobs, at most 2 at once: inv, real, mix x account, decision x seeds 0-2, each trains then answers)
+#   grid (18 jobs, at most 2 at once: inv, real, mix x account, decision x seeds 0-2, each trains then answers;
+#   PASSES=all adds the repeat and self-prediction passes, skipping a finished adapter and cached answers)
 set -euo pipefail
 {
 cmd=${1:?usage: bash cluster.sh setup|probe|smoke|train|eval|base|grid|notify}
@@ -371,7 +372,8 @@ PY
     RESUME_OK=1 train_one "$cond" "$seed" "$REPO/outputs/rm-$MIX-$cond-s$seed" "data/rm-$MIX.sft.train.jsonl" \
         "data/rm-$MIX.sft.dev.jsonl" --epochs 2
     # every grid model answers the same 4 test files; the simulator passes run on the Mac
-    DATA=data/v1.jsonl,data/mortgage-split.jsonl,data/snap.jsonl,data/dependent.jsonl PASSES=answer REUSE_MERGED=1 \
+    DATA=data/v1.jsonl,data/mortgage-split.jsonl,data/snap.jsonl,data/dependent.jsonl PASSES=${PASSES:-answer} \
+        REUSE_MERGED=1 \
         eval_one "rm-$MIX-$cond-s$seed" 2 ;;
   base)  # prompted base model, the same passes as eval: THINKING=on|off, CASES=N for a stratified subset
     [[ -s $MODEL_FILE ]] || die "$MODEL_FILE missing, run bash cluster.sh setup first"
