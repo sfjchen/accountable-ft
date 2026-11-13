@@ -8,6 +8,7 @@ __pycache__/
 data/v1.jsonl
 data/mortgage.jsonl
 data/mortgage-split.jsonl
+data/permit.jsonl
 data/mortgage.smoke.jsonl
 data/v1.0.jsonl
 data/.gemini_cache/
