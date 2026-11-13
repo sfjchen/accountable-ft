@@ -727,6 +727,49 @@ def test_simulate_accounts(monkeypatch, tmp_path):
             assert r["mode"] == "simulate_shuf"
 
 
+def test_explain_mode(monkeypatch, tmp_path):
+    """
+    Checks the prompted-explanation control: the explain prompt fixes the frozen decision, the output forces that
+    Decision line, and rows it does not explain (unreadable, outside the selection) stay as the frozen run had them.
+    """
+
+    class Stub:
+        """Stands in for Runner: answers with a wrong Decision line, or with none for every 2nd item."""
+
+        def __init__(self, *a):
+            """Ignores the backend settings."""
+
+        def run(self, items, n, mode):
+            """Returns one cached row per item, recording the fixed decision it was given."""
+            return [{"id": rid, "sample": 0, "cached": True, "mode": mode, "fixed": fz, "output": (
+                    "" if k % 2 else "Decision: cannot determine\n") + f"Policy support: base {rid} (R1)"}
+                    for k, (rid, _, _, fz) in enumerate(items)]
+
+    r0 = RECS["p1-b1"]
+    assert build_prompt(r0, None, "deny")[1] == build_prompt(r0)[1] + infer.EXPLAIN.format(dec="deny")
+    sel = [r["id"] for r in select_recs(SMOKE, "unseen_family_train_vocab", "prose", 6)]
+    other = next(r["id"] for r in SMOKE if r["id"] not in sel)
+    fz = [{"id": i, "sample": 0, "output": f"Decision: {'approve' if k % 3 else 'deny'}\nPolicy support: <fact>"}
+          for k, i in enumerate(sel)] + [{"id": sel[0], "sample": 1, "output": "Decision: deny"},
+                                         {"id": other, "sample": 0, "output": "Decision: deny"}]
+    fz[1]["output"] = "no answer"
+    fp, op = tmp_path / "f.jsonl", tmp_path / "pe.jsonl"
+    fp.write_text("".join(json.dumps(r) + "\n" for r in fz))
+    monkeypatch.setattr(infer, "Runner", Stub)
+    monkeypatch.setattr(sys, "argv", ["infer.py", "--mode", "explain", "--data", str(ROOT / "data/smoke.jsonl"),
+                                      "--slice", "unseen_family_train_vocab", "--view", "prose", "--frozen", str(fp),
+                                      "--backend", "gemini", "--model", "base", "--out", str(op)])
+    infer.main()
+    out = evaluate.load(op)
+    assert [(r["id"], r["sample"]) for r in out] == [(r["id"], r["sample"]) for r in fz]
+    for f, r in zip(fz, out):
+        if f["sample"] == 0 and f["id"] in sel and parse(f["output"])["dec"]:
+            d = parse(f["output"])["dec"]
+            assert r["fixed"] == d and parse(r["output"])["dec"] == d and f"base {f['id']}" in r["output"]
+        else:
+            assert r == f
+
+
 @pytest.fixture(scope="module")
 def rows(tmp_path_factory):
     """Exports the smoke train split twice under one seed, checks the files match and returns the rows."""

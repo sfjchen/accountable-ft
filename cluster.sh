@@ -157,8 +157,9 @@ train_one() {
 # Serves a model with vllm on this job's GPU and runs the answer, repeat and both predict passes on the primary
 # slice of each data file (CASES=N for a stratified subset, THINKING=on|off, CONC=N parallel requests, default 32,
 # DATA a comma list of data files, default data/v1.jsonl, SLICE for another slice, e.g. DATA=data/mortgage.jsonl
-# SLICE=real_transfer, PASSES=answer for the answer pass alone). Runs on a file other than v1 are named <file stem>-<run>, so 1 served model covers several
-# files without their outputs colliding.
+# SLICE=real_transfer, PASSES=answer for the answer pass alone, PASSES=explain FROZEN=<run>,... for the
+# prompted-explanation control in place of every pass). Runs on a file other than v1 are named <file stem>-<run>,
+# so 1 served model covers several files without their outputs colliding.
 # Usage: run_passes <model path> <run name> <cache tag>
 run_passes() {
   local model=$1 run=$2 tag=$3 dl=${DATA:-data/v1.jsonl} data r slc=${SLICE:-unseen_family_train_vocab}
@@ -189,6 +190,15 @@ run_passes() {
     [[ ${CASES:-0} -gt 0 ]] && S+=(--cases "$CASES")
     S+=(--backend openai --base-url "http://127.0.0.1:$port/v1" --model "$run" --cache-tag "$tag"
       --cache "runs/cache.$r.jsonl" --conc "${CONC:-32}" --max-tokens "$MAX_TOKENS" --thinking "${THINKING:-off}")
+    if [[ ${PASSES:-all} == explain ]]; then
+      # prompted-explanation control: this model explains each FROZEN run's decisions, written as pe-<run>
+      for f in ${FROZEN//,/ }; do
+        local fr=runs/${r%"$run"}$f.jsonl
+        [[ -s $fr ]] || die "$fr missing, the explain pass needs the frozen run"
+        python infer.py --mode explain "${S[@]}" --frozen "$fr" --out "runs/${r%"$run"}pe-$f.jsonl"
+      done
+      continue
+    fi
     python infer.py "${S[@]}" --out "runs/$r.jsonl"
     [[ ${PASSES:-all} == answer ]] && continue
     python infer.py "${S[@]}" --rep 1 --out "runs/$r.repeat.jsonl"

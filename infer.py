@@ -1,7 +1,8 @@
 """Runs one model over a data file through one Runner (OpenAI-compatible endpoints, Gemini, offline vLLM) with fixed
 decoding and a response cache, and writes one JSONL row per (item, sample) plus <out>.meta.json.
 Modes: answer (the decision call, --bank adds the edited cases), bank (builds the intervention bank), predict
-(self-prediction) and simulate (the external simulator, --all-sim for all 3 passes). format_target is the SFT target.
+(self-prediction), simulate (the external simulator, --all-sim for all 3 passes) and explain (the prompted-explanation
+control: the model writes the explanation for a frozen run's decision). format_target is the SFT target.
 """
 import argparse
 import asyncio
@@ -38,6 +39,9 @@ gives instead the fewest facts the case file leaves out, with values, whose addi
 All edits on that line are applied together, so list one set of edits, not alternatives. Name every fact by \
 exactly one of these labels: {labels}. Give each value as the case file states it (yes or no for yes/no facts)."""
 CHANGE = "Smallest change that would reverse this decision"
+EXPLAIN = """
+
+The decision on this case file is fixed: {dec}. Give the 4 lines with exactly this decision."""
 PREDICT = """Your earlier answer on this case file:
 {frozen}
 
@@ -143,12 +147,14 @@ def format_target(rec):
 
 def build_prompt(rec, item=None, frozen=None, sim=False):
     """
-    Returns the (system, user) prompt for one record: the decision prompt, or with a bank item and frozen answer the
-    self-prediction prompt (case included) or with sim the simulator prompt (no case text).
+    Returns the (system, user) prompt for one record: the decision prompt (with a frozen decision and no bank item,
+    the explain prompt that fixes it), or with a bank item and frozen answer the self-prediction prompt (case
+    included) or with sim the simulator prompt (no case text).
     """
     head, case = f"Policy:\n{rec['policy_text'].strip()}\n\n", f"Case file:\n{rec['case_text'].strip()}\n\n"
     if item is None:
-        return SYSTEM, head + case + FORMAT.format(labels="; ".join(rec.get("fact_labels", {}).values()))
+        return SYSTEM, head + case + FORMAT.format(labels="; ".join(rec.get("fact_labels", {}).values())) + (
+                EXPLAIN.format(dec=frozen) if frozen else "")
     lab, dom = rec.get("fact_labels", {}), gen.load_domain(rec["domain"]) if rec.get("domain") else {}
     desc = "; ".join(f"{lab.get(f, f)} is no longer stated" if item["kind"] == "remove" else
             f"{lab.get(f, f)} is now stated as {show(dom, f, v)}" if item["kind"] == "add" else
@@ -471,7 +477,7 @@ def main():
     """
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data", required=True)
-    ap.add_argument("--mode", choices=["answer", "bank", "predict", "simulate"], default="answer")
+    ap.add_argument("--mode", choices=["answer", "bank", "predict", "simulate", "explain"], default="answer")
     ap.add_argument("--backend", choices=["openai", "gemini", "vllm", "claude-cli"])
     ap.add_argument("--model")
     ap.add_argument("--out")
@@ -528,6 +534,8 @@ def main():
         return
     if a.all_sim and (a.mode != "simulate" or a.no_account or a.shuffle_accounts or a.out):
         ap.error("--all-sim runs all 3 simulate passes itself and names their files after --frozen")
+    if a.mode in ("predict", "simulate", "explain") and not a.frozen:
+        ap.error(f"--mode {a.mode} needs --frozen")
     if not (a.backend and a.model and (a.out or a.all_sim)):
         ap.error("--backend, --model and --out are required for answer, predict and simulate")
     sel, bank = select_recs(recs, a.slice, a.view, a.cases, a.sample_seed), load(a.bank) if a.bank else []
@@ -545,6 +553,12 @@ def main():
         if a.mode == "answer":
             items = [(r["id"], r, None, None) for r in sel] + [(i, r, None, None) for i, r in br.items()
                     if r["parent"] in keep]
+        elif a.mode == "explain":
+            # the frozen run's readable sample-0 decisions on the selected records; its other rows (edited cases,
+            # unreadable answers) are kept as they are, so the simulator's targets stay the frozen model's
+            fr = load(a.frozen)
+            fd = {r["id"]: parse(r["output"] or "")["dec"] for r in fr if r["sample"] == 0 and r["id"] in keep}
+            items = [(i, byid[i], None, d) for i, d in fd.items() if d]
         else:
             fz = {r["id"]: r["output"] for r in load(a.frozen) if r["sample"] == 0}
             elig = [b for b in bank if b["case_id"] in fz and b["case_id"] in keep and
@@ -571,13 +585,22 @@ def main():
         t0 = time.monotonic()
         rows = Runner(a.backend, a.model, dec, a.base_url, a.key_env, a.extra, a.conc, a.retries, a.rpm, a.cache,
                 a.rep, a.vertex, a.cache_tag).run(items, a.n, mode)
+        if a.mode == "explain":
+            # the Decision line is forced to the frozen one, so only the explanation lines differ from the frozen run
+            ex = {r["id"]: r | {"output": re.sub(r"^\s*Decision:.*$", f"Decision: {fd[r['id']]}", r.get("output") or
+                    "", count=1, flags=re.M | re.I) if re.search(r"^\s*Decision:", r.get("output") or "", re.M | re.I)
+                    else f"Decision: {fd[r['id']]}\n" + (r.get("output") or ""), "explained_from": a.frozen}
+                    for r in rows}
         if sh:
             cid = {b["bank_id"]: b["case_id"] for b in bank}
             rows = [r | {"shuf_src": "frozen", "shuf_partner": sp[cid[r["id"]]][0], "shuf_decision_match":
                     sp[cid[r["id"]]][1]} for r in rows]
+        # wr is what the file gets: for explain the frozen run with the explained rows swapped in, the stats below
+        # still count only this call's rows
+        wr = [ex.get(r["id"], r) if r["sample"] == 0 else r for r in fr] if a.mode == "explain" else rows
         out = Path(op)
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text("".join(json.dumps(r) + "\n" for r in rows))
+        out.write_text("".join(json.dumps(r) + "\n" for r in wr))
         fresh = [r for r in rows if not r["cached"] and "latency" in r]
         errs = [r["error"] for r in rows if r.get("error")]
         tok = {k: (sum(r.get(k) or 0 for r in fresh), sum(r.get(k) or 0 for r in rows)) for k in
