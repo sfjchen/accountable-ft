@@ -424,7 +424,9 @@ def score(recs, rows, aux, bank=()):
             add("self_G", S["predict"] - (fresh is not None and fresh == it["oracle"]), case, bc, kid)
         for m, x, y in (("self_V", "predict", "predict_noacc"), ("sim_delta", "simulate", "simulate_shuf"),
                 ("sim_gross", "simulate", "simulate_noacc")):
-            ch = ("[changed]" if fresh != f0 else "[unchanged]",) if m == "sim_delta" else ()
+            # [hard]: edits the simulator gets wrong without the explanation, where an explanation has to carry it
+            ch = ("[changed]" if fresh != f0 else "[unchanged]",) + (("[hard]",) if S.get("simulate_noacc") is False
+                    else ()) if m == "sim_delta" else ()
             for mm in (m, m + sub) + tuple(m + c for c in ch) if x in S and y in S else ():
                 add(mm, S[x] - S[y], case, bc, kid)
     if nofresh:
