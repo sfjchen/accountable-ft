@@ -407,9 +407,10 @@ Correct: approve, R2 and R5 waived, every other rule passes. Minimum sufficient 
   - Main score: paired simulatability gain (Gemini) on IRS dependent. Secondary: the same on review, explanation validity on both, Opus as the 2nd simulator.
   - 3 contrasts per test (mix - real, mix - inv, real - inv), Holm-corrected: `--contrast rm-mix rm-real rm-inv` on v1 and `--contrast <file>-rm-mix <file>-rm-real <file>-rm-inv` on the other files (run names carry the data file prefix, e.g. `dependent-rm-mix-account-e2-s0`).
   - Prediction: mix >= real > inv on IRS dependent, inv >= mix > real on review.
-- The prompted-explanation control (base model's explanation on the SFT model's decision), and the epoch 1 table.
-- Simulatability gain on hard edits only, the ones the simulator gets wrong with no explanation.
-- Nov 17-23: permit transfer, error analysis of 50 failures. Nov 24-30: report and slides. Dec 1-4: rehearse, freeze the repo.
+- Prompted-explanation control, started Nov 13 (FarmShare job 1980754, mail 1980755): `infer.py --mode explain` has the base model write the explanation lines for a round 1 model's fixed decision, kept as `pe-<run>` with the frozen model's answers on edited cases, so the simulator's targets stay the SFT model's. On a decision-only run this swaps the placeholder lines for a well-formed untrained explanation. Comparisons: `account` vs `pe-decision` (trained vs prompted explanation) and `account` vs `pe-account` (same decisions). `PASSES=explain FROZEN=<run>,... bash cluster.sh base`. Still to do: the epoch 1 table.
+- Simulatability gain on hard edits only: `sim_delta[hard]` in evaluate.py (2db11a0), edits the simulator gets wrong with no explanation.
+- Permit transfer, started Nov 13: `data/permit.jsonl` is v1's held-out permit slice (119 policies, 1,236 prose items) relabeled to the primary slice, edit set 646 items. Round 1 models and the prompted base answer it on FarmShare (jobs 1980736-1980742, mail 1980743).
+- Nov 17-23: error analysis of 50 failures. Nov 24-30: report and slides. Dec 1-4: rehearse, freeze the repo.
 - Relabel round (CREDIT-style) only if explanation SFT is below the accuracy ceiling. Round 1 is at 0.976, so it is not triggered.
 
 ## Compute and clusters
@@ -488,6 +489,7 @@ Used from Nov 12 for the row-matched grid, through Cyrus's account. `cluster.sh`
   - Task 0 failed at vllm startup on viscam5: node /tmp was full ("No space left on device"), so triton's gcc build died. Task 2 sat on the same node. Fix at 4794e06: `TMPDIR` on scratch for every sc job.
   - Slurm runs the script as copied at submit, so the pending tasks could not pick up the fix. Array 18475001 was cancelled and resubmitted as 18477875 (tasks 0 and 2-17, `%2`), mail 18477878. Task 0 skips its finished adapter, task 2 resumes from its epoch-1 checkpoint.
   - Nov 12, 13:00: split the grid for speed. sc keeps tasks 0 and 2-9 (array 18478220, resubmitted so it picks up the merge fix, throttled to 1 until task 0 ends by job 18478224, so the account never runs more than 2). FarmShare runs tasks 10-17 as `train --chunks` (55-min jobs that backfill) plus `eval ... 2` with `REUSE_MERGED=1`, jobs 1977618-1977641, mail 1977642. Same torch 2.14, unsloth 2026.11.3, trl 1.15.0, transformers 5.17.0, vllm 0.33.0 on both, and all 12 data and edit-set files sha256-identical.
+  - Nov 13: FarmShare ran 4 of 16 chunks in 19 h (queue-bound), sc finished tasks 2-9 overnight. FarmShare's pending jobs were cancelled and tasks 10-17 resubmitted on sc as array 18493080 (`%2`). Fill array 18493125 (`PASSES=all`, after 18493080) adds the repeat and self-prediction passes the grid skipped, reusing each finished adapter and the cached answers. Cancelling jobs whose mail type is FAIL sends 1 mail each, so set `scontrol update job=<id> MailType=NONE` first.
   - Merge fix (732c4d7): each grid run merged twice, about 9 min in train.py and again in eval. Eval now serves train.py's merge of the final weights (`REUSE_MERGED=1`), and train.py writes it as `merged.part` and renames it when complete, so a killed job never leaves a partial model.
 
 ## Pipeline commands

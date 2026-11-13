@@ -17,15 +17,13 @@ Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 9
 - Explanation SFT matches or beats decision-only on accuracy in every mix and is the only condition with valid explanations (0.756 vs 0.000 on v1, round 1).
 - Each kind of training row helps most on tests like it. The row-matched grid below separates mix from size.
 
-## Status (Nov 12)
+## Status (Nov 13)
 
-- Row-matched grid on the sc cluster: 3 mixes (`rm-inv` grant + trial, `rm-real` mortgage + SNAP, `rm-mix` all 4) at 3,600 train rows x 2 conditions x 3 seeds = 18 runs. Tests: unseen families of the 4 training domains, review and IRS dependent (both held out from every mix). Pre-registration in DECISIONS.md.
-- Split over 2 clusters to finish sooner. Task 1 done on sc (2 h 11 min).
-  - sc: task 0 (18477875_0, answers only) and tasks 2-9 (array 18478220, 2 at a time with task 0 counted), mail 18478223.
-  - FarmShare: tasks 10-17 (`rm-real-decision-s1,s2` and all 6 `rm-mix`) as 1-epoch chunks then 1 eval each, jobs 1977618-1977641, mail 1977642. Submit log `runs/slurm/submit-grid-fs.txt` there.
-  - Both clusters run the same package versions and byte-identical data (sha256 checked Nov 12).
-- 2 failures fixed on the way: the smoke job outran its 15-min limit during the weight merge (now 40 min), and a full `/tmp` on node viscam5 killed vllm startup (`TMPDIR` now on scratch).
-- Then: simulator passes and scoring on the Mac, contrasts per test file.
+- Row-matched grid: 3 mixes (`rm-inv` grant + trial, `rm-real` mortgage + SNAP, `rm-mix` all 4) at 3,600 train rows x 2 conditions x 3 seeds = 18 runs. Tests: unseen families of the 4 training domains, review and IRS dependent (both held out from every mix). Pre-registration in DECISIONS.md.
+  - 10 runs done on sc (tasks 0-9). Tasks 10-17 moved from FarmShare's stalled queue to sc, array 18493080. Fill array 18493125 then adds the repeat and self-prediction passes to all 18.
+  - Gemini and Opus simulator passes run on the Mac (`~/dev/logs/sim-grid.sh`), then scoring with the 3 contrasts per test file.
+- On FarmShare: permit transfer for round 1 (`data/permit.jsonl`) and the prompted-explanation control (`--mode explain`, runs `pe-*`).
+- New metric: simulatability gain on hard edits, `sim_delta[hard]`.
 
 ## Files
 
