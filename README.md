@@ -20,8 +20,8 @@ Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 9
 ## Status (Nov 14)
 
 - Row-matched grid: 3 mixes (`rm-inv` grant + trial, `rm-real` mortgage + SNAP, `rm-mix` all 4) at 3,600 train rows x 2 conditions x 3 seeds = 18 runs. Tests: unseen families of the 4 training domains, review and IRS dependent (both held out from every mix). Pre-registration in DECISIONS.md.
-  - 17 runs done on sc. Task 14 (`rm-mix-account-e2-s2`) is training. Fill array 18493125 then adds the repeat and self-prediction passes to all 18.
-  - Gemini and Opus simulator passes run on the Mac (`~/dev/logs/sim-grid.sh`, Opus chained after permit and `pe-*` in `~/dev/logs/opus-chain.sh`), then scoring with the 3 contrasts per test file.
+  - All 18 done and scored with Gemini. Main score failed: paired gain on IRS dependent is below 0 for every mix (-3.6 to -6.6), no contrast clears Holm. Mix comes close to the best specialist on explanation correctness on every test. Details in DECISIONS.md.
+  - Still running: Opus on the grid (`~/dev/logs/opus-chain.sh`, after permit and `pe-*`), and fill array 18493125 on sc (repeat and self-prediction passes).
 - Prompted-explanation control (`--mode explain`, runs `pe-*`): a fluent untrained explanation gets half the invented-test gain and all of the mortgage gain at 8% correct. Trained explanations win on answer-changing edits (+11.8). Logs in DECISIONS.md.
 - Permit transfer (round 1 on a never-trained invented domain): paired gain +10.0 [6.5, 13.6].
 - New metrics: `sim_delta[hard]` (edits the simulator misses without an explanation) and `sim_delta[valid]`/`[invalid]` (whether the explanation it reads is correct, descriptive).
