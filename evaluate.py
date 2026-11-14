@@ -253,7 +253,8 @@ def score(recs, rows, aux, bank=()):
     R, A = votes(aux.get("repeat", []))[1], votes(aux.get("answers", []))[1]
     cov["items_in_data"] = sum(not r.get("intervention") for r in recs.values())
     cov["items_scored"] = sum(not recs[i].get("intervention") for i in maj if i in recs)
-    kids = defaultdict(lambda: defaultdict(list))
+    # V: whether sample 0's explanation (the one the simulator reads) is correct, per case
+    kids, V = defaultdict(lambda: defaultdict(list)), {}
     for rec in recs.values():
         if rec["id"] not in maj or rec.get("intervention"):
             continue
@@ -271,6 +272,7 @@ def score(recs, rows, aux, bank=()):
                 for m, v in (("expl_valid", 0), ("acct_consistent", 0), ("expl_minimal", 0), ("cite_distractor", 1),
                         ("cite_p_nec", 0), ("cite_r_nec", 0)):
                     ev[m].append(v)
+                V |= {rid: False} if p is ps[0] else {}
                 continue
             cit, unm, pol = {}, 0, policy(rec)
             for l, v, _ in p["relied"]:
@@ -286,6 +288,7 @@ def score(recs, rows, aux, bank=()):
                 cov["expl_uncertified"] += 1
             else:
                 ev["expl_valid"].append(j["valid"] and not unm)
+                V |= {rid: ev["expl_valid"][-1]} if p is ps[0] else {}
                 if j.get("minimal") is not None:
                     ev["expl_minimal"].append(j["minimal"] and not unm)
             # acct_consistent: the stated decision follows from the model's own account, a misread it follows counts
@@ -424,9 +427,11 @@ def score(recs, rows, aux, bank=()):
             add("self_G", S["predict"] - (fresh is not None and fresh == it["oracle"]), case, bc, kid)
         for m, x, y in (("self_V", "predict", "predict_noacc"), ("sim_delta", "simulate", "simulate_shuf"),
                 ("sim_gross", "simulate", "simulate_noacc")):
-            # [hard]: edits the simulator gets wrong without the explanation, where an explanation has to carry it
+            # [hard]: edits the simulator gets wrong without the explanation, where an explanation has to carry it;
+            # [valid]/[invalid]: whether the explanation it reads is correct (descriptive, the items differ)
             ch = ("[changed]" if fresh != f0 else "[unchanged]",) + (("[hard]",) if S.get("simulate_noacc") is False
-                    else ()) if m == "sim_delta" else ()
+                    else ()) + ((("[valid]" if V[it["case_id"]] else "[invalid]"),) if it["case_id"] in V else ()) \
+                    if m == "sim_delta" else ()
             for mm in (m, m + sub) + tuple(m + c for c in ch) if x in S and y in S else ():
                 add(mm, S[x] - S[y], case, bc, kid)
     if nofresh:

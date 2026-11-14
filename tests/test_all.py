@@ -492,6 +492,8 @@ def test_metrics(stub):
               "sim_gross": 1 / 4, "sim_gross[add]": -1.0, "sim_const_unchanged": 0.0, "sim_oracle": 3 / 4,
               "sim_delta[changed]": 1 / 2, "sim_delta[hard]": 1 / 2})
     assert "sim_delta[unchanged]" not in a and a["sim_oracle"]["n"] == 4 and a["sim_delta[hard]"]["n"] == 2
+    # the fixture's sample-0 explanations on the edited cases are all incorrect
+    assert "sim_delta[valid]" not in a and (a["sim_delta[invalid]"]["mean"], a["sim_delta[invalid]"]["n"]) == (1 / 2, 4)
     assert (cov["predict_parse_fail"], cov["simulate_parse_fail"], cov["bank_unscored"]) == (1, 0, 0)
     aux["simulate_shuf"] = [r for r in aux["simulate_shuf"] if r["id"] != ks[2]]
     a = aggregate(score(recs, fake_rows(), aux, BANK)[0])["all"]
