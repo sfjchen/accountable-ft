@@ -1,0 +1,38 @@
+{
+ "model": "rm-real-decision-e2-s1",
+ "backend": "openai",
+ "vertex": null,
+ "mode": "answer",
+ "no_account": false,
+ "shuffle_accounts": false,
+ "shuf_missing": null,
+ "cases": 0,
+ "cache_tag": "rm-real-decision-e2-s1-9c8c614b4c6c",
+ "sample_seed": 0,
+ "decoding": {
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "top_k": 0,
+  "max_tokens": 16384,
+  "seed": 0,
+  "thinking": false
+ },
+ "n": 1,
+ "rows": 747,
+ "cached": 0,
+ "errors": 0,
+ "fresh_calls": 747,
+ "wall_s": 92.19,
+ "in_tokens": 1158996,
+ "out_tokens": 9001,
+ "think_tokens": 0,
+ "finish": {
+  "stop": 747
+ },
+ "model_versions": [
+  "rm-real-decision-e2-s1"
+ ],
+ "mean_latency_s": 3.829,
+ "cost_usd_fresh": null,
+ "cost_usd_if_uncached": null
+}

@@ -14,3 +14,5 @@ data/v1.0.jsonl
 data/.gemini_cache/
 data/snap.jsonl
 data/dependent.jsonl
+# cluster answer caches (the run files hold the answers)
+runs/cache.*.jsonl
