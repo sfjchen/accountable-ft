@@ -17,13 +17,14 @@ Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 9
 - Explanation SFT matches or beats decision-only on accuracy in every mix and is the only condition with valid explanations (0.756 vs 0.000 on v1, round 1).
 - Each kind of training row helps most on tests like it. The row-matched grid below separates mix from size.
 
-## Status (Nov 13)
+## Status (Nov 14)
 
 - Row-matched grid: 3 mixes (`rm-inv` grant + trial, `rm-real` mortgage + SNAP, `rm-mix` all 4) at 3,600 train rows x 2 conditions x 3 seeds = 18 runs. Tests: unseen families of the 4 training domains, review and IRS dependent (both held out from every mix). Pre-registration in DECISIONS.md.
-  - 10 runs done on sc (tasks 0-9). Tasks 10-17 moved from FarmShare's stalled queue to sc, array 18493080. Fill array 18493125 then adds the repeat and self-prediction passes to all 18.
-  - Gemini and Opus simulator passes run on the Mac (`~/dev/logs/sim-grid.sh`), then scoring with the 3 contrasts per test file.
-- On FarmShare: permit transfer for round 1 (`data/permit.jsonl`) and the prompted-explanation control (`--mode explain`, runs `pe-*`).
-- New metric: simulatability gain on hard edits, `sim_delta[hard]`.
+  - 17 runs done on sc. Task 14 (`rm-mix-account-e2-s2`) is training. Fill array 18493125 then adds the repeat and self-prediction passes to all 18.
+  - Gemini and Opus simulator passes run on the Mac (`~/dev/logs/sim-grid.sh`, Opus chained after permit and `pe-*` in `~/dev/logs/opus-chain.sh`), then scoring with the 3 contrasts per test file.
+- Prompted-explanation control (`--mode explain`, runs `pe-*`): a fluent untrained explanation gets half the invented-test gain and all of the mortgage gain at 8% correct. Trained explanations win on answer-changing edits (+11.8). Logs in DECISIONS.md.
+- Permit transfer (round 1 on a never-trained invented domain): paired gain +10.0 [6.5, 13.6].
+- New metrics: `sim_delta[hard]` (edits the simulator misses without an explanation) and `sim_delta[valid]`/`[invalid]` (whether the explanation it reads is correct, descriptive).
 
 ## Files
 
