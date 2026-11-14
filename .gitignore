@@ -16,3 +16,4 @@ data/snap.jsonl
 data/dependent.jsonl
 # cluster answer caches (the run files hold the answers)
 runs/cache.*.jsonl
+runs/eval.json
