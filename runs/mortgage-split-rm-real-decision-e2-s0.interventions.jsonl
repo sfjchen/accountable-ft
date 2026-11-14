@@ -1,0 +1,10 @@
+{"iid": "mortgage-p010-c01:prose|necessity|credit_score", "id": "mortgage-p010-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p015-c00:prose|necessity|credit_score", "id": "mortgage-p015-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p030-c00:prose|necessity|credit_score", "id": "mortgage-p030-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p031-c00:prose|necessity|credit_score", "id": "mortgage-p031-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p039-c01:prose|necessity|credit_score", "id": "mortgage-p039-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p040-c00:prose|necessity|credit_score", "id": "mortgage-p040-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p085-c01:prose|necessity|credit_score", "id": "mortgage-p085-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p090-c02:prose|necessity|credit_score", "id": "mortgage-p090-c02:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p101-c00:prose|necessity|credit_score", "id": "mortgage-p101-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p116-c02:prose|necessity|credit_score", "id": "mortgage-p116-c02:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}

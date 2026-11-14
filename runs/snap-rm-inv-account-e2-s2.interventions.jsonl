@@ -1,0 +1,333 @@
+{"iid": "snap-p000-c00:prose|boundary|fleeing_felon=no;resources=$3,000", "id": "snap-p000-c00:prose", "kind": "boundary", "edits": {"fleeing_felon": "no", "resources": "$3,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p000-c01:prose|boundary|earned_income=$2,400", "id": "snap-p000-c01:prose", "kind": "boundary", "edits": {"earned_income": "$2,400"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p000-c01:prose|necessity|earned_income", "id": "snap-p000-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p000-c03:prose|boundary|resources=$3,000", "id": "snap-p000-c03:prose", "kind": "boundary", "edits": {"resources": "$3,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p000-c03:prose|necessity|resources", "id": "snap-p000-c03:prose", "kind": "necessity", "edits": {"resources": null}, "target": "deny"}
+{"iid": "snap-p001-c00:prose|boundary|resources=$4,000", "id": "snap-p001-c00:prose", "kind": "boundary", "edits": {"resources": "$4,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p001-c01:prose|boundary|resources=$3,000", "id": "snap-p001-c01:prose", "kind": "boundary", "edits": {"resources": "$3,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p001-c01:prose|necessity|resources", "id": "snap-p001-c01:prose", "kind": "necessity", "edits": {"resources": null}, "target": "approve"}
+{"iid": "snap-p001-c02:prose|boundary|earned_income=$0", "id": "snap-p001-c02:prose", "kind": "boundary", "edits": {"earned_income": "$0"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p001-c02:prose|necessity|earned_income", "id": "snap-p001-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p001-c02:prose|necessity|unearned_income", "id": "snap-p001-c02:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p001-c03:prose|boundary|earned_income=$1,200", "id": "snap-p001-c03:prose", "kind": "boundary", "edits": {"earned_income": "$1,200"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p002-c00:prose|boundary|earned_income=$1,200;resources=$3,000;ssn_provided=yes", "id": "snap-p002-c00:prose", "kind": "boundary", "edits": {"earned_income": "$1,200", "resources": "$3,000", "ssn_provided": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p002-c01:prose|boundary|fleeing_felon=no;resources=$4,000", "id": "snap-p002-c01:prose", "kind": "boundary", "edits": {"fleeing_felon": "no", "resources": "$4,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p002-c01:prose|necessity|resources", "id": "snap-p002-c01:prose", "kind": "necessity", "edits": {"resources": null}, "target": "approve"}
+{"iid": "snap-p002-c02:prose|boundary|categorical=no", "id": "snap-p002-c02:prose", "kind": "boundary", "edits": {"categorical": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p003-c00:prose|boundary|ssn_provided=yes", "id": "snap-p003-c00:prose", "kind": "boundary", "edits": {"ssn_provided": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p003-c00:prose|necessity|ssn_provided", "id": "snap-p003-c00:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "approve"}
+{"iid": "snap-p003-c02:prose|boundary|categorical=no", "id": "snap-p003-c02:prose", "kind": "boundary", "edits": {"categorical": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p003-c02:prose|necessity|categorical", "id": "snap-p003-c02:prose", "kind": "necessity", "edits": {"categorical": null}, "target": "deny"}
+{"iid": "snap-p003-c02:prose|necessity|elderly_or_disabled", "id": "snap-p003-c02:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "deny"}
+{"iid": "snap-p003-c02:prose|necessity|household_size", "id": "snap-p003-c02:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "deny"}
+{"iid": "snap-p003-c02:prose|necessity|on_strike", "id": "snap-p003-c02:prose", "kind": "necessity", "edits": {"on_strike": null}, "target": "deny"}
+{"iid": "snap-p003-c02:prose|necessity|resources", "id": "snap-p003-c02:prose", "kind": "necessity", "edits": {"resources": null}, "target": "deny"}
+{"iid": "snap-p003-c02:prose|necessity|shelter_costs", "id": "snap-p003-c02:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "deny"}
+{"iid": "snap-p003-c02:prose|necessity|ssn_provided", "id": "snap-p003-c02:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "deny"}
+{"iid": "snap-p003-c03:prose|boundary|resources=$3,000", "id": "snap-p003-c03:prose", "kind": "boundary", "edits": {"resources": "$3,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p003-c03:prose|necessity|resources", "id": "snap-p003-c03:prose", "kind": "necessity", "edits": {"resources": null}, "target": "deny"}
+{"iid": "snap-p008-c01:prose|boundary|earned_income=$1,600", "id": "snap-p008-c01:prose", "kind": "boundary", "edits": {"earned_income": "$1,600"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p008-c02:prose|necessity|categorical", "id": "snap-p008-c02:prose", "kind": "necessity", "edits": {"categorical": null}, "target": "approve"}
+{"iid": "snap-p008-c02:prose|necessity|earned_income", "id": "snap-p008-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p008-c02:prose|necessity|shelter_costs", "id": "snap-p008-c02:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "approve"}
+{"iid": "snap-p008-c02:prose|necessity|unearned_income", "id": "snap-p008-c02:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p008-c03:prose|boundary|earned_income=$600;fleeing_felon=no", "id": "snap-p008-c03:prose", "kind": "boundary", "edits": {"earned_income": "$600", "fleeing_felon": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p009-c00:prose|boundary|shelter_costs=$1,500", "id": "snap-p009-c00:prose", "kind": "boundary", "edits": {"shelter_costs": "$1,500"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p009-c02:prose|necessity|earned_income", "id": "snap-p009-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p009-c02:prose|necessity|household_size", "id": "snap-p009-c02:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "deny"}
+{"iid": "snap-p009-c02:prose|necessity|unearned_income", "id": "snap-p009-c02:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p014-c01:prose|necessity|earned_income", "id": "snap-p014-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p014-c01:prose|necessity|unearned_income", "id": "snap-p014-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p014-c03:prose|boundary|earned_income=$1,200;ipv_disqualified=no", "id": "snap-p014-c03:prose", "kind": "boundary", "edits": {"earned_income": "$1,200", "ipv_disqualified": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p015-c00:prose|boundary|state_resident=yes", "id": "snap-p015-c00:prose", "kind": "boundary", "edits": {"state_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p015-c00:prose|necessity|state_resident", "id": "snap-p015-c00:prose", "kind": "necessity", "edits": {"state_resident": null}, "target": "approve"}
+{"iid": "snap-p015-c01:prose|boundary|earned_income=$1,200", "id": "snap-p015-c01:prose", "kind": "boundary", "edits": {"earned_income": "$1,200"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p015-c01:prose|necessity|earned_income", "id": "snap-p015-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p026-c00:prose|boundary|elderly_or_disabled=yes", "id": "snap-p026-c00:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p026-c00:prose|necessity|abawd", "id": "snap-p026-c00:prose", "kind": "necessity", "edits": {"abawd": null}, "target": "approve"}
+{"iid": "snap-p026-c00:prose|necessity|elderly_or_disabled", "id": "snap-p026-c00:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "approve"}
+{"iid": "snap-p026-c00:prose|necessity|work_hours", "id": "snap-p026-c00:prose", "kind": "necessity", "edits": {"work_hours": null}, "target": "approve"}
+{"iid": "snap-p026-c01:prose|boundary|resources=$3,000", "id": "snap-p026-c01:prose", "kind": "boundary", "edits": {"resources": "$3,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p026-c02:prose|necessity|earned_income", "id": "snap-p026-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p026-c02:prose|necessity|unearned_income", "id": "snap-p026-c02:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p027-c00:prose|boundary|earned_income=$1,200;elderly_or_disabled=yes", "id": "snap-p027-c00:prose", "kind": "boundary", "edits": {"earned_income": "$1,200", "elderly_or_disabled": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p027-c00:prose|necessity|earned_income", "id": "snap-p027-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p027-c01:prose|boundary|earned_income=$1,000;resources=$2,000", "id": "snap-p027-c01:prose", "kind": "boundary", "edits": {"earned_income": "$1,000", "resources": "$2,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p027-c01:prose|necessity|earned_income", "id": "snap-p027-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p027-c01:prose|necessity|unearned_income", "id": "snap-p027-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p027-c02:prose|boundary|abawd=no;categorical=yes;earned_income=$600", "id": "snap-p027-c02:prose", "kind": "boundary", "edits": {"abawd": "no", "categorical": "yes", "earned_income": "$600"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p027-c03:prose|necessity|earned_income", "id": "snap-p027-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p027-c03:prose|necessity|unearned_income", "id": "snap-p027-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p028-c00:prose|necessity|earned_income", "id": "snap-p028-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p028-c00:prose|necessity|unearned_income", "id": "snap-p028-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p028-c01:prose|boundary|elderly_or_disabled=no", "id": "snap-p028-c01:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p028-c01:prose|necessity|categorical", "id": "snap-p028-c01:prose", "kind": "necessity", "edits": {"categorical": null}, "target": "deny"}
+{"iid": "snap-p028-c01:prose|necessity|earned_income", "id": "snap-p028-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p028-c01:prose|necessity|elderly_or_disabled", "id": "snap-p028-c01:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "deny"}
+{"iid": "snap-p028-c01:prose|necessity|household_size", "id": "snap-p028-c01:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "deny"}
+{"iid": "snap-p028-c01:prose|necessity|ipv_disqualified", "id": "snap-p028-c01:prose", "kind": "necessity", "edits": {"ipv_disqualified": null}, "target": "deny"}
+{"iid": "snap-p028-c01:prose|necessity|quit_status", "id": "snap-p028-c01:prose", "kind": "necessity", "edits": {"quit_status": null}, "target": "deny"}
+{"iid": "snap-p028-c01:prose|necessity|resources", "id": "snap-p028-c01:prose", "kind": "necessity", "edits": {"resources": null}, "target": "deny"}
+{"iid": "snap-p028-c01:prose|necessity|shelter_costs", "id": "snap-p028-c01:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "deny"}
+{"iid": "snap-p028-c01:prose|necessity|ssn_provided", "id": "snap-p028-c01:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "deny"}
+{"iid": "snap-p028-c01:prose|necessity|unearned_income", "id": "snap-p028-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p028-c02:prose|boundary|earned_income=$2,000", "id": "snap-p028-c02:prose", "kind": "boundary", "edits": {"earned_income": "$2,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p028-c02:prose|necessity|earned_income", "id": "snap-p028-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p029-c00:prose|boundary|elderly_or_disabled=no", "id": "snap-p029-c00:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p029-c00:prose|necessity|categorical", "id": "snap-p029-c00:prose", "kind": "necessity", "edits": {"categorical": null}, "target": "deny"}
+{"iid": "snap-p029-c00:prose|necessity|elderly_or_disabled", "id": "snap-p029-c00:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "deny"}
+{"iid": "snap-p029-c00:prose|necessity|fleeing_felon", "id": "snap-p029-c00:prose", "kind": "necessity", "edits": {"fleeing_felon": null}, "target": "deny"}
+{"iid": "snap-p029-c00:prose|necessity|household_size", "id": "snap-p029-c00:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "deny"}
+{"iid": "snap-p029-c00:prose|necessity|ipv_disqualified", "id": "snap-p029-c00:prose", "kind": "necessity", "edits": {"ipv_disqualified": null}, "target": "deny"}
+{"iid": "snap-p029-c00:prose|necessity|resources", "id": "snap-p029-c00:prose", "kind": "necessity", "edits": {"resources": null}, "target": "deny"}
+{"iid": "snap-p029-c00:prose|necessity|shelter_costs", "id": "snap-p029-c00:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "deny"}
+{"iid": "snap-p029-c00:prose|necessity|ssn_provided", "id": "snap-p029-c00:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "deny"}
+{"iid": "snap-p029-c01:prose|boundary|shelter_costs=$1,500", "id": "snap-p029-c01:prose", "kind": "boundary", "edits": {"shelter_costs": "$1,500"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p029-c02:prose|boundary|fleeing_felon=no;ipv_disqualified=no", "id": "snap-p029-c02:prose", "kind": "boundary", "edits": {"fleeing_felon": "no", "ipv_disqualified": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p029-c03:prose|necessity|earned_income", "id": "snap-p029-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p029-c03:prose|necessity|unearned_income", "id": "snap-p029-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p032-c00:prose|necessity|earned_income", "id": "snap-p032-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p032-c00:prose|necessity|unearned_income", "id": "snap-p032-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p032-c01:prose|boundary|abawd=no", "id": "snap-p032-c01:prose", "kind": "boundary", "edits": {"abawd": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p032-c01:prose|necessity|abawd", "id": "snap-p032-c01:prose", "kind": "necessity", "edits": {"abawd": null}, "target": "deny"}
+{"iid": "snap-p032-c01:prose|necessity|work_hours", "id": "snap-p032-c01:prose", "kind": "necessity", "edits": {"work_hours": null}, "target": "deny"}
+{"iid": "snap-p032-c02:prose|boundary|earned_income=$2,400", "id": "snap-p032-c02:prose", "kind": "boundary", "edits": {"earned_income": "$2,400"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p032-c03:prose|necessity|earned_income", "id": "snap-p032-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p032-c03:prose|necessity|unearned_income", "id": "snap-p032-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p033-c01:prose|boundary|elderly_or_disabled=no", "id": "snap-p033-c01:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p033-c03:prose|necessity|ssn_provided", "id": "snap-p033-c03:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "approve"}
+{"iid": "snap-p036-c00:prose|boundary|resources=$3,000", "id": "snap-p036-c00:prose", "kind": "boundary", "edits": {"resources": "$3,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p036-c01:prose|necessity|earned_income", "id": "snap-p036-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p036-c01:prose|necessity|unearned_income", "id": "snap-p036-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p036-c02:prose|necessity|earned_income", "id": "snap-p036-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p036-c02:prose|necessity|unearned_income", "id": "snap-p036-c02:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p036-c03:prose|boundary|resources=$3,000;state_resident=yes", "id": "snap-p036-c03:prose", "kind": "boundary", "edits": {"resources": "$3,000", "state_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p037-c00:prose|necessity|earned_income", "id": "snap-p037-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p037-c00:prose|necessity|unearned_income", "id": "snap-p037-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p037-c01:prose|necessity|earned_income", "id": "snap-p037-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p037-c01:prose|necessity|unearned_income", "id": "snap-p037-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p037-c02:prose|boundary|resources=$3,000", "id": "snap-p037-c02:prose", "kind": "boundary", "edits": {"resources": "$3,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p037-c03:prose|necessity|earned_income", "id": "snap-p037-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p037-c03:prose|necessity|unearned_income", "id": "snap-p037-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p040-c02:prose|boundary|earned_income=$1,000;elderly_or_disabled=yes", "id": "snap-p040-c02:prose", "kind": "boundary", "edits": {"earned_income": "$1,000", "elderly_or_disabled": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p040-c02:prose|necessity|earned_income", "id": "snap-p040-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p040-c03:prose|necessity|earned_income", "id": "snap-p040-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p040-c03:prose|necessity|unearned_income", "id": "snap-p040-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p041-c01:prose|boundary|ssn_provided=yes", "id": "snap-p041-c01:prose", "kind": "boundary", "edits": {"ssn_provided": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p041-c01:prose|necessity|ssn_provided", "id": "snap-p041-c01:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "approve"}
+{"iid": "snap-p041-c02:prose|boundary|earned_income=$600", "id": "snap-p041-c02:prose", "kind": "boundary", "edits": {"earned_income": "$600"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p041-c03:prose|boundary|ipv_disqualified=no", "id": "snap-p041-c03:prose", "kind": "boundary", "edits": {"ipv_disqualified": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p041-c03:prose|necessity|ipv_disqualified", "id": "snap-p041-c03:prose", "kind": "necessity", "edits": {"ipv_disqualified": null}, "target": "approve"}
+{"iid": "snap-p042-c03:prose|necessity|earned_income", "id": "snap-p042-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p042-c03:prose|necessity|unearned_income", "id": "snap-p042-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p043-c00:prose|boundary|elderly_or_disabled=no", "id": "snap-p043-c00:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p043-c01:prose|necessity|earned_income", "id": "snap-p043-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p043-c01:prose|necessity|unearned_income", "id": "snap-p043-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p043-c02:prose|boundary|fleeing_felon=no", "id": "snap-p043-c02:prose", "kind": "boundary", "edits": {"fleeing_felon": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p043-c02:prose|necessity|fleeing_felon", "id": "snap-p043-c02:prose", "kind": "necessity", "edits": {"fleeing_felon": null}, "target": "approve"}
+{"iid": "snap-p043-c03:prose|necessity|earned_income", "id": "snap-p043-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p043-c03:prose|necessity|unearned_income", "id": "snap-p043-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p046-c00:prose|boundary|elderly_or_disabled=yes;household_size=1", "id": "snap-p046-c00:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "yes", "household_size": "1"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p046-c00:prose|necessity|categorical", "id": "snap-p046-c00:prose", "kind": "necessity", "edits": {"categorical": null}, "target": "deny"}
+{"iid": "snap-p046-c00:prose|necessity|earned_income", "id": "snap-p046-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p046-c00:prose|necessity|elderly_or_disabled", "id": "snap-p046-c00:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "deny"}
+{"iid": "snap-p046-c00:prose|necessity|household_size", "id": "snap-p046-c00:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "deny"}
+{"iid": "snap-p046-c00:prose|necessity|unearned_income", "id": "snap-p046-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p046-c01:prose|necessity|earned_income", "id": "snap-p046-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p046-c01:prose|necessity|unearned_income", "id": "snap-p046-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p046-c02:prose|necessity|earned_income", "id": "snap-p046-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p046-c03:prose|boundary|earned_income=$1,200", "id": "snap-p046-c03:prose", "kind": "boundary", "edits": {"earned_income": "$1,200"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p046-c03:prose|necessity|earned_income", "id": "snap-p046-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p047-c00:prose|necessity|earned_income", "id": "snap-p047-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p047-c00:prose|necessity|unearned_income", "id": "snap-p047-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p047-c01:prose|necessity|earned_income", "id": "snap-p047-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p047-c02:prose|boundary|shelter_costs=$1,000", "id": "snap-p047-c02:prose", "kind": "boundary", "edits": {"shelter_costs": "$1,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p047-c03:prose|necessity|earned_income", "id": "snap-p047-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p047-c03:prose|necessity|unearned_income", "id": "snap-p047-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p052-c00:prose|boundary|fleeing_felon=no;ipv_disqualified=no", "id": "snap-p052-c00:prose", "kind": "boundary", "edits": {"fleeing_felon": "no", "ipv_disqualified": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p052-c01:prose|boundary|elderly_or_disabled=no", "id": "snap-p052-c01:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p052-c02:prose|boundary|ipv_disqualified=no", "id": "snap-p052-c02:prose", "kind": "boundary", "edits": {"ipv_disqualified": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p052-c02:prose|necessity|ipv_disqualified", "id": "snap-p052-c02:prose", "kind": "necessity", "edits": {"ipv_disqualified": null}, "target": "approve"}
+{"iid": "snap-p052-c03:prose|boundary|elderly_or_disabled=yes", "id": "snap-p052-c03:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p052-c03:prose|necessity|earned_income", "id": "snap-p052-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p052-c03:prose|necessity|unearned_income", "id": "snap-p052-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p053-c00:prose|necessity|earned_income", "id": "snap-p053-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p053-c00:prose|necessity|unearned_income", "id": "snap-p053-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p053-c01:prose|necessity|earned_income", "id": "snap-p053-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p053-c01:prose|necessity|unearned_income", "id": "snap-p053-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p053-c03:prose|boundary|earned_income=$1,000;elderly_or_disabled=yes", "id": "snap-p053-c03:prose", "kind": "boundary", "edits": {"earned_income": "$1,000", "elderly_or_disabled": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p053-c03:prose|necessity|earned_income", "id": "snap-p053-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p054-c00:prose|boundary|earned_income=$1,200", "id": "snap-p054-c00:prose", "kind": "boundary", "edits": {"earned_income": "$1,200"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p054-c00:prose|necessity|earned_income", "id": "snap-p054-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p054-c00:prose|necessity|unearned_income", "id": "snap-p054-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p054-c01:prose|boundary|resources=$3,000", "id": "snap-p054-c01:prose", "kind": "boundary", "edits": {"resources": "$3,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p054-c01:prose|necessity|resources", "id": "snap-p054-c01:prose", "kind": "necessity", "edits": {"resources": null}, "target": "approve"}
+{"iid": "snap-p055-c00:prose|necessity|earned_income", "id": "snap-p055-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p055-c00:prose|necessity|unearned_income", "id": "snap-p055-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p055-c01:prose|boundary|ipv_disqualified=no", "id": "snap-p055-c01:prose", "kind": "boundary", "edits": {"ipv_disqualified": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p055-c01:prose|necessity|ipv_disqualified", "id": "snap-p055-c01:prose", "kind": "necessity", "edits": {"ipv_disqualified": null}, "target": "approve"}
+{"iid": "snap-p055-c02:prose|necessity|resources", "id": "snap-p055-c02:prose", "kind": "necessity", "edits": {"resources": null}, "target": "deny"}
+{"iid": "snap-p055-c03:prose|necessity|earned_income", "id": "snap-p055-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p055-c03:prose|necessity|unearned_income", "id": "snap-p055-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p060-c00:prose|boundary|earned_income=$800", "id": "snap-p060-c00:prose", "kind": "boundary", "edits": {"earned_income": "$800"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p060-c01:prose|boundary|earned_income=$1,000", "id": "snap-p060-c01:prose", "kind": "boundary", "edits": {"earned_income": "$1,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p060-c01:prose|necessity|earned_income", "id": "snap-p060-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p060-c01:prose|necessity|elderly_or_disabled", "id": "snap-p060-c01:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "approve"}
+{"iid": "snap-p060-c01:prose|necessity|household_size", "id": "snap-p060-c01:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "approve"}
+{"iid": "snap-p060-c01:prose|necessity|shelter_costs", "id": "snap-p060-c01:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "approve"}
+{"iid": "snap-p060-c01:prose|necessity|unearned_income", "id": "snap-p060-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p060-c02:prose|boundary|earned_income=$2,000", "id": "snap-p060-c02:prose", "kind": "boundary", "edits": {"earned_income": "$2,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p060-c02:prose|necessity|earned_income", "id": "snap-p060-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p061-c00:prose|boundary|earned_income=$600;resources=$4,000", "id": "snap-p061-c00:prose", "kind": "boundary", "edits": {"earned_income": "$600", "resources": "$4,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p061-c00:prose|necessity|earned_income", "id": "snap-p061-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p061-c00:prose|necessity|unearned_income", "id": "snap-p061-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p061-c01:prose|boundary|work_hours=80", "id": "snap-p061-c01:prose", "kind": "boundary", "edits": {"work_hours": "80"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p061-c01:prose|necessity|work_hours", "id": "snap-p061-c01:prose", "kind": "necessity", "edits": {"work_hours": null}, "target": "approve"}
+{"iid": "snap-p061-c03:prose|boundary|earned_income=$1,200", "id": "snap-p061-c03:prose", "kind": "boundary", "edits": {"earned_income": "$1,200"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p061-c03:prose|necessity|earned_income", "id": "snap-p061-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p061-c03:prose|necessity|unearned_income", "id": "snap-p061-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p064-c01:prose|boundary|earned_income=$1,000", "id": "snap-p064-c01:prose", "kind": "boundary", "edits": {"earned_income": "$1,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p064-c02:prose|boundary|earned_income=$1,200", "id": "snap-p064-c02:prose", "kind": "boundary", "edits": {"earned_income": "$1,200"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p064-c02:prose|necessity|earned_income", "id": "snap-p064-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p064-c03:prose|boundary|ipv_disqualified=no", "id": "snap-p064-c03:prose", "kind": "boundary", "edits": {"ipv_disqualified": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p064-c03:prose|necessity|ipv_disqualified", "id": "snap-p064-c03:prose", "kind": "necessity", "edits": {"ipv_disqualified": null}, "target": "deny"}
+{"iid": "snap-p065-c00:prose|boundary|earned_income=$1,600", "id": "snap-p065-c00:prose", "kind": "boundary", "edits": {"earned_income": "$1,600"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p065-c00:prose|necessity|earned_income", "id": "snap-p065-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p065-c02:prose|boundary|earned_income=$1,000", "id": "snap-p065-c02:prose", "kind": "boundary", "edits": {"earned_income": "$1,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p065-c03:prose|boundary|earned_income=$1,000;elderly_or_disabled=yes", "id": "snap-p065-c03:prose", "kind": "boundary", "edits": {"earned_income": "$1,000", "elderly_or_disabled": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p068-c00:prose|necessity|earned_income", "id": "snap-p068-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p068-c00:prose|necessity|unearned_income", "id": "snap-p068-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p068-c02:prose|boundary|elderly_or_disabled=yes", "id": "snap-p068-c02:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p068-c02:prose|necessity|elderly_or_disabled", "id": "snap-p068-c02:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "approve"}
+{"iid": "snap-p068-c02:prose|necessity|shelter_costs", "id": "snap-p068-c02:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "approve"}
+{"iid": "snap-p068-c03:prose|boundary|resources=$4,000", "id": "snap-p068-c03:prose", "kind": "boundary", "edits": {"resources": "$4,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p068-c03:prose|necessity|resources", "id": "snap-p068-c03:prose", "kind": "necessity", "edits": {"resources": null}, "target": "deny"}
+{"iid": "snap-p069-c00:prose|boundary|earned_income=$1,200", "id": "snap-p069-c00:prose", "kind": "boundary", "edits": {"earned_income": "$1,200"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p069-c00:prose|necessity|earned_income", "id": "snap-p069-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p069-c01:prose|boundary|categorical=no", "id": "snap-p069-c01:prose", "kind": "boundary", "edits": {"categorical": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p069-c01:prose|necessity|categorical", "id": "snap-p069-c01:prose", "kind": "necessity", "edits": {"categorical": null}, "target": "deny"}
+{"iid": "snap-p069-c01:prose|necessity|earned_income", "id": "snap-p069-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p069-c01:prose|necessity|elderly_or_disabled", "id": "snap-p069-c01:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "deny"}
+{"iid": "snap-p069-c01:prose|necessity|fleeing_felon", "id": "snap-p069-c01:prose", "kind": "necessity", "edits": {"fleeing_felon": null}, "target": "deny"}
+{"iid": "snap-p069-c01:prose|necessity|household_size", "id": "snap-p069-c01:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "deny"}
+{"iid": "snap-p069-c01:prose|necessity|quit_status", "id": "snap-p069-c01:prose", "kind": "necessity", "edits": {"quit_status": null}, "target": "deny"}
+{"iid": "snap-p069-c01:prose|necessity|resources", "id": "snap-p069-c01:prose", "kind": "necessity", "edits": {"resources": null}, "target": "deny"}
+{"iid": "snap-p069-c01:prose|necessity|shelter_costs", "id": "snap-p069-c01:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "deny"}
+{"iid": "snap-p069-c01:prose|necessity|ssn_provided", "id": "snap-p069-c01:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "deny"}
+{"iid": "snap-p069-c01:prose|necessity|state_resident", "id": "snap-p069-c01:prose", "kind": "necessity", "edits": {"state_resident": null}, "target": "deny"}
+{"iid": "snap-p069-c01:prose|necessity|student_status", "id": "snap-p069-c01:prose", "kind": "necessity", "edits": {"student_status": null}, "target": "deny"}
+{"iid": "snap-p069-c01:prose|necessity|unearned_income", "id": "snap-p069-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p069-c02:prose|necessity|earned_income", "id": "snap-p069-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p069-c02:prose|necessity|unearned_income", "id": "snap-p069-c02:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p072-c00:prose|necessity|shelter_costs", "id": "snap-p072-c00:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "approve"}
+{"iid": "snap-p072-c01:prose|boundary|earned_income=$1,500", "id": "snap-p072-c01:prose", "kind": "boundary", "edits": {"earned_income": "$1,500"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p072-c01:prose|necessity|earned_income", "id": "snap-p072-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p072-c02:prose|boundary|elderly_or_disabled=no", "id": "snap-p072-c02:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p072-c02:prose|necessity|categorical", "id": "snap-p072-c02:prose", "kind": "necessity", "edits": {"categorical": null}, "target": "deny"}
+{"iid": "snap-p072-c02:prose|necessity|earned_income", "id": "snap-p072-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p072-c02:prose|necessity|elderly_or_disabled", "id": "snap-p072-c02:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "deny"}
+{"iid": "snap-p072-c02:prose|necessity|fleeing_felon", "id": "snap-p072-c02:prose", "kind": "necessity", "edits": {"fleeing_felon": null}, "target": "deny"}
+{"iid": "snap-p072-c02:prose|necessity|household_size", "id": "snap-p072-c02:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "deny"}
+{"iid": "snap-p072-c02:prose|necessity|quit_status", "id": "snap-p072-c02:prose", "kind": "necessity", "edits": {"quit_status": null}, "target": "deny"}
+{"iid": "snap-p072-c02:prose|necessity|shelter_costs", "id": "snap-p072-c02:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "deny"}
+{"iid": "snap-p072-c02:prose|necessity|ssn_provided", "id": "snap-p072-c02:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "deny"}
+{"iid": "snap-p072-c02:prose|necessity|state_resident", "id": "snap-p072-c02:prose", "kind": "necessity", "edits": {"state_resident": null}, "target": "deny"}
+{"iid": "snap-p072-c02:prose|necessity|unearned_income", "id": "snap-p072-c02:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p072-c03:prose|necessity|earned_income", "id": "snap-p072-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p072-c03:prose|necessity|elderly_or_disabled", "id": "snap-p072-c03:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "approve"}
+{"iid": "snap-p073-c00:prose|boundary|ssn_provided=yes;state_resident=yes", "id": "snap-p073-c00:prose", "kind": "boundary", "edits": {"ssn_provided": "yes", "state_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p073-c02:prose|boundary|elderly_or_disabled=no", "id": "snap-p073-c02:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p073-c03:prose|necessity|earned_income", "id": "snap-p073-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p073-c03:prose|necessity|unearned_income", "id": "snap-p073-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p086-c02:prose|boundary|earned_income=$1,200", "id": "snap-p086-c02:prose", "kind": "boundary", "edits": {"earned_income": "$1,200"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p086-c02:prose|necessity|earned_income", "id": "snap-p086-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p086-c03:prose|boundary|elderly_or_disabled=yes", "id": "snap-p086-c03:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p086-c03:prose|necessity|earned_income", "id": "snap-p086-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p086-c03:prose|necessity|elderly_or_disabled", "id": "snap-p086-c03:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "deny"}
+{"iid": "snap-p086-c03:prose|necessity|unearned_income", "id": "snap-p086-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p087-c00:prose|necessity|earned_income", "id": "snap-p087-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p087-c00:prose|necessity|unearned_income", "id": "snap-p087-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p087-c01:prose|necessity|earned_income", "id": "snap-p087-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p087-c01:prose|necessity|elderly_or_disabled", "id": "snap-p087-c01:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "deny"}
+{"iid": "snap-p087-c01:prose|necessity|unearned_income", "id": "snap-p087-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p087-c03:prose|boundary|resources=$3,000", "id": "snap-p087-c03:prose", "kind": "boundary", "edits": {"resources": "$3,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p087-c03:prose|necessity|resources", "id": "snap-p087-c03:prose", "kind": "necessity", "edits": {"resources": null}, "target": "deny"}
+{"iid": "snap-p094-c00:prose|necessity|resources", "id": "snap-p094-c00:prose", "kind": "necessity", "edits": {"resources": null}, "target": "approve"}
+{"iid": "snap-p094-c01:prose|necessity|immigration_status", "id": "snap-p094-c01:prose", "kind": "necessity", "edits": {"immigration_status": null}, "target": "approve"}
+{"iid": "snap-p094-c03:prose|boundary|ipv_disqualified=no", "id": "snap-p094-c03:prose", "kind": "boundary", "edits": {"ipv_disqualified": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p095-c00:prose|boundary|earned_income=$2,400;elderly_or_disabled=yes", "id": "snap-p095-c00:prose", "kind": "boundary", "edits": {"earned_income": "$2,400", "elderly_or_disabled": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p095-c02:prose|boundary|earned_income=$1,200;resources=$2,000", "id": "snap-p095-c02:prose", "kind": "boundary", "edits": {"earned_income": "$1,200", "resources": "$2,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p095-c02:prose|necessity|earned_income", "id": "snap-p095-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p095-c03:prose|boundary|elderly_or_disabled=yes", "id": "snap-p095-c03:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p095-c03:prose|necessity|elderly_or_disabled", "id": "snap-p095-c03:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "deny"}
+{"iid": "snap-p095-c03:prose|necessity|shelter_costs", "id": "snap-p095-c03:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "deny"}
+{"iid": "snap-p098-c01:prose|necessity|earned_income", "id": "snap-p098-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p098-c01:prose|necessity|unearned_income", "id": "snap-p098-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p098-c02:prose|boundary|on_strike=no", "id": "snap-p098-c02:prose", "kind": "boundary", "edits": {"on_strike": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p098-c03:prose|necessity|earned_income", "id": "snap-p098-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p098-c03:prose|necessity|elderly_or_disabled", "id": "snap-p098-c03:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "deny"}
+{"iid": "snap-p098-c03:prose|necessity|household_size", "id": "snap-p098-c03:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "deny"}
+{"iid": "snap-p098-c03:prose|necessity|shelter_costs", "id": "snap-p098-c03:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "deny"}
+{"iid": "snap-p098-c03:prose|necessity|unearned_income", "id": "snap-p098-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p099-c01:prose|necessity|earned_income", "id": "snap-p099-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p099-c01:prose|necessity|unearned_income", "id": "snap-p099-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p099-c02:prose|necessity|earned_income", "id": "snap-p099-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p099-c02:prose|necessity|unearned_income", "id": "snap-p099-c02:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p099-c03:prose|necessity|earned_income", "id": "snap-p099-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p099-c03:prose|necessity|unearned_income", "id": "snap-p099-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p102-c00:prose|boundary|earned_income=$2,400;state_resident=yes", "id": "snap-p102-c00:prose", "kind": "boundary", "edits": {"earned_income": "$2,400", "state_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p102-c01:prose|necessity|earned_income", "id": "snap-p102-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p102-c01:prose|necessity|elderly_or_disabled", "id": "snap-p102-c01:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "deny"}
+{"iid": "snap-p102-c01:prose|necessity|household_size", "id": "snap-p102-c01:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "deny"}
+{"iid": "snap-p102-c01:prose|necessity|shelter_costs", "id": "snap-p102-c01:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "deny"}
+{"iid": "snap-p102-c01:prose|necessity|unearned_income", "id": "snap-p102-c01:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p102-c02:prose|boundary|on_strike=no", "id": "snap-p102-c02:prose", "kind": "boundary", "edits": {"on_strike": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p102-c02:prose|necessity|eligible_before_strike", "id": "snap-p102-c02:prose", "kind": "necessity", "edits": {"eligible_before_strike": null}, "target": "approve"}
+{"iid": "snap-p102-c02:prose|necessity|on_strike", "id": "snap-p102-c02:prose", "kind": "necessity", "edits": {"on_strike": null}, "target": "approve"}
+{"iid": "snap-p102-c03:prose|necessity|earned_income", "id": "snap-p102-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p102-c03:prose|necessity|unearned_income", "id": "snap-p102-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p103-c00:prose|boundary|earned_income=$1,000", "id": "snap-p103-c00:prose", "kind": "boundary", "edits": {"earned_income": "$1,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p103-c00:prose|necessity|earned_income", "id": "snap-p103-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p103-c02:prose|boundary|on_strike=no", "id": "snap-p103-c02:prose", "kind": "boundary", "edits": {"on_strike": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p103-c02:prose|necessity|eligible_before_strike", "id": "snap-p103-c02:prose", "kind": "necessity", "edits": {"eligible_before_strike": null}, "target": "approve"}
+{"iid": "snap-p103-c02:prose|necessity|on_strike", "id": "snap-p103-c02:prose", "kind": "necessity", "edits": {"on_strike": null}, "target": "approve"}
+{"iid": "snap-p104-c01:prose|boundary|elderly_or_disabled=yes;ipv_disqualified=no", "id": "snap-p104-c01:prose", "kind": "boundary", "edits": {"elderly_or_disabled": "yes", "ipv_disqualified": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p104-c03:prose|necessity|earned_income", "id": "snap-p104-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p104-c03:prose|necessity|unearned_income", "id": "snap-p104-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p105-c00:prose|boundary|earned_income=$1,200;household_size=1", "id": "snap-p105-c00:prose", "kind": "boundary", "edits": {"earned_income": "$1,200", "household_size": "1"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p105-c01:prose|boundary|ipv_disqualified=no", "id": "snap-p105-c01:prose", "kind": "boundary", "edits": {"ipv_disqualified": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p105-c02:prose|boundary|ipv_disqualified=no", "id": "snap-p105-c02:prose", "kind": "boundary", "edits": {"ipv_disqualified": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p105-c02:prose|necessity|ipv_disqualified", "id": "snap-p105-c02:prose", "kind": "necessity", "edits": {"ipv_disqualified": null}, "target": "approve"}
+{"iid": "snap-p112-c00:prose|boundary|earned_income=$1,200", "id": "snap-p112-c00:prose", "kind": "boundary", "edits": {"earned_income": "$1,200"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p112-c00:prose|necessity|earned_income", "id": "snap-p112-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p112-c03:prose|necessity|earned_income", "id": "snap-p112-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p112-c03:prose|necessity|unearned_income", "id": "snap-p112-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p113-c00:prose|necessity|earned_income", "id": "snap-p113-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p113-c00:prose|necessity|unearned_income", "id": "snap-p113-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p113-c01:prose|boundary|earned_income=$1,600", "id": "snap-p113-c01:prose", "kind": "boundary", "edits": {"earned_income": "$1,600"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p113-c01:prose|necessity|earned_income", "id": "snap-p113-c01:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p113-c02:prose|boundary|earned_income=$2,000", "id": "snap-p113-c02:prose", "kind": "boundary", "edits": {"earned_income": "$2,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p113-c02:prose|necessity|earned_income", "id": "snap-p113-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p113-c03:prose|necessity|earned_income", "id": "snap-p113-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p113-c03:prose|necessity|elderly_or_disabled", "id": "snap-p113-c03:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "approve"}
+{"iid": "snap-p113-c03:prose|necessity|unearned_income", "id": "snap-p113-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p114-c00:prose|necessity|earned_income", "id": "snap-p114-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p114-c00:prose|necessity|unearned_income", "id": "snap-p114-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p114-c01:prose|boundary|categorical=no", "id": "snap-p114-c01:prose", "kind": "boundary", "edits": {"categorical": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p114-c03:prose|necessity|earned_income", "id": "snap-p114-c03:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "approve"}
+{"iid": "snap-p114-c03:prose|necessity|unearned_income", "id": "snap-p114-c03:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "approve"}
+{"iid": "snap-p115-c00:prose|boundary|earned_income=$600", "id": "snap-p115-c00:prose", "kind": "boundary", "edits": {"earned_income": "$600"}, "target": "approve", "gold_target": "deny"}
+{"iid": "snap-p115-c00:prose|necessity|earned_income", "id": "snap-p115-c00:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p115-c00:prose|necessity|unearned_income", "id": "snap-p115-c00:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}
+{"iid": "snap-p115-c01:prose|boundary|ssn_provided=yes", "id": "snap-p115-c01:prose", "kind": "boundary", "edits": {"ssn_provided": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "snap-p115-c01:prose|necessity|ssn_provided", "id": "snap-p115-c01:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "approve"}
+{"iid": "snap-p115-c02:prose|boundary|categorical=no", "id": "snap-p115-c02:prose", "kind": "boundary", "edits": {"categorical": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "snap-p115-c02:prose|necessity|categorical", "id": "snap-p115-c02:prose", "kind": "necessity", "edits": {"categorical": null}, "target": "deny"}
+{"iid": "snap-p115-c02:prose|necessity|earned_income", "id": "snap-p115-c02:prose", "kind": "necessity", "edits": {"earned_income": null}, "target": "deny"}
+{"iid": "snap-p115-c02:prose|necessity|elderly_or_disabled", "id": "snap-p115-c02:prose", "kind": "necessity", "edits": {"elderly_or_disabled": null}, "target": "deny"}
+{"iid": "snap-p115-c02:prose|necessity|household_size", "id": "snap-p115-c02:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "deny"}
+{"iid": "snap-p115-c02:prose|necessity|immigration_status", "id": "snap-p115-c02:prose", "kind": "necessity", "edits": {"immigration_status": null}, "target": "deny"}
+{"iid": "snap-p115-c02:prose|necessity|quit_status", "id": "snap-p115-c02:prose", "kind": "necessity", "edits": {"quit_status": null}, "target": "deny"}
+{"iid": "snap-p115-c02:prose|necessity|shelter_costs", "id": "snap-p115-c02:prose", "kind": "necessity", "edits": {"shelter_costs": null}, "target": "deny"}
+{"iid": "snap-p115-c02:prose|necessity|ssn_provided", "id": "snap-p115-c02:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "deny"}
+{"iid": "snap-p115-c02:prose|necessity|unearned_income", "id": "snap-p115-c02:prose", "kind": "necessity", "edits": {"unearned_income": null}, "target": "deny"}

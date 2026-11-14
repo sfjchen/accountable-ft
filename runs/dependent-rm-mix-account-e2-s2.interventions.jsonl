@@ -1,0 +1,335 @@
+{"iid": "dependent-p000-c00:prose|boundary|citizen_resident=yes", "id": "dependent-p000-c00:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p000-c00:prose|necessity|citizen_resident", "id": "dependent-p000-c00:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p000-c01:prose|boundary|taxpayer_support_pct=60", "id": "dependent-p000-c01:prose", "kind": "boundary", "edits": {"taxpayer_support_pct": "60"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p000-c02:prose|boundary|claim_type=a qualifying child", "id": "dependent-p000-c02:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "approve"}
+{"iid": "dependent-p000-c02:prose|necessity|age", "id": "dependent-p000-c02:prose", "kind": "necessity", "edits": {"age": null}, "target": "approve"}
+{"iid": "dependent-p000-c02:prose|necessity|citizen_resident", "id": "dependent-p000-c02:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p000-c02:prose|necessity|claim_type", "id": "dependent-p000-c02:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "approve"}
+{"iid": "dependent-p000-c02:prose|necessity|files_joint", "id": "dependent-p000-c02:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "approve"}
+{"iid": "dependent-p000-c02:prose|necessity|taxpayer_dependent", "id": "dependent-p000-c02:prose", "kind": "necessity", "edits": {"taxpayer_dependent": null}, "target": "approve"}
+{"iid": "dependent-p000-c02:prose|necessity|taxpayer_support_pct", "id": "dependent-p000-c02:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "approve"}
+{"iid": "dependent-p000-c03:prose|boundary|claim_type=a qualifying child", "id": "dependent-p000-c03:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p000-c03:prose|necessity|age", "id": "dependent-p000-c03:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p000-c03:prose|necessity|citizen_resident", "id": "dependent-p000-c03:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p000-c03:prose|necessity|claim_type", "id": "dependent-p000-c03:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p000-c03:prose|necessity|files_joint", "id": "dependent-p000-c03:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "deny"}
+{"iid": "dependent-p000-c03:prose|necessity|full_time_student", "id": "dependent-p000-c03:prose", "kind": "necessity", "edits": {"full_time_student": null}, "target": "deny"}
+{"iid": "dependent-p000-c03:prose|necessity|own_support_pct", "id": "dependent-p000-c03:prose", "kind": "necessity", "edits": {"own_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p000-c03:prose|necessity|taxpayer_dependent", "id": "dependent-p000-c03:prose", "kind": "necessity", "edits": {"taxpayer_dependent": null}, "target": "deny"}
+{"iid": "dependent-p001-c00:prose|boundary|citizen_resident=yes", "id": "dependent-p001-c00:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p001-c00:prose|necessity|citizen_resident", "id": "dependent-p001-c00:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p001-c01:prose|boundary|months_lived_with=6", "id": "dependent-p001-c01:prose", "kind": "boundary", "edits": {"months_lived_with": "6"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p001-c01:prose|necessity|months_lived_with", "id": "dependent-p001-c01:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "deny"}
+{"iid": "dependent-p001-c02:prose|boundary|claim_type=a qualifying child", "id": "dependent-p001-c02:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p001-c02:prose|necessity|age", "id": "dependent-p001-c02:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p001-c02:prose|necessity|citizen_resident", "id": "dependent-p001-c02:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p001-c02:prose|necessity|claim_type", "id": "dependent-p001-c02:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p001-c02:prose|necessity|disabled", "id": "dependent-p001-c02:prose", "kind": "necessity", "edits": {"disabled": null}, "target": "deny"}
+{"iid": "dependent-p001-c02:prose|necessity|files_joint", "id": "dependent-p001-c02:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "deny"}
+{"iid": "dependent-p001-c02:prose|necessity|own_support_pct", "id": "dependent-p001-c02:prose", "kind": "necessity", "edits": {"own_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p001-c02:prose|necessity|taxpayer_dependent", "id": "dependent-p001-c02:prose", "kind": "necessity", "edits": {"taxpayer_dependent": null}, "target": "deny"}
+{"iid": "dependent-p001-c03:prose|boundary|claim_type=qualifying child;files_joint=no", "id": "dependent-p001-c03:prose", "kind": "boundary", "edits": {"claim_type": "qualifying child", "files_joint": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p001-c03:prose|necessity|files_joint", "id": "dependent-p001-c03:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "approve"}
+{"iid": "dependent-p002-c01:prose|boundary|claim_type=a qualifying child", "id": "dependent-p002-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p002-c03:prose|boundary|claim_type=a qualifying relative", "id": "dependent-p002-c03:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p002-c03:prose|necessity|own_support_pct", "id": "dependent-p002-c03:prose", "kind": "necessity", "edits": {"own_support_pct": null}, "target": "approve"}
+{"iid": "dependent-p003-c00:prose|boundary|relationship=a sibling", "id": "dependent-p003-c00:prose", "kind": "boundary", "edits": {"relationship": "a sibling"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p003-c00:prose|necessity|months_lived_with", "id": "dependent-p003-c00:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "deny"}
+{"iid": "dependent-p003-c00:prose|necessity|relationship", "id": "dependent-p003-c00:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p003-c02:prose|boundary|claim_type=a qualifying relative", "id": "dependent-p003-c02:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p008-c00:prose|boundary|claim_type=a qualifying child", "id": "dependent-p008-c00:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p008-c00:prose|necessity|age", "id": "dependent-p008-c00:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p008-c00:prose|necessity|citizen_resident", "id": "dependent-p008-c00:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p008-c00:prose|necessity|claim_type", "id": "dependent-p008-c00:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p008-c00:prose|necessity|custody_release", "id": "dependent-p008-c00:prose", "kind": "necessity", "edits": {"custody_release": null}, "target": "deny"}
+{"iid": "dependent-p008-c00:prose|necessity|months_lived_with", "id": "dependent-p008-c00:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "deny"}
+{"iid": "dependent-p008-c00:prose|necessity|multiple_support", "id": "dependent-p008-c00:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "deny"}
+{"iid": "dependent-p008-c00:prose|necessity|relationship", "id": "dependent-p008-c00:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p008-c00:prose|necessity|taxpayer_support_pct", "id": "dependent-p008-c00:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p008-c01:prose|boundary|taxpayer_support_pct=60", "id": "dependent-p008-c01:prose", "kind": "boundary", "edits": {"taxpayer_support_pct": "60"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p008-c02:prose|boundary|age=18;relationship=a child", "id": "dependent-p008-c02:prose", "kind": "boundary", "edits": {"age": "18", "relationship": "a child"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p008-c03:prose|boundary|citizen_resident=yes", "id": "dependent-p008-c03:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p009-c01:prose|boundary|wages=$4,000", "id": "dependent-p009-c01:prose", "kind": "boundary", "edits": {"wages": "$4,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p009-c01:prose|necessity|wages", "id": "dependent-p009-c01:prose", "kind": "necessity", "edits": {"wages": null}, "target": "deny"}
+{"iid": "dependent-p009-c02:prose|boundary|age=18", "id": "dependent-p009-c02:prose", "kind": "boundary", "edits": {"age": "18"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p009-c02:prose|necessity|age", "id": "dependent-p009-c02:prose", "kind": "necessity", "edits": {"age": null}, "target": "approve"}
+{"iid": "dependent-p024-c00:prose|boundary|claim_type=a qualifying relative;taxpayer_support_pct=50", "id": "dependent-p024-c00:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative", "taxpayer_support_pct": "50"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p024-c01:prose|boundary|taxpayer_support_pct=50", "id": "dependent-p024-c01:prose", "kind": "boundary", "edits": {"taxpayer_support_pct": "50"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p024-c03:prose|boundary|citizen_resident=yes", "id": "dependent-p024-c03:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p025-c00:prose|boundary|files_joint=no;qc_of_another=no", "id": "dependent-p025-c00:prose", "kind": "boundary", "edits": {"files_joint": "no", "qc_of_another": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p025-c00:prose|necessity|files_joint", "id": "dependent-p025-c00:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "deny"}
+{"iid": "dependent-p025-c03:prose|boundary|claim_type=qualifying child;own_support_pct=0", "id": "dependent-p025-c03:prose", "kind": "boundary", "edits": {"claim_type": "qualifying child", "own_support_pct": "0"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p025-c03:prose|necessity|taxpayer_support_pct", "id": "dependent-p025-c03:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "approve"}
+{"iid": "dependent-p028-c00:prose|boundary|claim_type=a qualifying child", "id": "dependent-p028-c00:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p028-c00:prose|necessity|age", "id": "dependent-p028-c00:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p028-c00:prose|necessity|citizen_resident", "id": "dependent-p028-c00:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p028-c00:prose|necessity|claim_type", "id": "dependent-p028-c00:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p028-c00:prose|necessity|disabled", "id": "dependent-p028-c00:prose", "kind": "necessity", "edits": {"disabled": null}, "target": "deny"}
+{"iid": "dependent-p028-c00:prose|necessity|own_support_pct", "id": "dependent-p028-c00:prose", "kind": "necessity", "edits": {"own_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p028-c00:prose|necessity|refund_only", "id": "dependent-p028-c00:prose", "kind": "necessity", "edits": {"refund_only": null}, "target": "deny"}
+{"iid": "dependent-p028-c00:prose|necessity|relationship", "id": "dependent-p028-c00:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p028-c01:prose|boundary|citizen_resident=yes", "id": "dependent-p028-c01:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p028-c01:prose|necessity|citizen_resident", "id": "dependent-p028-c01:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p028-c03:prose|boundary|claim_type=a qualifying child", "id": "dependent-p028-c03:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p029-c01:prose|boundary|claim_type=a qualifying child", "id": "dependent-p029-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p029-c03:prose|boundary|relationship=a child", "id": "dependent-p029-c03:prose", "kind": "boundary", "edits": {"relationship": "a child"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p029-c03:prose|necessity|relationship", "id": "dependent-p029-c03:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "approve"}
+{"iid": "dependent-p030-c01:prose|boundary|citizen_resident=yes", "id": "dependent-p030-c01:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p030-c03:prose|necessity|citizen_resident", "id": "dependent-p030-c03:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p031-c00:prose|boundary|citizen_resident=yes", "id": "dependent-p031-c00:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p031-c00:prose|necessity|citizen_resident", "id": "dependent-p031-c00:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p031-c01:prose|boundary|taxpayer_support_pct=60", "id": "dependent-p031-c01:prose", "kind": "boundary", "edits": {"taxpayer_support_pct": "60"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p031-c01:prose|necessity|taxpayer_support_pct", "id": "dependent-p031-c01:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "approve"}
+{"iid": "dependent-p031-c02:prose|boundary|full_time_student=no", "id": "dependent-p031-c02:prose", "kind": "boundary", "edits": {"full_time_student": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p032-c00:prose|boundary|citizen_resident=yes", "id": "dependent-p032-c00:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p032-c00:prose|necessity|citizen_resident", "id": "dependent-p032-c00:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p032-c01:prose|boundary|claim_type=a qualifying child", "id": "dependent-p032-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p032-c02:prose|boundary|claim_type=a qualifying relative", "id": "dependent-p032-c02:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p032-c02:prose|necessity|age", "id": "dependent-p032-c02:prose", "kind": "necessity", "edits": {"age": null}, "target": "approve"}
+{"iid": "dependent-p032-c03:prose|boundary|claim_type=a qualifying child", "id": "dependent-p032-c03:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "approve"}
+{"iid": "dependent-p032-c03:prose|necessity|age", "id": "dependent-p032-c03:prose", "kind": "necessity", "edits": {"age": null}, "target": "approve"}
+{"iid": "dependent-p032-c03:prose|necessity|citizen_resident", "id": "dependent-p032-c03:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p032-c03:prose|necessity|claim_type", "id": "dependent-p032-c03:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "approve"}
+{"iid": "dependent-p032-c03:prose|necessity|disabled", "id": "dependent-p032-c03:prose", "kind": "necessity", "edits": {"disabled": null}, "target": "approve"}
+{"iid": "dependent-p032-c03:prose|necessity|files_joint", "id": "dependent-p032-c03:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "approve"}
+{"iid": "dependent-p032-c03:prose|necessity|months_lived_with", "id": "dependent-p032-c03:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "approve"}
+{"iid": "dependent-p032-c03:prose|necessity|multiple_support", "id": "dependent-p032-c03:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "approve"}
+{"iid": "dependent-p032-c03:prose|necessity|own_support_pct", "id": "dependent-p032-c03:prose", "kind": "necessity", "edits": {"own_support_pct": null}, "target": "approve"}
+{"iid": "dependent-p032-c03:prose|necessity|relationship", "id": "dependent-p032-c03:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "approve"}
+{"iid": "dependent-p033-c01:prose|boundary|claim_type=a qualifying child", "id": "dependent-p033-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p033-c01:prose|necessity|citizen_resident", "id": "dependent-p033-c01:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p033-c01:prose|necessity|claim_type", "id": "dependent-p033-c01:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p033-c01:prose|necessity|months_lived_with", "id": "dependent-p033-c01:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "deny"}
+{"iid": "dependent-p033-c01:prose|necessity|multiple_support", "id": "dependent-p033-c01:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "deny"}
+{"iid": "dependent-p033-c01:prose|necessity|refund_only", "id": "dependent-p033-c01:prose", "kind": "necessity", "edits": {"refund_only": null}, "target": "deny"}
+{"iid": "dependent-p033-c01:prose|necessity|relationship", "id": "dependent-p033-c01:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p033-c01:prose|necessity|taxpayer_support_pct", "id": "dependent-p033-c01:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p033-c02:prose|boundary|age=18", "id": "dependent-p033-c02:prose", "kind": "boundary", "edits": {"age": "18"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p033-c02:prose|necessity|age", "id": "dependent-p033-c02:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p033-c03:prose|boundary|citizen_resident=yes;files_joint=no", "id": "dependent-p033-c03:prose", "kind": "boundary", "edits": {"citizen_resident": "yes", "files_joint": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p036-c01:prose|boundary|months_lived_with=6", "id": "dependent-p036-c01:prose", "kind": "boundary", "edits": {"months_lived_with": "6"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p036-c01:prose|necessity|months_lived_with", "id": "dependent-p036-c01:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "approve"}
+{"iid": "dependent-p036-c02:prose|boundary|citizen_resident=yes", "id": "dependent-p036-c02:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p036-c02:prose|necessity|citizen_resident", "id": "dependent-p036-c02:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p036-c03:prose|necessity|citizen_resident", "id": "dependent-p036-c03:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p037-c00:prose|boundary|citizen_resident=yes", "id": "dependent-p037-c00:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p037-c02:prose|boundary|citizen_resident=yes", "id": "dependent-p037-c02:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p037-c02:prose|necessity|citizen_resident", "id": "dependent-p037-c02:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p038-c01:prose|boundary|taxpayer_dependent=no", "id": "dependent-p038-c01:prose", "kind": "boundary", "edits": {"taxpayer_dependent": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p038-c01:prose|necessity|taxpayer_dependent", "id": "dependent-p038-c01:prose", "kind": "necessity", "edits": {"taxpayer_dependent": null}, "target": "approve"}
+{"iid": "dependent-p038-c02:prose|boundary|citizen_resident=yes", "id": "dependent-p038-c02:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p038-c02:prose|necessity|citizen_resident", "id": "dependent-p038-c02:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p038-c03:prose|boundary|citizen_resident=yes", "id": "dependent-p038-c03:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p038-c03:prose|necessity|citizen_resident", "id": "dependent-p038-c03:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p039-c00:prose|boundary|citizen_resident=yes", "id": "dependent-p039-c00:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p039-c00:prose|necessity|citizen_resident", "id": "dependent-p039-c00:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p039-c03:prose|boundary|citizen_resident=yes", "id": "dependent-p039-c03:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p039-c03:prose|necessity|citizen_resident", "id": "dependent-p039-c03:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p042-c01:prose|boundary|qc_of_another=no", "id": "dependent-p042-c01:prose", "kind": "boundary", "edits": {"qc_of_another": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p042-c01:prose|necessity|qc_of_another", "id": "dependent-p042-c01:prose", "kind": "necessity", "edits": {"qc_of_another": null}, "target": "deny"}
+{"iid": "dependent-p042-c02:prose|boundary|age=21;months_lived_with=6", "id": "dependent-p042-c02:prose", "kind": "boundary", "edits": {"age": "21", "months_lived_with": "6"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p043-c00:prose|boundary|taxpayer_support_pct=50", "id": "dependent-p043-c00:prose", "kind": "boundary", "edits": {"taxpayer_support_pct": "50"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p043-c00:prose|necessity|taxpayer_support_pct", "id": "dependent-p043-c00:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p043-c01:prose|boundary|claim_type=qualifying child;months_lived_with=6;taxpayer_support_pct=51", "id": "dependent-p043-c01:prose", "kind": "boundary", "edits": {"claim_type": "qualifying child", "months_lived_with": "6", "taxpayer_support_pct": "51"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p043-c02:prose|boundary|claim_type=qualifying child;taxpayer_support_pct=50", "id": "dependent-p043-c02:prose", "kind": "boundary", "edits": {"claim_type": "qualifying child", "taxpayer_support_pct": "50"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p043-c03:prose|boundary|months_lived_with=6", "id": "dependent-p043-c03:prose", "kind": "boundary", "edits": {"months_lived_with": "6"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p043-c03:prose|necessity|months_lived_with", "id": "dependent-p043-c03:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "deny"}
+{"iid": "dependent-p046-c00:prose|boundary|age=22", "id": "dependent-p046-c00:prose", "kind": "boundary", "edits": {"age": "22"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p046-c01:prose|boundary|claim_type=a qualifying child", "id": "dependent-p046-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p046-c02:prose|boundary|claim_type=a qualifying relative", "id": "dependent-p046-c02:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative"}, "target": "deny", "gold_target": "approve"}
+{"iid": "dependent-p046-c02:prose|necessity|age", "id": "dependent-p046-c02:prose", "kind": "necessity", "edits": {"age": null}, "target": "approve"}
+{"iid": "dependent-p046-c02:prose|necessity|citizen_resident", "id": "dependent-p046-c02:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p046-c02:prose|necessity|claim_type", "id": "dependent-p046-c02:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "approve"}
+{"iid": "dependent-p046-c02:prose|necessity|custody_release", "id": "dependent-p046-c02:prose", "kind": "necessity", "edits": {"custody_release": null}, "target": "approve"}
+{"iid": "dependent-p046-c02:prose|necessity|disabled", "id": "dependent-p046-c02:prose", "kind": "necessity", "edits": {"disabled": null}, "target": "approve"}
+{"iid": "dependent-p046-c02:prose|necessity|files_joint", "id": "dependent-p046-c02:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "approve"}
+{"iid": "dependent-p046-c02:prose|necessity|full_time_student", "id": "dependent-p046-c02:prose", "kind": "necessity", "edits": {"full_time_student": null}, "target": "approve"}
+{"iid": "dependent-p046-c02:prose|necessity|relationship", "id": "dependent-p046-c02:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "approve"}
+{"iid": "dependent-p046-c03:prose|necessity|relationship", "id": "dependent-p046-c03:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "approve"}
+{"iid": "dependent-p047-c01:prose|boundary|claim_type=a qualifying child", "id": "dependent-p047-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p047-c01:prose|necessity|age", "id": "dependent-p047-c01:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p047-c01:prose|necessity|citizen_resident", "id": "dependent-p047-c01:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p047-c01:prose|necessity|claim_type", "id": "dependent-p047-c01:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p047-c01:prose|necessity|files_joint", "id": "dependent-p047-c01:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "deny"}
+{"iid": "dependent-p047-c01:prose|necessity|full_time_student", "id": "dependent-p047-c01:prose", "kind": "necessity", "edits": {"full_time_student": null}, "target": "deny"}
+{"iid": "dependent-p047-c01:prose|necessity|multiple_support", "id": "dependent-p047-c01:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "deny"}
+{"iid": "dependent-p047-c01:prose|necessity|relationship", "id": "dependent-p047-c01:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p047-c01:prose|necessity|taxpayer_support_pct", "id": "dependent-p047-c01:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p047-c03:prose|boundary|claim_type=a qualifying child", "id": "dependent-p047-c03:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p047-c03:prose|necessity|claim_type", "id": "dependent-p047-c03:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "approve"}
+{"iid": "dependent-p047-c03:prose|necessity|multiple_support", "id": "dependent-p047-c03:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "approve"}
+{"iid": "dependent-p047-c03:prose|necessity|taxpayer_support_pct", "id": "dependent-p047-c03:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "approve"}
+{"iid": "dependent-p048-c01:prose|boundary|claim_type=a qualifying child", "id": "dependent-p048-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p048-c01:prose|necessity|age", "id": "dependent-p048-c01:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p048-c01:prose|necessity|citizen_resident", "id": "dependent-p048-c01:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p048-c01:prose|necessity|claim_type", "id": "dependent-p048-c01:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p048-c01:prose|necessity|disabled", "id": "dependent-p048-c01:prose", "kind": "necessity", "edits": {"disabled": null}, "target": "deny"}
+{"iid": "dependent-p048-c01:prose|necessity|files_joint", "id": "dependent-p048-c01:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "deny"}
+{"iid": "dependent-p048-c01:prose|necessity|months_lived_with", "id": "dependent-p048-c01:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "deny"}
+{"iid": "dependent-p048-c01:prose|necessity|multiple_support", "id": "dependent-p048-c01:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "deny"}
+{"iid": "dependent-p048-c01:prose|necessity|own_support_pct", "id": "dependent-p048-c01:prose", "kind": "necessity", "edits": {"own_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p048-c01:prose|necessity|relationship", "id": "dependent-p048-c01:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p049-c03:prose|boundary|citizen_resident=yes", "id": "dependent-p049-c03:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p049-c03:prose|necessity|citizen_resident", "id": "dependent-p049-c03:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p052-c00:prose|boundary|claim_type=a qualifying relative", "id": "dependent-p052-c00:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p052-c02:prose|boundary|claim_type=a qualifying relative", "id": "dependent-p052-c02:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p052-c03:prose|boundary|claim_type=a qualifying child", "id": "dependent-p052-c03:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p052-c03:prose|necessity|claim_type", "id": "dependent-p052-c03:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p052-c03:prose|necessity|taxpayer_support_pct", "id": "dependent-p052-c03:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p053-c01:prose|boundary|citizen_resident=yes", "id": "dependent-p053-c01:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p053-c01:prose|necessity|citizen_resident", "id": "dependent-p053-c01:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p053-c02:prose|boundary|age=18;parent_also_claims=no", "id": "dependent-p053-c02:prose", "kind": "boundary", "edits": {"age": "18", "parent_also_claims": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p062-c00:prose|boundary|age=6", "id": "dependent-p062-c00:prose", "kind": "boundary", "edits": {"age": "6"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p062-c00:prose|necessity|age", "id": "dependent-p062-c00:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p062-c00:prose|necessity|wages", "id": "dependent-p062-c00:prose", "kind": "necessity", "edits": {"wages": null}, "target": "deny"}
+{"iid": "dependent-p062-c03:prose|boundary|claim_type=a qualifying relative", "id": "dependent-p062-c03:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p062-c03:prose|necessity|age", "id": "dependent-p062-c03:prose", "kind": "necessity", "edits": {"age": null}, "target": "approve"}
+{"iid": "dependent-p063-c00:prose|boundary|citizen_resident=yes", "id": "dependent-p063-c00:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p063-c01:prose|boundary|parent_also_claims=no", "id": "dependent-p063-c01:prose", "kind": "boundary", "edits": {"parent_also_claims": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p063-c01:prose|necessity|age", "id": "dependent-p063-c01:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p063-c01:prose|necessity|parent_also_claims", "id": "dependent-p063-c01:prose", "kind": "necessity", "edits": {"parent_also_claims": null}, "target": "deny"}
+{"iid": "dependent-p063-c02:prose|boundary|citizen_resident=yes", "id": "dependent-p063-c02:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p063-c02:prose|necessity|citizen_resident", "id": "dependent-p063-c02:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p063-c03:prose|boundary|claim_type=a qualifying relative;taxpayer_support_pct=50", "id": "dependent-p063-c03:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative", "taxpayer_support_pct": "50"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p063-c03:prose|necessity|age", "id": "dependent-p063-c03:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p063-c03:prose|necessity|multiple_support", "id": "dependent-p063-c03:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "deny"}
+{"iid": "dependent-p063-c03:prose|necessity|taxpayer_support_pct", "id": "dependent-p063-c03:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p064-c00:prose|boundary|files_joint=no", "id": "dependent-p064-c00:prose", "kind": "boundary", "edits": {"files_joint": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p064-c01:prose|boundary|claim_type=a qualifying relative", "id": "dependent-p064-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p064-c02:prose|boundary|taxpayer_support_pct=10", "id": "dependent-p064-c02:prose", "kind": "boundary", "edits": {"taxpayer_support_pct": "10"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p064-c02:prose|necessity|taxpayer_support_pct", "id": "dependent-p064-c02:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "approve"}
+{"iid": "dependent-p065-c02:prose|boundary|qc_of_another=no", "id": "dependent-p065-c02:prose", "kind": "boundary", "edits": {"qc_of_another": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p065-c03:prose|necessity|relationship", "id": "dependent-p065-c03:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p078-c01:prose|boundary|citizen_resident=yes", "id": "dependent-p078-c01:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p079-c00:prose|boundary|citizen_resident=yes;months_lived_with=5", "id": "dependent-p079-c00:prose", "kind": "boundary", "edits": {"citizen_resident": "yes", "months_lived_with": "5"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p079-c01:prose|boundary|claim_type=a qualifying relative", "id": "dependent-p079-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p079-c01:prose|necessity|age", "id": "dependent-p079-c01:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p079-c01:prose|necessity|citizen_resident", "id": "dependent-p079-c01:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p079-c01:prose|necessity|claim_type", "id": "dependent-p079-c01:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p079-c01:prose|necessity|months_lived_with", "id": "dependent-p079-c01:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "deny"}
+{"iid": "dependent-p079-c01:prose|necessity|relationship", "id": "dependent-p079-c01:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p086-c01:prose|necessity|relationship", "id": "dependent-p086-c01:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "approve"}
+{"iid": "dependent-p086-c02:prose|boundary|claim_type=a qualifying child", "id": "dependent-p086-c02:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p086-c02:prose|necessity|claim_type", "id": "dependent-p086-c02:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p086-c02:prose|necessity|taxpayer_support_pct", "id": "dependent-p086-c02:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p086-c03:prose|necessity|relationship", "id": "dependent-p086-c03:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "approve"}
+{"iid": "dependent-p087-c00:prose|boundary|claim_type=a qualifying relative;months_lived_with=7", "id": "dependent-p087-c00:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative", "months_lived_with": "7"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p087-c03:prose|necessity|relationship", "id": "dependent-p087-c03:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p090-c00:prose|boundary|claim_type=a qualifying relative;qc_of_another=no", "id": "dependent-p090-c00:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative", "qc_of_another": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p090-c01:prose|boundary|claim_type=a qualifying child", "id": "dependent-p090-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p090-c01:prose|necessity|age", "id": "dependent-p090-c01:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p090-c01:prose|necessity|citizen_resident", "id": "dependent-p090-c01:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p090-c01:prose|necessity|claim_type", "id": "dependent-p090-c01:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p090-c01:prose|necessity|multiple_support", "id": "dependent-p090-c01:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "deny"}
+{"iid": "dependent-p090-c01:prose|necessity|qc_of_another", "id": "dependent-p090-c01:prose", "kind": "necessity", "edits": {"qc_of_another": null}, "target": "deny"}
+{"iid": "dependent-p090-c01:prose|necessity|taxpayer_dependent", "id": "dependent-p090-c01:prose", "kind": "necessity", "edits": {"taxpayer_dependent": null}, "target": "deny"}
+{"iid": "dependent-p090-c01:prose|necessity|taxpayer_support_pct", "id": "dependent-p090-c01:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p090-c02:prose|boundary|claim_type=qualifying child", "id": "dependent-p090-c02:prose", "kind": "boundary", "edits": {"claim_type": "qualifying child"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p090-c03:prose|boundary|citizen_resident=yes", "id": "dependent-p090-c03:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p091-c00:prose|boundary|claim_type=qualifying child", "id": "dependent-p091-c00:prose", "kind": "boundary", "edits": {"claim_type": "qualifying child"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p091-c00:prose|necessity|multiple_support", "id": "dependent-p091-c00:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "approve"}
+{"iid": "dependent-p091-c00:prose|necessity|taxpayer_support_pct", "id": "dependent-p091-c00:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "approve"}
+{"iid": "dependent-p091-c01:prose|boundary|claim_type=qualifying relative", "id": "dependent-p091-c01:prose", "kind": "boundary", "edits": {"claim_type": "qualifying relative"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p091-c02:prose|boundary|claim_type=a qualifying relative;qc_of_another=no", "id": "dependent-p091-c02:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative", "qc_of_another": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p091-c02:prose|necessity|qc_of_another", "id": "dependent-p091-c02:prose", "kind": "necessity", "edits": {"qc_of_another": null}, "target": "deny"}
+{"iid": "dependent-p092-c00:prose|boundary|claim_type=a qualifying child", "id": "dependent-p092-c00:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p092-c00:prose|necessity|age", "id": "dependent-p092-c00:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p092-c00:prose|necessity|citizen_resident", "id": "dependent-p092-c00:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p092-c00:prose|necessity|claim_type", "id": "dependent-p092-c00:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p092-c00:prose|necessity|disabled", "id": "dependent-p092-c00:prose", "kind": "necessity", "edits": {"disabled": null}, "target": "deny"}
+{"iid": "dependent-p092-c00:prose|necessity|files_joint", "id": "dependent-p092-c00:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "deny"}
+{"iid": "dependent-p092-c00:prose|necessity|multiple_support", "id": "dependent-p092-c00:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "deny"}
+{"iid": "dependent-p092-c00:prose|necessity|own_support_pct", "id": "dependent-p092-c00:prose", "kind": "necessity", "edits": {"own_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p092-c00:prose|necessity|relationship", "id": "dependent-p092-c00:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p092-c00:prose|necessity|taxpayer_support_pct", "id": "dependent-p092-c00:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p092-c01:prose|boundary|claim_type=a qualifying child", "id": "dependent-p092-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p092-c01:prose|necessity|age", "id": "dependent-p092-c01:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p092-c01:prose|necessity|citizen_resident", "id": "dependent-p092-c01:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p092-c01:prose|necessity|claim_type", "id": "dependent-p092-c01:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p092-c01:prose|necessity|disabled", "id": "dependent-p092-c01:prose", "kind": "necessity", "edits": {"disabled": null}, "target": "deny"}
+{"iid": "dependent-p092-c01:prose|necessity|files_joint", "id": "dependent-p092-c01:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "deny"}
+{"iid": "dependent-p092-c01:prose|necessity|months_lived_with", "id": "dependent-p092-c01:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "deny"}
+{"iid": "dependent-p092-c01:prose|necessity|multiple_support", "id": "dependent-p092-c01:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "deny"}
+{"iid": "dependent-p092-c01:prose|necessity|qc_of_another", "id": "dependent-p092-c01:prose", "kind": "necessity", "edits": {"qc_of_another": null}, "target": "deny"}
+{"iid": "dependent-p092-c01:prose|necessity|temporary_absence", "id": "dependent-p092-c01:prose", "kind": "necessity", "edits": {"temporary_absence": null}, "target": "deny"}
+{"iid": "dependent-p092-c03:prose|boundary|files_joint=no", "id": "dependent-p092-c03:prose", "kind": "boundary", "edits": {"files_joint": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p092-c03:prose|necessity|files_joint", "id": "dependent-p092-c03:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "approve"}
+{"iid": "dependent-p093-c00:prose|boundary|age=18", "id": "dependent-p093-c00:prose", "kind": "boundary", "edits": {"age": "18"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p093-c00:prose|necessity|age", "id": "dependent-p093-c00:prose", "kind": "necessity", "edits": {"age": null}, "target": "approve"}
+{"iid": "dependent-p093-c01:prose|boundary|claim_type=a qualifying child", "id": "dependent-p093-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p093-c01:prose|necessity|age", "id": "dependent-p093-c01:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p093-c01:prose|necessity|citizen_resident", "id": "dependent-p093-c01:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p093-c01:prose|necessity|claim_type", "id": "dependent-p093-c01:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p093-c01:prose|necessity|files_joint", "id": "dependent-p093-c01:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "deny"}
+{"iid": "dependent-p093-c01:prose|necessity|months_lived_with", "id": "dependent-p093-c01:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "deny"}
+{"iid": "dependent-p093-c01:prose|necessity|multiple_support", "id": "dependent-p093-c01:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "deny"}
+{"iid": "dependent-p093-c01:prose|necessity|own_support_pct", "id": "dependent-p093-c01:prose", "kind": "necessity", "edits": {"own_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p093-c01:prose|necessity|qc_of_another", "id": "dependent-p093-c01:prose", "kind": "necessity", "edits": {"qc_of_another": null}, "target": "deny"}
+{"iid": "dependent-p093-c01:prose|necessity|taxpayer_support_pct", "id": "dependent-p093-c01:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p093-c02:prose|boundary|files_joint=no", "id": "dependent-p093-c02:prose", "kind": "boundary", "edits": {"files_joint": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p093-c02:prose|necessity|files_joint", "id": "dependent-p093-c02:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "approve"}
+{"iid": "dependent-p102-c00:prose|necessity|relationship", "id": "dependent-p102-c00:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "approve"}
+{"iid": "dependent-p102-c02:prose|boundary|claim_type=a qualifying child", "id": "dependent-p102-c02:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p102-c02:prose|necessity|age", "id": "dependent-p102-c02:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p102-c02:prose|necessity|citizen_resident", "id": "dependent-p102-c02:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p102-c02:prose|necessity|claim_type", "id": "dependent-p102-c02:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p102-c02:prose|necessity|months_lived_with", "id": "dependent-p102-c02:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "deny"}
+{"iid": "dependent-p102-c02:prose|necessity|multiple_support", "id": "dependent-p102-c02:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "deny"}
+{"iid": "dependent-p102-c02:prose|necessity|parent_also_claims", "id": "dependent-p102-c02:prose", "kind": "necessity", "edits": {"parent_also_claims": null}, "target": "deny"}
+{"iid": "dependent-p102-c02:prose|necessity|relationship", "id": "dependent-p102-c02:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p102-c03:prose|boundary|claim_type=a qualifying child", "id": "dependent-p102-c03:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p102-c03:prose|necessity|age", "id": "dependent-p102-c03:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p102-c03:prose|necessity|citizen_resident", "id": "dependent-p102-c03:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p102-c03:prose|necessity|claim_type", "id": "dependent-p102-c03:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p102-c03:prose|necessity|disabled", "id": "dependent-p102-c03:prose", "kind": "necessity", "edits": {"disabled": null}, "target": "deny"}
+{"iid": "dependent-p102-c03:prose|necessity|months_lived_with", "id": "dependent-p102-c03:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "deny"}
+{"iid": "dependent-p102-c03:prose|necessity|multiple_support", "id": "dependent-p102-c03:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "deny"}
+{"iid": "dependent-p102-c03:prose|necessity|own_support_pct", "id": "dependent-p102-c03:prose", "kind": "necessity", "edits": {"own_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p102-c03:prose|necessity|parent_also_claims", "id": "dependent-p102-c03:prose", "kind": "necessity", "edits": {"parent_also_claims": null}, "target": "deny"}
+{"iid": "dependent-p102-c03:prose|necessity|relationship", "id": "dependent-p102-c03:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p103-c00:prose|boundary|citizen_resident=yes", "id": "dependent-p103-c00:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p103-c00:prose|necessity|citizen_resident", "id": "dependent-p103-c00:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p104-c02:prose|boundary|claim_type=qualifying relative;months_lived_with=6", "id": "dependent-p104-c02:prose", "kind": "boundary", "edits": {"claim_type": "qualifying relative", "months_lived_with": "6"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p104-c03:prose|boundary|citizen_resident=yes", "id": "dependent-p104-c03:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p104-c03:prose|necessity|citizen_resident", "id": "dependent-p104-c03:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p105-c00:prose|boundary|citizen_resident=yes", "id": "dependent-p105-c00:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p105-c00:prose|necessity|citizen_resident", "id": "dependent-p105-c00:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p105-c01:prose|boundary|age=18;claim_type=qualifying relative", "id": "dependent-p105-c01:prose", "kind": "boundary", "edits": {"age": "18", "claim_type": "qualifying relative"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p105-c03:prose|boundary|taxpayer_support_pct=50", "id": "dependent-p105-c03:prose", "kind": "boundary", "edits": {"taxpayer_support_pct": "50"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p105-c03:prose|necessity|taxpayer_support_pct", "id": "dependent-p105-c03:prose", "kind": "necessity", "edits": {"taxpayer_support_pct": null}, "target": "approve"}
+{"iid": "dependent-p108-c00:prose|boundary|files_joint=no", "id": "dependent-p108-c00:prose", "kind": "boundary", "edits": {"files_joint": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p108-c00:prose|necessity|files_joint", "id": "dependent-p108-c00:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "deny"}
+{"iid": "dependent-p108-c01:prose|boundary|claim_type=a qualifying child", "id": "dependent-p108-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p108-c01:prose|necessity|age", "id": "dependent-p108-c01:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p108-c01:prose|necessity|citizen_resident", "id": "dependent-p108-c01:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "deny"}
+{"iid": "dependent-p108-c01:prose|necessity|claim_type", "id": "dependent-p108-c01:prose", "kind": "necessity", "edits": {"claim_type": null}, "target": "deny"}
+{"iid": "dependent-p108-c01:prose|necessity|disabled", "id": "dependent-p108-c01:prose", "kind": "necessity", "edits": {"disabled": null}, "target": "deny"}
+{"iid": "dependent-p108-c01:prose|necessity|files_joint", "id": "dependent-p108-c01:prose", "kind": "necessity", "edits": {"files_joint": null}, "target": "deny"}
+{"iid": "dependent-p108-c01:prose|necessity|multiple_support", "id": "dependent-p108-c01:prose", "kind": "necessity", "edits": {"multiple_support": null}, "target": "deny"}
+{"iid": "dependent-p108-c01:prose|necessity|own_support_pct", "id": "dependent-p108-c01:prose", "kind": "necessity", "edits": {"own_support_pct": null}, "target": "deny"}
+{"iid": "dependent-p108-c01:prose|necessity|relationship", "id": "dependent-p108-c01:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p108-c02:prose|boundary|citizen_resident=yes", "id": "dependent-p108-c02:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p108-c02:prose|necessity|citizen_resident", "id": "dependent-p108-c02:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p108-c03:prose|boundary|citizen_resident=yes", "id": "dependent-p108-c03:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p108-c03:prose|necessity|citizen_resident", "id": "dependent-p108-c03:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}
+{"iid": "dependent-p109-c01:prose|boundary|months_lived_with=6;own_support_pct=50", "id": "dependent-p109-c01:prose", "kind": "boundary", "edits": {"months_lived_with": "6", "own_support_pct": "50"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p109-c02:prose|boundary|age=18;claim_type=a qualifying relative", "id": "dependent-p109-c02:prose", "kind": "boundary", "edits": {"age": "18", "claim_type": "a qualifying relative"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p110-c01:prose|boundary|files_joint=no", "id": "dependent-p110-c01:prose", "kind": "boundary", "edits": {"files_joint": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p110-c02:prose|boundary|claim_type=qualifying child;parent_also_claims=no", "id": "dependent-p110-c02:prose", "kind": "boundary", "edits": {"claim_type": "qualifying child", "parent_also_claims": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p110-c02:prose|necessity|parent_also_claims", "id": "dependent-p110-c02:prose", "kind": "necessity", "edits": {"parent_also_claims": null}, "target": "approve"}
+{"iid": "dependent-p110-c03:prose|boundary|claim_type=a qualifying relative", "id": "dependent-p110-c03:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p111-c00:prose|boundary|claim_type=a qualifying child", "id": "dependent-p111-c00:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p111-c01:prose|boundary|qc_of_another=no", "id": "dependent-p111-c01:prose", "kind": "boundary", "edits": {"qc_of_another": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p111-c01:prose|necessity|qc_of_another", "id": "dependent-p111-c01:prose", "kind": "necessity", "edits": {"qc_of_another": null}, "target": "approve"}
+{"iid": "dependent-p118-c00:prose|necessity|relationship", "id": "dependent-p118-c00:prose", "kind": "necessity", "edits": {"relationship": null}, "target": "deny"}
+{"iid": "dependent-p118-c02:prose|boundary|claim_type=a qualifying relative", "id": "dependent-p118-c02:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying relative"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p118-c03:prose|boundary|claim_type=a qualifying child", "id": "dependent-p118-c03:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p119-c00:prose|boundary|months_lived_with=6;qc_of_another=no", "id": "dependent-p119-c00:prose", "kind": "boundary", "edits": {"months_lived_with": "6", "qc_of_another": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "dependent-p119-c00:prose|necessity|age", "id": "dependent-p119-c00:prose", "kind": "necessity", "edits": {"age": null}, "target": "deny"}
+{"iid": "dependent-p119-c00:prose|necessity|months_lived_with", "id": "dependent-p119-c00:prose", "kind": "necessity", "edits": {"months_lived_with": null}, "target": "deny"}
+{"iid": "dependent-p119-c00:prose|necessity|taxpayer_age", "id": "dependent-p119-c00:prose", "kind": "necessity", "edits": {"taxpayer_age": null}, "target": "deny"}
+{"iid": "dependent-p119-c01:prose|boundary|claim_type=a qualifying child", "id": "dependent-p119-c01:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child"}, "target": "deny", "gold_target": "deny"}
+{"iid": "dependent-p119-c02:prose|boundary|claim_type=a qualifying child;qc_of_another=no", "id": "dependent-p119-c02:prose", "kind": "boundary", "edits": {"claim_type": "a qualifying child", "qc_of_another": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p119-c02:prose|necessity|qc_of_another", "id": "dependent-p119-c02:prose", "kind": "necessity", "edits": {"qc_of_another": null}, "target": "approve"}
+{"iid": "dependent-p119-c03:prose|boundary|citizen_resident=yes", "id": "dependent-p119-c03:prose", "kind": "boundary", "edits": {"citizen_resident": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "dependent-p119-c03:prose|necessity|citizen_resident", "id": "dependent-p119-c03:prose", "kind": "necessity", "edits": {"citizen_resident": null}, "target": "approve"}

@@ -1,0 +1,11 @@
+{"iid": "snap-p026-c00:prose|necessity|immigration_status", "id": "snap-p026-c00:prose", "kind": "necessity", "edits": {"immigration_status": null}, "target": "approve"}
+{"iid": "snap-p028-c00:prose|necessity|ssn_provided", "id": "snap-p028-c00:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "approve"}
+{"iid": "snap-p033-c03:prose|necessity|ssn_provided", "id": "snap-p033-c03:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "approve"}
+{"iid": "snap-p041-c01:prose|necessity|ssn_provided", "id": "snap-p041-c01:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "approve"}
+{"iid": "snap-p065-c00:prose|necessity|household_size", "id": "snap-p065-c00:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "approve"}
+{"iid": "snap-p069-c02:prose|necessity|household_size", "id": "snap-p069-c02:prose", "kind": "necessity", "edits": {"household_size": null}, "target": "approve"}
+{"iid": "snap-p072-c03:prose|necessity|quit_status", "id": "snap-p072-c03:prose", "kind": "necessity", "edits": {"quit_status": null}, "target": "approve"}
+{"iid": "snap-p094-c00:prose|necessity|quit_status", "id": "snap-p094-c00:prose", "kind": "necessity", "edits": {"quit_status": null}, "target": "approve"}
+{"iid": "snap-p094-c01:prose|necessity|immigration_status", "id": "snap-p094-c01:prose", "kind": "necessity", "edits": {"immigration_status": null}, "target": "approve"}
+{"iid": "snap-p099-c01:prose|necessity|immigration_status", "id": "snap-p099-c01:prose", "kind": "necessity", "edits": {"immigration_status": null}, "target": "deny"}
+{"iid": "snap-p115-c01:prose|necessity|ssn_provided", "id": "snap-p115-c01:prose", "kind": "necessity", "edits": {"ssn_provided": null}, "target": "approve"}
