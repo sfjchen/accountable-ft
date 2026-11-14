@@ -19,10 +19,10 @@
  },
  "n": 1,
  "rows": 287,
- "cached": 26,
+ "cached": 287,
  "errors": 0,
- "fresh_calls": 261,
- "wall_s": 47.88,
+ "fresh_calls": 0,
+ "wall_s": 0.52,
  "in_tokens": 157480,
  "out_tokens": 8043,
  "think_tokens": 0,
@@ -32,7 +32,7 @@
  "model_versions": [
   "gemini-3.5-flash-lite"
  ],
- "mean_latency_s": 0.723,
- "cost_usd_fresh": 0.0613,
+ "mean_latency_s": 0.0,
+ "cost_usd_fresh": 0.0,
  "cost_usd_if_uncached": 0.0674
 }
