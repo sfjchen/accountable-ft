@@ -622,7 +622,10 @@ def main():
             continue
         rows, aux = load(rp), {}
         sigs[rp.stem] = sig(rows, DEC_KEYS)
-        if len(sigs[rp.stem]) > 1:
+        # a prompted-explanation run mixes the explainer's rows with the frozen run's kept rows by design, so each
+        # part must be uniform on its own
+        if any(len(sig(p, DEC_KEYS)) > 1 for e in (True, False) if (p := [r for r in rows if bool(
+                r.get("explained_from")) == e])):
             sys.exit(f"refusing {rp.stem}: mixed decoding inside the run {sorted(sigs[rp.stem])}")
         cross |= sig(rows, keys, ())
         comp[rp.stem] = {"out_tokens": sum(r.get("out_tokens") or 0 for r in rows),

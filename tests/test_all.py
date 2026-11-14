@@ -554,6 +554,14 @@ def test_refusals(stub, tmp_path, monkeypatch):
     (tmp_path / "r.simulate_shuf.jsonl").write_text("".join(json.dumps(r | {"shuf_src": "frozen",
                                                     "shuf_decision_match": True}) + "\n" for r in shuf))
     evaluate.main()
+    # a 2nd model on sample 0 is refused unless those rows are a prompted explainer's (explained_from set)
+    for ex, msg in (({}, "mixed decoding"), ({"explained_from": "f.jsonl"}, None)):
+        rp.write_text("".join(json.dumps(r | ({"model": "m2"} | ex if r["sample"] == 0 else {})) + "\n" for r in rows))
+        if msg:
+            with pytest.raises(SystemExit, match=msg):
+                evaluate.main()
+        else:
+            evaluate.main()
 
 
 def test_prompts_and_cache_key():

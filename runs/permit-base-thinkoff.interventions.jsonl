@@ -1,0 +1,746 @@
+{"iid": "permit-p000-c00:prose|boundary|crew_size=6;weight_kg=10000", "id": "permit-p000-c00:prose", "kind": "boundary", "edits": {"crew_size": "6", "weight_kg": "10000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p000-c01:prose|boundary|night_work=no", "id": "permit-p000-c01:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p000-c02:prose|boundary|insured_amount=$3,000,000", "id": "permit-p000-c02:prose", "kind": "boundary", "edits": {"insured_amount": "$3,000,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p000-c02:prose|necessity|insured_amount", "id": "permit-p000-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|application_day", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|crew_size", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|end_day", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|equipment_class", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|insured_amount", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|night_work", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|operator_level", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|residential_zone", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|start_day", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|weight_kg", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p002-c00:prose|boundary|neighbor_notice=yes;operator_level=1", "id": "permit-p002-c00:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes", "operator_level": "1"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p002-c00:prose|necessity|neighbor_notice", "id": "permit-p002-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p002-c00:prose|necessity|operator_level", "id": "permit-p002-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p002-c02:prose|boundary|insured_amount=$2,000,000", "id": "permit-p002-c02:prose", "kind": "boundary", "edits": {"insured_amount": "$2,000,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p002-c02:prose|necessity|equipment_class", "id": "permit-p002-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p002-c02:prose|necessity|insured_amount", "id": "permit-p002-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p003-c00:prose|necessity|application_day", "id": "permit-p003-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p003-c00:prose|necessity|equipment_class", "id": "permit-p003-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p003-c00:prose|necessity|insured_amount", "id": "permit-p003-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p003-c00:prose|necessity|night_work", "id": "permit-p003-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p003-c00:prose|necessity|operator_level", "id": "permit-p003-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p003-c00:prose|necessity|residential_zone", "id": "permit-p003-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p003-c00:prose|necessity|weight_kg", "id": "permit-p003-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p004-c00:prose|boundary|crew_size=4;operator_level=1", "id": "permit-p004-c00:prose", "kind": "boundary", "edits": {"crew_size": "4", "operator_level": "1"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p004-c00:prose|necessity|crew_size", "id": "permit-p004-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p004-c00:prose|necessity|operator_level", "id": "permit-p004-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p004-c01:prose|necessity|neighbor_notice", "id": "permit-p004-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p004-c01:prose|necessity|sidewalk_closure", "id": "permit-p004-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p004-c02:prose|boundary|crew_size=4;operator_level=1", "id": "permit-p004-c02:prose", "kind": "boundary", "edits": {"crew_size": "4", "operator_level": "1"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p006-c00:prose|boundary|crew_size=4;operator_level=1", "id": "permit-p006-c00:prose", "kind": "boundary", "edits": {"crew_size": "4", "operator_level": "1"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p006-c02:prose|necessity|application_day", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|crew_size", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|end_day", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|equipment_class", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|insured_amount", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|neighbor_notice", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|night_work", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|operator_level", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|residential_zone", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|sidewalk_closure", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|start_day", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|weight_kg", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|application_day", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|crew_size", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|end_day", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|equipment_class", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|insured_amount", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|night_work", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|operator_level", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|residential_zone", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|sidewalk_closure", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|start_day", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|weight_kg", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p007-c01:prose|boundary|insured_amount=1500000;night_work=no;operator_level=2", "id": "permit-p007-c01:prose", "kind": "boundary", "edits": {"insured_amount": "1500000", "night_work": "no", "operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p008-c00:prose|necessity|insured_amount", "id": "permit-p008-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p008-c00:prose|necessity|night_work", "id": "permit-p008-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p008-c01:prose|necessity|crew_size", "id": "permit-p008-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p008-c01:prose|necessity|end_day", "id": "permit-p008-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p008-c01:prose|necessity|insured_amount", "id": "permit-p008-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p008-c01:prose|necessity|start_day", "id": "permit-p008-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p008-c02:prose|necessity|crew_size", "id": "permit-p008-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p008-c02:prose|necessity|end_day", "id": "permit-p008-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p008-c02:prose|necessity|start_day", "id": "permit-p008-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p009-c00:prose|boundary|insured_amount=2000000;operator_level=1", "id": "permit-p009-c00:prose", "kind": "boundary", "edits": {"insured_amount": "2000000", "operator_level": "1"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p009-c01:prose|boundary|crew_size=4", "id": "permit-p009-c01:prose", "kind": "boundary", "edits": {"crew_size": "4"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p009-c01:prose|necessity|crew_size", "id": "permit-p009-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p010-c00:prose|boundary|crew_size=6;operator_level=1", "id": "permit-p010-c00:prose", "kind": "boundary", "edits": {"crew_size": "6", "operator_level": "1"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p010-c02:prose|necessity|crew_size", "id": "permit-p010-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p010-c02:prose|necessity|equipment_class", "id": "permit-p010-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p011-c00:prose|boundary|crew_size=6;operator_level=1", "id": "permit-p011-c00:prose", "kind": "boundary", "edits": {"crew_size": "6", "operator_level": "1"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p011-c00:prose|necessity|crew_size", "id": "permit-p011-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p011-c00:prose|necessity|operator_level", "id": "permit-p011-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p011-c01:prose|boundary|crew_size=6", "id": "permit-p011-c01:prose", "kind": "boundary", "edits": {"crew_size": "6"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p011-c01:prose|necessity|crew_size", "id": "permit-p011-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p012-c00:prose|necessity|crew_size", "id": "permit-p012-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p012-c00:prose|necessity|insured_amount", "id": "permit-p012-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p012-c01:prose|boundary|crew_size=6;insured_amount=1000000", "id": "permit-p012-c01:prose", "kind": "boundary", "edits": {"crew_size": "6", "insured_amount": "1000000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p013-c00:prose|necessity|crew_size", "id": "permit-p013-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p013-c00:prose|necessity|end_day", "id": "permit-p013-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p013-c00:prose|necessity|equipment_class", "id": "permit-p013-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p013-c00:prose|necessity|insured_amount", "id": "permit-p013-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p013-c00:prose|necessity|night_work", "id": "permit-p013-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p013-c00:prose|necessity|sidewalk_closure", "id": "permit-p013-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p013-c00:prose|necessity|start_day", "id": "permit-p013-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p014-c00:prose|boundary|night_work=yes;residential_zone=yes", "id": "permit-p014-c00:prose", "kind": "boundary", "edits": {"night_work": "yes", "residential_zone": "yes"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p014-c00:prose|necessity|application_day", "id": "permit-p014-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p014-c00:prose|necessity|equipment_class", "id": "permit-p014-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p014-c00:prose|necessity|insured_amount", "id": "permit-p014-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p014-c00:prose|necessity|residential_zone", "id": "permit-p014-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p014-c00:prose|necessity|sidewalk_closure", "id": "permit-p014-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p014-c00:prose|necessity|weight_kg", "id": "permit-p014-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|application_day", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|equipment_class", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|insured_amount", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|neighbor_notice", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|night_work", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|operator_level", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|residential_zone", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|sidewalk_closure", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|start_day", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|weight_kg", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p014-c02:prose|boundary|night_work=no;operator_level=3", "id": "permit-p014-c02:prose", "kind": "boundary", "edits": {"night_work": "no", "operator_level": "3"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p014-c02:prose|necessity|night_work", "id": "permit-p014-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p014-c02:prose|necessity|operator_level", "id": "permit-p014-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p014-c02:prose|necessity|residential_zone", "id": "permit-p014-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p015-c00:prose|boundary|night_work=no;residential_zone=no", "id": "permit-p015-c00:prose", "kind": "boundary", "edits": {"night_work": "no", "residential_zone": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p015-c01:prose|necessity|equipment_class", "id": "permit-p015-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p015-c01:prose|necessity|night_work", "id": "permit-p015-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p015-c01:prose|necessity|operator_level", "id": "permit-p015-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p015-c01:prose|necessity|residential_zone", "id": "permit-p015-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p016-c01:prose|necessity|application_day", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|crew_size", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|end_day", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|equipment_class", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|insured_amount", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|night_work", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|residential_zone", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|start_day", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|weight_kg", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p017-c00:prose|necessity|crew_size", "id": "permit-p017-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p017-c00:prose|necessity|equipment_class", "id": "permit-p017-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p017-c01:prose|boundary|operator_level=level 2", "id": "permit-p017-c01:prose", "kind": "boundary", "edits": {"operator_level": "level 2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p017-c01:prose|necessity|equipment_class", "id": "permit-p017-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p017-c01:prose|necessity|operator_level", "id": "permit-p017-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|application_day", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|crew_size", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|end_day", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|equipment_class", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|insured_amount", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|night_work", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|residential_zone", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|sidewalk_closure", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|start_day", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|weight_kg", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p019-c00:prose|boundary|crew_size=4;neighbor_notice=yes", "id": "permit-p019-c00:prose", "kind": "boundary", "edits": {"crew_size": "4", "neighbor_notice": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p019-c00:prose|necessity|crew_size", "id": "permit-p019-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p019-c00:prose|necessity|neighbor_notice", "id": "permit-p019-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p019-c01:prose|necessity|end_day", "id": "permit-p019-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p019-c01:prose|necessity|neighbor_notice", "id": "permit-p019-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p019-c01:prose|necessity|start_day", "id": "permit-p019-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p020-c00:prose|boundary|insured_amount=2000000;weight_kg=8000", "id": "permit-p020-c00:prose", "kind": "boundary", "edits": {"insured_amount": "2000000", "weight_kg": "8000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p020-c00:prose|necessity|insured_amount", "id": "permit-p020-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p020-c00:prose|necessity|weight_kg", "id": "permit-p020-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p020-c01:prose|necessity|crew_size", "id": "permit-p020-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p020-c01:prose|necessity|insured_amount", "id": "permit-p020-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p020-c02:prose|boundary|equipment_class=Tessel-type crawler crane;insured_amount=2000000", "id": "permit-p020-c02:prose", "kind": "boundary", "edits": {"equipment_class": "Tessel-type crawler crane", "insured_amount": "2000000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|application_day", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|equipment_class", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|insured_amount", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|night_work", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|operator_level", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|residential_zone", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|weight_kg", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p021-c00:prose|boundary|equipment_class=Tessel-type crawler crane;insured_amount=$1,000,000", "id": "permit-p021-c00:prose", "kind": "boundary", "edits": {"equipment_class": "Tessel-type crawler crane", "insured_amount": "$1,000,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p021-c00:prose|necessity|insured_amount", "id": "permit-p021-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p022-c00:prose|necessity|crew_size", "id": "permit-p022-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p022-c00:prose|necessity|equipment_class", "id": "permit-p022-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p022-c01:prose|necessity|application_day", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|crew_size", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|end_day", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|equipment_class", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|insured_amount", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|neighbor_notice", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|night_work", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|operator_level", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|residential_zone", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|sidewalk_closure", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|start_day", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p023-c00:prose|boundary|operator_level=2;weight_kg=4000", "id": "permit-p023-c00:prose", "kind": "boundary", "edits": {"operator_level": "2", "weight_kg": "4000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p023-c00:prose|necessity|operator_level", "id": "permit-p023-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p023-c00:prose|necessity|weight_kg", "id": "permit-p023-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p024-c00:prose|necessity|application_day", "id": "permit-p024-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p024-c00:prose|necessity|neighbor_notice", "id": "permit-p024-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p024-c00:prose|necessity|start_day", "id": "permit-p024-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p025-c01:prose|necessity|application_day", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|crew_size", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|end_day", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|insured_amount", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|neighbor_notice", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|night_work", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|operator_level", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|sidewalk_closure", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|start_day", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|weight_kg", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p026-c00:prose|necessity|insured_amount", "id": "permit-p026-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p026-c00:prose|necessity|sidewalk_closure", "id": "permit-p026-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p026-c01:prose|necessity|equipment_class", "id": "permit-p026-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p026-c01:prose|necessity|insured_amount", "id": "permit-p026-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|application_day", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|end_day", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|equipment_class", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|insured_amount", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|night_work", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|residential_zone", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|sidewalk_closure", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|start_day", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|weight_kg", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p028-c00:prose|boundary|neighbor_notice=yes", "id": "permit-p028-c00:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p028-c00:prose|necessity|neighbor_notice", "id": "permit-p028-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p028-c00:prose|necessity|sidewalk_closure", "id": "permit-p028-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p028-c02:prose|boundary|equipment_class=Tessel-type crawler crane;operator_level=2", "id": "permit-p028-c02:prose", "kind": "boundary", "edits": {"equipment_class": "Tessel-type crawler crane", "operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p028-c02:prose|necessity|equipment_class", "id": "permit-p028-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p028-c02:prose|necessity|operator_level", "id": "permit-p028-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p029-c00:prose|boundary|night_work=yes", "id": "permit-p029-c00:prose", "kind": "boundary", "edits": {"night_work": "yes"}, "target": "deny", "gold_target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|application_day", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|insured_amount", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|neighbor_notice", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|operator_level", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|residential_zone", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|weight_kg", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p029-c01:prose|boundary|equipment_class=Class K-1 skylift;insured_amount=$3,000,000", "id": "permit-p029-c01:prose", "kind": "boundary", "edits": {"equipment_class": "Class K-1 skylift", "insured_amount": "$3,000,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p029-c01:prose|necessity|insured_amount", "id": "permit-p029-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|application_day", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|end_day", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|equipment_class", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|insured_amount", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|neighbor_notice", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|night_work", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|operator_level", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|residential_zone", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|sidewalk_closure", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|start_day", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p030-c02:prose|boundary|weight_kg=4000", "id": "permit-p030-c02:prose", "kind": "boundary", "edits": {"weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p030-c02:prose|necessity|weight_kg", "id": "permit-p030-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p031-c00:prose|necessity|equipment_class", "id": "permit-p031-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p031-c00:prose|necessity|insured_amount", "id": "permit-p031-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p031-c01:prose|necessity|equipment_class", "id": "permit-p031-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p031-c01:prose|necessity|insured_amount", "id": "permit-p031-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p031-c01:prose|necessity|operator_level", "id": "permit-p031-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p032-c00:prose|boundary|equipment_class=Class K-1 skylift;insured_amount=$2,000,000", "id": "permit-p032-c00:prose", "kind": "boundary", "edits": {"equipment_class": "Class K-1 skylift", "insured_amount": "$2,000,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p032-c00:prose|necessity|equipment_class", "id": "permit-p032-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p032-c00:prose|necessity|insured_amount", "id": "permit-p032-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p032-c01:prose|necessity|end_day", "id": "permit-p032-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p032-c01:prose|necessity|sidewalk_closure", "id": "permit-p032-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p032-c01:prose|necessity|start_day", "id": "permit-p032-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p033-c00:prose|necessity|equipment_class", "id": "permit-p033-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p033-c00:prose|necessity|neighbor_notice", "id": "permit-p033-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p033-c00:prose|necessity|residential_zone", "id": "permit-p033-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p033-c00:prose|necessity|weight_kg", "id": "permit-p033-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p033-c01:prose|boundary|insured_amount=$1,000,000", "id": "permit-p033-c01:prose", "kind": "boundary", "edits": {"insured_amount": "$1,000,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p034-c00:prose|boundary|equipment_class=Tessel-type crawler crane with $2,500,000 insurance;insured_amount=$2,500,000", "id": "permit-p034-c00:prose", "kind": "boundary", "edits": {"equipment_class": "Tessel-type crawler crane with $2,500,000 insurance", "insured_amount": "$2,500,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p034-c01:prose|boundary|crew_size=4;weight_kg=6000", "id": "permit-p034-c01:prose", "kind": "boundary", "edits": {"crew_size": "4", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p034-c01:prose|necessity|crew_size", "id": "permit-p034-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p034-c01:prose|necessity|weight_kg", "id": "permit-p034-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p034-c02:prose|boundary|operator_level=2", "id": "permit-p034-c02:prose", "kind": "boundary", "edits": {"operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p034-c02:prose|necessity|operator_level", "id": "permit-p034-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p035-c00:prose|boundary|neighbor_notice=yes;operator_level=2", "id": "permit-p035-c00:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes", "operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p035-c01:prose|boundary|weight_kg=8000", "id": "permit-p035-c01:prose", "kind": "boundary", "edits": {"weight_kg": "8000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p036-c00:prose|boundary|operator_level=2;weight_kg=4000", "id": "permit-p036-c00:prose", "kind": "boundary", "edits": {"operator_level": "2", "weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p036-c00:prose|necessity|operator_level", "id": "permit-p036-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p036-c00:prose|necessity|weight_kg", "id": "permit-p036-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p036-c01:prose|boundary|operator_level=2;weight_kg=4000", "id": "permit-p036-c01:prose", "kind": "boundary", "edits": {"operator_level": "2", "weight_kg": "4000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p036-c02:prose|necessity|application_day", "id": "permit-p036-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p036-c02:prose|necessity|crew_size", "id": "permit-p036-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p036-c02:prose|necessity|end_day", "id": "permit-p036-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p036-c02:prose|necessity|equipment_class", "id": "permit-p036-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p036-c02:prose|necessity|insured_amount", "id": "permit-p036-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p036-c02:prose|necessity|neighbor_notice", "id": "permit-p036-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p036-c02:prose|necessity|night_work", "id": "permit-p036-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p036-c02:prose|necessity|residential_zone", "id": "permit-p036-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p036-c02:prose|necessity|sidewalk_closure", "id": "permit-p036-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p036-c02:prose|necessity|start_day", "id": "permit-p036-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p036-c02:prose|necessity|weight_kg", "id": "permit-p036-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p037-c00:prose|boundary|insured_amount=$2,000,000;weight_kg=6000", "id": "permit-p037-c00:prose", "kind": "boundary", "edits": {"insured_amount": "$2,000,000", "weight_kg": "6000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p037-c00:prose|necessity|insured_amount", "id": "permit-p037-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p037-c00:prose|necessity|weight_kg", "id": "permit-p037-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p037-c01:prose|boundary|operator_level=2;weight_kg=6000", "id": "permit-p037-c01:prose", "kind": "boundary", "edits": {"operator_level": "2", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p037-c01:prose|necessity|operator_level", "id": "permit-p037-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p037-c01:prose|necessity|weight_kg", "id": "permit-p037-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p038-c00:prose|boundary|crew_size=6;operator_level=1", "id": "permit-p038-c00:prose", "kind": "boundary", "edits": {"crew_size": "6", "operator_level": "1"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p038-c00:prose|necessity|crew_size", "id": "permit-p038-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p038-c00:prose|necessity|operator_level", "id": "permit-p038-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p038-c01:prose|boundary|insured_amount=$2,500,000", "id": "permit-p038-c01:prose", "kind": "boundary", "edits": {"insured_amount": "$2,500,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p038-c01:prose|necessity|equipment_class", "id": "permit-p038-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p038-c01:prose|necessity|insured_amount", "id": "permit-p038-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p038-c02:prose|necessity|crew_size", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|end_day", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|equipment_class", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|insured_amount", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|night_work", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|operator_level", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|residential_zone", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|sidewalk_closure", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|start_day", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|weight_kg", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p039-c00:prose|necessity|end_day", "id": "permit-p039-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p039-c00:prose|necessity|start_day", "id": "permit-p039-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p039-c01:prose|necessity|end_day", "id": "permit-p039-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p039-c01:prose|necessity|equipment_class", "id": "permit-p039-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p039-c01:prose|necessity|insured_amount", "id": "permit-p039-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p039-c01:prose|necessity|start_day", "id": "permit-p039-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p040-c00:prose|necessity|crew_size", "id": "permit-p040-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p040-c00:prose|necessity|insured_amount", "id": "permit-p040-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p040-c00:prose|necessity|weight_kg", "id": "permit-p040-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p041-c01:prose|boundary|insured_amount=$2000000;operator_level=2", "id": "permit-p041-c01:prose", "kind": "boundary", "edits": {"insured_amount": "$2000000", "operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p042-c00:prose|boundary|crew_size=6;equipment_class=Tessel-type crawler crane", "id": "permit-p042-c00:prose", "kind": "boundary", "edits": {"crew_size": "6", "equipment_class": "Tessel-type crawler crane"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|crew_size", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|equipment_class", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|insured_amount", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|neighbor_notice", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|night_work", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|operator_level", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|residential_zone", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|sidewalk_closure", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|weight_kg", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p042-c01:prose|necessity|equipment_class", "id": "permit-p042-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p042-c02:prose|necessity|crew_size", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|end_day", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|equipment_class", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|insured_amount", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|night_work", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|residential_zone", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|sidewalk_closure", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|start_day", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|weight_kg", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p043-c00:prose|boundary|crew_size=6", "id": "permit-p043-c00:prose", "kind": "boundary", "edits": {"crew_size": "6"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p043-c00:prose|necessity|crew_size", "id": "permit-p043-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p044-c00:prose|necessity|equipment_class", "id": "permit-p044-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p044-c00:prose|necessity|neighbor_notice", "id": "permit-p044-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p044-c01:prose|boundary|neighbor_notice=yes;operator_level=1;weight_kg=8000", "id": "permit-p044-c01:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes", "operator_level": "1", "weight_kg": "8000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p044-c02:prose|boundary|equipment_class=Tessel-type crawler crane;insured_amount=$1,000,000", "id": "permit-p044-c02:prose", "kind": "boundary", "edits": {"equipment_class": "Tessel-type crawler crane", "insured_amount": "$1,000,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p044-c02:prose|necessity|equipment_class", "id": "permit-p044-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p044-c02:prose|necessity|insured_amount", "id": "permit-p044-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p045-c00:prose|boundary|equipment_class=Class K-1 skylift;operator_level=1", "id": "permit-p045-c00:prose", "kind": "boundary", "edits": {"equipment_class": "Class K-1 skylift", "operator_level": "1"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p045-c01:prose|boundary|neighbor_notice=yes;operator_level=1", "id": "permit-p045-c01:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes", "operator_level": "1"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p045-c01:prose|necessity|neighbor_notice", "id": "permit-p045-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p045-c01:prose|necessity|operator_level", "id": "permit-p045-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p046-c00:prose|necessity|operator_level", "id": "permit-p046-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p046-c01:prose|boundary|operator_level=2;weight_kg=6000", "id": "permit-p046-c01:prose", "kind": "boundary", "edits": {"operator_level": "2", "weight_kg": "6000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p046-c01:prose|necessity|operator_level", "id": "permit-p046-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p046-c01:prose|necessity|weight_kg", "id": "permit-p046-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p046-c02:prose|boundary|insured_amount=3000000;operator_level=2", "id": "permit-p046-c02:prose", "kind": "boundary", "edits": {"insured_amount": "3000000", "operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p046-c02:prose|necessity|insured_amount", "id": "permit-p046-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p046-c02:prose|necessity|operator_level", "id": "permit-p046-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p047-c01:prose|boundary|operator_level=2", "id": "permit-p047-c01:prose", "kind": "boundary", "edits": {"operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|application_day", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|equipment_class", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|night_work", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|residential_zone", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|sidewalk_closure", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|weight_kg", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p049-c00:prose|boundary|equipment_class=Tessel-type crawler crane;insured_amount=$2,000,000", "id": "permit-p049-c00:prose", "kind": "boundary", "edits": {"equipment_class": "Tessel-type crawler crane", "insured_amount": "$2,000,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p049-c00:prose|necessity|insured_amount", "id": "permit-p049-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p049-c01:prose|boundary|crew_size=4;insured_amount=3000000;neighbor_notice=yes;operator_level=4;residential_zone=false", "id": "permit-p049-c01:prose", "kind": "boundary", "edits": {"crew_size": "4", "insured_amount": "3000000", "neighbor_notice": "yes", "operator_level": "4", "residential_zone": "false"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p050-c00:prose|boundary|insured_amount=$2,000,000", "id": "permit-p050-c00:prose", "kind": "boundary", "edits": {"insured_amount": "$2,000,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p050-c00:prose|necessity|insured_amount", "id": "permit-p050-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p050-c01:prose|necessity|application_day", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|end_day", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|equipment_class", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|insured_amount", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|night_work", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|operator_level", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|residential_zone", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|start_day", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|weight_kg", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p050-c02:prose|boundary|insured_amount=$2,500,000;insured_amount=$2,500,000", "id": "permit-p050-c02:prose", "kind": "boundary", "edits": {"insured_amount": "$2,500,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p051-c00:prose|necessity|crew_size", "id": "permit-p051-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p051-c00:prose|necessity|insured_amount", "id": "permit-p051-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p051-c01:prose|necessity|equipment_class", "id": "permit-p051-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p052-c01:prose|necessity|crew_size", "id": "permit-p052-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p052-c01:prose|necessity|insured_amount", "id": "permit-p052-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p053-c00:prose|necessity|crew_size", "id": "permit-p053-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p053-c00:prose|necessity|insured_amount", "id": "permit-p053-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p053-c01:prose|necessity|equipment_class", "id": "permit-p053-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p053-c01:prose|necessity|insured_amount", "id": "permit-p053-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p055-c00:prose|necessity|application_day", "id": "permit-p055-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p055-c00:prose|necessity|crew_size", "id": "permit-p055-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p055-c00:prose|necessity|end_day", "id": "permit-p055-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p055-c00:prose|necessity|equipment_class", "id": "permit-p055-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p055-c00:prose|necessity|insured_amount", "id": "permit-p055-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p055-c00:prose|necessity|night_work", "id": "permit-p055-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p055-c00:prose|necessity|residential_zone", "id": "permit-p055-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p055-c00:prose|necessity|sidewalk_closure", "id": "permit-p055-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p055-c00:prose|necessity|start_day", "id": "permit-p055-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p055-c00:prose|necessity|weight_kg", "id": "permit-p055-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p056-c00:prose|boundary|crew_size=4;neighbor_notice=yes", "id": "permit-p056-c00:prose", "kind": "boundary", "edits": {"crew_size": "4", "neighbor_notice": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p057-c00:prose|boundary|equipment_class=Class K-1 skylift;insured_amount=$3,000,000", "id": "permit-p057-c00:prose", "kind": "boundary", "edits": {"equipment_class": "Class K-1 skylift", "insured_amount": "$3,000,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p058-c02:prose|boundary|crew_size=4;insured_amount=$1,500,000", "id": "permit-p058-c02:prose", "kind": "boundary", "edits": {"crew_size": "4", "insured_amount": "$1,500,000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|application_day", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|crew_size", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|end_day", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|equipment_class", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|insured_amount", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|neighbor_notice", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|night_work", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|operator_level", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|residential_zone", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|sidewalk_closure", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|start_day", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|weight_kg", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p060-c00:prose|necessity|application_day", "id": "permit-p060-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p060-c00:prose|necessity|crew_size", "id": "permit-p060-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p060-c00:prose|necessity|equipment_class", "id": "permit-p060-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p060-c00:prose|necessity|insured_amount", "id": "permit-p060-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p060-c00:prose|necessity|neighbor_notice", "id": "permit-p060-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p060-c00:prose|necessity|night_work", "id": "permit-p060-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p060-c00:prose|necessity|operator_level", "id": "permit-p060-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p060-c00:prose|necessity|residential_zone", "id": "permit-p060-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p060-c00:prose|necessity|sidewalk_closure", "id": "permit-p060-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p060-c00:prose|necessity|weight_kg", "id": "permit-p060-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p060-c01:prose|necessity|application_day", "id": "permit-p060-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p060-c01:prose|necessity|operator_level", "id": "permit-p060-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p060-c01:prose|necessity|start_day", "id": "permit-p060-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p060-c02:prose|boundary|crew_size=4;equipment_class=Class K-1 skylift", "id": "permit-p060-c02:prose", "kind": "boundary", "edits": {"crew_size": "4", "equipment_class": "Class K-1 skylift"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p060-c02:prose|necessity|crew_size", "id": "permit-p060-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p060-c02:prose|necessity|equipment_class", "id": "permit-p060-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p060-c02:prose|necessity|insured_amount", "id": "permit-p060-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p061-c00:prose|boundary|insured_amount=$1,500,000;operator_level=2", "id": "permit-p061-c00:prose", "kind": "boundary", "edits": {"insured_amount": "$1,500,000", "operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p061-c00:prose|necessity|insured_amount", "id": "permit-p061-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p061-c00:prose|necessity|operator_level", "id": "permit-p061-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p061-c01:prose|boundary|insured_amount=1500000;insured_amount=3000000;neighbor_notice=yes;operator_level=2", "id": "permit-p061-c01:prose", "kind": "boundary", "edits": {"insured_amount": "3000000", "neighbor_notice": "yes", "operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p062-c01:prose|necessity|application_day", "id": "permit-p062-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p062-c01:prose|necessity|crew_size", "id": "permit-p062-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p062-c01:prose|necessity|end_day", "id": "permit-p062-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p062-c01:prose|necessity|neighbor_notice", "id": "permit-p062-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p062-c01:prose|necessity|night_work", "id": "permit-p062-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p062-c01:prose|necessity|operator_level", "id": "permit-p062-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p062-c01:prose|necessity|residential_zone", "id": "permit-p062-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p062-c01:prose|necessity|start_day", "id": "permit-p062-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p062-c01:prose|necessity|weight_kg", "id": "permit-p062-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p062-c02:prose|boundary|night_work=no;residential_zone=yes", "id": "permit-p062-c02:prose", "kind": "boundary", "edits": {"night_work": "no", "residential_zone": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p062-c02:prose|necessity|night_work", "id": "permit-p062-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p062-c02:prose|necessity|residential_zone", "id": "permit-p062-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p063-c01:prose|boundary|operator_level=3;weight_kg=8000", "id": "permit-p063-c01:prose", "kind": "boundary", "edits": {"operator_level": "3", "weight_kg": "8000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p063-c01:prose|necessity|operator_level", "id": "permit-p063-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p063-c01:prose|necessity|weight_kg", "id": "permit-p063-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p064-c01:prose|necessity|insured_amount", "id": "permit-p064-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p064-c01:prose|necessity|weight_kg", "id": "permit-p064-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p065-c01:prose|boundary|insured_amount=1500000;operator_level=2;residential_zone=yes;weight_kg=6000", "id": "permit-p065-c01:prose", "kind": "boundary", "edits": {"insured_amount": "1500000", "operator_level": "2", "residential_zone": "yes", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p066-c00:prose|boundary|operator_level=2", "id": "permit-p066-c00:prose", "kind": "boundary", "edits": {"operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|crew_size", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|end_day", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|equipment_class", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|insured_amount", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|neighbor_notice", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|night_work", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|operator_level", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|residential_zone", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|sidewalk_closure", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|start_day", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|weight_kg", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p067-c01:prose|boundary|crew_size=6;operator_level=2", "id": "permit-p067-c01:prose", "kind": "boundary", "edits": {"crew_size": "6", "operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p067-c01:prose|necessity|crew_size", "id": "permit-p067-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p067-c01:prose|necessity|operator_level", "id": "permit-p067-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p068-c00:prose|boundary|equipment_class=Class K-1 skylift;insured_amount=$1,500,000", "id": "permit-p068-c00:prose", "kind": "boundary", "edits": {"equipment_class": "Class K-1 skylift", "insured_amount": "$1,500,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p068-c01:prose|necessity|crew_size", "id": "permit-p068-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p068-c01:prose|necessity|insured_amount", "id": "permit-p068-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p068-c02:prose|necessity|crew_size", "id": "permit-p068-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p068-c02:prose|necessity|insured_amount", "id": "permit-p068-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p068-c02:prose|necessity|neighbor_notice", "id": "permit-p068-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p068-c02:prose|necessity|operator_level", "id": "permit-p068-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p068-c02:prose|necessity|weight_kg", "id": "permit-p068-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p069-c01:prose|necessity|crew_size", "id": "permit-p069-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p069-c01:prose|necessity|equipment_class", "id": "permit-p069-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p069-c01:prose|necessity|neighbor_notice", "id": "permit-p069-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p069-c01:prose|necessity|night_work", "id": "permit-p069-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p069-c01:prose|necessity|operator_level", "id": "permit-p069-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p069-c01:prose|necessity|residential_zone", "id": "permit-p069-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p069-c01:prose|necessity|sidewalk_closure", "id": "permit-p069-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p069-c01:prose|necessity|weight_kg", "id": "permit-p069-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p070-c02:prose|boundary|insured_amount=$3,000,000", "id": "permit-p070-c02:prose", "kind": "boundary", "edits": {"insured_amount": "$3,000,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p070-c02:prose|necessity|equipment_class", "id": "permit-p070-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p070-c02:prose|necessity|insured_amount", "id": "permit-p070-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p071-c00:prose|necessity|equipment_class", "id": "permit-p071-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p071-c00:prose|necessity|insured_amount", "id": "permit-p071-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p071-c00:prose|necessity|weight_kg", "id": "permit-p071-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p071-c01:prose|necessity|insured_amount", "id": "permit-p071-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p072-c00:prose|boundary|crew_size=6;operator_level=1", "id": "permit-p072-c00:prose", "kind": "boundary", "edits": {"crew_size": "6", "operator_level": "1"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p072-c01:prose|boundary|crew_size=6;night_work=no;operator_level=1;weight_kg=6000", "id": "permit-p072-c01:prose", "kind": "boundary", "edits": {"crew_size": "6", "night_work": "no", "operator_level": "1", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p073-c00:prose|boundary|operator_level=2", "id": "permit-p073-c00:prose", "kind": "boundary", "edits": {"operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p073-c00:prose|necessity|operator_level", "id": "permit-p073-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p073-c01:prose|boundary|equipment_class=Tessel-type crawler crane;operator_level=2", "id": "permit-p073-c01:prose", "kind": "boundary", "edits": {"equipment_class": "Tessel-type crawler crane", "operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p073-c01:prose|necessity|equipment_class", "id": "permit-p073-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p073-c01:prose|necessity|operator_level", "id": "permit-p073-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p074-c00:prose|necessity|equipment_class", "id": "permit-p074-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p074-c01:prose|boundary|night_work=no;residential_zone=yes", "id": "permit-p074-c01:prose", "kind": "boundary", "edits": {"night_work": "no", "residential_zone": "yes"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|end_day", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|equipment_class", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|neighbor_notice", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|night_work", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|residential_zone", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|sidewalk_closure", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|start_day", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|weight_kg", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p074-c02:prose|boundary|night_work=no", "id": "permit-p074-c02:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p074-c02:prose|necessity|night_work", "id": "permit-p074-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p074-c02:prose|necessity|residential_zone", "id": "permit-p074-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p075-c00:prose|necessity|end_day", "id": "permit-p075-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p075-c00:prose|necessity|equipment_class", "id": "permit-p075-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p075-c00:prose|necessity|night_work", "id": "permit-p075-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p075-c00:prose|necessity|start_day", "id": "permit-p075-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p078-c00:prose|boundary|neighbor_notice=yes;night_work=no", "id": "permit-p078-c00:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes", "night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p078-c00:prose|necessity|neighbor_notice", "id": "permit-p078-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p078-c00:prose|necessity|night_work", "id": "permit-p078-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p078-c01:prose|boundary|insured_amount=1500000;weight_kg=6000", "id": "permit-p078-c01:prose", "kind": "boundary", "edits": {"insured_amount": "1500000", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p078-c01:prose|necessity|insured_amount", "id": "permit-p078-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p078-c01:prose|necessity|weight_kg", "id": "permit-p078-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p079-c00:prose|necessity|application_day", "id": "permit-p079-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p079-c00:prose|necessity|equipment_class", "id": "permit-p079-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p079-c00:prose|necessity|insured_amount", "id": "permit-p079-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p079-c00:prose|necessity|operator_level", "id": "permit-p079-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p079-c01:prose|necessity|equipment_class", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|insured_amount", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|neighbor_notice", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|night_work", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|operator_level", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|residential_zone", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|sidewalk_closure", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p080-c00:prose|boundary|neighbor_notice=yes;night_work=no;operator_level=1", "id": "permit-p080-c00:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes", "night_work": "no", "operator_level": "1"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p080-c01:prose|boundary|night_work=no", "id": "permit-p080-c01:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p081-c00:prose|necessity|application_day", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|crew_size", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|end_day", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|equipment_class", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|insured_amount", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|neighbor_notice", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|night_work", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|operator_level", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|sidewalk_closure", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|start_day", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p081-c01:prose|necessity|application_day", "id": "permit-p081-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p081-c01:prose|necessity|crew_size", "id": "permit-p081-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p081-c01:prose|necessity|start_day", "id": "permit-p081-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p082-c01:prose|boundary|crew_size=6;equipment_class=Class K-1 skylift", "id": "permit-p082-c01:prose", "kind": "boundary", "edits": {"crew_size": "6", "equipment_class": "Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p082-c01:prose|necessity|crew_size", "id": "permit-p082-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p082-c01:prose|necessity|equipment_class", "id": "permit-p082-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p082-c01:prose|necessity|weight_kg", "id": "permit-p082-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p082-c02:prose|boundary|crew_size=6;insured_amount=2500000", "id": "permit-p082-c02:prose", "kind": "boundary", "edits": {"crew_size": "6", "insured_amount": "2500000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p083-c00:prose|boundary|equipment_class=Tessel-type crawler crane;insured_amount=$1,500,000", "id": "permit-p083-c00:prose", "kind": "boundary", "edits": {"equipment_class": "Tessel-type crawler crane", "insured_amount": "$1,500,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p083-c01:prose|boundary|equipment_class=Tessel-type crawler crane;insured_amount=$1,500,000", "id": "permit-p083-c01:prose", "kind": "boundary", "edits": {"equipment_class": "Tessel-type crawler crane", "insured_amount": "$1,500,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p083-c01:prose|necessity|equipment_class", "id": "permit-p083-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p083-c01:prose|necessity|insured_amount", "id": "permit-p083-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p084-c00:prose|necessity|neighbor_notice", "id": "permit-p084-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p084-c00:prose|necessity|night_work", "id": "permit-p084-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p084-c00:prose|necessity|operator_level", "id": "permit-p084-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p084-c00:prose|necessity|residential_zone", "id": "permit-p084-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p084-c00:prose|necessity|sidewalk_closure", "id": "permit-p084-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p084-c00:prose|necessity|weight_kg", "id": "permit-p084-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p084-c01:prose|boundary|crew_size=6;operator_level=1", "id": "permit-p084-c01:prose", "kind": "boundary", "edits": {"crew_size": "6", "operator_level": "1"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p084-c01:prose|necessity|crew_size", "id": "permit-p084-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p084-c01:prose|necessity|operator_level", "id": "permit-p084-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p084-c02:prose|necessity|crew_size", "id": "permit-p084-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p084-c02:prose|necessity|operator_level", "id": "permit-p084-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p084-c02:prose|necessity|residential_zone", "id": "permit-p084-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p084-c02:prose|necessity|weight_kg", "id": "permit-p084-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p085-c01:prose|boundary|crew_size=6;neighbor_notice=yes;night_work=no;residential_zone=no", "id": "permit-p085-c01:prose", "kind": "boundary", "edits": {"crew_size": "6", "neighbor_notice": "yes", "night_work": "no", "residential_zone": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p085-c01:prose|necessity|crew_size", "id": "permit-p085-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p085-c01:prose|necessity|neighbor_notice", "id": "permit-p085-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p085-c01:prose|necessity|night_work", "id": "permit-p085-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p085-c01:prose|necessity|residential_zone", "id": "permit-p085-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p086-c01:prose|necessity|crew_size", "id": "permit-p086-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p086-c01:prose|necessity|equipment_class", "id": "permit-p086-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p086-c01:prose|necessity|neighbor_notice", "id": "permit-p086-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p086-c01:prose|necessity|weight_kg", "id": "permit-p086-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p086-c02:prose|boundary|neighbor_notice=yes", "id": "permit-p086-c02:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p086-c02:prose|necessity|neighbor_notice", "id": "permit-p086-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p086-c02:prose|necessity|sidewalk_closure", "id": "permit-p086-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|application_day", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|crew_size", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|end_day", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|equipment_class", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|insured_amount", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|neighbor_notice", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|night_work", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|residential_zone", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|sidewalk_closure", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|start_day", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|weight_kg", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p087-c01:prose|boundary|crew_size=6;equipment_class=Tessel-type crawler crane", "id": "permit-p087-c01:prose", "kind": "boundary", "edits": {"crew_size": "6", "equipment_class": "Tessel-type crawler crane"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p088-c00:prose|necessity|equipment_class", "id": "permit-p088-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p088-c00:prose|necessity|neighbor_notice", "id": "permit-p088-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p088-c00:prose|necessity|night_work", "id": "permit-p088-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p088-c02:prose|boundary|insured_amount=1000000;weight_kg=6000", "id": "permit-p088-c02:prose", "kind": "boundary", "edits": {"insured_amount": "1000000", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p088-c02:prose|necessity|insured_amount", "id": "permit-p088-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p088-c02:prose|necessity|weight_kg", "id": "permit-p088-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p089-c00:prose|boundary|equipment_class=Class K-1 skylift;insured_amount=2000000;night_work=no;operator_level=1;weight_kg=6000", "id": "permit-p089-c00:prose", "kind": "boundary", "edits": {"equipment_class": "Class K-1 skylift", "insured_amount": "2000000", "night_work": "no", "operator_level": "1", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p089-c01:prose|necessity|equipment_class", "id": "permit-p089-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p089-c01:prose|necessity|weight_kg", "id": "permit-p089-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p090-c02:prose|boundary|crew_size=6;operator_level=2", "id": "permit-p090-c02:prose", "kind": "boundary", "edits": {"crew_size": "6", "operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p090-c02:prose|necessity|crew_size", "id": "permit-p090-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p090-c02:prose|necessity|operator_level", "id": "permit-p090-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p091-c01:prose|boundary|neighbor_notice=yes;operator_level=2", "id": "permit-p091-c01:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes", "operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p091-c01:prose|necessity|neighbor_notice", "id": "permit-p091-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p091-c01:prose|necessity|operator_level", "id": "permit-p091-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p094-c00:prose|boundary|crew_size=6;operator_level=2", "id": "permit-p094-c00:prose", "kind": "boundary", "edits": {"crew_size": "6", "operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p094-c00:prose|necessity|crew_size", "id": "permit-p094-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p094-c00:prose|necessity|operator_level", "id": "permit-p094-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p095-c00:prose|boundary|equipment_class=Class K-1 skylift;operator_level=1", "id": "permit-p095-c00:prose", "kind": "boundary", "edits": {"equipment_class": "Class K-1 skylift", "operator_level": "1"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p095-c00:prose|necessity|operator_level", "id": "permit-p095-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p095-c01:prose|boundary|crew_size=6;neighbor_notice=yes", "id": "permit-p095-c01:prose", "kind": "boundary", "edits": {"crew_size": "6", "neighbor_notice": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p096-c00:prose|boundary|operator_level=2;weight_kg=6000", "id": "permit-p096-c00:prose", "kind": "boundary", "edits": {"operator_level": "2", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p096-c01:prose|boundary|night_work=no;operator_level=2", "id": "permit-p096-c01:prose", "kind": "boundary", "edits": {"night_work": "no", "operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p096-c01:prose|necessity|night_work", "id": "permit-p096-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p096-c01:prose|necessity|operator_level", "id": "permit-p096-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p096-c02:prose|boundary|equipment_class=Tessel-type crawler crane;operator_level=2", "id": "permit-p096-c02:prose", "kind": "boundary", "edits": {"equipment_class": "Tessel-type crawler crane", "operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p096-c02:prose|necessity|equipment_class", "id": "permit-p096-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p096-c02:prose|necessity|operator_level", "id": "permit-p096-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p097-c00:prose|boundary|operator_level=1;weight_kg=4000", "id": "permit-p097-c00:prose", "kind": "boundary", "edits": {"operator_level": "1", "weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p097-c00:prose|necessity|operator_level", "id": "permit-p097-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p097-c00:prose|necessity|weight_kg", "id": "permit-p097-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p098-c01:prose|necessity|application_day", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|end_day", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|equipment_class", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|insured_amount", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|neighbor_notice", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|night_work", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|operator_level", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|sidewalk_closure", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|start_day", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|weight_kg", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p098-c02:prose|boundary|insured_amount=$3,000,000", "id": "permit-p098-c02:prose", "kind": "boundary", "edits": {"insured_amount": "$3,000,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p098-c02:prose|necessity|equipment_class", "id": "permit-p098-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p098-c02:prose|necessity|insured_amount", "id": "permit-p098-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p099-c00:prose|boundary|crew_size=4", "id": "permit-p099-c00:prose", "kind": "boundary", "edits": {"crew_size": "4"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p099-c01:prose|boundary|crew_size=4", "id": "permit-p099-c01:prose", "kind": "boundary", "edits": {"crew_size": "4"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p100-c00:prose|necessity|equipment_class", "id": "permit-p100-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p100-c00:prose|necessity|neighbor_notice", "id": "permit-p100-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p100-c02:prose|necessity|application_day", "id": "permit-p100-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p100-c02:prose|necessity|equipment_class", "id": "permit-p100-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p100-c02:prose|necessity|neighbor_notice", "id": "permit-p100-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p100-c02:prose|necessity|residential_zone", "id": "permit-p100-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p100-c02:prose|necessity|weight_kg", "id": "permit-p100-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p101-c01:prose|necessity|equipment_class", "id": "permit-p101-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p101-c01:prose|necessity|insured_amount", "id": "permit-p101-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p102-c00:prose|boundary|insured_amount=2000000;weight_kg=8000", "id": "permit-p102-c00:prose", "kind": "boundary", "edits": {"insured_amount": "2000000", "weight_kg": "8000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p102-c00:prose|necessity|insured_amount", "id": "permit-p102-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p102-c00:prose|necessity|weight_kg", "id": "permit-p102-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p102-c02:prose|boundary|insured_amount=$2,000,000;operator_level=1", "id": "permit-p102-c02:prose", "kind": "boundary", "edits": {"insured_amount": "$2,000,000", "operator_level": "1"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p102-c02:prose|necessity|insured_amount", "id": "permit-p102-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p102-c02:prose|necessity|operator_level", "id": "permit-p102-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p103-c00:prose|boundary|operator_level=2", "id": "permit-p103-c00:prose", "kind": "boundary", "edits": {"operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p103-c01:prose|necessity|crew_size", "id": "permit-p103-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p103-c01:prose|necessity|insured_amount", "id": "permit-p103-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p104-c01:prose|boundary|insured_amount=$3,000,000", "id": "permit-p104-c01:prose", "kind": "boundary", "edits": {"insured_amount": "$3,000,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p104-c01:prose|necessity|insured_amount", "id": "permit-p104-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p104-c02:prose|boundary|night_work=no", "id": "permit-p104-c02:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p104-c02:prose|necessity|night_work", "id": "permit-p104-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p105-c00:prose|necessity|application_day", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|equipment_class", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|insured_amount", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|neighbor_notice", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|night_work", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|operator_level", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|residential_zone", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|sidewalk_closure", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|start_day", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|weight_kg", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p105-c01:prose|necessity|application_day", "id": "permit-p105-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p105-c01:prose|necessity|start_day", "id": "permit-p105-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p106-c01:prose|necessity|equipment_class", "id": "permit-p106-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p106-c01:prose|necessity|residential_zone", "id": "permit-p106-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p106-c01:prose|necessity|weight_kg", "id": "permit-p106-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p106-c02:prose|necessity|end_day", "id": "permit-p106-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p106-c02:prose|necessity|insured_amount", "id": "permit-p106-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p106-c02:prose|necessity|start_day", "id": "permit-p106-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p108-c00:prose|necessity|crew_size", "id": "permit-p108-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p108-c00:prose|necessity|end_day", "id": "permit-p108-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p108-c00:prose|necessity|insured_amount", "id": "permit-p108-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p108-c00:prose|necessity|neighbor_notice", "id": "permit-p108-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p108-c00:prose|necessity|night_work", "id": "permit-p108-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p108-c00:prose|necessity|operator_level", "id": "permit-p108-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p108-c00:prose|necessity|residential_zone", "id": "permit-p108-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p108-c00:prose|necessity|start_day", "id": "permit-p108-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p108-c00:prose|necessity|weight_kg", "id": "permit-p108-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p108-c02:prose|boundary|neighbor_notice=yes;night_work=no", "id": "permit-p108-c02:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes", "night_work": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p108-c02:prose|necessity|neighbor_notice", "id": "permit-p108-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p108-c02:prose|necessity|night_work", "id": "permit-p108-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p109-c00:prose|necessity|neighbor_notice", "id": "permit-p109-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p109-c00:prose|necessity|night_work", "id": "permit-p109-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p110-c01:prose|boundary|crew_size=4;equipment_class=Tessel-type crawler crane", "id": "permit-p110-c01:prose", "kind": "boundary", "edits": {"crew_size": "4", "equipment_class": "Tessel-type crawler crane"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p110-c01:prose|necessity|crew_size", "id": "permit-p110-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p110-c01:prose|necessity|equipment_class", "id": "permit-p110-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p110-c02:prose|boundary|equipment_class=Tessel-type crawler crane;weight_kg=6000", "id": "permit-p110-c02:prose", "kind": "boundary", "edits": {"equipment_class": "Tessel-type crawler crane", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p110-c02:prose|necessity|equipment_class", "id": "permit-p110-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p110-c02:prose|necessity|weight_kg", "id": "permit-p110-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p111-c00:prose|necessity|crew_size", "id": "permit-p111-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p111-c00:prose|necessity|insured_amount", "id": "permit-p111-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p111-c01:prose|boundary|crew_size=4", "id": "permit-p111-c01:prose", "kind": "boundary", "edits": {"crew_size": "4"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p111-c01:prose|necessity|crew_size", "id": "permit-p111-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p112-c00:prose|necessity|application_day", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|end_day", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|equipment_class", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|neighbor_notice", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|night_work", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|operator_level", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|residential_zone", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|sidewalk_closure", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|start_day", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|weight_kg", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p112-c01:prose|boundary|neighbor_notice=yes;weight_kg=6000", "id": "permit-p112-c01:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes", "weight_kg": "6000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p112-c01:prose|necessity|neighbor_notice", "id": "permit-p112-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p112-c01:prose|necessity|weight_kg", "id": "permit-p112-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p112-c02:prose|boundary|night_work=no", "id": "permit-p112-c02:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p112-c02:prose|necessity|night_work", "id": "permit-p112-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p113-c00:prose|boundary|neighbor_notice=yes;operator_level=2", "id": "permit-p113-c00:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes", "operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p113-c00:prose|necessity|neighbor_notice", "id": "permit-p113-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p113-c00:prose|necessity|operator_level", "id": "permit-p113-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p113-c01:prose|boundary|equipment_class=Class K-1 skylift;operator_level=2", "id": "permit-p113-c01:prose", "kind": "boundary", "edits": {"equipment_class": "Class K-1 skylift", "operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p113-c01:prose|necessity|operator_level", "id": "permit-p113-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p114-c00:prose|necessity|insured_amount", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p114-c00:prose|necessity|neighbor_notice", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p114-c00:prose|necessity|operator_level", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p114-c00:prose|necessity|residential_zone", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p114-c00:prose|necessity|sidewalk_closure", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p114-c00:prose|necessity|weight_kg", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|end_day", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|insured_amount", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|neighbor_notice", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|operator_level", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|residential_zone", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|sidewalk_closure", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|start_day", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|weight_kg", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p114-c02:prose|boundary|insured_amount=2000000;insured_amount=2500000;neighbor_notice=yes;residential_zone=yes;weight_kg=10000", "id": "permit-p114-c02:prose", "kind": "boundary", "edits": {"insured_amount": "2500000", "neighbor_notice": "yes", "residential_zone": "yes", "weight_kg": "10000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p114-c02:prose|necessity|insured_amount", "id": "permit-p114-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p114-c02:prose|necessity|neighbor_notice", "id": "permit-p114-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p114-c02:prose|necessity|residential_zone", "id": "permit-p114-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p114-c02:prose|necessity|weight_kg", "id": "permit-p114-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p115-c00:prose|boundary|insured_amount=2000000;operator_level=2", "id": "permit-p115-c00:prose", "kind": "boundary", "edits": {"insured_amount": "2000000", "operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p115-c00:prose|necessity|insured_amount", "id": "permit-p115-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p115-c00:prose|necessity|operator_level", "id": "permit-p115-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p115-c01:prose|boundary|insured_amount=$2,000,000;neighbor_notice=yes", "id": "permit-p115-c01:prose", "kind": "boundary", "edits": {"insured_amount": "$2,000,000", "neighbor_notice": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p116-c01:prose|necessity|insured_amount", "id": "permit-p116-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p116-c01:prose|necessity|neighbor_notice", "id": "permit-p116-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p116-c01:prose|necessity|operator_level", "id": "permit-p116-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p116-c01:prose|necessity|weight_kg", "id": "permit-p116-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p117-c00:prose|necessity|insured_amount", "id": "permit-p117-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p117-c00:prose|necessity|operator_level", "id": "permit-p117-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p117-c01:prose|boundary|insured_amount=1500000;operator_level=2", "id": "permit-p117-c01:prose", "kind": "boundary", "edits": {"insured_amount": "1500000", "operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p117-c01:prose|necessity|insured_amount", "id": "permit-p117-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p117-c01:prose|necessity|operator_level", "id": "permit-p117-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p118-c00:prose|necessity|equipment_class", "id": "permit-p118-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p118-c00:prose|necessity|insured_amount", "id": "permit-p118-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p118-c00:prose|necessity|operator_level", "id": "permit-p118-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p118-c00:prose|necessity|weight_kg", "id": "permit-p118-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p118-c01:prose|necessity|insured_amount", "id": "permit-p118-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p118-c02:prose|boundary|insured_amount=1000000;operator_level=2;weight_kg=6000", "id": "permit-p118-c02:prose", "kind": "boundary", "edits": {"insured_amount": "1000000", "operator_level": "2", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p118-c02:prose|necessity|insured_amount", "id": "permit-p118-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p118-c02:prose|necessity|operator_level", "id": "permit-p118-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p118-c02:prose|necessity|weight_kg", "id": "permit-p118-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p119-c01:prose|boundary|equipment_class=Class K-1 skylift;operator_level=2", "id": "permit-p119-c01:prose", "kind": "boundary", "edits": {"equipment_class": "Class K-1 skylift", "operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p119-c01:prose|necessity|operator_level", "id": "permit-p119-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
