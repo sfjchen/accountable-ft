@@ -13,6 +13,7 @@ import json
 import os
 import random
 import re
+import sys
 import string
 import threading
 import time
@@ -851,6 +852,9 @@ def main():
                     "templates and give every record prior_conflict")
     ap.add_argument("--out", default="data/out.jsonl")
     ap.add_argument("--prose", choices=["template", "gemini"], default="template")
+    ap.add_argument("--extend-from", metavar="DATA", help="write only the families after DATA's, all as test families "
+                    "(unseen_family_train_vocab); run with DATA's flags and more --n-policies, and the policies DATA "
+                    "already has must come out identical")
     ap.add_argument("--limit", type=int, default=0,
                     help="keep only the first N base families, each with its variants and views (0 keeps all)")
     ap.add_argument("--vertex", nargs="?", const="global", default=None, metavar="LOCATION",
@@ -874,6 +878,12 @@ def main():
     GEM.update(vertex=a.vertex, model=a.gemini_model, cache=a.cache)
     t0, recs, pols, tcase, invalid, norev = time.time(), [], [], [], 0, 0
     held = {d: sp for d, sp in HELD_OUT.items() if d not in a.train_domains.split(",")}
+    # ext: per domain, how many families DATA has and its policy texts, which the reproduced policies must match
+    ext = {}
+    for r in map(json.loads, open(a.extend_from)) if a.extend_from else ():
+        n, txt = ext.setdefault(r["domain"], [set(), {}])
+        n.add(r["template_family"])
+        txt[r["policy_id"]] = r["policy_text"]
     for dname in DOMAINS if a.domains == "all" else a.domains.split(","):
         dom = load_domain(dname)
         drng = random.Random(f"{a.seed}-{dname}-families")
@@ -894,6 +904,10 @@ def main():
             fi = p // a.policies_per_family
             rng = random.Random(f"{a.seed}-{dname}-{p}")
             pol = instantiate(dname, fams[fi], f"{dname}-p{p:03d}", rng)
+            if a.extend_from and fi < len(ext[dname][0]):
+                if pol.text != ext[dname][1].get(pol.id):
+                    sys.exit(f"{pol.id} does not reproduce {a.extend_from}; rerun with the flags that made it")
+                continue
             pols.append(pol)
             ncase = a.train_cases_per_family if a.train_cases_per_family and dname not in held and \
                 split.get(fi) == "train" else a.cases_per_family
@@ -962,7 +976,7 @@ def main():
                         eff = "cannot determine" if gi["decision"] == "cannot determine" else \
                             "default applied" if removed in gi["defaults_applied"] else \
                             "unchanged" if gi["decision"] == g["decision"] else "changed"
-                    sp = held[dname] if dname in held else split[fi]
+                    sp = "test_policy" if a.extend_from else held[dname] if dname in held else split[fi]
                     inter = not gi["single_condition"] and len(gi["sufficient_sets"]) >= 2 \
                         if variant == "base" else None
                     fs = E.fact_states(pol, facts)
