@@ -878,11 +878,12 @@ def main():
     GEM.update(vertex=a.vertex, model=a.gemini_model, cache=a.cache)
     t0, recs, pols, tcase, invalid, norev = time.time(), [], [], [], 0, 0
     held = {d: sp for d, sp in HELD_OUT.items() if d not in a.train_domains.split(",")}
-    # ext: per domain, how many families DATA has and its policy texts, which the reproduced policies must match
+    # ext: per domain, how many families DATA has (highest index + 1) and its policy texts, which the reproduced
+    # policies must match; a policy the prose pass dropped from DATA has no text to match and is skipped
     ext = {}
     for r in map(json.loads, open(a.extend_from)) if a.extend_from else ():
-        n, txt = ext.setdefault(r["domain"], [set(), {}])
-        n.add(r["template_family"])
+        n, txt = ext.setdefault(r["domain"], [0, {}])
+        ext[r["domain"]][0] = max(n, int(r["template_family"].rsplit("-f", 1)[1]) + 1)
         txt[r["policy_id"]] = r["policy_text"]
     for dname in DOMAINS if a.domains == "all" else a.domains.split(","):
         dom = load_domain(dname)
@@ -904,8 +905,8 @@ def main():
             fi = p // a.policies_per_family
             rng = random.Random(f"{a.seed}-{dname}-{p}")
             pol = instantiate(dname, fams[fi], f"{dname}-p{p:03d}", rng)
-            if a.extend_from and fi < len(ext[dname][0]):
-                if pol.text != ext[dname][1].get(pol.id):
+            if a.extend_from and fi < ext[dname][0]:
+                if pol.id in ext[dname][1] and pol.text != ext[dname][1][pol.id]:
                     sys.exit(f"{pol.id} does not reproduce {a.extend_from}; rerun with the flags that made it")
                 continue
             pols.append(pol)
