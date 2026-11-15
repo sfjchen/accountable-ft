@@ -1,0 +1,70 @@
+{
+ "data": "data/review-x.jsonl",
+ "slice": "unseen_family_train_vocab",
+ "view": "prose",
+ "seed": 0,
+ "items": 366,
+ "kinds": {
+  "add": 55,
+  "invariant_replace": 55,
+  "noncrossing_replace": 55,
+  "pivotal_replace": 146,
+  "remove": 55
+ },
+ "groups": {
+  "pivotal_replace": 0.3989071038251366,
+  "invariant": 0.3005464480874317,
+  "remove": 0.15027322404371585,
+  "add": 0.15027322404371585
+ },
+ "sources": {
+  "engine_alt_disjoint": 119,
+  "engine_alt_overlap": 27,
+  "engine_noncrossing": 55,
+  "variant_record": 165
+ },
+ "candidates": {
+  "prose/add": 154,
+  "prose/invariant_replace": 154,
+  "prose/noncrossing_replace": 109,
+  "prose/pivotal_replace": 146,
+  "prose/remove": 154
+ },
+ "drop_reasons": {
+  "no certified flip within radius 3 other than gold.min_flip": 8
+ },
+ "drops": [
+  {
+   "case_id": "review-p008-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p014-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p029-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p035-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p048-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p078-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p081-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "review-p101-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  }
+ ]
+}
