@@ -596,9 +596,11 @@ def main():
     table, prints the markdown tables and writes every number to the JSON file.
     """
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("runs", nargs="+")
+    ap.add_argument("runs", nargs="+", help="run files; a.jsonl+b.jsonl scores 2 runs of the same model on different "
+                    "test files as 1 run named a (pooled), companions joined the same way, no interventions written")
     ap.add_argument("--data", nargs="+", required=True)
-    ap.add_argument("--bank", help="intervention bank from infer.py --mode bank")
+    ap.add_argument("--bank", nargs="+", help="intervention bank(s) from infer.py --mode bank; with 2, every "
+                    "seed-pooled paired sim_delta is also reported on the 1st bank's families minus the 2nd's")
     ap.add_argument("--json", default="runs/eval.json")
     ap.add_argument("--compare", help="reference run stem, or a condition name (decision) to pair each run with "
             "that condition's run at the same epoch and seed")
@@ -617,15 +619,17 @@ def main():
     ap.add_argument("--seed", type=int, default=0)
     a = ap.parse_args()
     recs = {r["id"]: r for p in a.data for r in load(p)}
-    bank = load(a.bank) if a.bank else []
+    bank = [b for p in a.bank or () for b in load(p)]
     recs |= bank_recs(bank, recs)
     res, covs, units, sigs, comp, cross, simsig = {}, {}, {}, {}, {}, set(), set()
     keys = [k for k in DEC_KEYS if k != "thinking"] if a.allow_thinking_diff else DEC_KEYS
-    for rp in map(Path, a.runs):
+    for arg in a.runs:
+        ps = [Path(p) for p in arg.split("+")]
+        rp = ps[0]
         if re.search(r"\.(answers|interventions|repeat|predict|predict_noacc|simulate|simulate_noacc|simulate_shuf|"
                 r"edits)$", rp.stem):
             continue
-        rows, aux = load(rp), {}
+        rows, aux = [r for p in ps for r in load(p)], {}
         sigs[rp.stem] = sig(rows, DEC_KEYS)
         # a prompted-explanation run mixes the explainer's rows with the frozen run's kept rows by design, so each
         # part must be uniform on its own
@@ -637,9 +641,11 @@ def main():
                 "think_tokens": sum(r.get("think_tokens") or 0 for r in rows),
                 "call_latency_s": round(sum(r.get("latency") or 0 for r in rows), 2)}
         for k in COMPANIONS:
-            cp = rp.with_name(f"{rp.stem}.{k}.jsonl")
-            if cp.exists():
-                aux[k] = load(cp)
+            cps = [p.with_name(f"{p.stem}.{k}.jsonl") for p in ps]
+            if any(c.exists() for c in cps) and not all(c.exists() for c in cps):
+                sys.exit(f"refusing {arg}: {k} exists for only some of its parts")
+            if (cp := cps[0]).exists():
+                aux[k] = [r for c in cps for r in load(c)]
                 if k == "simulate_shuf" and not all(r.get("shuf_src") == "frozen" and "shuf_decision_match" in r
                         for r in aux[k]):
                     sys.exit(f"refusing {cp.name}: rows without shuf_src frozen and shuf_decision_match come from "
@@ -649,7 +655,7 @@ def main():
                     simsig |= {s for r in aux[k] for s in sig([r], DEC_KEYS)}
                 elif sig(aux[k], DEC_KEYS) != sigs[rp.stem]:
                     sys.exit(f"refusing {cp.name}: decoding {sorted(sig(aux[k], DEC_KEYS))} differs from {rp.name}")
-        for mp in [rp.with_name(f"{rp.stem}.meta.json")] + [rp.with_name(f"{rp.stem}.{k}.meta.json") for k in aux]:
+        for mp in [p.with_name(f"{p.stem}.{k}meta.json") for p in ps for k in [""] + [k + "." for k in aux]]:
             if mp.exists():
                 comp[rp.stem][mp.name] = {k: v for k, v in json.loads(mp.read_text()).items() if k != "decoding"}
         U, cov, ivs = score(recs, rows, aux, bank)
@@ -684,7 +690,8 @@ def main():
                         f"{len(ns)} fam x {int(ns.sum())} {kind} | {m:.1f} | {cv:.2f} | {de:.2f} | {ne:.0f} | "
                         f"{100 * 1.959964 * np.sqrt(0.20 / ne):.1f} pts | "
                         f"{100 * (1.959964 + 0.841621) * np.sqrt(var_d / ne):.1f} pts |")
-        rp.with_name(rp.stem + ".interventions.jsonl").write_text("".join(json.dumps(i) + "\n" for i in ivs))
+        if len(ps) == 1:
+            rp.with_name(rp.stem + ".interventions.jsonl").write_text("".join(json.dumps(i) + "\n" for i in ivs))
         eds = []
         for iv in ivs if a.render else []:
             b = recs[iv["id"]]
@@ -743,6 +750,25 @@ def main():
         for m, pu in ms.items():
             for gk, sel in groups(pu).items():
                 paired[name][gk][m] = boot([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed)
+    # with 2 banks, each seed-pooled paired sim_delta on the 1st bank's families minus the 2nd's (e.g. original minus
+    # extended test families), resampling families within each side, which decides whether the 2 sides may be pooled
+    old = {(r := recs[b["case_id"]]).get("template_family") or r["policy_id"] for b in load(a.bank[0])} \
+        if len(a.bank or ()) == 2 else set()
+    drift, rng = defaultdict(dict), np.random.default_rng(a.seed)
+    for name, ms in pool.items() if old else []:
+        for gk, sel in groups(ms.get("sim_delta", [])).items():
+            parts = [[u for u in sel if (u[1] in old) == o and not np.isnan(u[0])] for o in (True, False)]
+            if (gk != PRIMARY and not gk.startswith(PRIMARY + " domain=")) or not all(parts):
+                continue
+            bm = []
+            for pt in parts:
+                up, inv = np.unique([u[1] for u in pt], return_inverse=True)
+                S, C = np.bincount(inv, [u[0] for u in pt]), np.bincount(inv)
+                bm.append(S[idx := rng.integers(0, len(up), (a.boot, len(up)))].sum(1) / C[idx].sum(1))
+            mo, mn = (float(np.mean([u[0] for u in pt])) for pt in parts)
+            lo, hi = np.percentile(bm[0] - bm[1], [2.5, 97.5])
+            drift[gk][name] = {"old": mo, "new": mn, "mean": mo - mn, "lo": float(lo), "hi": float(hi),
+                    "n_clus": [len({u[1] for u in pt}) for pt in parts]}
     # difference in differences: each prefix's paired units averaged over seeds per item, then prefix X minus Y on
     # the items both have, so a contrast is paired on items and clustered on families like every other CI here
     contrasts = defaultdict(lambda: defaultdict(dict))
@@ -781,7 +807,8 @@ def main():
                 a.select_by)
     Path(a.json).parent.mkdir(parents=True, exist_ok=True)
     Path(a.json).write_text(json.dumps({"primary": PRIMARY, "conditions": res, "coverage": covs, "compute": comp,
-            "seed_groups": seeds, "paired_vs": a.compare, "paired": paired, "contrasts": contrasts, "selection": sel,
+            "seed_groups": seeds, "paired_vs": a.compare, "paired": paired, "contrasts": contrasts,
+            "old_minus_new": drift, "selection": sel,
             "decoding": {c: sorted(s) for c, s in sigs.items()}}, indent=1))
     for c, s in sigs.items():
         print(f"{c}: decoding {sorted(s)}; compute {comp[c]}")
@@ -813,6 +840,11 @@ def main():
             for k, c in cs.items():
                 print(f"- {m} {k}: {c['mean']:+.3f} [{c['lo']:+.3f}, {c['hi']:+.3f}] n={c['n']} p={c['p']:.3f} "
                       f"holm={c['p_holm']:.3f}")
+    for gk, ds in sorted(drift.items()):
+        print(f"\n### sim_delta, 1st bank's families minus the 2nd's ({gk}): old, new, old - new [95% CI], families\n")
+        for name, d in ds.items():
+            print(f"- {name}: {d['old']:+.3f}, {d['new']:+.3f}, {d['mean']:+.3f} [{d['lo']:+.3f}, {d['hi']:+.3f}] "
+                  f"fam={d['n_clus']}")
     if "chosen" in sel:
         print(f"\ncheckpoint selection: {sel['rule']}; chose {sel['chosen']}")
     if "exploratory" in sel:
