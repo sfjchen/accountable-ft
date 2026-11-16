@@ -357,6 +357,26 @@ def test_counter_templates(tmp_path):
     assert all(pc[r["policy_id"]] == any(q.get("key") == ck for q in r["policy_spec"]["rules"]) for r in rs)
 
 
+
+def test_extend_from(tmp_path):
+    """
+    Checks gen.py --extend-from: the new file holds only families after DATA's, all as test families, it tolerates a
+    policy the prose pass dropped from DATA (trial-p083 in v1), and it refuses DATA made with other flags.
+    """
+    g = lambda *xs: subprocess.run([sys.executable, str(ROOT / "gen.py"), "--domains", "review", "--cases-per-family",
+            "2", "--prose", "template", *xs], capture_output=True, text=True, cwd=ROOT)
+    base, ext = tmp_path / "b.jsonl", tmp_path / "x.jsonl"
+    assert g("--n-policies", "6", "--out", str(base)).returncode == 0
+    rs = [json.loads(ln) for ln in base.read_text().splitlines()]
+    base.write_text("".join(json.dumps(r) + "\n" for r in rs if r["policy_id"] != "review-p001"))
+    assert g("--n-policies", "12", "--extend-from", str(base), "--out", str(ext)).returncode == 0
+    xs = [json.loads(ln) for ln in ext.read_text().splitlines()]
+    old = {r["template_family"] for r in rs}
+    assert xs and not old & {r["template_family"] for r in xs}
+    assert {r["slice"] for r in xs} == {"unseen_family_train_vocab"} and len({r["template_family"] for r in xs}) == 3
+    bad = g("--n-policies", "12", "--seed", "1", "--extend-from", str(base), "--out", str(ext))
+    assert bad.returncode and "does not reproduce" in bad.stderr
+
 MESSY = [
     ("Decision: approve\nPolicy support: site zone=industrial (R4); operator certificate=current (R2)\n"
      "Assumptions: none\nSmallest change to make this deny: operator certificate -> lapsed; site zone -> residential",

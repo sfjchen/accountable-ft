@@ -57,6 +57,40 @@ die() {
   exit 1
 }
 
+# Kills the job's vllm server and deletes the model the job merged for itself, on any exit, so a failed job never
+# leaves an 18 GB merged copy behind (16 did on Nov 15)
+VPID='' OWN_MERGED=''
+cleanup() {
+  [[ -n $VPID ]] && kill "$VPID" 2>/dev/null
+  [[ -n $OWN_MERGED && ${KEEP_MERGED:-0} != 1 ]] && rm -rf "$OWN_MERGED"
+  true
+}
+trap cleanup EXIT
+
+# Fails unless every file in DATA (comma list, default $1) and its edit set exist. At submit (no SLURM_JOB_ID) it also
+# fails when a data file differs from its committed .gz, an edit set from origin/main, or this script, infer.py,
+# train.py or evaluate.py from origin/main, since Slurm runs a copy of the script made at submit and an input found
+# missing only after a 10-min merge wastes the job (13 grid tasks on Nov 15). STALE_OK=1 skips the code check.
+# Usage: check_inputs <default data list>
+check_inputs() {
+  local f b dl=${DATA:-$1}
+  [[ -z ${SLURM_JOB_ID:-} ]] && git -C "$REPO" fetch -q origin
+  for f in ${dl//,/ }; do
+    b=${f%.jsonl}.bank.jsonl
+    [[ -s $REPO/$f && -s $REPO/$b ]] || die "$f or $b missing in $REPO; copy them with: git checkout origin/main --" \
+        "$f.gz $b ${b%.jsonl}.meta.json && gunzip -kf $f.gz"
+    [[ -n ${SLURM_JOB_ID:-} ]] && continue
+    [[ ! -f $REPO/$f.gz ]] || cmp -s <(gzip -dc "$REPO/$f.gz") "$REPO/$f" || die "$f differs from $f.gz"
+    ! git -C "$REPO" cat-file -e "origin/main:$b" 2>/dev/null || git -C "$REPO" diff --quiet origin/main -- "$b" ||
+        die "$b differs from origin/main"
+  done
+  [[ -n ${SLURM_JOB_ID:-} || ${STALE_OK:-0} == 1 ]] || git -C "$REPO" diff --quiet origin/main -- cluster.sh infer.py \
+      train.py evaluate.py engine.py gen.py || die "code differs from origin/main: git checkout origin/main --" \
+      "$(git -C "$REPO" diff --name-only origin/main -- cluster.sh infer.py train.py evaluate.py engine.py gen.py |
+      tr '\n' ' ')(or STALE_OK=1)"
+}
+GRID_DATA=data/v1.jsonl,data/mortgage-split.jsonl,data/snap.jsonl,data/dependent.jsonl
+
 if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
   # chunk 1 stops after epoch 1, chunk 2 resumes from its checkpoint. Everything stays on gpu: normal shares its
   # nodes at PriorityTier 1 (gpu has 5), so a GPU job there only gets a GPU the gpu queue leaves idle
@@ -114,6 +148,10 @@ if [[ $cmd == setup && $CLUSTER == sc && -z ${SLURM_JOB_ID:-} ]]; then
   exit
 fi
 if [[ -n $res && -z ${SLURM_JOB_ID:-} ]]; then
+  case $cmd in
+    grid) check_inputs "$GRID_DATA" ;;
+    eval|base) check_inputs "${DATA:-data/v1.jsonl}" ;;
+  esac
   mkdir -p "$REPO/runs/slurm"
   # shellcheck disable=SC2086
   sbatch "${PART[@]}" "${GPU[@]}" --cpus-per-task=8 "${MAILF[@]}" $res ${SB:-} "$0" "$cmd" "$@"
@@ -175,11 +213,10 @@ run_passes() {
       "${VLLM:-$SERVE_VENV/bin/vllm}" serve "$model" \
       --served-model-name "$run" --host 127.0.0.1 --port "$port" --dtype bfloat16 --max-model-len "$MAX_LEN" \
       --gpu-memory-utilization 0.9 --seed 0 > "$vlog" 2>&1 &
-  vpid=$!
-  trap 'kill "$vpid" 2>/dev/null || true' EXIT
+  VPID=$!
   for _ in $(seq 240); do
     curl -sf "http://127.0.0.1:$port/v1/models" > /dev/null && break
-    kill -0 "$vpid" 2>/dev/null || die "vllm exited, see $vlog"
+    kill -0 "$VPID" 2>/dev/null || die "vllm exited, see $vlog"
     sleep 5
   done
   curl -sf "http://127.0.0.1:$port/v1/models" > /dev/null || die "vllm not up after 20 min, see $vlog"
@@ -222,6 +259,7 @@ eval_one() {
   cd "$REPO"
   echo "job $SLURM_JOB_ID: $run on $(hostname), commit $(git rev-parse --short HEAD)"
   nvidia-smi --query-gpu=name,memory.total --format=csv,noheader || true
+  check_inputs data/v1.jsonl
   ckpt=$(python - "$out" "$ep" <<'PY'
 import json
 import sys
@@ -246,6 +284,7 @@ PY
     echo "serving $merged, train.py's merge of the final weights in $ckpt"
   else
     echo "merging $ckpt -> $merged"
+    OWN_MERGED=$merged
     python - "$ckpt" "$merged" <<'PY'
 import sys
 from unsloth import FastLanguageModel
@@ -384,7 +423,7 @@ PY
         "data/rm-$MIX.sft.dev.jsonl" --epochs 2
     # every grid model answers the same 4 test files (DATA overrides them, e.g. the extended test families); the
     # simulator passes run on the Mac
-    DATA=${DATA:-data/v1.jsonl,data/mortgage-split.jsonl,data/snap.jsonl,data/dependent.jsonl} \
+    DATA=${DATA:-$GRID_DATA} \
         PASSES=${PASSES:-answer} \
         REUSE_MERGED=1 \
         eval_one "rm-$MIX-$cond-s$seed" 2 ;;
