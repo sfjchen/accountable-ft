@@ -22,7 +22,7 @@
  "cached": 782,
  "errors": 0,
  "fresh_calls": 0,
- "wall_s": 0.16,
+ "wall_s": 0.14,
  "in_tokens": 978405,
  "out_tokens": 73274,
  "think_tokens": 42735,

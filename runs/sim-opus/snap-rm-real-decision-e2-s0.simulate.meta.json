@@ -19,10 +19,10 @@
  },
  "n": 1,
  "rows": 313,
- "cached": 82,
+ "cached": 313,
  "errors": 0,
- "fresh_calls": 231,
- "wall_s": 502.28,
+ "fresh_calls": 0,
+ "wall_s": 0.13,
  "in_tokens": 429781,
  "out_tokens": 26611,
  "think_tokens": 14247,
@@ -32,7 +32,7 @@
  "model_versions": [
   "claude-opus-5-5"
  ],
- "mean_latency_s": 7.352,
+ "mean_latency_s": 0.0,
  "cost_usd_fresh": null,
  "cost_usd_if_uncached": null
 }
