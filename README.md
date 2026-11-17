@@ -37,7 +37,9 @@ Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 9
 - `train.py`: LoRA SFT with the matched loss, `train.py export` for SFT rows.
 - `cluster.sh`: setup and Slurm jobs on FarmShare or sc (smoke, train, eval, base, grid, notify).
 - `runs/`: run outputs and eval tables. `data/`: datasets (`.gz` committed), edit sets, stats, blind samples.
-- `tests/test_all.py`: engine, generator, metrics, export and loss tests. `python -m pytest -q`.
+- `tests/test_all.py`: engine, generator, metrics, export and loss tests. `.venv/bin/python -m pytest -q`, with the local
+  `.venv` from `uv venv .venv && uv pip install -p .venv -r requirements.txt numpy torch==2.14.0 transformers==5.17.0
+  accelerate==1.15.0` (CPU torch for the loss tests, kept out of the global Python).
 
 ## Reproduce
 
