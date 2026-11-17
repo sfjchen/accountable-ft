@@ -1,0 +1,336 @@
+{"iid": "mortgage-p000-c00:prose|boundary|loan_amount=$1,020,000", "id": "mortgage-p000-c00:prose", "kind": "boundary", "edits": {"loan_amount": "$1,020,000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p000-c01:prose|boundary|gift_letter=yes", "id": "mortgage-p000-c01:prose", "kind": "boundary", "edits": {"gift_letter": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p000-c01:prose|necessity|gift_funds", "id": "mortgage-p000-c01:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "approve"}
+{"iid": "mortgage-p000-c01:prose|necessity|gift_letter", "id": "mortgage-p000-c01:prose", "kind": "necessity", "edits": {"gift_letter": null}, "target": "approve"}
+{"iid": "mortgage-p000-c02:prose|boundary|liquid_assets=$80,000", "id": "mortgage-p000-c02:prose", "kind": "boundary", "edits": {"liquid_assets": "$80,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p001-c00:prose|boundary|credit_score=600", "id": "mortgage-p001-c00:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p001-c01:prose|boundary|gift_funds=$0", "id": "mortgage-p001-c01:prose", "kind": "boundary", "edits": {"gift_funds": "$0"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p001-c01:prose|necessity|gift_funds", "id": "mortgage-p001-c01:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "approve"}
+{"iid": "mortgage-p001-c01:prose|necessity|gift_letter", "id": "mortgage-p001-c01:prose", "kind": "necessity", "edits": {"gift_letter": null}, "target": "approve"}
+{"iid": "mortgage-p004-c00:prose|boundary|loan_amount=$180,000", "id": "mortgage-p004-c00:prose", "kind": "boundary", "edits": {"loan_amount": "$180,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p004-c00:prose|necessity|loan_amount", "id": "mortgage-p004-c00:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "approve"}
+{"iid": "mortgage-p004-c00:prose|necessity|property_value", "id": "mortgage-p004-c00:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "approve"}
+{"iid": "mortgage-p004-c01:prose|boundary|credit_score=700", "id": "mortgage-p004-c01:prose", "kind": "boundary", "edits": {"credit_score": "700"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p004-c01:prose|necessity|credit_score", "id": "mortgage-p004-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p004-c01:prose|necessity|derogatory_event", "id": "mortgage-p004-c01:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p004-c01:prose|necessity|housing_payment", "id": "mortgage-p004-c01:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p004-c01:prose|necessity|liquid_assets", "id": "mortgage-p004-c01:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "deny"}
+{"iid": "mortgage-p004-c01:prose|necessity|loan_amount", "id": "mortgage-p004-c01:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p004-c01:prose|necessity|monthly_income", "id": "mortgage-p004-c01:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p004-c01:prose|necessity|property_value", "id": "mortgage-p004-c01:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p004-c02:prose|boundary|credit_score=720;derogatory_event=a foreclosure completed 8 years ago", "id": "mortgage-p004-c02:prose", "kind": "boundary", "edits": {"credit_score": "720", "derogatory_event": "a foreclosure completed 8 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p005-c00:prose|boundary|derogatory_event=a foreclosure completed 8 years ago", "id": "mortgage-p005-c00:prose", "kind": "boundary", "edits": {"derogatory_event": "a foreclosure completed 8 years ago"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p005-c01:prose|boundary|credit_score=660;derogatory_event=a foreclosure completed 8 years ago", "id": "mortgage-p005-c01:prose", "kind": "boundary", "edits": {"credit_score": "660", "derogatory_event": "a foreclosure completed 8 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p010-c00:prose|boundary|credit_score=600", "id": "mortgage-p010-c00:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p010-c01:prose|boundary|credit_score=620", "id": "mortgage-p010-c01:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p010-c01:prose|necessity|credit_score", "id": "mortgage-p010-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p010-c02:prose|boundary|liquid_assets=$60,000", "id": "mortgage-p010-c02:prose", "kind": "boundary", "edits": {"liquid_assets": "$60,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p011-c00:prose|boundary|credit_score=600", "id": "mortgage-p011-c00:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p011-c01:prose|boundary|derogatory_event=a foreclosure completed 8 years ago;loan_amount=$660,000", "id": "mortgage-p011-c01:prose", "kind": "boundary", "edits": {"derogatory_event": "a foreclosure completed 8 years ago", "loan_amount": "$660,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p012-c00:prose|boundary|credit_score=600", "id": "mortgage-p012-c00:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "approve"}
+{"iid": "mortgage-p012-c00:prose|necessity|credit_score", "id": "mortgage-p012-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p012-c00:prose|necessity|derogatory_event", "id": "mortgage-p012-c00:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "approve"}
+{"iid": "mortgage-p012-c00:prose|necessity|extenuating", "id": "mortgage-p012-c00:prose", "kind": "necessity", "edits": {"extenuating": null}, "target": "approve"}
+{"iid": "mortgage-p012-c00:prose|necessity|gift_funds", "id": "mortgage-p012-c00:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "approve"}
+{"iid": "mortgage-p012-c00:prose|necessity|gift_letter", "id": "mortgage-p012-c00:prose", "kind": "necessity", "edits": {"gift_letter": null}, "target": "approve"}
+{"iid": "mortgage-p012-c00:prose|necessity|housing_payment", "id": "mortgage-p012-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "approve"}
+{"iid": "mortgage-p012-c00:prose|necessity|liquid_assets", "id": "mortgage-p012-c00:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "approve"}
+{"iid": "mortgage-p012-c00:prose|necessity|loan_amount", "id": "mortgage-p012-c00:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "approve"}
+{"iid": "mortgage-p012-c00:prose|necessity|monthly_income", "id": "mortgage-p012-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "approve"}
+{"iid": "mortgage-p012-c00:prose|necessity|property_value", "id": "mortgage-p012-c00:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "approve"}
+{"iid": "mortgage-p012-c01:prose|boundary|derogatory_event=a foreclosure completed 8 years ago", "id": "mortgage-p012-c01:prose", "kind": "boundary", "edits": {"derogatory_event": "a foreclosure completed 8 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p012-c01:prose|necessity|derogatory_event", "id": "mortgage-p012-c01:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "approve"}
+{"iid": "mortgage-p012-c01:prose|necessity|extenuating", "id": "mortgage-p012-c01:prose", "kind": "necessity", "edits": {"extenuating": null}, "target": "approve"}
+{"iid": "mortgage-p012-c02:prose|boundary|credit_score=600", "id": "mortgage-p012-c02:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p013-c00:prose|boundary|derogatory_event=a Chapter 7 bankruptcy discharged 5 years ago", "id": "mortgage-p013-c00:prose", "kind": "boundary", "edits": {"derogatory_event": "a Chapter 7 bankruptcy discharged 5 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p013-c00:prose|necessity|derogatory_event", "id": "mortgage-p013-c00:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "approve"}
+{"iid": "mortgage-p013-c00:prose|necessity|extenuating", "id": "mortgage-p013-c00:prose", "kind": "necessity", "edits": {"extenuating": null}, "target": "approve"}
+{"iid": "mortgage-p013-c01:prose|boundary|credit_score=620", "id": "mortgage-p013-c01:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p013-c01:prose|necessity|cash_to_close", "id": "mortgage-p013-c01:prose", "kind": "necessity", "edits": {"cash_to_close": null}, "target": "deny"}
+{"iid": "mortgage-p013-c01:prose|necessity|credit_score", "id": "mortgage-p013-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p013-c01:prose|necessity|derogatory_event", "id": "mortgage-p013-c01:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p013-c01:prose|necessity|gift_funds", "id": "mortgage-p013-c01:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "deny"}
+{"iid": "mortgage-p013-c01:prose|necessity|gift_letter", "id": "mortgage-p013-c01:prose", "kind": "necessity", "edits": {"gift_letter": null}, "target": "deny"}
+{"iid": "mortgage-p013-c01:prose|necessity|housing_payment", "id": "mortgage-p013-c01:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p013-c01:prose|necessity|liquid_assets", "id": "mortgage-p013-c01:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "deny"}
+{"iid": "mortgage-p013-c01:prose|necessity|loan_amount", "id": "mortgage-p013-c01:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p013-c01:prose|necessity|monthly_income", "id": "mortgage-p013-c01:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p014-c00:prose|boundary|credit_score=660", "id": "mortgage-p014-c00:prose", "kind": "boundary", "edits": {"credit_score": "660"}, "target": "deny", "gold_target": "approve"}
+{"iid": "mortgage-p014-c00:prose|necessity|credit_score", "id": "mortgage-p014-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p014-c00:prose|necessity|derogatory_event", "id": "mortgage-p014-c00:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "approve"}
+{"iid": "mortgage-p014-c00:prose|necessity|gift_funds", "id": "mortgage-p014-c00:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "approve"}
+{"iid": "mortgage-p014-c00:prose|necessity|housing_payment", "id": "mortgage-p014-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "approve"}
+{"iid": "mortgage-p014-c00:prose|necessity|liquid_assets", "id": "mortgage-p014-c00:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "approve"}
+{"iid": "mortgage-p014-c00:prose|necessity|loan_amount", "id": "mortgage-p014-c00:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "approve"}
+{"iid": "mortgage-p014-c00:prose|necessity|monthly_debts", "id": "mortgage-p014-c00:prose", "kind": "necessity", "edits": {"monthly_debts": null}, "target": "approve"}
+{"iid": "mortgage-p014-c00:prose|necessity|monthly_income", "id": "mortgage-p014-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "approve"}
+{"iid": "mortgage-p014-c00:prose|necessity|property_value", "id": "mortgage-p014-c00:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "approve"}
+{"iid": "mortgage-p014-c01:prose|boundary|credit_score=620", "id": "mortgage-p014-c01:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p014-c02:prose|boundary|monthly_income=$10,000", "id": "mortgage-p014-c02:prose", "kind": "boundary", "edits": {"monthly_income": "$10,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p015-c00:prose|boundary|credit_score=640", "id": "mortgage-p015-c00:prose", "kind": "boundary", "edits": {"credit_score": "640"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p015-c00:prose|necessity|credit_score", "id": "mortgage-p015-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p015-c01:prose|boundary|credit_score=620", "id": "mortgage-p015-c01:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p022-c00:prose|boundary|monthly_income=10000", "id": "mortgage-p022-c00:prose", "kind": "boundary", "edits": {"monthly_income": "10000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p022-c00:prose|necessity|housing_payment", "id": "mortgage-p022-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "approve"}
+{"iid": "mortgage-p022-c00:prose|necessity|monthly_debts", "id": "mortgage-p022-c00:prose", "kind": "necessity", "edits": {"monthly_debts": null}, "target": "approve"}
+{"iid": "mortgage-p022-c00:prose|necessity|monthly_income", "id": "mortgage-p022-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "approve"}
+{"iid": "mortgage-p022-c02:prose|boundary|credit_score=600", "id": "mortgage-p022-c02:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p023-c00:prose|boundary|credit_score=600", "id": "mortgage-p023-c00:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p023-c01:prose|boundary|monthly_income=$9,000", "id": "mortgage-p023-c01:prose", "kind": "boundary", "edits": {"monthly_income": "$9,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p024-c00:prose|boundary|credit_score=600", "id": "mortgage-p024-c00:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p024-c01:prose|boundary|credit_score=720", "id": "mortgage-p024-c01:prose", "kind": "boundary", "edits": {"credit_score": "720"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p024-c02:prose|boundary|credit_score=600", "id": "mortgage-p024-c02:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p024-c02:prose|necessity|credit_score", "id": "mortgage-p024-c02:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p024-c02:prose|necessity|derogatory_event", "id": "mortgage-p024-c02:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p024-c02:prose|necessity|housing_payment", "id": "mortgage-p024-c02:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p024-c02:prose|necessity|liquid_assets", "id": "mortgage-p024-c02:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "deny"}
+{"iid": "mortgage-p024-c02:prose|necessity|loan_amount", "id": "mortgage-p024-c02:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p024-c02:prose|necessity|monthly_income", "id": "mortgage-p024-c02:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p024-c02:prose|necessity|property_value", "id": "mortgage-p024-c02:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p025-c00:prose|boundary|monthly_income=$9,000", "id": "mortgage-p025-c00:prose", "kind": "boundary", "edits": {"monthly_income": "$9,000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p026-c00:prose|boundary|credit_score=680", "id": "mortgage-p026-c00:prose", "kind": "boundary", "edits": {"credit_score": "680"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p026-c02:prose|boundary|credit_score=620", "id": "mortgage-p026-c02:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p026-c02:prose|necessity|credit_score", "id": "mortgage-p026-c02:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p026-c02:prose|necessity|derogatory_event", "id": "mortgage-p026-c02:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p026-c02:prose|necessity|housing_payment", "id": "mortgage-p026-c02:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p026-c02:prose|necessity|loan_amount", "id": "mortgage-p026-c02:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p026-c02:prose|necessity|monthly_income", "id": "mortgage-p026-c02:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p026-c02:prose|necessity|property_value", "id": "mortgage-p026-c02:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p027-c00:prose|boundary|monthly_income=$9,000", "id": "mortgage-p027-c00:prose", "kind": "boundary", "edits": {"monthly_income": "$9,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p027-c01:prose|boundary|credit_score=620", "id": "mortgage-p027-c01:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p027-c01:prose|necessity|credit_score", "id": "mortgage-p027-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p027-c01:prose|necessity|derogatory_event", "id": "mortgage-p027-c01:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p027-c01:prose|necessity|housing_payment", "id": "mortgage-p027-c01:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p027-c01:prose|necessity|liquid_assets", "id": "mortgage-p027-c01:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "deny"}
+{"iid": "mortgage-p027-c01:prose|necessity|loan_amount", "id": "mortgage-p027-c01:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p027-c01:prose|necessity|monthly_debts", "id": "mortgage-p027-c01:prose", "kind": "necessity", "edits": {"monthly_debts": null}, "target": "deny"}
+{"iid": "mortgage-p027-c01:prose|necessity|monthly_income", "id": "mortgage-p027-c01:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p027-c01:prose|necessity|property_value", "id": "mortgage-p027-c01:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p030-c00:prose|boundary|credit_score=640", "id": "mortgage-p030-c00:prose", "kind": "boundary", "edits": {"credit_score": "640"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p030-c00:prose|necessity|credit_score", "id": "mortgage-p030-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p030-c01:prose|boundary|monthly_income=$9,000", "id": "mortgage-p030-c01:prose", "kind": "boundary", "edits": {"monthly_income": "$9,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p030-c02:prose|boundary|credit_score=620", "id": "mortgage-p030-c02:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p031-c00:prose|boundary|credit_score=640", "id": "mortgage-p031-c00:prose", "kind": "boundary", "edits": {"credit_score": "640"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p031-c00:prose|necessity|credit_score", "id": "mortgage-p031-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p031-c01:prose|boundary|credit_score=620", "id": "mortgage-p031-c01:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p031-c01:prose|necessity|credit_score", "id": "mortgage-p031-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p031-c01:prose|necessity|gift_funds", "id": "mortgage-p031-c01:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "deny"}
+{"iid": "mortgage-p031-c01:prose|necessity|housing_payment", "id": "mortgage-p031-c01:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p031-c01:prose|necessity|loan_amount", "id": "mortgage-p031-c01:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p031-c01:prose|necessity|monthly_income", "id": "mortgage-p031-c01:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p031-c01:prose|necessity|property_value", "id": "mortgage-p031-c01:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p032-c00:prose|boundary|credit_score=600", "id": "mortgage-p032-c00:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p032-c00:prose|necessity|credit_score", "id": "mortgage-p032-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p032-c00:prose|necessity|derogatory_event", "id": "mortgage-p032-c00:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p032-c00:prose|necessity|gift_funds", "id": "mortgage-p032-c00:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "deny"}
+{"iid": "mortgage-p032-c00:prose|necessity|housing_payment", "id": "mortgage-p032-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p032-c00:prose|necessity|liquid_assets", "id": "mortgage-p032-c00:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "deny"}
+{"iid": "mortgage-p032-c00:prose|necessity|loan_amount", "id": "mortgage-p032-c00:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p032-c00:prose|necessity|monthly_income", "id": "mortgage-p032-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p032-c01:prose|boundary|credit_score=640", "id": "mortgage-p032-c01:prose", "kind": "boundary", "edits": {"credit_score": "640"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p032-c01:prose|necessity|credit_score", "id": "mortgage-p032-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p032-c01:prose|necessity|derogatory_event", "id": "mortgage-p032-c01:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p032-c01:prose|necessity|extenuating", "id": "mortgage-p032-c01:prose", "kind": "necessity", "edits": {"extenuating": null}, "target": "deny"}
+{"iid": "mortgage-p032-c01:prose|necessity|gift_funds", "id": "mortgage-p032-c01:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "deny"}
+{"iid": "mortgage-p032-c01:prose|necessity|housing_payment", "id": "mortgage-p032-c01:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p032-c01:prose|necessity|liquid_assets", "id": "mortgage-p032-c01:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "deny"}
+{"iid": "mortgage-p032-c01:prose|necessity|loan_amount", "id": "mortgage-p032-c01:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p032-c01:prose|necessity|monthly_income", "id": "mortgage-p032-c01:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p032-c01:prose|necessity|non_occupant_coborrower", "id": "mortgage-p032-c01:prose", "kind": "necessity", "edits": {"non_occupant_coborrower": null}, "target": "deny"}
+{"iid": "mortgage-p032-c01:prose|necessity|property_value", "id": "mortgage-p032-c01:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p032-c02:prose|boundary|credit_score=720", "id": "mortgage-p032-c02:prose", "kind": "boundary", "edits": {"credit_score": "720"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p033-c00:prose|boundary|credit_score=720", "id": "mortgage-p033-c00:prose", "kind": "boundary", "edits": {"credit_score": "720"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p033-c01:prose|boundary|credit_score=680", "id": "mortgage-p033-c01:prose", "kind": "boundary", "edits": {"credit_score": "680"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p038-c00:prose|boundary|credit_score=600", "id": "mortgage-p038-c00:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p038-c01:prose|boundary|derogatory_event=a Chapter 7 bankruptcy discharged 3 years ago", "id": "mortgage-p038-c01:prose", "kind": "boundary", "edits": {"derogatory_event": "a Chapter 7 bankruptcy discharged 3 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p038-c02:prose|boundary|liquid_assets=$80,000", "id": "mortgage-p038-c02:prose", "kind": "boundary", "edits": {"liquid_assets": "$80,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p038-c02:prose|necessity|derogatory_event", "id": "mortgage-p038-c02:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "approve"}
+{"iid": "mortgage-p038-c02:prose|necessity|extenuating", "id": "mortgage-p038-c02:prose", "kind": "necessity", "edits": {"extenuating": null}, "target": "approve"}
+{"iid": "mortgage-p039-c00:prose|boundary|credit_score=720", "id": "mortgage-p039-c00:prose", "kind": "boundary", "edits": {"credit_score": "720"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p039-c00:prose|necessity|credit_score", "id": "mortgage-p039-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p039-c00:prose|necessity|derogatory_event", "id": "mortgage-p039-c00:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p039-c00:prose|necessity|gift_funds", "id": "mortgage-p039-c00:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "deny"}
+{"iid": "mortgage-p039-c00:prose|necessity|gift_letter", "id": "mortgage-p039-c00:prose", "kind": "necessity", "edits": {"gift_letter": null}, "target": "deny"}
+{"iid": "mortgage-p039-c00:prose|necessity|housing_payment", "id": "mortgage-p039-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p039-c00:prose|necessity|liquid_assets", "id": "mortgage-p039-c00:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "deny"}
+{"iid": "mortgage-p039-c00:prose|necessity|loan_amount", "id": "mortgage-p039-c00:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p039-c00:prose|necessity|monthly_income", "id": "mortgage-p039-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p039-c01:prose|boundary|credit_score=620", "id": "mortgage-p039-c01:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p039-c01:prose|necessity|credit_score", "id": "mortgage-p039-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p040-c00:prose|boundary|credit_score=640", "id": "mortgage-p040-c00:prose", "kind": "boundary", "edits": {"credit_score": "640"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p040-c00:prose|necessity|cash_to_close", "id": "mortgage-p040-c00:prose", "kind": "necessity", "edits": {"cash_to_close": null}, "target": "deny"}
+{"iid": "mortgage-p040-c00:prose|necessity|credit_score", "id": "mortgage-p040-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p040-c00:prose|necessity|first_time_buyer", "id": "mortgage-p040-c00:prose", "kind": "necessity", "edits": {"first_time_buyer": null}, "target": "deny"}
+{"iid": "mortgage-p040-c00:prose|necessity|gift_funds", "id": "mortgage-p040-c00:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "deny"}
+{"iid": "mortgage-p040-c00:prose|necessity|housing_payment", "id": "mortgage-p040-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p040-c00:prose|necessity|liquid_assets", "id": "mortgage-p040-c00:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "deny"}
+{"iid": "mortgage-p040-c00:prose|necessity|loan_amount", "id": "mortgage-p040-c00:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p040-c00:prose|necessity|monthly_income", "id": "mortgage-p040-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p040-c00:prose|necessity|non_occupant_coborrower", "id": "mortgage-p040-c00:prose", "kind": "necessity", "edits": {"non_occupant_coborrower": null}, "target": "deny"}
+{"iid": "mortgage-p040-c00:prose|necessity|property_value", "id": "mortgage-p040-c00:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p040-c01:prose|boundary|credit_score=680", "id": "mortgage-p040-c01:prose", "kind": "boundary", "edits": {"credit_score": "680"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p041-c00:prose|boundary|credit_score=700", "id": "mortgage-p041-c00:prose", "kind": "boundary", "edits": {"credit_score": "700"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p041-c01:prose|boundary|liquid_assets=$120,000;monthly_income=$6,000", "id": "mortgage-p041-c01:prose", "kind": "boundary", "edits": {"liquid_assets": "$120,000", "monthly_income": "$6,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p046-c00:prose|boundary|credit_score=720", "id": "mortgage-p046-c00:prose", "kind": "boundary", "edits": {"credit_score": "720"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p046-c01:prose|boundary|credit_score=700;loan_amount=$420,000", "id": "mortgage-p046-c01:prose", "kind": "boundary", "edits": {"credit_score": "700", "loan_amount": "$420,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p047-c00:prose|boundary|credit_score=620;derogatory_event=a Chapter 7 bankruptcy discharged 5 years ago", "id": "mortgage-p047-c00:prose", "kind": "boundary", "edits": {"credit_score": "620", "derogatory_event": "a Chapter 7 bankruptcy discharged 5 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p047-c01:prose|boundary|credit_score=600", "id": "mortgage-p047-c01:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p047-c01:prose|necessity|credit_score", "id": "mortgage-p047-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p047-c01:prose|necessity|derogatory_event", "id": "mortgage-p047-c01:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p047-c01:prose|necessity|gift_funds", "id": "mortgage-p047-c01:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "deny"}
+{"iid": "mortgage-p047-c01:prose|necessity|housing_payment", "id": "mortgage-p047-c01:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p047-c01:prose|necessity|liquid_assets", "id": "mortgage-p047-c01:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "deny"}
+{"iid": "mortgage-p047-c01:prose|necessity|loan_amount", "id": "mortgage-p047-c01:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p047-c01:prose|necessity|monthly_income", "id": "mortgage-p047-c01:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p047-c01:prose|necessity|property_value", "id": "mortgage-p047-c01:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p047-c01:prose|necessity|years_in_field", "id": "mortgage-p047-c01:prose", "kind": "necessity", "edits": {"years_in_field": null}, "target": "deny"}
+{"iid": "mortgage-p048-c00:prose|boundary|gift_funds=$0", "id": "mortgage-p048-c00:prose", "kind": "boundary", "edits": {"gift_funds": "$0"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p048-c00:prose|necessity|gift_funds", "id": "mortgage-p048-c00:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "approve"}
+{"iid": "mortgage-p048-c00:prose|necessity|gift_letter", "id": "mortgage-p048-c00:prose", "kind": "necessity", "edits": {"gift_letter": null}, "target": "approve"}
+{"iid": "mortgage-p048-c01:prose|boundary|credit_score=600", "id": "mortgage-p048-c01:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p048-c02:prose|boundary|monthly_income=$8,000", "id": "mortgage-p048-c02:prose", "kind": "boundary", "edits": {"monthly_income": "$8,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p049-c00:prose|boundary|monthly_income=$6,000", "id": "mortgage-p049-c00:prose", "kind": "boundary", "edits": {"monthly_income": "$6,000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p049-c00:prose|necessity|cash_to_close", "id": "mortgage-p049-c00:prose", "kind": "necessity", "edits": {"cash_to_close": null}, "target": "deny"}
+{"iid": "mortgage-p049-c00:prose|necessity|credit_score", "id": "mortgage-p049-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p049-c00:prose|necessity|derogatory_event", "id": "mortgage-p049-c00:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p049-c00:prose|necessity|gift_letter", "id": "mortgage-p049-c00:prose", "kind": "necessity", "edits": {"gift_letter": null}, "target": "deny"}
+{"iid": "mortgage-p049-c00:prose|necessity|housing_payment", "id": "mortgage-p049-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p049-c00:prose|necessity|liquid_assets", "id": "mortgage-p049-c00:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "deny"}
+{"iid": "mortgage-p049-c00:prose|necessity|loan_amount", "id": "mortgage-p049-c00:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p049-c00:prose|necessity|monthly_debts", "id": "mortgage-p049-c00:prose", "kind": "necessity", "edits": {"monthly_debts": null}, "target": "deny"}
+{"iid": "mortgage-p049-c00:prose|necessity|monthly_income", "id": "mortgage-p049-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p049-c00:prose|necessity|years_in_field", "id": "mortgage-p049-c00:prose", "kind": "necessity", "edits": {"years_in_field": null}, "target": "deny"}
+{"iid": "mortgage-p049-c01:prose|boundary|monthly_income=$8,000", "id": "mortgage-p049-c01:prose", "kind": "boundary", "edits": {"monthly_income": "$8,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p052-c00:prose|boundary|derogatory_event=a foreclosure completed 2 years ago", "id": "mortgage-p052-c00:prose", "kind": "boundary", "edits": {"derogatory_event": "a foreclosure completed 2 years ago"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p052-c01:prose|boundary|credit_score=620", "id": "mortgage-p052-c01:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p052-c02:prose|boundary|derogatory_event=a Chapter 7 bankruptcy discharged 5 years ago", "id": "mortgage-p052-c02:prose", "kind": "boundary", "edits": {"derogatory_event": "a Chapter 7 bankruptcy discharged 5 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p052-c02:prose|necessity|derogatory_event", "id": "mortgage-p052-c02:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "approve"}
+{"iid": "mortgage-p052-c02:prose|necessity|extenuating", "id": "mortgage-p052-c02:prose", "kind": "necessity", "edits": {"extenuating": null}, "target": "approve"}
+{"iid": "mortgage-p053-c00:prose|boundary|derogatory_event=a foreclosure completed 8 years ago", "id": "mortgage-p053-c00:prose", "kind": "boundary", "edits": {"derogatory_event": "a foreclosure completed 8 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p053-c00:prose|necessity|derogatory_event", "id": "mortgage-p053-c00:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "approve"}
+{"iid": "mortgage-p053-c00:prose|necessity|extenuating", "id": "mortgage-p053-c00:prose", "kind": "necessity", "edits": {"extenuating": null}, "target": "approve"}
+{"iid": "mortgage-p053-c01:prose|boundary|credit_score=620", "id": "mortgage-p053-c01:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p062-c00:prose|boundary|monthly_income=$6,000", "id": "mortgage-p062-c00:prose", "kind": "boundary", "edits": {"monthly_income": "$6,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p062-c01:prose|boundary|monthly_income=$8,000", "id": "mortgage-p062-c01:prose", "kind": "boundary", "edits": {"monthly_income": "$8,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p062-c02:prose|boundary|credit_score=720", "id": "mortgage-p062-c02:prose", "kind": "boundary", "edits": {"credit_score": "720"}, "target": "approve", "gold_target": "deny"}
+{"iid": "mortgage-p063-c00:prose|boundary|credit_score=680", "id": "mortgage-p063-c00:prose", "kind": "boundary", "edits": {"credit_score": "680"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p063-c01:prose|boundary|derogatory_event=a foreclosure completed 3 years ago", "id": "mortgage-p063-c01:prose", "kind": "boundary", "edits": {"derogatory_event": "a foreclosure completed 3 years ago"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p064-c00:prose|boundary|derogatory_event=a foreclosure completed 8 years ago;loan_amount=$990,000", "id": "mortgage-p064-c00:prose", "kind": "boundary", "edits": {"derogatory_event": "a foreclosure completed 8 years ago", "loan_amount": "$990,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p064-c01:prose|boundary|credit_score=620", "id": "mortgage-p064-c01:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p064-c02:prose|boundary|derogatory_event=a foreclosure completed 8 years ago", "id": "mortgage-p064-c02:prose", "kind": "boundary", "edits": {"derogatory_event": "a foreclosure completed 8 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p065-c00:prose|boundary|monthly_income=$12,000", "id": "mortgage-p065-c00:prose", "kind": "boundary", "edits": {"monthly_income": "$12,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p065-c01:prose|boundary|monthly_income=$5,000", "id": "mortgage-p065-c01:prose", "kind": "boundary", "edits": {"monthly_income": "$5,000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p084-c00:prose|boundary|credit_score=620", "id": "mortgage-p084-c00:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p084-c00:prose|necessity|credit_score", "id": "mortgage-p084-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p084-c00:prose|necessity|derogatory_event", "id": "mortgage-p084-c00:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p084-c00:prose|necessity|extenuating", "id": "mortgage-p084-c00:prose", "kind": "necessity", "edits": {"extenuating": null}, "target": "deny"}
+{"iid": "mortgage-p084-c00:prose|necessity|gift_funds", "id": "mortgage-p084-c00:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "deny"}
+{"iid": "mortgage-p084-c00:prose|necessity|housing_payment", "id": "mortgage-p084-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p084-c00:prose|necessity|loan_amount", "id": "mortgage-p084-c00:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p084-c00:prose|necessity|monthly_debts", "id": "mortgage-p084-c00:prose", "kind": "necessity", "edits": {"monthly_debts": null}, "target": "deny"}
+{"iid": "mortgage-p084-c00:prose|necessity|monthly_income", "id": "mortgage-p084-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p084-c00:prose|necessity|property_value", "id": "mortgage-p084-c00:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p084-c01:prose|boundary|credit_score=680", "id": "mortgage-p084-c01:prose", "kind": "boundary", "edits": {"credit_score": "680"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p084-c01:prose|necessity|credit_score", "id": "mortgage-p084-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p084-c01:prose|necessity|derogatory_event", "id": "mortgage-p084-c01:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p084-c01:prose|necessity|gift_funds", "id": "mortgage-p084-c01:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "deny"}
+{"iid": "mortgage-p084-c01:prose|necessity|housing_payment", "id": "mortgage-p084-c01:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p084-c01:prose|necessity|loan_amount", "id": "mortgage-p084-c01:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p084-c01:prose|necessity|monthly_debts", "id": "mortgage-p084-c01:prose", "kind": "necessity", "edits": {"monthly_debts": null}, "target": "deny"}
+{"iid": "mortgage-p084-c01:prose|necessity|monthly_income", "id": "mortgage-p084-c01:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p084-c01:prose|necessity|property_value", "id": "mortgage-p084-c01:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p084-c02:prose|boundary|credit_score=700", "id": "mortgage-p084-c02:prose", "kind": "boundary", "edits": {"credit_score": "700"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p085-c00:prose|boundary|credit_score=720;monthly_income=$8,000", "id": "mortgage-p085-c00:prose", "kind": "boundary", "edits": {"credit_score": "720", "monthly_income": "$8,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p085-c01:prose|boundary|credit_score=640", "id": "mortgage-p085-c01:prose", "kind": "boundary", "edits": {"credit_score": "640"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p085-c01:prose|necessity|credit_score", "id": "mortgage-p085-c01:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p085-c01:prose|necessity|derogatory_event", "id": "mortgage-p085-c01:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p085-c01:prose|necessity|gift_letter", "id": "mortgage-p085-c01:prose", "kind": "necessity", "edits": {"gift_letter": null}, "target": "deny"}
+{"iid": "mortgage-p085-c01:prose|necessity|housing_payment", "id": "mortgage-p085-c01:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p085-c01:prose|necessity|loan_amount", "id": "mortgage-p085-c01:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p085-c01:prose|necessity|monthly_debts", "id": "mortgage-p085-c01:prose", "kind": "necessity", "edits": {"monthly_debts": null}, "target": "deny"}
+{"iid": "mortgage-p085-c01:prose|necessity|monthly_income", "id": "mortgage-p085-c01:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p085-c01:prose|necessity|property_value", "id": "mortgage-p085-c01:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p086-c00:prose|boundary|monthly_income=$8,000", "id": "mortgage-p086-c00:prose", "kind": "boundary", "edits": {"monthly_income": "$8,000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p086-c01:prose|boundary|derogatory_event=a Chapter 7 bankruptcy discharged 5 years ago", "id": "mortgage-p086-c01:prose", "kind": "boundary", "edits": {"derogatory_event": "a Chapter 7 bankruptcy discharged 5 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p086-c01:prose|necessity|derogatory_event", "id": "mortgage-p086-c01:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "approve"}
+{"iid": "mortgage-p086-c02:prose|boundary|derogatory_event=a foreclosure completed 8 years ago", "id": "mortgage-p086-c02:prose", "kind": "boundary", "edits": {"derogatory_event": "a foreclosure completed 8 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p087-c00:prose|boundary|monthly_income=$9,000", "id": "mortgage-p087-c00:prose", "kind": "boundary", "edits": {"monthly_income": "$9,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p087-c01:prose|boundary|credit_score=700", "id": "mortgage-p087-c01:prose", "kind": "boundary", "edits": {"credit_score": "700"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p088-c00:prose|boundary|monthly_income=$9,000", "id": "mortgage-p088-c00:prose", "kind": "boundary", "edits": {"monthly_income": "$9,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p088-c00:prose|necessity|monthly_debts", "id": "mortgage-p088-c00:prose", "kind": "necessity", "edits": {"monthly_debts": null}, "target": "approve"}
+{"iid": "mortgage-p088-c00:prose|necessity|monthly_income", "id": "mortgage-p088-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "approve"}
+{"iid": "mortgage-p088-c02:prose|boundary|gift_funds=$0", "id": "mortgage-p088-c02:prose", "kind": "boundary", "edits": {"gift_funds": "$0"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p088-c02:prose|necessity|gift_funds", "id": "mortgage-p088-c02:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "approve"}
+{"iid": "mortgage-p088-c02:prose|necessity|gift_letter", "id": "mortgage-p088-c02:prose", "kind": "necessity", "edits": {"gift_letter": null}, "target": "approve"}
+{"iid": "mortgage-p089-c00:prose|boundary|monthly_income=$9,000", "id": "mortgage-p089-c00:prose", "kind": "boundary", "edits": {"monthly_income": "$9,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p089-c00:prose|necessity|credit_score", "id": "mortgage-p089-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p089-c00:prose|necessity|housing_payment", "id": "mortgage-p089-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "approve"}
+{"iid": "mortgage-p089-c00:prose|necessity|monthly_income", "id": "mortgage-p089-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "approve"}
+{"iid": "mortgage-p089-c01:prose|boundary|gift_letter=no", "id": "mortgage-p089-c01:prose", "kind": "boundary", "edits": {"gift_letter": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p090-c01:prose|necessity|derogatory_event", "id": "mortgage-p090-c01:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "approve"}
+{"iid": "mortgage-p090-c02:prose|necessity|credit_score", "id": "mortgage-p090-c02:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p091-c00:prose|boundary|monthly_income=$5,000", "id": "mortgage-p091-c00:prose", "kind": "boundary", "edits": {"monthly_income": "$5,000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p091-c00:prose|necessity|credit_score", "id": "mortgage-p091-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p091-c00:prose|necessity|derogatory_event", "id": "mortgage-p091-c00:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p091-c00:prose|necessity|gift_funds", "id": "mortgage-p091-c00:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "deny"}
+{"iid": "mortgage-p091-c00:prose|necessity|housing_payment", "id": "mortgage-p091-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p091-c00:prose|necessity|liquid_assets", "id": "mortgage-p091-c00:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "deny"}
+{"iid": "mortgage-p091-c00:prose|necessity|loan_amount", "id": "mortgage-p091-c00:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p091-c00:prose|necessity|monthly_income", "id": "mortgage-p091-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p091-c00:prose|necessity|property_value", "id": "mortgage-p091-c00:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p091-c01:prose|boundary|derogatory_event=a foreclosure completed 8 years ago", "id": "mortgage-p091-c01:prose", "kind": "boundary", "edits": {"derogatory_event": "a foreclosure completed 8 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p091-c01:prose|necessity|derogatory_event", "id": "mortgage-p091-c01:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "approve"}
+{"iid": "mortgage-p100-c00:prose|boundary|monthly_income=$10,000", "id": "mortgage-p100-c00:prose", "kind": "boundary", "edits": {"monthly_income": "$10,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p100-c00:prose|necessity|credit_score", "id": "mortgage-p100-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p100-c00:prose|necessity|housing_payment", "id": "mortgage-p100-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "approve"}
+{"iid": "mortgage-p100-c00:prose|necessity|monthly_income", "id": "mortgage-p100-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "approve"}
+{"iid": "mortgage-p100-c01:prose|boundary|loan_amount=$180,000", "id": "mortgage-p100-c01:prose", "kind": "boundary", "edits": {"loan_amount": "$180,000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "mortgage-p100-c02:prose|boundary|credit_score=700", "id": "mortgage-p100-c02:prose", "kind": "boundary", "edits": {"credit_score": "700"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p100-c02:prose|necessity|credit_score", "id": "mortgage-p100-c02:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p100-c02:prose|necessity|gift_funds", "id": "mortgage-p100-c02:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "deny"}
+{"iid": "mortgage-p100-c02:prose|necessity|high_cost_area", "id": "mortgage-p100-c02:prose", "kind": "necessity", "edits": {"high_cost_area": null}, "target": "deny"}
+{"iid": "mortgage-p100-c02:prose|necessity|liquid_assets", "id": "mortgage-p100-c02:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "deny"}
+{"iid": "mortgage-p100-c02:prose|necessity|loan_amount", "id": "mortgage-p100-c02:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p100-c02:prose|necessity|monthly_debts", "id": "mortgage-p100-c02:prose", "kind": "necessity", "edits": {"monthly_debts": null}, "target": "deny"}
+{"iid": "mortgage-p100-c02:prose|necessity|monthly_income", "id": "mortgage-p100-c02:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p100-c02:prose|necessity|property_value", "id": "mortgage-p100-c02:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p101-c00:prose|boundary|credit_score=660", "id": "mortgage-p101-c00:prose", "kind": "boundary", "edits": {"credit_score": "660"}, "target": "deny", "gold_target": "approve"}
+{"iid": "mortgage-p101-c00:prose|necessity|cash_to_close", "id": "mortgage-p101-c00:prose", "kind": "necessity", "edits": {"cash_to_close": null}, "target": "approve"}
+{"iid": "mortgage-p101-c00:prose|necessity|credit_score", "id": "mortgage-p101-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p101-c00:prose|necessity|housing_payment", "id": "mortgage-p101-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "approve"}
+{"iid": "mortgage-p101-c00:prose|necessity|liquid_assets", "id": "mortgage-p101-c00:prose", "kind": "necessity", "edits": {"liquid_assets": null}, "target": "approve"}
+{"iid": "mortgage-p101-c00:prose|necessity|loan_amount", "id": "mortgage-p101-c00:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "approve"}
+{"iid": "mortgage-p101-c00:prose|necessity|monthly_income", "id": "mortgage-p101-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "approve"}
+{"iid": "mortgage-p101-c00:prose|necessity|non_occupant_coborrower", "id": "mortgage-p101-c00:prose", "kind": "necessity", "edits": {"non_occupant_coborrower": null}, "target": "approve"}
+{"iid": "mortgage-p101-c00:prose|necessity|property_value", "id": "mortgage-p101-c00:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "approve"}
+{"iid": "mortgage-p101-c01:prose|boundary|credit_score=700", "id": "mortgage-p101-c01:prose", "kind": "boundary", "edits": {"credit_score": "700"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p104-c00:prose|boundary|derogatory_event=a foreclosure completed 8 years ago", "id": "mortgage-p104-c00:prose", "kind": "boundary", "edits": {"derogatory_event": "a foreclosure completed 8 years ago"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p104-c00:prose|necessity|derogatory_event", "id": "mortgage-p104-c00:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "approve"}
+{"iid": "mortgage-p104-c00:prose|necessity|extenuating", "id": "mortgage-p104-c00:prose", "kind": "necessity", "edits": {"extenuating": null}, "target": "approve"}
+{"iid": "mortgage-p104-c01:prose|boundary|credit_score=620", "id": "mortgage-p104-c01:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p104-c02:prose|boundary|credit_score=620", "id": "mortgage-p104-c02:prose", "kind": "boundary", "edits": {"credit_score": "620"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p105-c00:prose|boundary|credit_score=600", "id": "mortgage-p105-c00:prose", "kind": "boundary", "edits": {"credit_score": "600"}, "target": "deny", "gold_target": "approve"}
+{"iid": "mortgage-p105-c00:prose|necessity|credit_score", "id": "mortgage-p105-c00:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "approve"}
+{"iid": "mortgage-p105-c00:prose|necessity|derogatory_event", "id": "mortgage-p105-c00:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "approve"}
+{"iid": "mortgage-p105-c00:prose|necessity|gift_funds", "id": "mortgage-p105-c00:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "approve"}
+{"iid": "mortgage-p105-c00:prose|necessity|housing_payment", "id": "mortgage-p105-c00:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "approve"}
+{"iid": "mortgage-p105-c00:prose|necessity|loan_amount", "id": "mortgage-p105-c00:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "approve"}
+{"iid": "mortgage-p105-c00:prose|necessity|monthly_income", "id": "mortgage-p105-c00:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "approve"}
+{"iid": "mortgage-p105-c00:prose|necessity|property_value", "id": "mortgage-p105-c00:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "approve"}
+{"iid": "mortgage-p105-c01:prose|boundary|monthly_income=$7,000", "id": "mortgage-p105-c01:prose", "kind": "boundary", "edits": {"monthly_income": "$7,000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p116-c00:prose|boundary|gift_letter=yes", "id": "mortgage-p116-c00:prose", "kind": "boundary", "edits": {"gift_letter": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p116-c00:prose|necessity|gift_funds", "id": "mortgage-p116-c00:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "approve"}
+{"iid": "mortgage-p116-c00:prose|necessity|gift_letter", "id": "mortgage-p116-c00:prose", "kind": "necessity", "edits": {"gift_letter": null}, "target": "approve"}
+{"iid": "mortgage-p116-c01:prose|boundary|monthly_income=$6,000", "id": "mortgage-p116-c01:prose", "kind": "boundary", "edits": {"monthly_income": "$6,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p116-c02:prose|boundary|credit_score=700", "id": "mortgage-p116-c02:prose", "kind": "boundary", "edits": {"credit_score": "700"}, "target": "deny", "gold_target": "deny"}
+{"iid": "mortgage-p116-c02:prose|necessity|credit_score", "id": "mortgage-p116-c02:prose", "kind": "necessity", "edits": {"credit_score": null}, "target": "deny"}
+{"iid": "mortgage-p116-c02:prose|necessity|derogatory_event", "id": "mortgage-p116-c02:prose", "kind": "necessity", "edits": {"derogatory_event": null}, "target": "deny"}
+{"iid": "mortgage-p116-c02:prose|necessity|extenuating", "id": "mortgage-p116-c02:prose", "kind": "necessity", "edits": {"extenuating": null}, "target": "deny"}
+{"iid": "mortgage-p116-c02:prose|necessity|gift_funds", "id": "mortgage-p116-c02:prose", "kind": "necessity", "edits": {"gift_funds": null}, "target": "deny"}
+{"iid": "mortgage-p116-c02:prose|necessity|housing_payment", "id": "mortgage-p116-c02:prose", "kind": "necessity", "edits": {"housing_payment": null}, "target": "deny"}
+{"iid": "mortgage-p116-c02:prose|necessity|loan_amount", "id": "mortgage-p116-c02:prose", "kind": "necessity", "edits": {"loan_amount": null}, "target": "deny"}
+{"iid": "mortgage-p116-c02:prose|necessity|monthly_debts", "id": "mortgage-p116-c02:prose", "kind": "necessity", "edits": {"monthly_debts": null}, "target": "deny"}
+{"iid": "mortgage-p116-c02:prose|necessity|monthly_income", "id": "mortgage-p116-c02:prose", "kind": "necessity", "edits": {"monthly_income": null}, "target": "deny"}
+{"iid": "mortgage-p116-c02:prose|necessity|property_value", "id": "mortgage-p116-c02:prose", "kind": "necessity", "edits": {"property_value": null}, "target": "deny"}
+{"iid": "mortgage-p117-c00:prose|boundary|monthly_income=$9,000", "id": "mortgage-p117-c00:prose", "kind": "boundary", "edits": {"monthly_income": "$9,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "mortgage-p117-c01:prose|boundary|monthly_income=$5,000", "id": "mortgage-p117-c01:prose", "kind": "boundary", "edits": {"monthly_income": "$5,000"}, "target": "deny", "gold_target": "deny"}
