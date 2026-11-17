@@ -397,20 +397,27 @@ def load_env():
     return path
 
 
-def gemini_client(vertex):
-    """Returns a google-genai client on Vertex AI in location vertex (ADC, GCP_PROJECT) or on GEMINI_API_KEY."""
+def gemini_client(vertex, timeout_ms=300_000):
+    """
+    Returns a google-genai client on Vertex AI in location vertex (ADC, GCP_PROJECT) or on GEMINI_API_KEY, whose
+    requests time out after timeout_ms: without it a request that never returns blocked a simulator pass for 22 h
+    (Nov 16). A timeout raises TimeoutError on the async path (infer.py's Runner retries it) and an httpx timeout on the
+    sync one (gemini_call retries it).
+    """
     from google import genai
+    from google.genai import types
 
+    ho = types.HttpOptions(timeout=timeout_ms)
     path, key = load_env(), "GCP_PROJECT" if vertex else "GEMINI_API_KEY"
     if not os.environ.get(key):
         raise RuntimeError(f"no {key} in the environment or {path}")
     if not vertex:
-        return genai.Client(api_key=os.environ[key])
+        return genai.Client(api_key=os.environ[key], http_options=ho)
     import google.auth
 
     creds, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/cloud-platform"],
                                    quota_project_id=os.environ[key])
-    return genai.Client(vertexai=True, project=os.environ[key], location=vertex, credentials=creds)
+    return genai.Client(vertexai=True, project=os.environ[key], location=vertex, credentials=creds, http_options=ho)
 
 
 def gemini_call(prompt, json_out=False):
@@ -419,6 +426,7 @@ def gemini_call(prompt, json_out=False):
     Counts usage in GEM["usage"], retries server errors and rate limits with backoff, and falls through unavailable
     models (GEM["ids"], the pinned model or the flash-class ones, cheapest first).
     """
+    import httpx
     from google.genai import errors, types
 
     with GEM_LOCK:
@@ -450,7 +458,7 @@ def gemini_call(prompt, json_out=False):
             return hit["text"]
         try:
             res = GEM["client"].models.generate_content(model=mid, contents=prompt, config=cfg)
-        except errors.ServerError:
+        except (errors.ServerError, httpx.TimeoutException, TimeoutError):
             tries += 1
             if tries > 3:
                 raise
