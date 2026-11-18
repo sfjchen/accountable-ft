@@ -1,0 +1,546 @@
+{"iid": "review-p006-c00:prose|boundary|track=Applied Quorian", "id": "review-p006-c00:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p006-c00:prose|necessity|extension", "id": "review-p006-c00:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p006-c00:prose|necessity|last_coauthor_day", "id": "review-p006-c00:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p006-c00:prose|necessity|main_pages", "id": "review-p006-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p006-c00:prose|necessity|num_authors", "id": "review-p006-c00:prose", "kind": "necessity", "edits": {"num_authors": null}, "target": "deny"}
+{"iid": "review-p006-c00:prose|necessity|ref_pages", "id": "review-p006-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p006-c00:prose|necessity|submission_day", "id": "review-p006-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p006-c00:prose|necessity|track", "id": "review-p006-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p006-c00:prose|necessity|under_review_elsewhere", "id": "review-p006-c00:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p006-c01:prose|boundary|track=Applied Quorian", "id": "review-p006-c01:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p006-c01:prose|necessity|last_coauthor_day", "id": "review-p006-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p006-c01:prose|necessity|main_pages", "id": "review-p006-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p006-c01:prose|necessity|nonarchival_venue", "id": "review-p006-c01:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "deny"}
+{"iid": "review-p006-c01:prose|necessity|ref_pages", "id": "review-p006-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p006-c01:prose|necessity|submission_day", "id": "review-p006-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p006-c01:prose|necessity|track", "id": "review-p006-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p006-c02:prose|boundary|track=Position", "id": "review-p006-c02:prose", "kind": "boundary", "edits": {"track": "Position"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p007-c00:prose|boundary|submission_day=April 20, 2027", "id": "review-p007-c00:prose", "kind": "boundary", "edits": {"submission_day": "April 20, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p007-c00:prose|necessity|submission_day", "id": "review-p007-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "approve"}
+{"iid": "review-p007-c01:prose|boundary|main_pages=7", "id": "review-p007-c01:prose", "kind": "boundary", "edits": {"main_pages": "7"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p008-c00:prose|boundary|track=Applied Quorian", "id": "review-p008-c00:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "approve"}
+{"iid": "review-p008-c01:prose|boundary|supp_anonymized=yes;supp_mb=10;track=Position Paper", "id": "review-p008-c01:prose", "kind": "boundary", "edits": {"supp_anonymized": "yes", "supp_mb": "10", "track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p008-c02:prose|boundary|track=Applied Quorian", "id": "review-p008-c02:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p008-c02:prose|necessity|extension", "id": "review-p008-c02:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p008-c02:prose|necessity|last_coauthor_day", "id": "review-p008-c02:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p008-c02:prose|necessity|main_pages", "id": "review-p008-c02:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p008-c02:prose|necessity|ref_pages", "id": "review-p008-c02:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p008-c02:prose|necessity|supp_mb", "id": "review-p008-c02:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p008-c02:prose|necessity|track", "id": "review-p008-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p009-c01:prose|boundary|track=Applied Quorian", "id": "review-p009-c01:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p010-c01:prose|boundary|track=Applied Quorian", "id": "review-p010-c01:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p010-c01:prose|necessity|extension", "id": "review-p010-c01:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p010-c01:prose|necessity|main_pages", "id": "review-p010-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p010-c01:prose|necessity|ref_pages", "id": "review-p010-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p010-c01:prose|necessity|submission_day", "id": "review-p010-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p010-c01:prose|necessity|supp_mb", "id": "review-p010-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p010-c01:prose|necessity|track", "id": "review-p010-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p010-c01:prose|necessity|under_review_elsewhere", "id": "review-p010-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p011-c00:prose|boundary|ref_pages=2", "id": "review-p011-c00:prose", "kind": "boundary", "edits": {"ref_pages": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p011-c01:prose|boundary|under_review_elsewhere=no", "id": "review-p011-c01:prose", "kind": "boundary", "edits": {"under_review_elsewhere": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p011-c01:prose|necessity|nonarchival_venue", "id": "review-p011-c01:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "approve"}
+{"iid": "review-p011-c01:prose|necessity|under_review_elsewhere", "id": "review-p011-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "approve"}
+{"iid": "review-p014-c01:prose|boundary|track=Applied Quorian", "id": "review-p014-c01:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p014-c01:prose|necessity|anonymized", "id": "review-p014-c01:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p014-c01:prose|necessity|main_pages", "id": "review-p014-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p014-c01:prose|necessity|ref_pages", "id": "review-p014-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p014-c01:prose|necessity|submission_day", "id": "review-p014-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p014-c01:prose|necessity|track", "id": "review-p014-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p014-c01:prose|necessity|under_review_elsewhere", "id": "review-p014-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p014-c02:prose|boundary|under_review_elsewhere=no", "id": "review-p014-c02:prose", "kind": "boundary", "edits": {"under_review_elsewhere": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p014-c02:prose|necessity|under_review_elsewhere", "id": "review-p014-c02:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "approve"}
+{"iid": "review-p015-c00:prose|boundary|track=Position Paper", "id": "review-p015-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p015-c00:prose|necessity|ref_pages", "id": "review-p015-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "approve"}
+{"iid": "review-p015-c00:prose|necessity|track", "id": "review-p015-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p015-c01:prose|boundary|track=Applied Quorian", "id": "review-p015-c01:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p015-c01:prose|necessity|anonymized", "id": "review-p015-c01:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p015-c01:prose|necessity|main_pages", "id": "review-p015-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p015-c01:prose|necessity|ref_pages", "id": "review-p015-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p015-c01:prose|necessity|submission_day", "id": "review-p015-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p015-c01:prose|necessity|track", "id": "review-p015-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p015-c01:prose|necessity|under_review_elsewhere", "id": "review-p015-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p018-c00:prose|boundary|track=Position Paper", "id": "review-p018-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p018-c01:prose|boundary|ref_pages=2;track=Applied Quorian", "id": "review-p018-c01:prose", "kind": "boundary", "edits": {"ref_pages": "2", "track": "Applied Quorian"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p018-c01:prose|necessity|ref_pages", "id": "review-p018-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p018-c01:prose|necessity|track", "id": "review-p018-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p019-c01:prose|boundary|track=Position Paper track", "id": "review-p019-c01:prose", "kind": "boundary", "edits": {"track": "Position Paper track"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p019-c01:prose|necessity|extension", "id": "review-p019-c01:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p019-c01:prose|necessity|main_pages", "id": "review-p019-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p019-c01:prose|necessity|nonarchival_venue", "id": "review-p019-c01:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "deny"}
+{"iid": "review-p019-c01:prose|necessity|ref_pages", "id": "review-p019-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p019-c01:prose|necessity|reviewer_same_institution", "id": "review-p019-c01:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "deny"}
+{"iid": "review-p019-c01:prose|necessity|supp_anonymized", "id": "review-p019-c01:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p019-c01:prose|necessity|track", "id": "review-p019-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p019-c01:prose|necessity|under_review_elsewhere", "id": "review-p019-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p020-c01:prose|boundary|track=Applied Quorian", "id": "review-p020-c01:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p020-c01:prose|necessity|anonymized", "id": "review-p020-c01:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p020-c01:prose|necessity|extension", "id": "review-p020-c01:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p020-c01:prose|necessity|last_coauthor_day", "id": "review-p020-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p020-c01:prose|necessity|main_pages", "id": "review-p020-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p020-c01:prose|necessity|ref_pages", "id": "review-p020-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p020-c01:prose|necessity|submission_day", "id": "review-p020-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p020-c01:prose|necessity|supp_mb", "id": "review-p020-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p020-c01:prose|necessity|track", "id": "review-p020-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p020-c02:prose|boundary|track=Applied Quorian", "id": "review-p020-c02:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p020-c02:prose|necessity|anonymized", "id": "review-p020-c02:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p020-c02:prose|necessity|extension", "id": "review-p020-c02:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p020-c02:prose|necessity|last_coauthor_day", "id": "review-p020-c02:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p020-c02:prose|necessity|main_pages", "id": "review-p020-c02:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p020-c02:prose|necessity|ref_pages", "id": "review-p020-c02:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p020-c02:prose|necessity|submission_day", "id": "review-p020-c02:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p020-c02:prose|necessity|supp_mb", "id": "review-p020-c02:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p020-c02:prose|necessity|track", "id": "review-p020-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p021-c00:prose|boundary|track=Position Paper", "id": "review-p021-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p021-c00:prose|necessity|ref_pages", "id": "review-p021-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "approve"}
+{"iid": "review-p021-c00:prose|necessity|track", "id": "review-p021-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p021-c01:prose|boundary|supp_mb=10;track=Applied Quorian", "id": "review-p021-c01:prose", "kind": "boundary", "edits": {"supp_mb": "10", "track": "Applied Quorian"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p028-c00:prose|boundary|track=Position Paper", "id": "review-p028-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p028-c00:prose|necessity|ethics_statement", "id": "review-p028-c00:prose", "kind": "necessity", "edits": {"ethics_statement": null}, "target": "deny"}
+{"iid": "review-p028-c00:prose|necessity|last_coauthor_day", "id": "review-p028-c00:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p028-c00:prose|necessity|ref_pages", "id": "review-p028-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p028-c00:prose|necessity|reviewer_same_institution", "id": "review-p028-c00:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "deny"}
+{"iid": "review-p028-c00:prose|necessity|submission_day", "id": "review-p028-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p028-c00:prose|necessity|supp_anonymized", "id": "review-p028-c00:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p028-c00:prose|necessity|supp_mb", "id": "review-p028-c00:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p028-c00:prose|necessity|track", "id": "review-p028-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p028-c02:prose|boundary|anonymized=yes", "id": "review-p028-c02:prose", "kind": "boundary", "edits": {"anonymized": "yes"}, "target": "approve|deny", "gold_target": "deny"}
+{"iid": "review-p029-c00:prose|boundary|track=Applied Quorian", "id": "review-p029-c00:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p029-c00:prose|necessity|last_coauthor_day", "id": "review-p029-c00:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p029-c00:prose|necessity|num_authors", "id": "review-p029-c00:prose", "kind": "necessity", "edits": {"num_authors": null}, "target": "deny"}
+{"iid": "review-p029-c00:prose|necessity|ref_pages", "id": "review-p029-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p029-c00:prose|necessity|reviewer_same_institution", "id": "review-p029-c00:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "deny"}
+{"iid": "review-p029-c00:prose|necessity|submission_day", "id": "review-p029-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p029-c00:prose|necessity|supp_anonymized", "id": "review-p029-c00:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p029-c00:prose|necessity|supp_mb", "id": "review-p029-c00:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p029-c00:prose|necessity|track", "id": "review-p029-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p029-c01:prose|boundary|submission_day=April 15, 2027", "id": "review-p029-c01:prose", "kind": "boundary", "edits": {"submission_day": "April 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p032-c00:prose|necessity|supp_anonymized", "id": "review-p032-c00:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p032-c01:prose|boundary|track=Position Paper track", "id": "review-p032-c01:prose", "kind": "boundary", "edits": {"track": "Position Paper track"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p032-c01:prose|necessity|track", "id": "review-p032-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p033-c00:prose|boundary|track=Position Paper", "id": "review-p033-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p033-c00:prose|necessity|anonymized", "id": "review-p033-c00:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p033-c00:prose|necessity|last_coauthor_day", "id": "review-p033-c00:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p033-c00:prose|necessity|reviewer_same_institution", "id": "review-p033-c00:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "deny"}
+{"iid": "review-p033-c00:prose|necessity|submission_day", "id": "review-p033-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p033-c00:prose|necessity|supp_mb", "id": "review-p033-c00:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p033-c00:prose|necessity|track", "id": "review-p033-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p033-c00:prose|necessity|under_review_elsewhere", "id": "review-p033-c00:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p033-c01:prose|boundary|supp_anonymized=yes", "id": "review-p033-c01:prose", "kind": "boundary", "edits": {"supp_anonymized": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p033-c01:prose|necessity|supp_anonymized", "id": "review-p033-c01:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "approve"}
+{"iid": "review-p034-c00:prose|boundary|submission_day=April 21, 2027", "id": "review-p034-c00:prose", "kind": "boundary", "edits": {"submission_day": "April 21, 2027"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p034-c00:prose|necessity|anonymized", "id": "review-p034-c00:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p034-c00:prose|necessity|artifact_license", "id": "review-p034-c00:prose", "kind": "necessity", "edits": {"artifact_license": null}, "target": "deny"}
+{"iid": "review-p034-c00:prose|necessity|extension", "id": "review-p034-c00:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p034-c00:prose|necessity|main_pages", "id": "review-p034-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p034-c00:prose|necessity|ref_pages", "id": "review-p034-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p034-c00:prose|necessity|reviewer_same_institution", "id": "review-p034-c00:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "deny"}
+{"iid": "review-p034-c00:prose|necessity|submission_day", "id": "review-p034-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p034-c00:prose|necessity|supp_anonymized", "id": "review-p034-c00:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p034-c00:prose|necessity|track", "id": "review-p034-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p034-c01:prose|boundary|track=Position Paper", "id": "review-p034-c01:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p035-c00:prose|boundary|track=Position Paper", "id": "review-p035-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p035-c00:prose|necessity|ref_pages", "id": "review-p035-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "approve"}
+{"iid": "review-p035-c00:prose|necessity|track", "id": "review-p035-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p035-c01:prose|boundary|reviewer_same_institution=no;track=Position Paper", "id": "review-p035-c01:prose", "kind": "boundary", "edits": {"reviewer_same_institution": "no", "track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p035-c01:prose|necessity|reviewer_same_institution", "id": "review-p035-c01:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "approve"}
+{"iid": "review-p038-c00:prose|boundary|track=Position", "id": "review-p038-c00:prose", "kind": "boundary", "edits": {"track": "Position"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p038-c00:prose|necessity|ref_pages", "id": "review-p038-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p038-c00:prose|necessity|track", "id": "review-p038-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p038-c01:prose|necessity|main_pages", "id": "review-p038-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p038-c01:prose|necessity|track", "id": "review-p038-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p038-c02:prose|boundary|submission_day=April 15, 2027", "id": "review-p038-c02:prose", "kind": "boundary", "edits": {"submission_day": "April 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p038-c02:prose|necessity|submission_day", "id": "review-p038-c02:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "approve"}
+{"iid": "review-p039-c00:prose|boundary|track=Position Paper", "id": "review-p039-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p039-c00:prose|necessity|ref_pages", "id": "review-p039-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p039-c00:prose|necessity|track", "id": "review-p039-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p039-c01:prose|boundary|submission_day=April 15, 2027", "id": "review-p039-c01:prose", "kind": "boundary", "edits": {"submission_day": "April 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p040-c00:prose|boundary|track=Position Paper", "id": "review-p040-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p040-c00:prose|necessity|main_pages", "id": "review-p040-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p040-c00:prose|necessity|track", "id": "review-p040-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p040-c01:prose|boundary|track=Position Paper", "id": "review-p040-c01:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p040-c02:prose|boundary|submission_day=April 15, 2027", "id": "review-p040-c02:prose", "kind": "boundary", "edits": {"submission_day": "April 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p041-c00:prose|boundary|track=Position Paper", "id": "review-p041-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p041-c00:prose|necessity|last_coauthor_day", "id": "review-p041-c00:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p041-c00:prose|necessity|main_pages", "id": "review-p041-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p041-c00:prose|necessity|ref_pages", "id": "review-p041-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p041-c00:prose|necessity|submission_day", "id": "review-p041-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p041-c00:prose|necessity|supp_mb", "id": "review-p041-c00:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p041-c00:prose|necessity|track", "id": "review-p041-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p041-c01:prose|necessity|extension", "id": "review-p041-c01:prose", "kind": "necessity", "edits": {"extension": null}, "target": "approve"}
+{"iid": "review-p041-c01:prose|necessity|last_coauthor_day", "id": "review-p041-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "approve"}
+{"iid": "review-p041-c01:prose|necessity|main_pages", "id": "review-p041-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "approve"}
+{"iid": "review-p041-c01:prose|necessity|ref_pages", "id": "review-p041-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "approve"}
+{"iid": "review-p041-c01:prose|necessity|submission_day", "id": "review-p041-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "approve"}
+{"iid": "review-p041-c01:prose|necessity|supp_mb", "id": "review-p041-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "approve"}
+{"iid": "review-p041-c01:prose|necessity|track", "id": "review-p041-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p042-c00:prose|boundary|submission_day=April 19, 2027", "id": "review-p042-c00:prose", "kind": "boundary", "edits": {"submission_day": "April 19, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p042-c01:prose|boundary|track=Applied Quorian", "id": "review-p042-c01:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p043-c00:prose|necessity|extension", "id": "review-p043-c00:prose", "kind": "necessity", "edits": {"extension": null}, "target": "approve"}
+{"iid": "review-p043-c00:prose|necessity|main_pages", "id": "review-p043-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "approve"}
+{"iid": "review-p043-c00:prose|necessity|num_authors", "id": "review-p043-c00:prose", "kind": "necessity", "edits": {"num_authors": null}, "target": "approve"}
+{"iid": "review-p043-c00:prose|necessity|ref_pages", "id": "review-p043-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "approve"}
+{"iid": "review-p043-c00:prose|necessity|reviewer_same_institution", "id": "review-p043-c00:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "approve"}
+{"iid": "review-p043-c00:prose|necessity|submission_day", "id": "review-p043-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "approve"}
+{"iid": "review-p043-c00:prose|necessity|supp_mb", "id": "review-p043-c00:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "approve"}
+{"iid": "review-p043-c00:prose|necessity|track", "id": "review-p043-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p043-c00:prose|necessity|under_review_elsewhere", "id": "review-p043-c00:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "approve"}
+{"iid": "review-p043-c01:prose|boundary|track=Position Paper", "id": "review-p043-c01:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p043-c01:prose|necessity|extension", "id": "review-p043-c01:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p043-c01:prose|necessity|main_pages", "id": "review-p043-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p043-c01:prose|necessity|ref_pages", "id": "review-p043-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p043-c01:prose|necessity|reviewer_same_institution", "id": "review-p043-c01:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "deny"}
+{"iid": "review-p043-c01:prose|necessity|submission_day", "id": "review-p043-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p043-c01:prose|necessity|supp_anonymized", "id": "review-p043-c01:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p043-c01:prose|necessity|supp_mb", "id": "review-p043-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p043-c01:prose|necessity|track", "id": "review-p043-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p043-c01:prose|necessity|under_review_elsewhere", "id": "review-p043-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p044-c00:prose|boundary|track=Applied Quorian track", "id": "review-p044-c00:prose", "kind": "boundary", "edits": {"track": "Applied Quorian track"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p044-c01:prose|boundary|track=Position Paper track", "id": "review-p044-c01:prose", "kind": "boundary", "edits": {"track": "Position Paper track"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p044-c01:prose|necessity|anonymized", "id": "review-p044-c01:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "approve"}
+{"iid": "review-p044-c01:prose|necessity|track", "id": "review-p044-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p044-c02:prose|boundary|track=Position Paper track", "id": "review-p044-c02:prose", "kind": "boundary", "edits": {"track": "Position Paper track"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p044-c02:prose|necessity|anonymized", "id": "review-p044-c02:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "approve"}
+{"iid": "review-p044-c02:prose|necessity|track", "id": "review-p044-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p045-c00:prose|boundary|track=Applied Quorian", "id": "review-p045-c00:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p045-c00:prose|necessity|anonymized", "id": "review-p045-c00:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p045-c00:prose|necessity|extension", "id": "review-p045-c00:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p045-c00:prose|necessity|main_pages", "id": "review-p045-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p045-c00:prose|necessity|ref_pages", "id": "review-p045-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p045-c00:prose|necessity|submission_day", "id": "review-p045-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p045-c00:prose|necessity|supp_mb", "id": "review-p045-c00:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p045-c00:prose|necessity|track", "id": "review-p045-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p048-c00:prose|boundary|main_pages=6;track=Applied Quorian track;under_review_elsewhere=no", "id": "review-p048-c00:prose", "kind": "boundary", "edits": {"main_pages": "6", "track": "Applied Quorian track", "under_review_elsewhere": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p048-c00:prose|necessity|main_pages", "id": "review-p048-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "approve"}
+{"iid": "review-p048-c01:prose|boundary|human_subjects=no", "id": "review-p048-c01:prose", "kind": "boundary", "edits": {"human_subjects": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p048-c01:prose|necessity|ethics_statement", "id": "review-p048-c01:prose", "kind": "necessity", "edits": {"ethics_statement": null}, "target": "deny"}
+{"iid": "review-p048-c01:prose|necessity|human_subjects", "id": "review-p048-c01:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "review-p048-c01:prose|necessity|track", "id": "review-p048-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p048-c02:prose|boundary|track=Position Paper", "id": "review-p048-c02:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p048-c02:prose|necessity|ref_pages", "id": "review-p048-c02:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "approve"}
+{"iid": "review-p048-c02:prose|necessity|track", "id": "review-p048-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p049-c01:prose|boundary|reviewer_same_institution=no;track=Position Paper track", "id": "review-p049-c01:prose", "kind": "boundary", "edits": {"reviewer_same_institution": "no", "track": "Position Paper track"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p052-c00:prose|boundary|under_review_elsewhere=no", "id": "review-p052-c00:prose", "kind": "boundary", "edits": {"under_review_elsewhere": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p052-c00:prose|necessity|under_review_elsewhere", "id": "review-p052-c00:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p052-c02:prose|boundary|last_coauthor_day=August 5, 2025;supp_mb=50", "id": "review-p052-c02:prose", "kind": "boundary", "edits": {"last_coauthor_day": "August 5, 2025", "supp_mb": "50"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p053-c00:prose|boundary|submission_day=April 15, 2027;supp_anonymized=yes", "id": "review-p053-c00:prose", "kind": "boundary", "edits": {"submission_day": "April 15, 2027", "supp_anonymized": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p053-c00:prose|necessity|supp_anonymized", "id": "review-p053-c00:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p053-c01:prose|boundary|under_review_elsewhere=no", "id": "review-p053-c01:prose", "kind": "boundary", "edits": {"under_review_elsewhere": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p053-c01:prose|necessity|nonarchival_venue", "id": "review-p053-c01:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "approve"}
+{"iid": "review-p053-c01:prose|necessity|under_review_elsewhere", "id": "review-p053-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "approve"}
+{"iid": "review-p058-c00:prose|boundary|submission_day=March 1, 2027", "id": "review-p058-c00:prose", "kind": "boundary", "edits": {"submission_day": "March 1, 2027"}, "target": "approve|deny", "gold_target": "deny"}
+{"iid": "review-p058-c01:prose|boundary|submission_day=April 17, 2027", "id": "review-p058-c01:prose", "kind": "boundary", "edits": {"submission_day": "April 17, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p058-c01:prose|necessity|submission_day", "id": "review-p058-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "approve"}
+{"iid": "review-p058-c02:prose|boundary|submission_day=April 22, 2027", "id": "review-p058-c02:prose", "kind": "boundary", "edits": {"submission_day": "April 22, 2027"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p058-c02:prose|necessity|extension", "id": "review-p058-c02:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p058-c02:prose|necessity|human_subjects", "id": "review-p058-c02:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "review-p058-c02:prose|necessity|last_coauthor_day", "id": "review-p058-c02:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p058-c02:prose|necessity|main_pages", "id": "review-p058-c02:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p058-c02:prose|necessity|ref_pages", "id": "review-p058-c02:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p058-c02:prose|necessity|submission_day", "id": "review-p058-c02:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p058-c02:prose|necessity|track", "id": "review-p058-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p058-c02:prose|necessity|under_review_elsewhere", "id": "review-p058-c02:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p059-c00:prose|boundary|track=Position Paper", "id": "review-p059-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p059-c01:prose|boundary|submission_day=April 21, 2027", "id": "review-p059-c01:prose", "kind": "boundary", "edits": {"submission_day": "April 21, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p062-c01:prose|boundary|submission_day=April 15, 2027", "id": "review-p062-c01:prose", "kind": "boundary", "edits": {"submission_day": "April 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p062-c01:prose|necessity|extension", "id": "review-p062-c01:prose", "kind": "necessity", "edits": {"extension": null}, "target": "approve"}
+{"iid": "review-p062-c01:prose|necessity|submission_day", "id": "review-p062-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "approve"}
+{"iid": "review-p063-c00:prose|boundary|track=Position Paper", "id": "review-p063-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p063-c00:prose|necessity|main_pages", "id": "review-p063-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "approve"}
+{"iid": "review-p063-c00:prose|necessity|track", "id": "review-p063-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p063-c01:prose|necessity|human_subjects", "id": "review-p063-c01:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "review-p063-c01:prose|necessity|last_coauthor_day", "id": "review-p063-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p063-c01:prose|necessity|supp_mb", "id": "review-p063-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p063-c01:prose|necessity|track", "id": "review-p063-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p063-c01:prose|necessity|under_review_elsewhere", "id": "review-p063-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p074-c00:prose|boundary|submission_day=April 15, 2027", "id": "review-p074-c00:prose", "kind": "boundary", "edits": {"submission_day": "April 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p074-c00:prose|necessity|extension", "id": "review-p074-c00:prose", "kind": "necessity", "edits": {"extension": null}, "target": "approve"}
+{"iid": "review-p074-c00:prose|necessity|submission_day", "id": "review-p074-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "approve"}
+{"iid": "review-p074-c01:prose|necessity|last_coauthor_day", "id": "review-p074-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p074-c01:prose|necessity|main_pages", "id": "review-p074-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p074-c01:prose|necessity|submission_day", "id": "review-p074-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p074-c01:prose|necessity|supp_mb", "id": "review-p074-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p074-c01:prose|necessity|track", "id": "review-p074-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p074-c01:prose|necessity|under_review_elsewhere", "id": "review-p074-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p074-c02:prose|boundary|under_review_elsewhere=no", "id": "review-p074-c02:prose", "kind": "boundary", "edits": {"under_review_elsewhere": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p074-c02:prose|necessity|under_review_elsewhere", "id": "review-p074-c02:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p075-c01:prose|necessity|supp_mb", "id": "review-p075-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "approve"}
+{"iid": "review-p075-c01:prose|necessity|track", "id": "review-p075-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p076-c00:prose|boundary|under_review_elsewhere=no", "id": "review-p076-c00:prose", "kind": "boundary", "edits": {"under_review_elsewhere": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p076-c00:prose|necessity|under_review_elsewhere", "id": "review-p076-c00:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "approve"}
+{"iid": "review-p076-c02:prose|boundary|track=Position Paper", "id": "review-p076-c02:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p076-c02:prose|necessity|ref_pages", "id": "review-p076-c02:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p076-c02:prose|necessity|track", "id": "review-p076-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p077-c00:prose|boundary|track=Position Paper", "id": "review-p077-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p077-c01:prose|boundary|track=Position Paper", "id": "review-p077-c01:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p078-c00:prose|necessity|anonymized", "id": "review-p078-c00:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p078-c00:prose|necessity|extension", "id": "review-p078-c00:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p078-c00:prose|necessity|last_coauthor_day", "id": "review-p078-c00:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p078-c00:prose|necessity|main_pages", "id": "review-p078-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p078-c00:prose|necessity|nonarchival_venue", "id": "review-p078-c00:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "deny"}
+{"iid": "review-p078-c00:prose|necessity|ref_pages", "id": "review-p078-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p078-c00:prose|necessity|track", "id": "review-p078-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p078-c01:prose|boundary|anonymized=yes;under_review_elsewhere=no", "id": "review-p078-c01:prose", "kind": "boundary", "edits": {"anonymized": "yes", "under_review_elsewhere": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p078-c02:prose|boundary|track=a Position Paper", "id": "review-p078-c02:prose", "kind": "boundary", "edits": {"track": "a Position Paper"}, "target": "approve|deny", "gold_target": "approve"}
+{"iid": "review-p078-c02:prose|necessity|track", "id": "review-p078-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p079-c00:prose|boundary|main_pages=7", "id": "review-p079-c00:prose", "kind": "boundary", "edits": {"main_pages": "7"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p079-c01:prose|boundary|track=Applied Quorian", "id": "review-p079-c01:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p079-c01:prose|necessity|anonymized", "id": "review-p079-c01:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p079-c01:prose|necessity|extension", "id": "review-p079-c01:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p079-c01:prose|necessity|last_coauthor_day", "id": "review-p079-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p079-c01:prose|necessity|main_pages", "id": "review-p079-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p079-c01:prose|necessity|ref_pages", "id": "review-p079-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p079-c01:prose|necessity|supp_anonymized", "id": "review-p079-c01:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p079-c01:prose|necessity|supp_mb", "id": "review-p079-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p079-c01:prose|necessity|track", "id": "review-p079-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p079-c01:prose|necessity|under_review_elsewhere", "id": "review-p079-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p080-c00:prose|necessity|artifact_license", "id": "review-p080-c00:prose", "kind": "necessity", "edits": {"artifact_license": null}, "target": "deny"}
+{"iid": "review-p080-c00:prose|necessity|human_subjects", "id": "review-p080-c00:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "review-p080-c00:prose|necessity|last_coauthor_day", "id": "review-p080-c00:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p080-c00:prose|necessity|main_pages", "id": "review-p080-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p080-c00:prose|necessity|submission_day", "id": "review-p080-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p080-c00:prose|necessity|track", "id": "review-p080-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p080-c00:prose|necessity|under_review_elsewhere", "id": "review-p080-c00:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p080-c01:prose|boundary|track=Position Paper", "id": "review-p080-c01:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p080-c01:prose|necessity|supp_anonymized", "id": "review-p080-c01:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "approve"}
+{"iid": "review-p080-c01:prose|necessity|supp_mb", "id": "review-p080-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "approve"}
+{"iid": "review-p081-c00:prose|boundary|supp_mb=50;under_review_elsewhere=no", "id": "review-p081-c00:prose", "kind": "boundary", "edits": {"supp_mb": "50", "under_review_elsewhere": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p081-c01:prose|necessity|human_subjects", "id": "review-p081-c01:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "review-p081-c01:prose|necessity|last_coauthor_day", "id": "review-p081-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p081-c01:prose|necessity|main_pages", "id": "review-p081-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p081-c01:prose|necessity|ref_pages", "id": "review-p081-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p081-c01:prose|necessity|submission_day", "id": "review-p081-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p081-c01:prose|necessity|supp_mb", "id": "review-p081-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p081-c01:prose|necessity|track", "id": "review-p081-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p081-c01:prose|necessity|under_review_elsewhere", "id": "review-p081-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p082-c00:prose|boundary|track=Applied Quorian track", "id": "review-p082-c00:prose", "kind": "boundary", "edits": {"track": "Applied Quorian track"}, "target": "deny", "gold_target": "approve"}
+{"iid": "review-p082-c00:prose|necessity|anonymized", "id": "review-p082-c00:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "approve"}
+{"iid": "review-p082-c00:prose|necessity|extension", "id": "review-p082-c00:prose", "kind": "necessity", "edits": {"extension": null}, "target": "approve"}
+{"iid": "review-p082-c00:prose|necessity|main_pages", "id": "review-p082-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "approve"}
+{"iid": "review-p082-c00:prose|necessity|ref_pages", "id": "review-p082-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "approve"}
+{"iid": "review-p082-c00:prose|necessity|supp_mb", "id": "review-p082-c00:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "approve"}
+{"iid": "review-p082-c00:prose|necessity|track", "id": "review-p082-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p082-c01:prose|boundary|track=Applied Quorian track", "id": "review-p082-c01:prose", "kind": "boundary", "edits": {"track": "Applied Quorian track"}, "target": "deny", "gold_target": "approve"}
+{"iid": "review-p082-c02:prose|boundary|track=Position Paper", "id": "review-p082-c02:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p082-c02:prose|necessity|anonymized", "id": "review-p082-c02:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p082-c02:prose|necessity|extension", "id": "review-p082-c02:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p082-c02:prose|necessity|main_pages", "id": "review-p082-c02:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p082-c02:prose|necessity|ref_pages", "id": "review-p082-c02:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p082-c02:prose|necessity|supp_mb", "id": "review-p082-c02:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p082-c02:prose|necessity|track", "id": "review-p082-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p083-c01:prose|boundary|num_authors=3", "id": "review-p083-c01:prose", "kind": "boundary", "edits": {"num_authors": "3"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p083-c01:prose|necessity|num_authors", "id": "review-p083-c01:prose", "kind": "necessity", "edits": {"num_authors": null}, "target": "deny"}
+{"iid": "review-p086-c00:prose|necessity|extension", "id": "review-p086-c00:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p086-c00:prose|necessity|last_coauthor_day", "id": "review-p086-c00:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p086-c00:prose|necessity|main_pages", "id": "review-p086-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p086-c00:prose|necessity|nonarchival_venue", "id": "review-p086-c00:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "deny"}
+{"iid": "review-p086-c00:prose|necessity|ref_pages", "id": "review-p086-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p086-c00:prose|necessity|submission_day", "id": "review-p086-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p086-c00:prose|necessity|track", "id": "review-p086-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p086-c02:prose|boundary|under_review_elsewhere=no", "id": "review-p086-c02:prose", "kind": "boundary", "edits": {"under_review_elsewhere": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p086-c02:prose|necessity|under_review_elsewhere", "id": "review-p086-c02:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p087-c00:prose|boundary|track=Position Paper track", "id": "review-p087-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper track"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p087-c01:prose|boundary|reviewer_same_institution=no;track=Position Paper track", "id": "review-p087-c01:prose", "kind": "boundary", "edits": {"reviewer_same_institution": "no", "track": "Position Paper track"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p087-c01:prose|necessity|reviewer_same_institution", "id": "review-p087-c01:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "approve"}
+{"iid": "review-p088-c01:prose|boundary|main_pages=12", "id": "review-p088-c01:prose", "kind": "boundary", "edits": {"main_pages": "12"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p088-c01:prose|necessity|anonymized", "id": "review-p088-c01:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p088-c01:prose|necessity|artifact_license", "id": "review-p088-c01:prose", "kind": "necessity", "edits": {"artifact_license": null}, "target": "deny"}
+{"iid": "review-p088-c01:prose|necessity|main_pages", "id": "review-p088-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p088-c01:prose|necessity|ref_pages", "id": "review-p088-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p088-c01:prose|necessity|submission_day", "id": "review-p088-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p088-c01:prose|necessity|supp_anonymized", "id": "review-p088-c01:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p088-c01:prose|necessity|supp_mb", "id": "review-p088-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p088-c01:prose|necessity|track", "id": "review-p088-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p089-c00:prose|boundary|track=Position Paper", "id": "review-p089-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p089-c00:prose|necessity|anonymized", "id": "review-p089-c00:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p089-c00:prose|necessity|main_pages", "id": "review-p089-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p089-c00:prose|necessity|ref_pages", "id": "review-p089-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p089-c00:prose|necessity|submission_day", "id": "review-p089-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p089-c00:prose|necessity|supp_mb", "id": "review-p089-c00:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p089-c00:prose|necessity|track", "id": "review-p089-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p089-c01:prose|boundary|main_pages=10", "id": "review-p089-c01:prose", "kind": "boundary", "edits": {"main_pages": "10"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p090-c00:prose|boundary|submission_day=April 15, 2027", "id": "review-p090-c00:prose", "kind": "boundary", "edits": {"submission_day": "April 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p090-c01:prose|boundary|last_coauthor_day=August 1, 2025", "id": "review-p090-c01:prose", "kind": "boundary", "edits": {"last_coauthor_day": "August 1, 2025"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p090-c01:prose|necessity|last_coauthor_day", "id": "review-p090-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p090-c02:prose|boundary|submission_day=April 25, 2027", "id": "review-p090-c02:prose", "kind": "boundary", "edits": {"submission_day": "April 25, 2027"}, "target": "deny", "gold_target": "approve"}
+{"iid": "review-p090-c02:prose|necessity|extension", "id": "review-p090-c02:prose", "kind": "necessity", "edits": {"extension": null}, "target": "approve"}
+{"iid": "review-p090-c02:prose|necessity|last_coauthor_day", "id": "review-p090-c02:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "approve"}
+{"iid": "review-p090-c02:prose|necessity|main_pages", "id": "review-p090-c02:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "approve"}
+{"iid": "review-p090-c02:prose|necessity|submission_day", "id": "review-p090-c02:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "approve"}
+{"iid": "review-p090-c02:prose|necessity|supp_mb", "id": "review-p090-c02:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "approve"}
+{"iid": "review-p090-c02:prose|necessity|track", "id": "review-p090-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p090-c02:prose|necessity|under_review_elsewhere", "id": "review-p090-c02:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "approve"}
+{"iid": "review-p091-c00:prose|boundary|nonarchival_venue=no", "id": "review-p091-c00:prose", "kind": "boundary", "edits": {"nonarchival_venue": "no"}, "target": "deny", "gold_target": "approve"}
+{"iid": "review-p091-c00:prose|necessity|nonarchival_venue", "id": "review-p091-c00:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "approve"}
+{"iid": "review-p091-c00:prose|necessity|submission_day", "id": "review-p091-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "approve"}
+{"iid": "review-p091-c00:prose|necessity|supp_mb", "id": "review-p091-c00:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "approve"}
+{"iid": "review-p091-c01:prose|boundary|under_review_elsewhere=no", "id": "review-p091-c01:prose", "kind": "boundary", "edits": {"under_review_elsewhere": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p091-c01:prose|necessity|under_review_elsewhere", "id": "review-p091-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "approve"}
+{"iid": "review-p092-c00:prose|boundary|submission_day=March 1, 2027", "id": "review-p092-c00:prose", "kind": "boundary", "edits": {"submission_day": "March 1, 2027"}, "target": "approve|deny", "gold_target": "deny"}
+{"iid": "review-p092-c00:prose|necessity|submission_day", "id": "review-p092-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p093-c00:prose|boundary|num_authors=2", "id": "review-p093-c00:prose", "kind": "boundary", "edits": {"num_authors": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p093-c00:prose|necessity|num_authors", "id": "review-p093-c00:prose", "kind": "necessity", "edits": {"num_authors": null}, "target": "approve"}
+{"iid": "review-p096-c00:prose|boundary|track=Applied Quorian track", "id": "review-p096-c00:prose", "kind": "boundary", "edits": {"track": "Applied Quorian track"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p096-c00:prose|necessity|ref_pages", "id": "review-p096-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p096-c00:prose|necessity|track", "id": "review-p096-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p097-c00:prose|necessity|extension", "id": "review-p097-c00:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p097-c00:prose|necessity|main_pages", "id": "review-p097-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p097-c00:prose|necessity|ref_pages", "id": "review-p097-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p097-c00:prose|necessity|reviewer_same_institution", "id": "review-p097-c00:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "deny"}
+{"iid": "review-p097-c00:prose|necessity|track", "id": "review-p097-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p097-c00:prose|necessity|under_review_elsewhere", "id": "review-p097-c00:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p098-c00:prose|boundary|track=the Applied Quorian track", "id": "review-p098-c00:prose", "kind": "boundary", "edits": {"track": "the Applied Quorian track"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p098-c00:prose|necessity|human_subjects", "id": "review-p098-c00:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "review-p098-c00:prose|necessity|main_pages", "id": "review-p098-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p098-c00:prose|necessity|ref_pages", "id": "review-p098-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p098-c00:prose|necessity|track", "id": "review-p098-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p098-c00:prose|necessity|under_review_elsewhere", "id": "review-p098-c00:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p098-c01:prose|boundary|human_subjects=no;track=Position Paper", "id": "review-p098-c01:prose", "kind": "boundary", "edits": {"human_subjects": "no", "track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p098-c02:prose|boundary|track=Applied Quorian track", "id": "review-p098-c02:prose", "kind": "boundary", "edits": {"track": "Applied Quorian track"}, "target": "deny", "gold_target": "approve"}
+{"iid": "review-p098-c02:prose|necessity|ethics_statement", "id": "review-p098-c02:prose", "kind": "necessity", "edits": {"ethics_statement": null}, "target": "approve"}
+{"iid": "review-p098-c02:prose|necessity|main_pages", "id": "review-p098-c02:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "approve"}
+{"iid": "review-p098-c02:prose|necessity|ref_pages", "id": "review-p098-c02:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "approve"}
+{"iid": "review-p098-c02:prose|necessity|reviewer_same_institution", "id": "review-p098-c02:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "approve"}
+{"iid": "review-p098-c02:prose|necessity|track", "id": "review-p098-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p098-c02:prose|necessity|under_review_elsewhere", "id": "review-p098-c02:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "approve"}
+{"iid": "review-p100-c00:prose|boundary|track=Applied Quorian", "id": "review-p100-c00:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "approve"}
+{"iid": "review-p100-c00:prose|necessity|last_coauthor_day", "id": "review-p100-c00:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "approve"}
+{"iid": "review-p100-c00:prose|necessity|main_pages", "id": "review-p100-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "approve"}
+{"iid": "review-p100-c00:prose|necessity|ref_pages", "id": "review-p100-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "approve"}
+{"iid": "review-p100-c00:prose|necessity|submission_day", "id": "review-p100-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "approve"}
+{"iid": "review-p100-c00:prose|necessity|supp_mb", "id": "review-p100-c00:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "approve"}
+{"iid": "review-p100-c00:prose|necessity|track", "id": "review-p100-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p100-c00:prose|necessity|under_review_elsewhere", "id": "review-p100-c00:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "approve"}
+{"iid": "review-p100-c01:prose|boundary|track=Position", "id": "review-p100-c01:prose", "kind": "boundary", "edits": {"track": "Position"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p100-c01:prose|necessity|anonymized", "id": "review-p100-c01:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p100-c01:prose|necessity|extension", "id": "review-p100-c01:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p100-c01:prose|necessity|last_coauthor_day", "id": "review-p100-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p100-c01:prose|necessity|main_pages", "id": "review-p100-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p100-c01:prose|necessity|ref_pages", "id": "review-p100-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p100-c01:prose|necessity|submission_day", "id": "review-p100-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p100-c01:prose|necessity|supp_anonymized", "id": "review-p100-c01:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p100-c01:prose|necessity|supp_mb", "id": "review-p100-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p100-c01:prose|necessity|track", "id": "review-p100-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p100-c01:prose|necessity|under_review_elsewhere", "id": "review-p100-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p100-c02:prose|boundary|track=Position Paper", "id": "review-p100-c02:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p100-c02:prose|necessity|num_authors", "id": "review-p100-c02:prose", "kind": "necessity", "edits": {"num_authors": null}, "target": "approve"}
+{"iid": "review-p100-c02:prose|necessity|track", "id": "review-p100-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p101-c00:prose|boundary|last_coauthor_day=February 1, 2026", "id": "review-p101-c00:prose", "kind": "boundary", "edits": {"last_coauthor_day": "February 1, 2026"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p101-c00:prose|necessity|last_coauthor_day", "id": "review-p101-c00:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "approve"}
+{"iid": "review-p101-c01:prose|boundary|track=Position", "id": "review-p101-c01:prose", "kind": "boundary", "edits": {"track": "Position"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p101-c01:prose|necessity|anonymized", "id": "review-p101-c01:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p101-c01:prose|necessity|extension", "id": "review-p101-c01:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p101-c01:prose|necessity|last_coauthor_day", "id": "review-p101-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p101-c01:prose|necessity|main_pages", "id": "review-p101-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p101-c01:prose|necessity|ref_pages", "id": "review-p101-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p101-c01:prose|necessity|submission_day", "id": "review-p101-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p101-c01:prose|necessity|supp_mb", "id": "review-p101-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p101-c01:prose|necessity|track", "id": "review-p101-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p101-c01:prose|necessity|under_review_elsewhere", "id": "review-p101-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p102-c00:prose|boundary|anonymized=no", "id": "review-p102-c00:prose", "kind": "boundary", "edits": {"anonymized": "no"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p102-c01:prose|boundary|track=Position", "id": "review-p102-c01:prose", "kind": "boundary", "edits": {"track": "Position"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p102-c01:prose|necessity|anonymized", "id": "review-p102-c01:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p102-c01:prose|necessity|human_subjects", "id": "review-p102-c01:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "review-p102-c01:prose|necessity|last_coauthor_day", "id": "review-p102-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p102-c01:prose|necessity|supp_mb", "id": "review-p102-c01:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p102-c01:prose|necessity|track", "id": "review-p102-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p102-c01:prose|necessity|under_review_elsewhere", "id": "review-p102-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "deny"}
+{"iid": "review-p102-c02:prose|necessity|ethics_statement", "id": "review-p102-c02:prose", "kind": "necessity", "edits": {"ethics_statement": null}, "target": "approve"}
+{"iid": "review-p102-c02:prose|necessity|human_subjects", "id": "review-p102-c02:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "approve"}
+{"iid": "review-p102-c02:prose|necessity|track", "id": "review-p102-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p103-c00:prose|boundary|supp_anonymized=yes", "id": "review-p103-c00:prose", "kind": "boundary", "edits": {"supp_anonymized": "yes"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p103-c00:prose|necessity|supp_anonymized", "id": "review-p103-c00:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p103-c01:prose|boundary|artifact_license=yes;track=Position Paper track", "id": "review-p103-c01:prose", "kind": "boundary", "edits": {"artifact_license": "yes", "track": "Position Paper track"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p108-c00:prose|boundary|human_subjects=no;track=Position Paper", "id": "review-p108-c00:prose", "kind": "boundary", "edits": {"human_subjects": "no", "track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p108-c00:prose|necessity|main_pages", "id": "review-p108-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "approve"}
+{"iid": "review-p108-c00:prose|necessity|track", "id": "review-p108-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p109-c00:prose|necessity|ethics_statement", "id": "review-p109-c00:prose", "kind": "necessity", "edits": {"ethics_statement": null}, "target": "deny"}
+{"iid": "review-p109-c00:prose|necessity|human_subjects", "id": "review-p109-c00:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "review-p109-c00:prose|necessity|track", "id": "review-p109-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p110-c01:prose|boundary|track=Position Paper", "id": "review-p110-c01:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p110-c01:prose|necessity|reviewer_same_institution", "id": "review-p110-c01:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "approve"}
+{"iid": "review-p110-c01:prose|necessity|track", "id": "review-p110-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p110-c02:prose|boundary|track=Position Paper", "id": "review-p110-c02:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p110-c02:prose|necessity|main_pages", "id": "review-p110-c02:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p110-c02:prose|necessity|ref_pages", "id": "review-p110-c02:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p110-c02:prose|necessity|reviewer_same_institution", "id": "review-p110-c02:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "deny"}
+{"iid": "review-p110-c02:prose|necessity|submission_day", "id": "review-p110-c02:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p110-c02:prose|necessity|supp_mb", "id": "review-p110-c02:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p110-c02:prose|necessity|track", "id": "review-p110-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p111-c00:prose|boundary|track=Applied Quorian", "id": "review-p111-c00:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p111-c00:prose|necessity|extension", "id": "review-p111-c00:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p111-c00:prose|necessity|main_pages", "id": "review-p111-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p111-c00:prose|necessity|ref_pages", "id": "review-p111-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p111-c00:prose|necessity|reviewer_same_institution", "id": "review-p111-c00:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "deny"}
+{"iid": "review-p111-c00:prose|necessity|submission_day", "id": "review-p111-c00:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p111-c00:prose|necessity|supp_mb", "id": "review-p111-c00:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p111-c00:prose|necessity|track", "id": "review-p111-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p111-c01:prose|boundary|track=Position Paper", "id": "review-p111-c01:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p111-c01:prose|necessity|reviewer_same_institution", "id": "review-p111-c01:prose", "kind": "necessity", "edits": {"reviewer_same_institution": null}, "target": "approve"}
+{"iid": "review-p111-c01:prose|necessity|track", "id": "review-p111-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p112-c00:prose|boundary|human_subjects=no;main_pages=9", "id": "review-p112-c00:prose", "kind": "boundary", "edits": {"human_subjects": "no", "main_pages": "9"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p112-c02:prose|necessity|human_subjects", "id": "review-p112-c02:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "review-p112-c02:prose|necessity|last_coauthor_day", "id": "review-p112-c02:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p112-c02:prose|necessity|main_pages", "id": "review-p112-c02:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p112-c02:prose|necessity|nonarchival_venue", "id": "review-p112-c02:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "deny"}
+{"iid": "review-p112-c02:prose|necessity|ref_pages", "id": "review-p112-c02:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p112-c02:prose|necessity|supp_anonymized", "id": "review-p112-c02:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p112-c02:prose|necessity|track", "id": "review-p112-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p113-c00:prose|boundary|supp_anonymized=yes", "id": "review-p113-c00:prose", "kind": "boundary", "edits": {"supp_anonymized": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p113-c00:prose|necessity|supp_anonymized", "id": "review-p113-c00:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "approve"}
+{"iid": "review-p113-c01:prose|boundary|last_coauthor_day=February 1, 2026", "id": "review-p113-c01:prose", "kind": "boundary", "edits": {"last_coauthor_day": "February 1, 2026"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p113-c01:prose|necessity|last_coauthor_day", "id": "review-p113-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p114-c01:prose|boundary|track=Applied Quorian", "id": "review-p114-c01:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "approve", "gold_target": "deny"}
+{"iid": "review-p114-c01:prose|necessity|anonymized", "id": "review-p114-c01:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p114-c01:prose|necessity|track", "id": "review-p114-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p114-c02:prose|boundary|under_review_elsewhere=no", "id": "review-p114-c02:prose", "kind": "boundary", "edits": {"under_review_elsewhere": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p115-c00:prose|boundary|track=Position Paper", "id": "review-p115-c00:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p115-c00:prose|necessity|anonymized", "id": "review-p115-c00:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "deny"}
+{"iid": "review-p115-c00:prose|necessity|last_coauthor_day", "id": "review-p115-c00:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p115-c00:prose|necessity|nonarchival_venue", "id": "review-p115-c00:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "deny"}
+{"iid": "review-p115-c00:prose|necessity|ref_pages", "id": "review-p115-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p115-c00:prose|necessity|track", "id": "review-p115-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p115-c01:prose|boundary|under_review_elsewhere=no", "id": "review-p115-c01:prose", "kind": "boundary", "edits": {"under_review_elsewhere": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p115-c01:prose|necessity|under_review_elsewhere", "id": "review-p115-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "approve"}
+{"iid": "review-p116-c00:prose|boundary|track=Applied Quorian", "id": "review-p116-c00:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p116-c01:prose|boundary|under_review_elsewhere=no", "id": "review-p116-c01:prose", "kind": "boundary", "edits": {"under_review_elsewhere": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p116-c01:prose|necessity|nonarchival_venue", "id": "review-p116-c01:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "approve"}
+{"iid": "review-p116-c01:prose|necessity|under_review_elsewhere", "id": "review-p116-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "approve"}
+{"iid": "review-p116-c02:prose|boundary|track=Position Paper", "id": "review-p116-c02:prose", "kind": "boundary", "edits": {"track": "Position Paper"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p116-c02:prose|necessity|ethics_statement", "id": "review-p116-c02:prose", "kind": "necessity", "edits": {"ethics_statement": null}, "target": "deny"}
+{"iid": "review-p116-c02:prose|necessity|extension", "id": "review-p116-c02:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p116-c02:prose|necessity|main_pages", "id": "review-p116-c02:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p116-c02:prose|necessity|nonarchival_venue", "id": "review-p116-c02:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "deny"}
+{"iid": "review-p116-c02:prose|necessity|ref_pages", "id": "review-p116-c02:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p116-c02:prose|necessity|supp_mb", "id": "review-p116-c02:prose", "kind": "necessity", "edits": {"supp_mb": null}, "target": "deny"}
+{"iid": "review-p116-c02:prose|necessity|track", "id": "review-p116-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p117-c00:prose|boundary|track=Applied Quorian", "id": "review-p117-c00:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p117-c00:prose|necessity|extension", "id": "review-p117-c00:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p117-c00:prose|necessity|human_subjects", "id": "review-p117-c00:prose", "kind": "necessity", "edits": {"human_subjects": null}, "target": "deny"}
+{"iid": "review-p117-c00:prose|necessity|main_pages", "id": "review-p117-c00:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p117-c00:prose|necessity|nonarchival_venue", "id": "review-p117-c00:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "deny"}
+{"iid": "review-p117-c00:prose|necessity|ref_pages", "id": "review-p117-c00:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p117-c00:prose|necessity|track", "id": "review-p117-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p117-c01:prose|boundary|under_review_elsewhere=no", "id": "review-p117-c01:prose", "kind": "boundary", "edits": {"under_review_elsewhere": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p117-c01:prose|necessity|nonarchival_venue", "id": "review-p117-c01:prose", "kind": "necessity", "edits": {"nonarchival_venue": null}, "target": "approve"}
+{"iid": "review-p117-c01:prose|necessity|under_review_elsewhere", "id": "review-p117-c01:prose", "kind": "necessity", "edits": {"under_review_elsewhere": null}, "target": "approve"}
+{"iid": "review-p118-c00:prose|boundary|submission_day=April 19, 2027", "id": "review-p118-c00:prose", "kind": "boundary", "edits": {"submission_day": "April 19, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "review-p118-c01:prose|boundary|track=Applied Quorian", "id": "review-p118-c01:prose", "kind": "boundary", "edits": {"track": "Applied Quorian"}, "target": "deny", "gold_target": "approve"}
+{"iid": "review-p118-c01:prose|necessity|anonymized", "id": "review-p118-c01:prose", "kind": "necessity", "edits": {"anonymized": null}, "target": "approve"}
+{"iid": "review-p118-c01:prose|necessity|extension", "id": "review-p118-c01:prose", "kind": "necessity", "edits": {"extension": null}, "target": "approve"}
+{"iid": "review-p118-c01:prose|necessity|last_coauthor_day", "id": "review-p118-c01:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "approve"}
+{"iid": "review-p118-c01:prose|necessity|main_pages", "id": "review-p118-c01:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "approve"}
+{"iid": "review-p118-c01:prose|necessity|ref_pages", "id": "review-p118-c01:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "approve"}
+{"iid": "review-p118-c01:prose|necessity|submission_day", "id": "review-p118-c01:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "approve"}
+{"iid": "review-p118-c01:prose|necessity|supp_anonymized", "id": "review-p118-c01:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "approve"}
+{"iid": "review-p118-c01:prose|necessity|track", "id": "review-p118-c01:prose", "kind": "necessity", "edits": {"track": null}, "target": "approve"}
+{"iid": "review-p118-c02:prose|boundary|track=Applied Quorian track", "id": "review-p118-c02:prose", "kind": "boundary", "edits": {"track": "Applied Quorian track"}, "target": "deny", "gold_target": "deny"}
+{"iid": "review-p118-c02:prose|necessity|extension", "id": "review-p118-c02:prose", "kind": "necessity", "edits": {"extension": null}, "target": "deny"}
+{"iid": "review-p118-c02:prose|necessity|last_coauthor_day", "id": "review-p118-c02:prose", "kind": "necessity", "edits": {"last_coauthor_day": null}, "target": "deny"}
+{"iid": "review-p118-c02:prose|necessity|main_pages", "id": "review-p118-c02:prose", "kind": "necessity", "edits": {"main_pages": null}, "target": "deny"}
+{"iid": "review-p118-c02:prose|necessity|ref_pages", "id": "review-p118-c02:prose", "kind": "necessity", "edits": {"ref_pages": null}, "target": "deny"}
+{"iid": "review-p118-c02:prose|necessity|submission_day", "id": "review-p118-c02:prose", "kind": "necessity", "edits": {"submission_day": null}, "target": "deny"}
+{"iid": "review-p118-c02:prose|necessity|supp_anonymized", "id": "review-p118-c02:prose", "kind": "necessity", "edits": {"supp_anonymized": null}, "target": "deny"}
+{"iid": "review-p118-c02:prose|necessity|track", "id": "review-p118-c02:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p119-c00:prose|boundary|track=the Position Paper track", "id": "review-p119-c00:prose", "kind": "boundary", "edits": {"track": "the Position Paper track"}, "target": "approve|deny", "gold_target": "deny"}
+{"iid": "review-p119-c00:prose|necessity|track", "id": "review-p119-c00:prose", "kind": "necessity", "edits": {"track": null}, "target": "deny"}
+{"iid": "review-p119-c01:prose|boundary|track=Applied Quorian track", "id": "review-p119-c01:prose", "kind": "boundary", "edits": {"track": "Applied Quorian track"}, "target": "deny", "gold_target": "approve"}
