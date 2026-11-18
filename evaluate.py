@@ -216,10 +216,12 @@ def policy(rec):
     return POLS[rec["policy_id"]]
 
 
-def score(recs, rows, aux, bank=()):
+def score(recs, rows, aux, bank=(), dump=None):
     """
     Returns (units, coverage, interventions) for one condition: units maps metric -> [(value, cluster, slice, view,
-    correct or None, unit id, domain)], aux maps COMPANIONS names to companion rows.
+    correct or None, unit id, domain)], aux maps COMPANIONS names to companion rows. A dump list gets 1 row per scored
+    case (decision vs gold) and per scored edit (the model's answers before and after, each simulator pass's
+    prediction), for reading failures.
     """
     U, cov, ivs = defaultdict(list), Counter(), []
 
@@ -260,6 +262,8 @@ def score(recs, rows, aux, bank=()):
             continue
         g, ps, lab, rid = rec["gold"], P[rec["id"]], rec.get("fact_labels", {}), rec["id"]
         ok = maj[rid] == g["decision"]
+        if dump is not None:
+            dump.append({"type": "case", "id": rid, "gold": g["decision"], "pred": maj[rid]})
         add(f"acc_class[{g['decision']}]", ok, rec)
         if rid in R:
             add("repeat_disagree", R[rid] is None or R[rid] != maj[rid], rec)
@@ -394,6 +398,8 @@ def score(recs, rows, aux, bank=()):
         for m in ("necessity_flip", "necessity_flip[interaction]") if nf else ():
             if m == "necessity_flip" or b.get("interaction"):
                 add(m, np.mean(nf), b, bc)
+    for d in dump or ():
+        d["valid"] = V.get(d["id"])
     pred = defaultdict(lambda: defaultdict(list))
     for k in PRED:
         for r in sorted(aux.get(k, []), key=lambda r: (r["id"], r["sample"])):
@@ -418,6 +424,10 @@ def score(recs, rows, aux, bank=()):
                 (shared if k.startswith("simulate") else pd)}
         S |= {"const_unchanged": f0 is not None and f0 == fresh, "oracle": fresh == it["oracle"]} if kid in shared \
                 else {}
+        if dump is not None:
+            dump.append({"type": "edit", "id": kid, "case_id": it["case_id"], "kind": it["kind"], "edits": it["edits"],
+                    "gold0": case["gold"]["decision"], "f0": f0, "fresh": fresh, "oracle": it["oracle"],
+                    "valid": V.get(it["case_id"])} | {k: pd.get(kid) for k, pd in pred.items()})
         for k, x in S.items():
             cov[f"{k}_parse_fail"] += k in pred and pred[k][kid] is None
             for m in (PRED.get(k, "sim_" + k), PRED.get(k, "sim_" + k) + sub):
@@ -615,6 +625,8 @@ def main():
     ap.add_argument("--contrast", nargs="+", metavar="GROUP", help="mix contrasts: run-name prefixes (rm-inv rm-real "
                     "rm-mix) whose seed-pooled paired gains (vs --compare) are differenced on shared items, every pair, "
                     "with family-clustered CIs and Holm-adjusted p-values per group")
+    ap.add_argument("--dump", metavar="DIR", help="write DIR/<run>.items.jsonl: every scored case and edit, for "
+                    "reading failures")
     ap.add_argument("--boot", type=int, default=1000)
     ap.add_argument("--seed", type=int, default=0)
     a = ap.parse_args()
@@ -658,7 +670,11 @@ def main():
         for mp in [p.with_name(f"{p.stem}.{k}meta.json") for p in ps for k in [""] + [k + "." for k in aux]]:
             if mp.exists():
                 comp[rp.stem][mp.name] = {k: v for k, v in json.loads(mp.read_text()).items() if k != "decoding"}
-        U, cov, ivs = score(recs, rows, aux, bank)
+        dump = [] if a.dump else None
+        U, cov, ivs = score(recs, rows, aux, bank, dump)
+        if a.dump:
+            Path(a.dump).mkdir(parents=True, exist_ok=True)
+            Path(a.dump, rp.stem + ".items.jsonl").write_text("".join(json.dumps(d) + "\n" for d in dump))
         if a.power:
             # ICC by template family on the primary population, applied to the full primary design: design effect
             # DE = 1 + (m(1 + CV^2) - 1) * max(ICC, 0), accuracy CI half-width at 20% discordance and the minimum
