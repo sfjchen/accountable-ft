@@ -1,0 +1,40 @@
+{
+ "model": "gemini-3.5-flash-lite",
+ "backend": "gemini",
+ "vertex": "global",
+ "mode": "simulate_shuf",
+ "no_account": false,
+ "shuffle_accounts": true,
+ "shuf_missing": 1,
+ "cases": 0,
+ "cache_tag": "",
+ "sample_seed": 0,
+ "decoding": {
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "top_k": 0,
+  "max_tokens": 4096,
+  "seed": 0,
+  "thinking": false
+ },
+ "n": 1,
+ "rows": 773,
+ "cached": 17,
+ "errors": 3,
+ "fresh_calls": 753,
+ "wall_s": 133.29,
+ "in_tokens": 512377,
+ "out_tokens": 21350,
+ "think_tokens": 0,
+ "finish": {
+  "FinishReason.STOP": 770,
+  "None": 3
+ },
+ "model_versions": [
+  "None",
+  "gemini-3.5-flash-lite"
+ ],
+ "mean_latency_s": 0.986,
+ "cost_usd_fresh": 0.2026,
+ "cost_usd_if_uncached": 0.2071
+}
