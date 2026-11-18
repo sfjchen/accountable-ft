@@ -653,9 +653,12 @@ def main():
                 "think_tokens": sum(r.get("think_tokens") or 0 for r in rows),
                 "call_latency_s": round(sum(r.get("latency") or 0 for r in rows), 2)}
         for k in COMPANIONS:
+            # a pooled run keeps a companion only when every part has it (e.g. the repeat pass ran on 1 test file),
+            # since a metric scored on 1 part would pass for the pooled one
             cps = [p.with_name(f"{p.stem}.{k}.jsonl") for p in ps]
             if any(c.exists() for c in cps) and not all(c.exists() for c in cps):
-                sys.exit(f"refusing {arg}: {k} exists for only some of its parts")
+                print(f"{arg}: {k} left out, only some parts have it")
+                continue
             if (cp := cps[0]).exists():
                 aux[k] = [r for c in cps for r in load(c)]
                 if k == "simulate_shuf" and not all(r.get("shuf_src") == "frozen" and "shuf_decision_match" in r
