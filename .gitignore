@@ -21,3 +21,6 @@ runs/cache.*.jsonl
 runs/cache.jsonl
 runs/cache-opus.jsonl
 runs/eval.json
+# cluster job logs and compile caches, so a job's git add runs never commits them
+runs/slurm/
+unsloth_compiled_cache/
