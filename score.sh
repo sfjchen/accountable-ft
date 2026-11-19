@@ -39,14 +39,17 @@ evals() {
       "--data data/mortgage-split.jsonl --bank data/mortgage-split.bank.jsonl --compare decision" \
       "--contrast mortgage-split mortgage-split-r2 mortgage-split-mo --json $J/mortgage-${sd%:*}.json"
   done
-  echo "permit-gemini $E $(r runs/ permit-account permit-decision) runs/permit-base-thinkoff.jsonl" \
-    "--data data/permit.jsonl --bank data/permit.bank.jsonl --compare decision --json $J/permit-gemini.json"
-  for f in v1 mortgage-split; do
-    p=; [ $f = v1 ] || p=$f-
-    echo "$f-peA-gemini $E $(r runs/ ${p}account ${p}decision ${p}pe-decision) --data data/$f.jsonl" \
-      "--bank data/$f.bank.jsonl --compare pe-decision --json $J/$f-peA-gemini.json"
-    echo "$f-peB-gemini $E $(r runs/ ${p}account ${p}pe-account) --data data/$f.jsonl --bank data/$f.bank.jsonl" \
-      "--compare pe-account --json $J/$f-peB-gemini.json"
+  for sd in gemini:runs/ opus:runs/sim-opus/; do
+    d=${sd#*:} o=${sd%:*}
+    echo "permit-$o $E $(r $d permit-account permit-decision) ${d}permit-base-thinkoff.jsonl" \
+      "--data data/permit.jsonl --bank data/permit.bank.jsonl --compare decision --json $J/permit-$o.json"
+    for f in v1 mortgage-split; do
+      p=; [ $f = v1 ] || p=$f-
+      echo "$f-peA-$o $E $(r $d ${p}account ${p}decision ${p}pe-decision) --data data/$f.jsonl" \
+        "--bank data/$f.bank.jsonl --compare pe-decision --json $J/$f-peA-$o.json"
+      echo "$f-peB-$o $E $(r $d ${p}account ${p}pe-account) --data data/$f.jsonl --bank data/$f.bank.jsonl" \
+        "--compare pe-account --json $J/$f-peB-$o.json"
+    done
   done
   for f in v1 mortgage-split snap dependent; do
     p=; [ $f = v1 ] || p=$f-
