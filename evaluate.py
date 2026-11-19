@@ -709,8 +709,10 @@ def main():
                         f"{len(ns)} fam x {int(ns.sum())} {kind} | {m:.1f} | {cv:.2f} | {de:.2f} | {ne:.0f} | "
                         f"{100 * 1.959964 * np.sqrt(0.20 / ne):.1f} pts | "
                         f"{100 * (1.959964 + 0.841621) * np.sqrt(var_d / ne):.1f} pts |")
-        if len(ps) == 1:
-            rp.with_name(rp.stem + ".interventions.jsonl").write_text("".join(json.dumps(i) + "\n" for i in ivs))
+        # written only when changed, so parallel evals sharing a run never truncate a file another one's stamp checks
+        ip, it = rp.with_name(rp.stem + ".interventions.jsonl"), "".join(json.dumps(i) + "\n" for i in ivs)
+        if len(ps) == 1 and not (ip.exists() and ip.read_text() == it):
+            ip.write_text(it)
         eds = []
         for iv in ivs if a.render else []:
             b = recs[iv["id"]]
