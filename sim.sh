@@ -5,7 +5,8 @@
 # repo as the working directory: the Mac under ljob, a FarmShare or sc Slurm job, a VM.
 # Env: TAG (names the done marker LOGS/sim-<TAG>-<sim>.done), PAT, FILES, CONC (parallel requests, default 16),
 # PY (python, default python3), LOGS (marker dir, default ~/dev/logs). Finished calls come from the response cache,
-# so a rerun after more runs land, or on another host with the cache copied over, is cheap.
+# so a rerun after more runs land, or on another host with the cache copied over (or gunzip -k runs/cache.jsonl.gz on
+# a fresh clone), is cheap.
 # Fails at once when a frozen answer file or data file is missing.
 set -u
 # node for the Opus CLI and gcloud on the Mac (absent elsewhere, harmless)
@@ -28,8 +29,11 @@ for try in $(seq 12); do
       fr=$r; [ $f = v1 ] || fr=$f-$r
       # Opus gets its own copy of the frozen answers so its simulate files never overwrite Gemini's
       [ $D = runs ] || [ -s $D/$fr.jsonl ] || cp runs/$fr.jsonl $D/$fr.jsonl
-      $PY infer.py --mode simulate --all-sim --data data/$f.jsonl --bank data/$f.bank.jsonl --frozen $D/$fr.jsonl \
-          $F 2>&1 | tee /dev/stderr | grep -q "errors=[1-9]" && bad=1
+      # captured, then printed once: tee to /dev/stderr truncated the shared Slurm log on every pass
+      out=$($PY infer.py --mode simulate --all-sim --data data/$f.jsonl --bank data/$f.bank.jsonl --frozen $D/$fr.jsonl \
+          $F 2>&1)
+      echo "$out"
+      grep -q "errors=[1-9]" <<< "$out" && bad=1
     done
   done
   [ $bad = 0 ] && { echo ALL_DONE; touch "$LOGS/sim-$TAG-$1.done"; exit 0; }

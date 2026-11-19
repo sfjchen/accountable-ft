@@ -45,7 +45,7 @@ Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 9
 
 From the repo root. Once per shell: `export PATH=/opt/homebrew/share/google-cloud-sdk/bin:$PATH` (ADC for Vertex) and `F=(--backend gemini --vertex --model gemini-3.5-flash-lite --temperature 0)`.
 
-1. Data. `gunzip -k data/v1.jsonl.gz` (and the other `.gz` files) or regenerate:
+1. Data. `gunzip -k data/*.jsonl.gz runs/cache*.jsonl.gz` (data files and the simulator response caches) or regenerate:
    - `python gen.py --domains all --n-policies 120 --cases-per-family 5 --seed 0 --prose gemini --vertex --gemini-model gemini-3.5-flash-lite --workers 8 --out data/v1.jsonl > data/v1.gen.log`
    - `python gen.py --domains <name> --n-policies 120 --cases-per-family 5 --seed 0 --prose gemini --vertex --gemini-model gemini-3.5-flash-lite --workers 8 --out data/<name>.jsonl > data/<name>.gen.log` for `snap` or `dependent`
 2. Edit set, once per data file: `python infer.py --mode bank --data data/v1.jsonl`.

@@ -15,6 +15,9 @@ data/.gemini_cache/
 data/snap.jsonl
 data/dependent.jsonl
 data/*-x.jsonl
-# cluster answer caches (the run files hold the answers)
+# response caches: the cluster answer caches (the run files hold the answers), and the simulator caches, committed as
+# .gz since GitHub refuses files over 100 MB
 runs/cache.*.jsonl
+runs/cache.jsonl
+runs/cache-opus.jsonl
 runs/eval.json
