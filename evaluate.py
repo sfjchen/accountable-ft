@@ -26,12 +26,17 @@ CD = "cannot determine"
 DEC_KEYS = ["temperature", "top_p", "top_k", "max_tokens", "thinking"]
 PRIME = ("unseen_family_train_vocab", "prose")
 PRIMARY = f"slice={PRIME[0]} view={PRIME[1]}"
-COMPANIONS = ("repeat", "answers", "predict", "predict_noacc", "simulate", "simulate_noacc", "simulate_shuf")
+COMPANIONS = ("repeat", "answers", "predict", "predict_noacc", "simulate", "simulate_noacc", "simulate_shuf",
+        "simulate_wrong")
+# the 3 main simulator passes, scored on their shared items; simulate_wrong (infer.py --wrong-accounts) covers only
+# cases with a wrong set and is paired with them item by item, so it never shrinks the main metrics
+SIM3 = ("simulate", "simulate_shuf", "simulate_noacc")
 # metrics also split by the record's prior_conflict flag (gen.py --counter): decision accuracy and account validity
 PC_SPLIT = ("acc_maj", "expl_valid", "acct_consistent")
 PRED = {"predict": "self_S", "predict_noacc": "self_S_noacc", "simulate": "sim_acct", "simulate_noacc": "sim_noacc",
-        "simulate_shuf": "sim_shuf"}
-ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_gross", "sim_noacc", "sim_const_unchanged", "sim_oracle", "self_V",
+        "simulate_shuf": "sim_shuf", "simulate_wrong": "sim_wrong"}
+ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_dwrong", "sim_wrong", "sim_wrong_shuf", "sim_gross", "sim_noacc",
+        "sim_const_unchanged", "sim_oracle", "self_V",
         "self_S", "self_S_noacc", "self_G",
         "bank_unchanged", "acc_maj", "acc_mean", "acc_class",
         "repeat_disagree", "flip", "flip_to_cd", "cf_pair_acc", "invariance", "inv_pair_acc", "expl_valid",
@@ -39,7 +44,8 @@ ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_gross", "sim_noacc", "sim_con
         "none_claim_disproved", "none_claim_correct", "none_claim_unresolved", "bnd_both", "bnd_oracle_only",
         "bnd_model_only", "bnd_neither", "bnd_oracle_minimal", "bnd_invalid", "necessity_flip", "fmt_err", "len_chars",
         "len_tok"]
-LABEL = {"sim_delta": "sim_delta (primary: acct - shuf)", "sim_gross": "sim_gross (acct - noacc)",
+LABEL = {"sim_delta": "sim_delta (primary: acct - shuf)", "sim_dwrong": "sim_dwrong (acct - wrong)",
+        "sim_wrong_shuf": "sim_wrong_shuf (wrong - shuf)", "sim_gross": "sim_gross (acct - noacc)",
         "self_V": "self_V (secondary)", "sim_const_unchanged": "sim_const_unchanged (baseline: frozen decision)",
         "sim_oracle": "sim_oracle (baseline: engine label)"}
 POLS = {}
@@ -408,7 +414,7 @@ def score(recs, rows, aux, bank=(), dump=None):
             ids = [x.strip("*`. ") for x in re.findall(r"edit\s*id\s*[:\-]\s*(\S+)", o, re.I)]
             pred[k][r["id"]].append(norm_dec(pm[1]) if pm and ids[-1:] == [r["id"]] else None)
     pred = {k: {i: major(ds) for i, ds in d.items()} for k, d in pred.items()}
-    sims = [set(d) for k, d in pred.items() if k.startswith("simulate")]
+    sims = [set(d) for k, d in pred.items() if k in SIM3]
     shared = set.intersection(*sims) if sims else set()
     cov["sim_items_shared"], nofresh = len(shared), []
     for it in bank if pred else []:
@@ -421,7 +427,7 @@ def score(recs, rows, aux, bank=(), dump=None):
             continue
         f0, bc = P[it["case_id"]][0]["dec"], maj[it["case_id"]] == case["gold"]["decision"]
         S = {k: pd[kid] is not None and pd[kid] == fresh for k, pd in pred.items() if kid in
-                (shared if k.startswith("simulate") else pd)}
+                (shared if k in SIM3 else pd)}
         S |= {"const_unchanged": f0 is not None and f0 == fresh, "oracle": fresh == it["oracle"]} if kid in shared \
                 else {}
         if dump is not None:
@@ -436,12 +442,13 @@ def score(recs, rows, aux, bank=(), dump=None):
         if "predict" in S:
             add("self_G", S["predict"] - (fresh is not None and fresh == it["oracle"]), case, bc, kid)
         for m, x, y in (("self_V", "predict", "predict_noacc"), ("sim_delta", "simulate", "simulate_shuf"),
-                ("sim_gross", "simulate", "simulate_noacc")):
+                ("sim_gross", "simulate", "simulate_noacc"), ("sim_dwrong", "simulate", "simulate_wrong"),
+                ("sim_wrong_shuf", "simulate_wrong", "simulate_shuf")):
             # [hard]: edits the simulator gets wrong without the explanation, where an explanation has to carry it;
             # [valid]/[invalid]: whether the explanation it reads is correct (descriptive, the items differ)
             ch = ("[changed]" if fresh != f0 else "[unchanged]",) + (("[hard]",) if S.get("simulate_noacc") is False
                     else ()) + ((("[valid]" if V[it["case_id"]] else "[invalid]"),) if it["case_id"] in V else ()) \
-                    if m == "sim_delta" else ()
+                    if m in ("sim_delta", "sim_dwrong") else ()
             for mm in (m, m + sub) + tuple(m + c for c in ch) if x in S and y in S else ():
                 add(mm, S[x] - S[y], case, bc, kid)
     if nofresh:
@@ -639,7 +646,7 @@ def main():
         ps = [Path(p) for p in arg.split("+")]
         rp = ps[0]
         if re.search(r"\.(answers|interventions|repeat|predict|predict_noacc|simulate|simulate_noacc|simulate_shuf|"
-                r"edits)$", rp.stem):
+                r"simulate_wrong|edits)$", rp.stem):
             continue
         rows, aux = [r for p in ps for r in load(p)], {}
         sigs[rp.stem] = sig(rows, DEC_KEYS)

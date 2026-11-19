@@ -377,6 +377,32 @@ def test_extend_from(tmp_path):
     bad = g("--n-policies", "12", "--seed", "1", "--extend-from", str(base), "--out", str(ext))
     assert bad.returncode and "does not reproduce" in bad.stderr
 
+def test_wrong_account(tmp_path):
+    """
+    Checks infer.wrong_account on correct accounts of generated cases: every swapped line keeps the item count where
+    the case has enough facts, differs from the cited set, cites true values, and never justifies the decision.
+    """
+    out = tmp_path / "w.jsonl"
+    assert subprocess.run([sys.executable, str(ROOT / "gen.py"), "--domains", "grant", "--n-policies", "6",
+            "--cases-per-family", "3", "--prose", "template", "--out", str(out)], cwd=ROOT).returncode == 0
+    rng, n = random.Random(0), 0
+    for rec in [json.loads(ln) for ln in out.read_text().splitlines()][:60]:
+        acct = format_target(rec)
+        ws = infer.wrong_account(rec, acct, rng)
+        if ws is None:
+            continue
+        n += 1
+        pol, lab = evaluate.policy(rec), rec.get("fact_labels", {})
+        new, old = [evaluate.split_item(x) for x in ws.split("; ")], parse(acct)["relied"]
+        names = {evaluate.to_name(l, lab) for l, _, _ in new}
+        assert names != {evaluate.to_name(l, lab) for l, _, _ in old} and len(new) <= max(1, len(old))
+        cit = {m: evaluate.to_val(pol, m, v) for l, v, _ in new if (m := evaluate.to_name(l, lab))}
+        asm = {m: evaluate.to_val(pol, m, v) for l, v, _ in parse(acct)["assume"] if (m := evaluate.to_name(l, lab))}
+        j = E.is_valid_justification(pol, rec["facts"], cit, [r for _, _, r in new if r], asm)
+        assert not j["valid"] and not (j["sufficient"] and rec["gold"]["decision"] != "cannot determine")
+    assert n >= 30
+
+
 MESSY = [
     ("Decision: approve\nPolicy support: site zone=industrial (R4); operator certificate=current (R2)\n"
      "Assumptions: none\nSmallest change to make this deny: operator certificate -> lapsed; site zone -> residential",

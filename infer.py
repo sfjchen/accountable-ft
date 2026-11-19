@@ -19,7 +19,7 @@ from pathlib import Path
 
 import engine
 import gen
-from evaluate import PRIME, bank_recs, load, parse, sections
+from evaluate import PRIME, bank_recs, load, parse, policy, sections, to_name
 
 SYSTEM = ("You decide cases under a written policy. Apply only the numbered rules of the policy, not outside "
         "knowledge or common practice. Reply in exactly the requested format with no other text.")
@@ -470,6 +470,34 @@ def shuffle_partners(fz, cases, byid, seed=0):
     return out
 
 
+def wrong_account(rec, text, rng, tries=300, pick=50):
+    """
+    Returns a Policy support line for account text that swaps its cited items for as many stated facts of the
+    case, each with its true value and a rule that reads it, that together with the account's stated defaults leave
+    the case open (more than 1 decision possible), so the engine never counts the account as a justification. Of
+    the first `pick` such sets in `tries` seeded draws, the one sharing the fewest facts with the original, then
+    closest to it in length, wins (cases with few stated facts reuse some cited ones to keep the item count).
+    This is the length-matched wrong-explanation control: same format and item count, true facts, wrong reason.
+    Returns None when the case has no such set.
+    """
+    pol, lab, dom = policy(rec), rec.get("fact_labels", {}), gen.load_domain(rec["domain"])
+    p = parse(text)
+    cited = {to_name(l, lab) for l, _, _ in p["relied"]}
+    known, applied = engine.known_facts(pol, rec["facts"])
+    asm = {n for l, _, _ in p["assume"] if (n := to_name(l, lab)) in applied}
+    cand = [n for n in pol.order if n in pol.referenced() and n in known and n not in applied]
+    k, orig, best = min(max(1, len(p["relied"])), len(cand)), len((sections(text).get("policy support") or [""])[0]), []
+    for _ in range(tries if k else 0):
+        sub = sorted(rng.sample(cand, k), key=pol.order.index)
+        if set(sub) != cited and len(engine.possible(pol, {n: known[n] for n in [*sub, *asm]})) > 1:
+            line = "; ".join(f"{lab.get(n, n)}={show(dom, n, known[n])}" + next((f" ({r.id})" for r in pol.requires
+                    if n in r.all_refs), "") for n in sub)
+            best.append((len(cited.intersection(sub)), abs(len(line) - orig), line))
+            if len(best) == pick:
+                break
+    return min(best)[2] if best else None
+
+
 def main():
     """
     Parses the CLI and runs the mode: writes the bank, or runs answer, predict or simulate calls into rows and
@@ -489,6 +517,9 @@ def main():
             "under the same policy")
     ap.add_argument("--all-sim", action="store_true", help="simulate: run the account, --shuffle-accounts and "
             "--no-account passes in one call, writing <frozen>.simulate{,_shuf,_noacc}.jsonl")
+    ap.add_argument("--wrong-accounts", action="store_true", help="simulate: the wrong-explanation control, each "
+            "account's cited facts swapped for other true facts that leave the case open, written to "
+            "<frozen>.simulate_wrong.jsonl unless --out")
     ap.add_argument("--wide-bank", action="store_true", help="bank: every slice and view, not only the primary one")
     ap.add_argument("--vertex", nargs="?", const="global", default=None, metavar="LOCATION",
             help="gemini backend: use Vertex AI (GCP_PROJECT, ADC) in LOCATION (default global) instead of the API key")
@@ -536,6 +567,10 @@ def main():
         ap.error("--all-sim runs all 3 simulate passes itself and names their files after --frozen")
     if a.mode in ("predict", "simulate", "explain") and not a.frozen:
         ap.error(f"--mode {a.mode} needs --frozen")
+    if a.wrong_accounts and (a.mode != "simulate" or a.no_account or a.shuffle_accounts or a.all_sim):
+        ap.error("--wrong-accounts is its own simulate pass")
+    if a.wrong_accounts and not a.out:
+        a.out = f"{Path(a.frozen).with_suffix('')}.simulate_wrong.jsonl"
     if not (a.backend and a.model and (a.out or a.all_sim)):
         ap.error("--backend, --model and --out are required for answer, predict and simulate")
     sel, bank = select_recs(recs, a.slice, a.view, a.cases, a.sample_seed), load(a.bank) if a.bank else []
@@ -570,16 +605,23 @@ def main():
                 # partner (itself unless shuffled), without the smallest change for simulate
                 hs = {"decision": "Decision", "policy support": "Policy support", "assumptions": "Assumptions"} | (
                         {} if a.mode == "simulate" else {"smallest change": CHANGE})
-                acct = {}
+                # --wrong-accounts swaps each account's Policy support line, leaving out cases with no wrong set
+                acct, rng, need = {}, random.Random(a.sample_seed), {b["case_id"] for b in elig}
                 for i, (j, _) in sp.items():
                     sec = {k: v for k, v in sections(fz[j]).items() if k != "decision"} | {k: v for k, v in
                             sections(fz[i]).items() if k == "decision"}
+                    if a.wrong_accounts:
+                        ws = wrong_account(byid[i], fz[i], rng) if i in need and i in byid else None
+                        if ws is None:
+                            continue
+                        sec["policy support"] = [ws]
                     acct[i] = "\n".join(f"{h}: {sec[k][0]}".strip() + "".join("\n" + x.strip() for x in sec[k][1:])
                             for k, h in hs.items() if k in sec) or "(no readable answer)"
                 fz = acct
-            mode += "_shuf" if sh else ""
+            miss = sum(b["case_id"] not in fz for b in elig) if a.wrong_accounts else miss
+            mode += "_shuf" if sh else "_wrong" if a.wrong_accounts else ""
             items = [(b["bank_id"], byid[b["case_id"]], b, f"Decision: {parse(fz[b['case_id']])['dec'] or 'unreadable'}"
-                    if na else fz[b["case_id"]]) for b in elig if b["case_id"] in sp]
+                    if na else fz[b["case_id"]]) for b in elig if b["case_id"] in sp and b["case_id"] in fz]
             mode += "_noacc" if na else ""
         items = items[:a.limit] if a.limit else items
         t0 = time.monotonic()
@@ -610,6 +652,7 @@ def main():
                 1e6, 4) for i in (0, 1)] if pr else None
         meta = {"model": a.model, "backend": a.backend, "vertex": a.vertex, "mode": mode, "no_account": na,
                 "shuffle_accounts": sh, "shuf_missing": miss if a.mode != "answer" and sh else None,
+                "wrong_missing": miss if a.wrong_accounts else None,
                 "cases": a.cases, "cache_tag": a.cache_tag, "sample_seed": a.sample_seed, "decoding": dec,
                 "n": a.n, "rows": len(rows), "cached": sum(r["cached"] for r in rows), "errors": len(errs),
                 "fresh_calls": len(fresh), "wall_s": round(time.monotonic() - t0, 2),
