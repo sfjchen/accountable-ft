@@ -1,0 +1,963 @@
+{"iid": "permit-p000-c00:prose|boundary|weight_kg=4000", "id": "permit-p000-c00:prose", "kind": "boundary", "edits": {"weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p000-c01:prose|boundary|weight_kg=4", "id": "permit-p000-c01:prose", "kind": "boundary", "edits": {"weight_kg": "4"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p000-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p000-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p000-c02:prose|necessity|application_day", "id": "permit-p000-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p000-c02:prose|necessity|crew_size", "id": "permit-p000-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p000-c02:prose|necessity|end_day", "id": "permit-p000-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p000-c02:prose|necessity|equipment_class", "id": "permit-p000-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p000-c02:prose|necessity|residential_zone", "id": "permit-p000-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p000-c02:prose|necessity|start_day", "id": "permit-p000-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p000-c02:prose|necessity|weight_kg", "id": "permit-p000-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|boundary|application_day=April 5, 2026", "id": "permit-p001-c00:prose", "kind": "boundary", "edits": {"application_day": "April 5, 2026"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|application_day", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|crew_size", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|end_day", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|insured_amount", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|operator_level", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|residential_zone", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p001-c00:prose|necessity|start_day", "id": "permit-p001-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p001-c01:prose|boundary|application_day=March 1, 2027;night_work=no;residential_zone=no", "id": "permit-p001-c01:prose", "kind": "boundary", "edits": {"application_day": "March 1, 2027", "night_work": "no", "residential_zone": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p002-c00:prose|boundary|operator_level=1", "id": "permit-p002-c00:prose", "kind": "boundary", "edits": {"operator_level": "1"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p002-c00:prose|necessity|operator_level", "id": "permit-p002-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p002-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p002-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p002-c02:prose|boundary|equipment_class=a Class K-2 lift", "id": "permit-p002-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 lift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p002-c02:prose|necessity|application_day", "id": "permit-p002-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p002-c02:prose|necessity|equipment_class", "id": "permit-p002-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p002-c02:prose|necessity|night_work", "id": "permit-p002-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p002-c02:prose|necessity|operator_level", "id": "permit-p002-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p002-c02:prose|necessity|residential_zone", "id": "permit-p002-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p002-c02:prose|necessity|sidewalk_closure", "id": "permit-p002-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p002-c02:prose|necessity|start_day", "id": "permit-p002-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p003-c00:prose|boundary|equipment_class=a Class K-2 skylift", "id": "permit-p003-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p003-c00:prose|necessity|application_day", "id": "permit-p003-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p003-c00:prose|necessity|equipment_class", "id": "permit-p003-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p003-c00:prose|necessity|night_work", "id": "permit-p003-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p003-c00:prose|necessity|operator_level", "id": "permit-p003-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p003-c00:prose|necessity|residential_zone", "id": "permit-p003-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p003-c01:prose|boundary|neighbor_notice=yes;operator_level=2;weight_kg=6000", "id": "permit-p003-c01:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes", "operator_level": "2", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p004-c00:prose|boundary|equipment_class=a Class K-2 skylift", "id": "permit-p004-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p004-c00:prose|necessity|application_day", "id": "permit-p004-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p004-c00:prose|necessity|end_day", "id": "permit-p004-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p004-c00:prose|necessity|equipment_class", "id": "permit-p004-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p004-c00:prose|necessity|night_work", "id": "permit-p004-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p004-c00:prose|necessity|sidewalk_closure", "id": "permit-p004-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p004-c00:prose|necessity|start_day", "id": "permit-p004-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p004-c00:prose|necessity|weight_kg", "id": "permit-p004-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p004-c01:prose|boundary|equipment_class=a Class K-1 skylift;night_work=no", "id": "permit-p004-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift", "night_work": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p004-c01:prose|necessity|crew_size", "id": "permit-p004-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p004-c01:prose|necessity|equipment_class", "id": "permit-p004-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p004-c01:prose|necessity|night_work", "id": "permit-p004-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p004-c02:prose|boundary|night_work=no;weight_kg=4000", "id": "permit-p004-c02:prose", "kind": "boundary", "edits": {"night_work": "no", "weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p005-c00:prose|boundary|application_day=March 22, 2027;weight_kg=6000", "id": "permit-p005-c00:prose", "kind": "boundary", "edits": {"application_day": "March 22, 2027", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p006-c00:prose|boundary|end_day=April 5, 2027;night_work=no", "id": "permit-p006-c00:prose", "kind": "boundary", "edits": {"end_day": "April 5, 2027", "night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p006-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p006-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|application_day", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|equipment_class", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|neighbor_notice", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|night_work", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|start_day", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p006-c02:prose|necessity|weight_kg", "id": "permit-p006-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p007-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|application_day", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|end_day", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|equipment_class", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|night_work", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|operator_level", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|sidewalk_closure", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|start_day", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p007-c00:prose|necessity|weight_kg", "id": "permit-p007-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p007-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p007-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p008-c00:prose|boundary|equipment_class=a Class K-2 boom lift", "id": "permit-p008-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 boom lift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p008-c00:prose|necessity|crew_size", "id": "permit-p008-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p008-c00:prose|necessity|end_day", "id": "permit-p008-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p008-c00:prose|necessity|equipment_class", "id": "permit-p008-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p008-c00:prose|necessity|residential_zone", "id": "permit-p008-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p008-c00:prose|necessity|sidewalk_closure", "id": "permit-p008-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p008-c00:prose|necessity|weight_kg", "id": "permit-p008-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p008-c01:prose|boundary|end_day=May 15, 2027", "id": "permit-p008-c01:prose", "kind": "boundary", "edits": {"end_day": "May 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p008-c01:prose|necessity|end_day", "id": "permit-p008-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p008-c02:prose|necessity|end_day", "id": "permit-p008-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p008-c02:prose|necessity|equipment_class", "id": "permit-p008-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p008-c02:prose|necessity|operator_level", "id": "permit-p008-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p008-c02:prose|necessity|residential_zone", "id": "permit-p008-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p008-c02:prose|necessity|sidewalk_closure", "id": "permit-p008-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p008-c02:prose|necessity|start_day", "id": "permit-p008-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p009-c01:prose|boundary|weight_kg=12000", "id": "permit-p009-c01:prose", "kind": "boundary", "edits": {"weight_kg": "12000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p009-c01:prose|necessity|end_day", "id": "permit-p009-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p009-c01:prose|necessity|equipment_class", "id": "permit-p009-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p009-c01:prose|necessity|insured_amount", "id": "permit-p009-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p009-c01:prose|necessity|operator_level", "id": "permit-p009-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p009-c01:prose|necessity|residential_zone", "id": "permit-p009-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p009-c01:prose|necessity|sidewalk_closure", "id": "permit-p009-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p009-c01:prose|necessity|start_day", "id": "permit-p009-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p009-c01:prose|necessity|weight_kg", "id": "permit-p009-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p010-c02:prose|boundary|equipment_class=a Tessel-type crawler crane;residential_zone=yes", "id": "permit-p010-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane", "residential_zone": "yes"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p010-c02:prose|necessity|application_day", "id": "permit-p010-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p010-c02:prose|necessity|equipment_class", "id": "permit-p010-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p010-c02:prose|necessity|insured_amount", "id": "permit-p010-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p010-c02:prose|necessity|neighbor_notice", "id": "permit-p010-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p010-c02:prose|necessity|night_work", "id": "permit-p010-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p010-c02:prose|necessity|operator_level", "id": "permit-p010-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p010-c02:prose|necessity|residential_zone", "id": "permit-p010-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p010-c02:prose|necessity|start_day", "id": "permit-p010-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p010-c02:prose|necessity|weight_kg", "id": "permit-p010-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p011-c00:prose|necessity|operator_level", "id": "permit-p011-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p011-c01:prose|boundary|weight_kg=8000", "id": "permit-p011-c01:prose", "kind": "boundary", "edits": {"weight_kg": "8000"}, "target": "deny", "gold_target": "approve"}
+{"iid": "permit-p011-c01:prose|necessity|application_day", "id": "permit-p011-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p011-c01:prose|necessity|insured_amount", "id": "permit-p011-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p011-c01:prose|necessity|night_work", "id": "permit-p011-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p011-c01:prose|necessity|operator_level", "id": "permit-p011-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p011-c01:prose|necessity|residential_zone", "id": "permit-p011-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p011-c01:prose|necessity|weight_kg", "id": "permit-p011-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p012-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p012-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p012-c00:prose|necessity|application_day", "id": "permit-p012-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p012-c00:prose|necessity|end_day", "id": "permit-p012-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p012-c00:prose|necessity|equipment_class", "id": "permit-p012-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p012-c00:prose|necessity|night_work", "id": "permit-p012-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p012-c00:prose|necessity|sidewalk_closure", "id": "permit-p012-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p012-c00:prose|necessity|start_day", "id": "permit-p012-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p012-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p012-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p013-c00:prose|boundary|end_day=April 26, 2027", "id": "permit-p013-c00:prose", "kind": "boundary", "edits": {"end_day": "April 26, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p013-c00:prose|necessity|end_day", "id": "permit-p013-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p013-c01:prose|boundary|application_day=March 1, 2027;insured_amount=$1,000,000", "id": "permit-p013-c01:prose", "kind": "boundary", "edits": {"application_day": "March 1, 2027", "insured_amount": "$1,000,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p014-c00:prose|boundary|weight_kg=4000", "id": "permit-p014-c00:prose", "kind": "boundary", "edits": {"weight_kg": "4000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p014-c00:prose|necessity|operator_level", "id": "permit-p014-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p014-c00:prose|necessity|weight_kg", "id": "permit-p014-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|boundary|residential_zone=yes", "id": "permit-p014-c01:prose", "kind": "boundary", "edits": {"residential_zone": "yes"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|application_day", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|equipment_class", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|insured_amount", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|neighbor_notice", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|residential_zone", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p014-c01:prose|necessity|weight_kg", "id": "permit-p014-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p014-c02:prose|boundary|residential_zone=no", "id": "permit-p014-c02:prose", "kind": "boundary", "edits": {"residential_zone": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p014-c02:prose|necessity|night_work", "id": "permit-p014-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p014-c02:prose|necessity|residential_zone", "id": "permit-p014-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p015-c00:prose|boundary|neighbor_notice=yes;residential_zone=no", "id": "permit-p015-c00:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes", "residential_zone": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p015-c01:prose|boundary|weight_kg=8000", "id": "permit-p015-c01:prose", "kind": "boundary", "edits": {"weight_kg": "8000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p015-c01:prose|necessity|operator_level", "id": "permit-p015-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p015-c01:prose|necessity|weight_kg", "id": "permit-p015-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p016-c00:prose|boundary|application_day=March 8, 2027;start_day=March 22, 2027", "id": "permit-p016-c00:prose", "kind": "boundary", "edits": {"application_day": "March 8, 2027", "start_day": "March 22, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p016-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p016-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|application_day", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|end_day", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|equipment_class", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|insured_amount", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|night_work", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|operator_level", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|residential_zone", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|start_day", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p016-c01:prose|necessity|weight_kg", "id": "permit-p016-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p016-c02:prose|boundary|application_day=March 22, 2027;crew_size=4;start_day=March 30, 2027", "id": "permit-p016-c02:prose", "kind": "boundary", "edits": {"application_day": "March 22, 2027", "crew_size": "4", "start_day": "March 30, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p017-c00:prose|boundary|weight_kg=4", "id": "permit-p017-c00:prose", "kind": "boundary", "edits": {"weight_kg": "4"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p017-c00:prose|necessity|equipment_class", "id": "permit-p017-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p017-c00:prose|necessity|weight_kg", "id": "permit-p017-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p017-c01:prose|boundary|night_work=no;operator_level=2", "id": "permit-p017-c01:prose", "kind": "boundary", "edits": {"night_work": "no", "operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p017-c01:prose|necessity|operator_level", "id": "permit-p017-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p018-c00:prose|boundary|application_day=February 22, 2027;start_day=March 15, 2027", "id": "permit-p018-c00:prose", "kind": "boundary", "edits": {"application_day": "February 22, 2027", "start_day": "March 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p018-c01:prose|boundary|night_work=no;start_day=April 5, 2027", "id": "permit-p018-c01:prose", "kind": "boundary", "edits": {"night_work": "no", "start_day": "April 5, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p018-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p018-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|application_day", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|equipment_class", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|insured_amount", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|night_work", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|operator_level", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|residential_zone", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|start_day", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p018-c02:prose|necessity|weight_kg", "id": "permit-p018-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p019-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p019-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p019-c00:prose|necessity|application_day", "id": "permit-p019-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p019-c00:prose|necessity|end_day", "id": "permit-p019-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p019-c00:prose|necessity|equipment_class", "id": "permit-p019-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p019-c00:prose|necessity|insured_amount", "id": "permit-p019-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p019-c00:prose|necessity|night_work", "id": "permit-p019-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p019-c00:prose|necessity|operator_level", "id": "permit-p019-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p019-c00:prose|necessity|residential_zone", "id": "permit-p019-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p019-c00:prose|necessity|sidewalk_closure", "id": "permit-p019-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p019-c00:prose|necessity|start_day", "id": "permit-p019-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p019-c01:prose|boundary|end_day=May 15, 2027", "id": "permit-p019-c01:prose", "kind": "boundary", "edits": {"end_day": "May 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p019-c01:prose|necessity|end_day", "id": "permit-p019-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p020-c00:prose|boundary|weight_kg=6000", "id": "permit-p020-c00:prose", "kind": "boundary", "edits": {"weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p020-c00:prose|necessity|weight_kg", "id": "permit-p020-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p020-c01:prose|boundary|crew_size=6;insured_amount=$2,000,000", "id": "permit-p020-c01:prose", "kind": "boundary", "edits": {"crew_size": "6", "insured_amount": "$2,000,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p020-c01:prose|necessity|insured_amount", "id": "permit-p020-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p020-c02:prose|boundary|weight_kg=10000", "id": "permit-p020-c02:prose", "kind": "boundary", "edits": {"weight_kg": "10000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|application_day", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|insured_amount", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|night_work", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|operator_level", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|residential_zone", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p020-c02:prose|necessity|weight_kg", "id": "permit-p020-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p021-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p021-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p021-c00:prose|necessity|application_day", "id": "permit-p021-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p021-c00:prose|necessity|equipment_class", "id": "permit-p021-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p021-c00:prose|necessity|night_work", "id": "permit-p021-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p021-c00:prose|necessity|operator_level", "id": "permit-p021-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p021-c00:prose|necessity|residential_zone", "id": "permit-p021-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p021-c00:prose|necessity|start_day", "id": "permit-p021-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p021-c00:prose|necessity|weight_kg", "id": "permit-p021-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p021-c01:prose|boundary|application_day=March 1, 2027;equipment_class=a Class K-1 skylift", "id": "permit-p021-c01:prose", "kind": "boundary", "edits": {"application_day": "March 1, 2027", "equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p022-c00:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p022-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p022-c00:prose|necessity|equipment_class", "id": "permit-p022-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p022-c00:prose|necessity|insured_amount", "id": "permit-p022-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p022-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p022-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|application_day", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|equipment_class", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|neighbor_notice", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|night_work", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|start_day", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p022-c01:prose|necessity|weight_kg", "id": "permit-p022-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p023-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p023-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p023-c00:prose|necessity|application_day", "id": "permit-p023-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p023-c00:prose|necessity|crew_size", "id": "permit-p023-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p023-c00:prose|necessity|end_day", "id": "permit-p023-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p023-c00:prose|necessity|equipment_class", "id": "permit-p023-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p023-c00:prose|necessity|sidewalk_closure", "id": "permit-p023-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p023-c00:prose|necessity|start_day", "id": "permit-p023-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p023-c01:prose|boundary|equipment_class=a Class K-1 skylift;sidewalk_closure=no", "id": "permit-p023-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift", "sidewalk_closure": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p024-c00:prose|boundary|application_day=April 1, 2027", "id": "permit-p024-c00:prose", "kind": "boundary", "edits": {"application_day": "April 1, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p024-c00:prose|necessity|application_day", "id": "permit-p024-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p025-c00:prose|boundary|application_day=March 22, 2027;end_day=April 15, 2027", "id": "permit-p025-c00:prose", "kind": "boundary", "edits": {"application_day": "March 22, 2027", "end_day": "April 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p025-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p025-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|application_day", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|equipment_class", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|insured_amount", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|neighbor_notice", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|night_work", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|operator_level", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|start_day", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p025-c01:prose|necessity|weight_kg", "id": "permit-p025-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p026-c00:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p026-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p026-c00:prose|necessity|equipment_class", "id": "permit-p026-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p026-c00:prose|necessity|insured_amount", "id": "permit-p026-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p026-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p026-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p026-c01:prose|necessity|application_day", "id": "permit-p026-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p026-c01:prose|necessity|equipment_class", "id": "permit-p026-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p026-c01:prose|necessity|night_work", "id": "permit-p026-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p026-c01:prose|necessity|sidewalk_closure", "id": "permit-p026-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p026-c01:prose|necessity|start_day", "id": "permit-p026-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p026-c01:prose|necessity|weight_kg", "id": "permit-p026-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p026-c02:prose|boundary|end_day=May 15, 2027", "id": "permit-p026-c02:prose", "kind": "boundary", "edits": {"end_day": "May 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p027-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p027-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|application_day", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|end_day", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|equipment_class", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|night_work", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p027-c00:prose|necessity|sidewalk_closure", "id": "permit-p027-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p027-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p027-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p028-c00:prose|boundary|equipment_class=a Tessel-type crawler crane;insured_amount=$2,000,000", "id": "permit-p028-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane", "insured_amount": "$2,000,000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p028-c00:prose|necessity|application_day", "id": "permit-p028-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p028-c00:prose|necessity|equipment_class", "id": "permit-p028-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p028-c00:prose|necessity|insured_amount", "id": "permit-p028-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p028-c00:prose|necessity|night_work", "id": "permit-p028-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p028-c00:prose|necessity|operator_level", "id": "permit-p028-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p028-c00:prose|necessity|residential_zone", "id": "permit-p028-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p028-c00:prose|necessity|sidewalk_closure", "id": "permit-p028-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p028-c00:prose|necessity|start_day", "id": "permit-p028-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p028-c00:prose|necessity|weight_kg", "id": "permit-p028-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p028-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p028-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p028-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p028-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p028-c02:prose|necessity|application_day", "id": "permit-p028-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p028-c02:prose|necessity|equipment_class", "id": "permit-p028-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p028-c02:prose|necessity|night_work", "id": "permit-p028-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p028-c02:prose|necessity|sidewalk_closure", "id": "permit-p028-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p028-c02:prose|necessity|start_day", "id": "permit-p028-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p028-c02:prose|necessity|weight_kg", "id": "permit-p028-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p029-c00:prose|boundary|equipment_class=a Tessel-type crawler crane;weight_kg=8000", "id": "permit-p029-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane", "weight_kg": "8000"}, "target": "deny", "gold_target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|application_day", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|equipment_class", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|insured_amount", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|operator_level", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|residential_zone", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|sidewalk_closure", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p029-c00:prose|necessity|weight_kg", "id": "permit-p029-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p029-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p029-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p029-c01:prose|necessity|application_day", "id": "permit-p029-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p029-c01:prose|necessity|equipment_class", "id": "permit-p029-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p029-c01:prose|necessity|night_work", "id": "permit-p029-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p029-c01:prose|necessity|operator_level", "id": "permit-p029-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p029-c01:prose|necessity|residential_zone", "id": "permit-p029-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p029-c01:prose|necessity|sidewalk_closure", "id": "permit-p029-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p029-c01:prose|necessity|start_day", "id": "permit-p029-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p029-c01:prose|necessity|weight_kg", "id": "permit-p029-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p030-c00:prose|boundary|application_day=March 15, 2027;end_day=April 26, 2027;start_day=March 22, 2027", "id": "permit-p030-c00:prose", "kind": "boundary", "edits": {"application_day": "March 15, 2027", "end_day": "April 26, 2027", "start_day": "March 22, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p030-c01:prose|boundary|equipment_class=a Class K-2 boom lift", "id": "permit-p030-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 boom lift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|application_day", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|end_day", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|equipment_class", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|insured_amount", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|neighbor_notice", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|night_work", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|residential_zone", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p030-c01:prose|necessity|start_day", "id": "permit-p030-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p030-c02:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p030-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p030-c02:prose|necessity|equipment_class", "id": "permit-p030-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p030-c02:prose|necessity|residential_zone", "id": "permit-p030-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p030-c02:prose|necessity|weight_kg", "id": "permit-p030-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p031-c00:prose|boundary|sidewalk_closure=no", "id": "permit-p031-c00:prose", "kind": "boundary", "edits": {"sidewalk_closure": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p031-c00:prose|necessity|neighbor_notice", "id": "permit-p031-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p031-c00:prose|necessity|sidewalk_closure", "id": "permit-p031-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p031-c01:prose|boundary|equipment_class=a Class K-2 boom lift", "id": "permit-p031-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 boom lift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p031-c01:prose|necessity|application_day", "id": "permit-p031-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p031-c01:prose|necessity|end_day", "id": "permit-p031-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p031-c01:prose|necessity|equipment_class", "id": "permit-p031-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p031-c01:prose|necessity|night_work", "id": "permit-p031-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p031-c01:prose|necessity|sidewalk_closure", "id": "permit-p031-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p031-c01:prose|necessity|start_day", "id": "permit-p031-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p031-c01:prose|necessity|weight_kg", "id": "permit-p031-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p032-c00:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p032-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p032-c00:prose|necessity|equipment_class", "id": "permit-p032-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p032-c00:prose|necessity|insured_amount", "id": "permit-p032-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p032-c01:prose|boundary|end_day=May 17, 2027", "id": "permit-p032-c01:prose", "kind": "boundary", "edits": {"end_day": "May 17, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p032-c01:prose|necessity|end_day", "id": "permit-p032-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p032-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p032-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p033-c00:prose|boundary|weight_kg=4000", "id": "permit-p033-c00:prose", "kind": "boundary", "edits": {"weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p033-c00:prose|necessity|equipment_class", "id": "permit-p033-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p033-c00:prose|necessity|weight_kg", "id": "permit-p033-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p033-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p033-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p034-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p034-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p034-c01:prose|boundary|weight_kg=6000", "id": "permit-p034-c01:prose", "kind": "boundary", "edits": {"weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p034-c01:prose|necessity|weight_kg", "id": "permit-p034-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p034-c02:prose|boundary|operator_level=a level 2 Ferrin certificate", "id": "permit-p034-c02:prose", "kind": "boundary", "edits": {"operator_level": "a level 2 Ferrin certificate"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p034-c02:prose|necessity|equipment_class", "id": "permit-p034-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p034-c02:prose|necessity|operator_level", "id": "permit-p034-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p035-c00:prose|boundary|night_work=no;operator_level=2", "id": "permit-p035-c00:prose", "kind": "boundary", "edits": {"night_work": "no", "operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p035-c01:prose|boundary|sidewalk_closure=no;weight_kg=8000", "id": "permit-p035-c01:prose", "kind": "boundary", "edits": {"sidewalk_closure": "no", "weight_kg": "8000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p036-c00:prose|boundary|night_work=no", "id": "permit-p036-c00:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p036-c00:prose|necessity|crew_size", "id": "permit-p036-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p036-c00:prose|necessity|night_work", "id": "permit-p036-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p036-c01:prose|boundary|equipment_class=a Class K-2 boom lift", "id": "permit-p036-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 boom lift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p036-c02:prose|boundary|end_day=April 19, 2027", "id": "permit-p036-c02:prose", "kind": "boundary", "edits": {"end_day": "April 19, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p036-c02:prose|necessity|end_day", "id": "permit-p036-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p037-c00:prose|boundary|equipment_class=a Class K-2 boom lift", "id": "permit-p037-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 boom lift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p037-c00:prose|necessity|application_day", "id": "permit-p037-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p037-c00:prose|necessity|end_day", "id": "permit-p037-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p037-c00:prose|necessity|equipment_class", "id": "permit-p037-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p037-c00:prose|necessity|night_work", "id": "permit-p037-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p037-c00:prose|necessity|operator_level", "id": "permit-p037-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p037-c00:prose|necessity|sidewalk_closure", "id": "permit-p037-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p037-c00:prose|necessity|start_day", "id": "permit-p037-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p037-c01:prose|boundary|equipment_class=a Class K-2 boom lift", "id": "permit-p037-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 boom lift"}, "target": "deny", "gold_target": "approve"}
+{"iid": "permit-p037-c01:prose|necessity|application_day", "id": "permit-p037-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p037-c01:prose|necessity|end_day", "id": "permit-p037-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p037-c01:prose|necessity|equipment_class", "id": "permit-p037-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p037-c01:prose|necessity|night_work", "id": "permit-p037-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p037-c01:prose|necessity|sidewalk_closure", "id": "permit-p037-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p037-c01:prose|necessity|start_day", "id": "permit-p037-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p038-c00:prose|boundary|operator_level=1", "id": "permit-p038-c00:prose", "kind": "boundary", "edits": {"operator_level": "1"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p038-c00:prose|necessity|operator_level", "id": "permit-p038-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p038-c00:prose|necessity|weight_kg", "id": "permit-p038-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p038-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p038-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p038-c01:prose|necessity|equipment_class", "id": "permit-p038-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p038-c01:prose|necessity|insured_amount", "id": "permit-p038-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p038-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p038-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|crew_size", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|end_day", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|equipment_class", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|operator_level", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|residential_zone", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|sidewalk_closure", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|start_day", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p038-c02:prose|necessity|weight_kg", "id": "permit-p038-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p039-c00:prose|boundary|end_day=April 5, 2027", "id": "permit-p039-c00:prose", "kind": "boundary", "edits": {"end_day": "April 5, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p039-c00:prose|necessity|end_day", "id": "permit-p039-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p039-c01:prose|boundary|equipment_class=a Class K-2 skylift", "id": "permit-p039-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p039-c01:prose|necessity|end_day", "id": "permit-p039-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p039-c01:prose|necessity|equipment_class", "id": "permit-p039-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p039-c01:prose|necessity|insured_amount", "id": "permit-p039-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p039-c01:prose|necessity|neighbor_notice", "id": "permit-p039-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p039-c01:prose|necessity|night_work", "id": "permit-p039-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p039-c01:prose|necessity|operator_level", "id": "permit-p039-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p039-c01:prose|necessity|residential_zone", "id": "permit-p039-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p039-c01:prose|necessity|weight_kg", "id": "permit-p039-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p040-c00:prose|boundary|weight_kg=6000", "id": "permit-p040-c00:prose", "kind": "boundary", "edits": {"weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p040-c00:prose|necessity|equipment_class", "id": "permit-p040-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p040-c00:prose|necessity|residential_zone", "id": "permit-p040-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p040-c00:prose|necessity|weight_kg", "id": "permit-p040-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p040-c02:prose|boundary|equipment_class=a Class K-2 boom lift", "id": "permit-p040-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 boom lift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p041-c00:prose|boundary|weight_kg=4000", "id": "permit-p041-c00:prose", "kind": "boundary", "edits": {"weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p041-c01:prose|boundary|equipment_class=a Class K-2 boom lift", "id": "permit-p041-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 boom lift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p042-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p042-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|end_day", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|equipment_class", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|insured_amount", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|neighbor_notice", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|night_work", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|operator_level", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|residential_zone", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|start_day", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p042-c00:prose|necessity|weight_kg", "id": "permit-p042-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p042-c01:prose|necessity|equipment_class", "id": "permit-p042-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p042-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p042-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|end_day", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|equipment_class", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|insured_amount", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|night_work", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|operator_level", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|sidewalk_closure", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p042-c02:prose|necessity|weight_kg", "id": "permit-p042-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p043-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p043-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p043-c00:prose|necessity|end_day", "id": "permit-p043-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p043-c00:prose|necessity|equipment_class", "id": "permit-p043-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p043-c00:prose|necessity|insured_amount", "id": "permit-p043-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p043-c00:prose|necessity|neighbor_notice", "id": "permit-p043-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p043-c00:prose|necessity|night_work", "id": "permit-p043-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p043-c00:prose|necessity|weight_kg", "id": "permit-p043-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p043-c01:prose|boundary|night_work=no;weight_kg=4000", "id": "permit-p043-c01:prose", "kind": "boundary", "edits": {"night_work": "no", "weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p044-c00:prose|boundary|night_work=no", "id": "permit-p044-c00:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p044-c00:prose|necessity|crew_size", "id": "permit-p044-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p044-c00:prose|necessity|night_work", "id": "permit-p044-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p044-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p044-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p044-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p044-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p044-c02:prose|necessity|application_day", "id": "permit-p044-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p044-c02:prose|necessity|end_day", "id": "permit-p044-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p044-c02:prose|necessity|equipment_class", "id": "permit-p044-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p044-c02:prose|necessity|neighbor_notice", "id": "permit-p044-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p044-c02:prose|necessity|night_work", "id": "permit-p044-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p044-c02:prose|necessity|operator_level", "id": "permit-p044-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p044-c02:prose|necessity|residential_zone", "id": "permit-p044-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p044-c02:prose|necessity|start_day", "id": "permit-p044-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p045-c00:prose|boundary|end_day=April 12, 2027;equipment_class=a Class K-1 skylift;night_work=no", "id": "permit-p045-c00:prose", "kind": "boundary", "edits": {"end_day": "April 12, 2027", "equipment_class": "a Class K-1 skylift", "night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p045-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p045-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p045-c01:prose|necessity|application_day", "id": "permit-p045-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p045-c01:prose|necessity|equipment_class", "id": "permit-p045-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p045-c01:prose|necessity|night_work", "id": "permit-p045-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p045-c01:prose|necessity|sidewalk_closure", "id": "permit-p045-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p045-c01:prose|necessity|start_day", "id": "permit-p045-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p045-c01:prose|necessity|weight_kg", "id": "permit-p045-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p046-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p046-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p046-c00:prose|necessity|application_day", "id": "permit-p046-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p046-c00:prose|necessity|crew_size", "id": "permit-p046-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p046-c00:prose|necessity|equipment_class", "id": "permit-p046-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p046-c00:prose|necessity|residential_zone", "id": "permit-p046-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p046-c00:prose|necessity|sidewalk_closure", "id": "permit-p046-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p046-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p046-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p046-c01:prose|necessity|application_day", "id": "permit-p046-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p046-c01:prose|necessity|crew_size", "id": "permit-p046-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p046-c01:prose|necessity|equipment_class", "id": "permit-p046-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p046-c01:prose|necessity|residential_zone", "id": "permit-p046-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p046-c01:prose|necessity|sidewalk_closure", "id": "permit-p046-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p046-c02:prose|boundary|sidewalk_closure=no", "id": "permit-p046-c02:prose", "kind": "boundary", "edits": {"sidewalk_closure": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p046-c02:prose|necessity|neighbor_notice", "id": "permit-p046-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p046-c02:prose|necessity|sidewalk_closure", "id": "permit-p046-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p047-c00:prose|boundary|application_day=February 22, 2027;operator_level=2", "id": "permit-p047-c00:prose", "kind": "boundary", "edits": {"application_day": "February 22, 2027", "operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p047-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p047-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p048-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p048-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p048-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p048-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|application_day", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|equipment_class", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|night_work", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|residential_zone", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|sidewalk_closure", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|start_day", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p048-c02:prose|necessity|weight_kg", "id": "permit-p048-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p049-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p049-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p049-c00:prose|necessity|application_day", "id": "permit-p049-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p049-c00:prose|necessity|crew_size", "id": "permit-p049-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p049-c00:prose|necessity|equipment_class", "id": "permit-p049-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p049-c00:prose|necessity|residential_zone", "id": "permit-p049-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p049-c00:prose|necessity|weight_kg", "id": "permit-p049-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p049-c01:prose|boundary|weight_kg=4000", "id": "permit-p049-c01:prose", "kind": "boundary", "edits": {"weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p050-c00:prose|boundary|end_day=May 15, 2027", "id": "permit-p050-c00:prose", "kind": "boundary", "edits": {"end_day": "May 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p050-c00:prose|necessity|end_day", "id": "permit-p050-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p050-c01:prose|boundary|equipment_class=a Tessel-type crawler crane;weight_kg=10000", "id": "permit-p050-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane", "weight_kg": "10000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|application_day", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|end_day", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|equipment_class", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|insured_amount", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|night_work", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|operator_level", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|residential_zone", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|start_day", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p050-c01:prose|necessity|weight_kg", "id": "permit-p050-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p050-c02:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p050-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p051-c00:prose|boundary|application_day=March 15, 2027;insured_amount=$2,000,000", "id": "permit-p051-c00:prose", "kind": "boundary", "edits": {"application_day": "March 15, 2027", "insured_amount": "$2,000,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p051-c00:prose|necessity|application_day", "id": "permit-p051-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p051-c00:prose|necessity|start_day", "id": "permit-p051-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p051-c01:prose|boundary|weight_kg=10000", "id": "permit-p051-c01:prose", "kind": "boundary", "edits": {"weight_kg": "10000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p051-c01:prose|necessity|application_day", "id": "permit-p051-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p051-c01:prose|necessity|end_day", "id": "permit-p051-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p051-c01:prose|necessity|insured_amount", "id": "permit-p051-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p051-c01:prose|necessity|night_work", "id": "permit-p051-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p051-c01:prose|necessity|residential_zone", "id": "permit-p051-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p051-c01:prose|necessity|start_day", "id": "permit-p051-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p051-c01:prose|necessity|weight_kg", "id": "permit-p051-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p052-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p052-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p052-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p052-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p052-c01:prose|necessity|equipment_class", "id": "permit-p052-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p052-c01:prose|necessity|insured_amount", "id": "permit-p052-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p052-c02:prose|boundary|end_day=May 15, 2027;sidewalk_closure=no", "id": "permit-p052-c02:prose", "kind": "boundary", "edits": {"end_day": "May 15, 2027", "sidewalk_closure": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p053-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p053-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p053-c00:prose|necessity|application_day", "id": "permit-p053-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p053-c00:prose|necessity|end_day", "id": "permit-p053-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p053-c00:prose|necessity|equipment_class", "id": "permit-p053-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p053-c00:prose|necessity|night_work", "id": "permit-p053-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p053-c00:prose|necessity|operator_level", "id": "permit-p053-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p053-c00:prose|necessity|residential_zone", "id": "permit-p053-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p053-c00:prose|necessity|sidewalk_closure", "id": "permit-p053-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p053-c00:prose|necessity|start_day", "id": "permit-p053-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p053-c00:prose|necessity|weight_kg", "id": "permit-p053-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p053-c01:prose|boundary|sidewalk_closure=no", "id": "permit-p053-c01:prose", "kind": "boundary", "edits": {"sidewalk_closure": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p053-c01:prose|necessity|neighbor_notice", "id": "permit-p053-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p053-c01:prose|necessity|sidewalk_closure", "id": "permit-p053-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p054-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p054-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p054-c02:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p054-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p055-c00:prose|boundary|weight_kg=4000", "id": "permit-p055-c00:prose", "kind": "boundary", "edits": {"weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p055-c00:prose|necessity|residential_zone", "id": "permit-p055-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p055-c00:prose|necessity|weight_kg", "id": "permit-p055-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p055-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p055-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p056-c00:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p056-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p056-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p056-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p056-c02:prose|boundary|equipment_class=a Class K-1 skylift;insured_amount=$1,500,000", "id": "permit-p056-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift", "insured_amount": "$1,500,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p057-c00:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p057-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p057-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p057-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p058-c00:prose|boundary|crew_size=4;insured_amount=$1,500,000;night_work=no", "id": "permit-p058-c00:prose", "kind": "boundary", "edits": {"crew_size": "4", "insured_amount": "$1,500,000", "night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p058-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p058-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|application_day", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|equipment_class", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|operator_level", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|residential_zone", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|sidewalk_closure", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p058-c02:prose|necessity|start_day", "id": "permit-p058-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p060-c00:prose|boundary|sidewalk_closure=no", "id": "permit-p060-c00:prose", "kind": "boundary", "edits": {"sidewalk_closure": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p060-c00:prose|necessity|neighbor_notice", "id": "permit-p060-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p060-c00:prose|necessity|sidewalk_closure", "id": "permit-p060-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p060-c01:prose|boundary|application_day=March 22, 2027", "id": "permit-p060-c01:prose", "kind": "boundary", "edits": {"application_day": "March 22, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p060-c01:prose|necessity|application_day", "id": "permit-p060-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p060-c01:prose|necessity|start_day", "id": "permit-p060-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p060-c02:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p060-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p060-c02:prose|necessity|application_day", "id": "permit-p060-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p060-c02:prose|necessity|equipment_class", "id": "permit-p060-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p060-c02:prose|necessity|insured_amount", "id": "permit-p060-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p060-c02:prose|necessity|night_work", "id": "permit-p060-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p060-c02:prose|necessity|operator_level", "id": "permit-p060-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p060-c02:prose|necessity|residential_zone", "id": "permit-p060-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p060-c02:prose|necessity|sidewalk_closure", "id": "permit-p060-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p060-c02:prose|necessity|start_day", "id": "permit-p060-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p060-c02:prose|necessity|weight_kg", "id": "permit-p060-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p061-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p061-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p061-c00:prose|necessity|application_day", "id": "permit-p061-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p061-c00:prose|necessity|equipment_class", "id": "permit-p061-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p061-c00:prose|necessity|night_work", "id": "permit-p061-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p061-c00:prose|necessity|sidewalk_closure", "id": "permit-p061-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p061-c00:prose|necessity|start_day", "id": "permit-p061-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p061-c00:prose|necessity|weight_kg", "id": "permit-p061-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p061-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p061-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p062-c00:prose|boundary|application_day=April 5, 2027", "id": "permit-p062-c00:prose", "kind": "boundary", "edits": {"application_day": "April 5, 2027"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p062-c01:prose|boundary|night_work=no", "id": "permit-p062-c01:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p062-c01:prose|necessity|crew_size", "id": "permit-p062-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p062-c01:prose|necessity|night_work", "id": "permit-p062-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p062-c02:prose|boundary|residential_zone=yes", "id": "permit-p062-c02:prose", "kind": "boundary", "edits": {"residential_zone": "yes"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p062-c02:prose|necessity|application_day", "id": "permit-p062-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p062-c02:prose|necessity|crew_size", "id": "permit-p062-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p062-c02:prose|necessity|end_day", "id": "permit-p062-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p062-c02:prose|necessity|residential_zone", "id": "permit-p062-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p062-c02:prose|necessity|start_day", "id": "permit-p062-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p062-c02:prose|necessity|weight_kg", "id": "permit-p062-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p063-c00:prose|boundary|application_day=March 8, 2027;weight_kg=6000", "id": "permit-p063-c00:prose", "kind": "boundary", "edits": {"application_day": "March 8, 2027", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p063-c01:prose|boundary|weight_kg=8000", "id": "permit-p063-c01:prose", "kind": "boundary", "edits": {"weight_kg": "8000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p063-c01:prose|necessity|weight_kg", "id": "permit-p063-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p064-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p064-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p064-c01:prose|necessity|application_day", "id": "permit-p064-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p064-c01:prose|necessity|end_day", "id": "permit-p064-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p064-c01:prose|necessity|equipment_class", "id": "permit-p064-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p064-c01:prose|necessity|operator_level", "id": "permit-p064-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p064-c01:prose|necessity|sidewalk_closure", "id": "permit-p064-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p064-c01:prose|necessity|start_day", "id": "permit-p064-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p064-c02:prose|boundary|equipment_class=a Class K-1 skylift;operator_level=a level 2", "id": "permit-p064-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift", "operator_level": "a level 2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p065-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p065-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p065-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p065-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p066-c00:prose|boundary|operator_level=a level 4", "id": "permit-p066-c00:prose", "kind": "boundary", "edits": {"operator_level": "a level 4"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p066-c01:prose|boundary|operator_level=2", "id": "permit-p066-c01:prose", "kind": "boundary", "edits": {"operator_level": "2"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p066-c02:prose|boundary|weight_kg=4000", "id": "permit-p066-c02:prose", "kind": "boundary", "edits": {"weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|residential_zone", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p066-c02:prose|necessity|weight_kg", "id": "permit-p066-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p067-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p067-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p067-c01:prose|boundary|end_day=April 15, 2027", "id": "permit-p067-c01:prose", "kind": "boundary", "edits": {"end_day": "April 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p067-c01:prose|necessity|end_day", "id": "permit-p067-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p068-c00:prose|boundary|equipment_class=a Class K-2 skylift", "id": "permit-p068-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p068-c01:prose|boundary|residential_zone=no", "id": "permit-p068-c01:prose", "kind": "boundary", "edits": {"residential_zone": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p068-c01:prose|necessity|residential_zone", "id": "permit-p068-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p068-c01:prose|necessity|weight_kg", "id": "permit-p068-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p068-c02:prose|boundary|weight_kg=6000", "id": "permit-p068-c02:prose", "kind": "boundary", "edits": {"weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p068-c02:prose|necessity|operator_level", "id": "permit-p068-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p068-c02:prose|necessity|weight_kg", "id": "permit-p068-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p069-c00:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p069-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p069-c01:prose|boundary|sidewalk_closure=no", "id": "permit-p069-c01:prose", "kind": "boundary", "edits": {"sidewalk_closure": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p069-c01:prose|necessity|neighbor_notice", "id": "permit-p069-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p069-c01:prose|necessity|sidewalk_closure", "id": "permit-p069-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p070-c00:prose|boundary|equipment_class=a Class K-1 skylift;residential_zone=no", "id": "permit-p070-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift", "residential_zone": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p070-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p070-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p070-c02:prose|boundary|insured_amount=$0", "id": "permit-p070-c02:prose", "kind": "boundary", "edits": {"insured_amount": "$0"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p070-c02:prose|necessity|end_day", "id": "permit-p070-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p070-c02:prose|necessity|equipment_class", "id": "permit-p070-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p070-c02:prose|necessity|insured_amount", "id": "permit-p070-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p070-c02:prose|necessity|night_work", "id": "permit-p070-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p070-c02:prose|necessity|residential_zone", "id": "permit-p070-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p070-c02:prose|necessity|sidewalk_closure", "id": "permit-p070-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p070-c02:prose|necessity|weight_kg", "id": "permit-p070-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p071-c00:prose|boundary|equipment_class=a Tessel-type crawler crane;residential_zone=yes", "id": "permit-p071-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane", "residential_zone": "yes"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p071-c00:prose|necessity|end_day", "id": "permit-p071-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p071-c00:prose|necessity|equipment_class", "id": "permit-p071-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p071-c00:prose|necessity|insured_amount", "id": "permit-p071-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p071-c00:prose|necessity|operator_level", "id": "permit-p071-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p071-c00:prose|necessity|residential_zone", "id": "permit-p071-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p071-c00:prose|necessity|sidewalk_closure", "id": "permit-p071-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p071-c00:prose|necessity|weight_kg", "id": "permit-p071-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p071-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p071-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "approve"}
+{"iid": "permit-p071-c01:prose|necessity|end_day", "id": "permit-p071-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p071-c01:prose|necessity|equipment_class", "id": "permit-p071-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p071-c01:prose|necessity|operator_level", "id": "permit-p071-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p071-c01:prose|necessity|residential_zone", "id": "permit-p071-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p071-c01:prose|necessity|start_day", "id": "permit-p071-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p072-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p072-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p072-c01:prose|boundary|night_work=no;operator_level=1;weight_kg=6000", "id": "permit-p072-c01:prose", "kind": "boundary", "edits": {"night_work": "no", "operator_level": "1", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p072-c02:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p072-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p073-c00:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p073-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p073-c00:prose|necessity|equipment_class", "id": "permit-p073-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p073-c00:prose|necessity|operator_level", "id": "permit-p073-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p073-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p073-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p073-c01:prose|necessity|end_day", "id": "permit-p073-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p073-c01:prose|necessity|equipment_class", "id": "permit-p073-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p073-c01:prose|necessity|insured_amount", "id": "permit-p073-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p073-c01:prose|necessity|night_work", "id": "permit-p073-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p073-c01:prose|necessity|residential_zone", "id": "permit-p073-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p073-c01:prose|necessity|start_day", "id": "permit-p073-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p073-c01:prose|necessity|weight_kg", "id": "permit-p073-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p074-c00:prose|necessity|equipment_class", "id": "permit-p074-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p074-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p074-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|equipment_class", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|neighbor_notice", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|operator_level", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|residential_zone", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p074-c01:prose|necessity|weight_kg", "id": "permit-p074-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p074-c02:prose|boundary|residential_zone=no", "id": "permit-p074-c02:prose", "kind": "boundary", "edits": {"residential_zone": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p074-c02:prose|necessity|night_work", "id": "permit-p074-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p074-c02:prose|necessity|residential_zone", "id": "permit-p074-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p075-c00:prose|boundary|end_day=May 3, 2027", "id": "permit-p075-c00:prose", "kind": "boundary", "edits": {"end_day": "May 3, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p075-c00:prose|necessity|end_day", "id": "permit-p075-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p075-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p075-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p076-c00:prose|boundary|night_work=no;weight_kg=4000", "id": "permit-p076-c00:prose", "kind": "boundary", "edits": {"night_work": "no", "weight_kg": "4000"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p076-c01:prose|boundary|weight_kg=4000", "id": "permit-p076-c01:prose", "kind": "boundary", "edits": {"weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p076-c02:prose|boundary|application_day=March 8, 2027;end_day=May 1, 2027", "id": "permit-p076-c02:prose", "kind": "boundary", "edits": {"application_day": "March 8, 2027", "end_day": "May 1, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p078-c00:prose|boundary|start_day=April 6, 2027", "id": "permit-p078-c00:prose", "kind": "boundary", "edits": {"start_day": "April 6, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p078-c00:prose|necessity|start_day", "id": "permit-p078-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p078-c01:prose|boundary|weight_kg=4000", "id": "permit-p078-c01:prose", "kind": "boundary", "edits": {"weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p078-c01:prose|necessity|equipment_class", "id": "permit-p078-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p078-c01:prose|necessity|weight_kg", "id": "permit-p078-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p079-c00:prose|boundary|application_day=March 1, 2027", "id": "permit-p079-c00:prose", "kind": "boundary", "edits": {"application_day": "March 1, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p079-c00:prose|necessity|application_day", "id": "permit-p079-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p079-c00:prose|necessity|start_day", "id": "permit-p079-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p079-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p079-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|application_day", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|equipment_class", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|night_work", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|operator_level", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|residential_zone", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|sidewalk_closure", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p079-c01:prose|necessity|start_day", "id": "permit-p079-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p080-c00:prose|boundary|night_work=no", "id": "permit-p080-c00:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p080-c01:prose|boundary|night_work=no", "id": "permit-p080-c01:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p080-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p080-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p081-c00:prose|boundary|application_day=March 15, 2027", "id": "permit-p081-c00:prose", "kind": "boundary", "edits": {"application_day": "March 15, 2027"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|application_day", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|end_day", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|insured_amount", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|neighbor_notice", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|night_work", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|operator_level", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p081-c00:prose|necessity|start_day", "id": "permit-p081-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p081-c01:prose|boundary|application_day=March 1, 2027", "id": "permit-p081-c01:prose", "kind": "boundary", "edits": {"application_day": "March 1, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p081-c01:prose|necessity|application_day", "id": "permit-p081-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p082-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p082-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p082-c01:prose|boundary|application_day=March 1, 2027", "id": "permit-p082-c01:prose", "kind": "boundary", "edits": {"application_day": "March 1, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p082-c01:prose|necessity|application_day", "id": "permit-p082-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p082-c01:prose|necessity|start_day", "id": "permit-p082-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p082-c02:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p082-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p083-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p083-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p083-c01:prose|boundary|application_day=April 1, 2027", "id": "permit-p083-c01:prose", "kind": "boundary", "edits": {"application_day": "April 1, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p083-c01:prose|necessity|application_day", "id": "permit-p083-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p083-c01:prose|necessity|start_day", "id": "permit-p083-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p084-c00:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p084-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p084-c00:prose|necessity|equipment_class", "id": "permit-p084-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p084-c00:prose|necessity|operator_level", "id": "permit-p084-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p084-c01:prose|boundary|equipment_class=a Class K-2 skylift", "id": "permit-p084-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p084-c01:prose|necessity|application_day", "id": "permit-p084-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p084-c01:prose|necessity|equipment_class", "id": "permit-p084-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p084-c01:prose|necessity|neighbor_notice", "id": "permit-p084-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p084-c01:prose|necessity|night_work", "id": "permit-p084-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p084-c01:prose|necessity|weight_kg", "id": "permit-p084-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p084-c02:prose|boundary|operator_level=1", "id": "permit-p084-c02:prose", "kind": "boundary", "edits": {"operator_level": "1"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p084-c02:prose|necessity|operator_level", "id": "permit-p084-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p085-c01:prose|boundary|weight_kg=4000", "id": "permit-p085-c01:prose", "kind": "boundary", "edits": {"weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p085-c01:prose|necessity|equipment_class", "id": "permit-p085-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p085-c01:prose|necessity|residential_zone", "id": "permit-p085-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p085-c01:prose|necessity|weight_kg", "id": "permit-p085-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p086-c00:prose|boundary|weight_kg=8000", "id": "permit-p086-c00:prose", "kind": "boundary", "edits": {"weight_kg": "8000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p086-c01:prose|boundary|end_day=April 16, 2027", "id": "permit-p086-c01:prose", "kind": "boundary", "edits": {"end_day": "April 16, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p086-c01:prose|necessity|end_day", "id": "permit-p086-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p086-c02:prose|boundary|sidewalk_closure=no", "id": "permit-p086-c02:prose", "kind": "boundary", "edits": {"sidewalk_closure": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p086-c02:prose|necessity|neighbor_notice", "id": "permit-p086-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p086-c02:prose|necessity|sidewalk_closure", "id": "permit-p086-c02:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|boundary|sidewalk_closure=no", "id": "permit-p087-c00:prose", "kind": "boundary", "edits": {"sidewalk_closure": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|neighbor_notice", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p087-c00:prose|necessity|sidewalk_closure", "id": "permit-p087-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "approve"}
+{"iid": "permit-p087-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p087-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p088-c00:prose|boundary|residential_zone=no", "id": "permit-p088-c00:prose", "kind": "boundary", "edits": {"residential_zone": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p088-c00:prose|necessity|equipment_class", "id": "permit-p088-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p088-c00:prose|necessity|residential_zone", "id": "permit-p088-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p088-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p088-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p088-c02:prose|boundary|insured_amount=$1,000,000", "id": "permit-p088-c02:prose", "kind": "boundary", "edits": {"insured_amount": "$1,000,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p088-c02:prose|necessity|equipment_class", "id": "permit-p088-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p088-c02:prose|necessity|insured_amount", "id": "permit-p088-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p089-c00:prose|boundary|insured_amount=$2,000,000;operator_level=1", "id": "permit-p089-c00:prose", "kind": "boundary", "edits": {"insured_amount": "$2,000,000", "operator_level": "1"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p089-c01:prose|boundary|application_day=March 22, 2026", "id": "permit-p089-c01:prose", "kind": "boundary", "edits": {"application_day": "March 22, 2026"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p089-c01:prose|necessity|application_day", "id": "permit-p089-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p089-c01:prose|necessity|end_day", "id": "permit-p089-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p089-c01:prose|necessity|insured_amount", "id": "permit-p089-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p089-c01:prose|necessity|operator_level", "id": "permit-p089-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p089-c01:prose|necessity|residential_zone", "id": "permit-p089-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p089-c01:prose|necessity|sidewalk_closure", "id": "permit-p089-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p089-c01:prose|necessity|start_day", "id": "permit-p089-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p090-c01:prose|boundary|application_day=March 1, 2027;end_day=April 15, 2027", "id": "permit-p090-c01:prose", "kind": "boundary", "edits": {"application_day": "March 1, 2027", "end_day": "April 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p090-c02:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p090-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p090-c02:prose|necessity|equipment_class", "id": "permit-p090-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p090-c02:prose|necessity|operator_level", "id": "permit-p090-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p091-c00:prose|boundary|application_day=March 8, 2027;weight_kg=4000", "id": "permit-p091-c00:prose", "kind": "boundary", "edits": {"application_day": "March 8, 2027", "weight_kg": "4000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p091-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p091-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p091-c01:prose|necessity|equipment_class", "id": "permit-p091-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p091-c01:prose|necessity|operator_level", "id": "permit-p091-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "approve"}
+{"iid": "permit-p092-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p092-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p092-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p092-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p093-c00:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p093-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p093-c01:prose|boundary|equipment_class=a Class K-2 boom lift", "id": "permit-p093-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 boom lift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p094-c00:prose|boundary|equipment_class=a Class K-2 skylift", "id": "permit-p094-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p094-c00:prose|necessity|end_day", "id": "permit-p094-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p094-c00:prose|necessity|equipment_class", "id": "permit-p094-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p094-c00:prose|necessity|insured_amount", "id": "permit-p094-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p094-c00:prose|necessity|night_work", "id": "permit-p094-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p094-c00:prose|necessity|sidewalk_closure", "id": "permit-p094-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p094-c02:prose|boundary|equipment_class=a Class K-2 skylift", "id": "permit-p094-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p095-c00:prose|boundary|equipment_class=a Class K-2 skylift", "id": "permit-p095-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p095-c00:prose|necessity|equipment_class", "id": "permit-p095-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p095-c00:prose|necessity|insured_amount", "id": "permit-p095-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p095-c00:prose|necessity|night_work", "id": "permit-p095-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p095-c00:prose|necessity|sidewalk_closure", "id": "permit-p095-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p095-c00:prose|necessity|weight_kg", "id": "permit-p095-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p095-c01:prose|boundary|night_work=no", "id": "permit-p095-c01:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p096-c00:prose|boundary|application_day=March 15, 2027;residential_zone=no", "id": "permit-p096-c00:prose", "kind": "boundary", "edits": {"application_day": "March 15, 2027", "residential_zone": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p096-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p096-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p096-c01:prose|necessity|application_day", "id": "permit-p096-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p096-c01:prose|necessity|end_day", "id": "permit-p096-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p096-c01:prose|necessity|equipment_class", "id": "permit-p096-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p096-c01:prose|necessity|residential_zone", "id": "permit-p096-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p096-c01:prose|necessity|sidewalk_closure", "id": "permit-p096-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p096-c01:prose|necessity|start_day", "id": "permit-p096-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p096-c01:prose|necessity|weight_kg", "id": "permit-p096-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p096-c02:prose|boundary|neighbor_notice=yes", "id": "permit-p096-c02:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p096-c02:prose|necessity|neighbor_notice", "id": "permit-p096-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p096-c02:prose|necessity|residential_zone", "id": "permit-p096-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p097-c00:prose|boundary|start_day=May 15, 2027", "id": "permit-p097-c00:prose", "kind": "boundary", "edits": {"start_day": "May 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p097-c00:prose|necessity|end_day", "id": "permit-p097-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p097-c00:prose|necessity|start_day", "id": "permit-p097-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p097-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p097-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p098-c01:prose|boundary|application_day=April 12, 2027", "id": "permit-p098-c01:prose", "kind": "boundary", "edits": {"application_day": "April 12, 2027"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|application_day", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|end_day", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|insured_amount", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|night_work", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|operator_level", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|sidewalk_closure", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p098-c01:prose|necessity|start_day", "id": "permit-p098-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p098-c02:prose|necessity|equipment_class", "id": "permit-p098-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p098-c02:prose|necessity|insured_amount", "id": "permit-p098-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p099-c00:prose|boundary|application_day=March 1, 2027;crew_size=4", "id": "permit-p099-c00:prose", "kind": "boundary", "edits": {"application_day": "March 1, 2027", "crew_size": "4"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p099-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p099-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p100-c00:prose|boundary|equipment_class=a Tessel-type crawler crane;insured_amount=$1,000,000", "id": "permit-p100-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane", "insured_amount": "$1,000,000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p100-c00:prose|necessity|application_day", "id": "permit-p100-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p100-c00:prose|necessity|equipment_class", "id": "permit-p100-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p100-c00:prose|necessity|insured_amount", "id": "permit-p100-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p100-c00:prose|necessity|residential_zone", "id": "permit-p100-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p100-c00:prose|necessity|sidewalk_closure", "id": "permit-p100-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p100-c00:prose|necessity|start_day", "id": "permit-p100-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p100-c00:prose|necessity|weight_kg", "id": "permit-p100-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p100-c01:prose|boundary|application_day=February 22, 2027;weight_kg=6000", "id": "permit-p100-c01:prose", "kind": "boundary", "edits": {"application_day": "February 22, 2027", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p100-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p100-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p100-c02:prose|necessity|application_day", "id": "permit-p100-c02:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p100-c02:prose|necessity|equipment_class", "id": "permit-p100-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p100-c02:prose|necessity|neighbor_notice", "id": "permit-p100-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p100-c02:prose|necessity|residential_zone", "id": "permit-p100-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p100-c02:prose|necessity|weight_kg", "id": "permit-p100-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p101-c00:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p101-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p101-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p101-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p101-c01:prose|necessity|application_day", "id": "permit-p101-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p101-c01:prose|necessity|equipment_class", "id": "permit-p101-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p101-c01:prose|necessity|sidewalk_closure", "id": "permit-p101-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p101-c01:prose|necessity|weight_kg", "id": "permit-p101-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p102-c00:prose|boundary|weight_kg=8000", "id": "permit-p102-c00:prose", "kind": "boundary", "edits": {"weight_kg": "8000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p102-c00:prose|necessity|weight_kg", "id": "permit-p102-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p102-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p102-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p102-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p102-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p102-c02:prose|necessity|end_day", "id": "permit-p102-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p102-c02:prose|necessity|equipment_class", "id": "permit-p102-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p102-c02:prose|necessity|neighbor_notice", "id": "permit-p102-c02:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p102-c02:prose|necessity|night_work", "id": "permit-p102-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p102-c02:prose|necessity|weight_kg", "id": "permit-p102-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p103-c00:prose|boundary|night_work=no;operator_level=2", "id": "permit-p103-c00:prose", "kind": "boundary", "edits": {"night_work": "no", "operator_level": "2"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p103-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p103-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p103-c01:prose|necessity|application_day", "id": "permit-p103-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p103-c01:prose|necessity|end_day", "id": "permit-p103-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p103-c01:prose|necessity|equipment_class", "id": "permit-p103-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p103-c01:prose|necessity|night_work", "id": "permit-p103-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p103-c01:prose|necessity|operator_level", "id": "permit-p103-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p103-c01:prose|necessity|residential_zone", "id": "permit-p103-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p103-c01:prose|necessity|sidewalk_closure", "id": "permit-p103-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p103-c01:prose|necessity|weight_kg", "id": "permit-p103-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p104-c00:prose|boundary|equipment_class=a Tessel-type crawler crane;insured_amount=$2,000,000", "id": "permit-p104-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane", "insured_amount": "$2,000,000"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p104-c01:prose|boundary|weight_kg=6000", "id": "permit-p104-c01:prose", "kind": "boundary", "edits": {"weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p104-c01:prose|necessity|equipment_class", "id": "permit-p104-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p104-c01:prose|necessity|weight_kg", "id": "permit-p104-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p104-c02:prose|boundary|start_day=April 6, 2027", "id": "permit-p104-c02:prose", "kind": "boundary", "edits": {"start_day": "April 6, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p104-c02:prose|necessity|start_day", "id": "permit-p104-c02:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p105-c00:prose|boundary|application_day=March 8, 2026", "id": "permit-p105-c00:prose", "kind": "boundary", "edits": {"application_day": "March 8, 2026"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|application_day", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|insured_amount", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|operator_level", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|sidewalk_closure", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p105-c00:prose|necessity|start_day", "id": "permit-p105-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p105-c01:prose|boundary|application_day=April 1, 2027", "id": "permit-p105-c01:prose", "kind": "boundary", "edits": {"application_day": "April 1, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p105-c01:prose|necessity|application_day", "id": "permit-p105-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p105-c01:prose|necessity|start_day", "id": "permit-p105-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "approve"}
+{"iid": "permit-p106-c00:prose|boundary|application_day=April 1, 2027;equipment_class=a Class K-1 skylift", "id": "permit-p106-c00:prose", "kind": "boundary", "edits": {"application_day": "April 1, 2027", "equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p106-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p106-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "approve", "gold_target": "deny"}
+{"iid": "permit-p106-c01:prose|necessity|equipment_class", "id": "permit-p106-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p106-c01:prose|necessity|operator_level", "id": "permit-p106-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p106-c01:prose|necessity|weight_kg", "id": "permit-p106-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p106-c02:prose|boundary|end_day=May 15, 2027", "id": "permit-p106-c02:prose", "kind": "boundary", "edits": {"end_day": "May 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p106-c02:prose|necessity|end_day", "id": "permit-p106-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p107-c00:prose|boundary|equipment_class=a Class K-2 skylift", "id": "permit-p107-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p108-c00:prose|boundary|night_work=no", "id": "permit-p108-c00:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p108-c00:prose|necessity|crew_size", "id": "permit-p108-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p108-c00:prose|necessity|night_work", "id": "permit-p108-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p108-c02:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p108-c02:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p108-c02:prose|necessity|crew_size", "id": "permit-p108-c02:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p108-c02:prose|necessity|end_day", "id": "permit-p108-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p108-c02:prose|necessity|equipment_class", "id": "permit-p108-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p108-c02:prose|necessity|insured_amount", "id": "permit-p108-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p108-c02:prose|necessity|operator_level", "id": "permit-p108-c02:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p108-c02:prose|necessity|residential_zone", "id": "permit-p108-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p108-c02:prose|necessity|weight_kg", "id": "permit-p108-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p109-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p109-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p109-c00:prose|necessity|crew_size", "id": "permit-p109-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "deny"}
+{"iid": "permit-p109-c00:prose|necessity|end_day", "id": "permit-p109-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p109-c00:prose|necessity|equipment_class", "id": "permit-p109-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p109-c00:prose|necessity|insured_amount", "id": "permit-p109-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p109-c00:prose|necessity|operator_level", "id": "permit-p109-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p109-c00:prose|necessity|residential_zone", "id": "permit-p109-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p109-c00:prose|necessity|start_day", "id": "permit-p109-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p109-c00:prose|necessity|weight_kg", "id": "permit-p109-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p110-c00:prose|boundary|equipment_class=a Class K-1 skylift;night_work=no", "id": "permit-p110-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift", "night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p110-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p110-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p110-c01:prose|necessity|application_day", "id": "permit-p110-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p110-c01:prose|necessity|end_day", "id": "permit-p110-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p110-c01:prose|necessity|equipment_class", "id": "permit-p110-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p110-c01:prose|necessity|insured_amount", "id": "permit-p110-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p110-c01:prose|necessity|night_work", "id": "permit-p110-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p110-c01:prose|necessity|residential_zone", "id": "permit-p110-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p110-c01:prose|necessity|start_day", "id": "permit-p110-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p110-c01:prose|necessity|weight_kg", "id": "permit-p110-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p110-c02:prose|boundary|weight_kg=6000", "id": "permit-p110-c02:prose", "kind": "boundary", "edits": {"weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p110-c02:prose|necessity|equipment_class", "id": "permit-p110-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p110-c02:prose|necessity|residential_zone", "id": "permit-p110-c02:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p110-c02:prose|necessity|weight_kg", "id": "permit-p110-c02:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "approve"}
+{"iid": "permit-p111-c00:prose|boundary|crew_size=4", "id": "permit-p111-c00:prose", "kind": "boundary", "edits": {"crew_size": "4"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p111-c00:prose|necessity|crew_size", "id": "permit-p111-c00:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p111-c00:prose|necessity|residential_zone", "id": "permit-p111-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "approve"}
+{"iid": "permit-p111-c01:prose|boundary|night_work=no", "id": "permit-p111-c01:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p111-c01:prose|necessity|crew_size", "id": "permit-p111-c01:prose", "kind": "necessity", "edits": {"crew_size": null}, "target": "approve"}
+{"iid": "permit-p111-c01:prose|necessity|night_work", "id": "permit-p111-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p112-c00:prose|boundary|equipment_class=a Class K-2 skylift", "id": "permit-p112-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|application_day", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|equipment_class", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|night_work", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|operator_level", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|residential_zone", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|sidewalk_closure", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p112-c00:prose|necessity|start_day", "id": "permit-p112-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p112-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p112-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p112-c01:prose|necessity|application_day", "id": "permit-p112-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p112-c01:prose|necessity|end_day", "id": "permit-p112-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p112-c01:prose|necessity|equipment_class", "id": "permit-p112-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p112-c01:prose|necessity|night_work", "id": "permit-p112-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p112-c01:prose|necessity|operator_level", "id": "permit-p112-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p112-c01:prose|necessity|residential_zone", "id": "permit-p112-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p112-c01:prose|necessity|sidewalk_closure", "id": "permit-p112-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p112-c01:prose|necessity|start_day", "id": "permit-p112-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p112-c01:prose|necessity|weight_kg", "id": "permit-p112-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p112-c02:prose|boundary|night_work=no", "id": "permit-p112-c02:prose", "kind": "boundary", "edits": {"night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p112-c02:prose|necessity|night_work", "id": "permit-p112-c02:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "approve"}
+{"iid": "permit-p113-c00:prose|boundary|equipment_class=a Class K-2 skylift", "id": "permit-p113-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p113-c00:prose|necessity|application_day", "id": "permit-p113-c00:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p113-c00:prose|necessity|end_day", "id": "permit-p113-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p113-c00:prose|necessity|equipment_class", "id": "permit-p113-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p113-c00:prose|necessity|night_work", "id": "permit-p113-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p113-c00:prose|necessity|sidewalk_closure", "id": "permit-p113-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p113-c00:prose|necessity|start_day", "id": "permit-p113-c00:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p113-c00:prose|necessity|weight_kg", "id": "permit-p113-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p113-c01:prose|boundary|application_day=March 15, 2027;neighbor_notice=yes", "id": "permit-p113-c01:prose", "kind": "boundary", "edits": {"application_day": "March 15, 2027", "neighbor_notice": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p113-c01:prose|necessity|application_day", "id": "permit-p113-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "approve"}
+{"iid": "permit-p114-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p114-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p114-c00:prose|necessity|end_day", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p114-c00:prose|necessity|equipment_class", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p114-c00:prose|necessity|insured_amount", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p114-c00:prose|necessity|neighbor_notice", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p114-c00:prose|necessity|operator_level", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p114-c00:prose|necessity|residential_zone", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p114-c00:prose|necessity|weight_kg", "id": "permit-p114-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|boundary|equipment_class=a Class K-1 skylift", "id": "permit-p114-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-1 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|end_day", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|equipment_class", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|insured_amount", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|neighbor_notice", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|operator_level", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|residential_zone", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p114-c01:prose|necessity|weight_kg", "id": "permit-p114-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p114-c02:prose|boundary|insured_amount=$2,000,000", "id": "permit-p114-c02:prose", "kind": "boundary", "edits": {"insured_amount": "$2,000,000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p114-c02:prose|necessity|equipment_class", "id": "permit-p114-c02:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "approve"}
+{"iid": "permit-p114-c02:prose|necessity|insured_amount", "id": "permit-p114-c02:prose", "kind": "necessity", "edits": {"insured_amount": null}, "target": "approve"}
+{"iid": "permit-p115-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p115-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p115-c00:prose|necessity|end_day", "id": "permit-p115-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p115-c00:prose|necessity|equipment_class", "id": "permit-p115-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p115-c00:prose|necessity|sidewalk_closure", "id": "permit-p115-c00:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p115-c00:prose|necessity|weight_kg", "id": "permit-p115-c00:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p115-c01:prose|boundary|end_day=March 22, 2027;weight_kg=6000", "id": "permit-p115-c01:prose", "kind": "boundary", "edits": {"end_day": "March 22, 2027", "weight_kg": "6000"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p116-c00:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p116-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p116-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p116-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p116-c01:prose|necessity|application_day", "id": "permit-p116-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p116-c01:prose|necessity|equipment_class", "id": "permit-p116-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p116-c01:prose|necessity|night_work", "id": "permit-p116-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p116-c01:prose|necessity|sidewalk_closure", "id": "permit-p116-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p116-c01:prose|necessity|start_day", "id": "permit-p116-c01:prose", "kind": "necessity", "edits": {"start_day": null}, "target": "deny"}
+{"iid": "permit-p116-c02:prose|boundary|insured_amount=$1,500,000;night_work=no", "id": "permit-p116-c02:prose", "kind": "boundary", "edits": {"insured_amount": "$1,500,000", "night_work": "no"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p117-c00:prose|boundary|neighbor_notice=yes", "id": "permit-p117-c00:prose", "kind": "boundary", "edits": {"neighbor_notice": "yes"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p117-c00:prose|necessity|neighbor_notice", "id": "permit-p117-c00:prose", "kind": "necessity", "edits": {"neighbor_notice": null}, "target": "approve"}
+{"iid": "permit-p117-c01:prose|boundary|equipment_class=a Tessel-type crawler crane", "id": "permit-p117-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Tessel-type crawler crane"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p117-c01:prose|necessity|application_day", "id": "permit-p117-c01:prose", "kind": "necessity", "edits": {"application_day": null}, "target": "deny"}
+{"iid": "permit-p117-c01:prose|necessity|equipment_class", "id": "permit-p117-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p117-c01:prose|necessity|night_work", "id": "permit-p117-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p117-c01:prose|necessity|sidewalk_closure", "id": "permit-p117-c01:prose", "kind": "necessity", "edits": {"sidewalk_closure": null}, "target": "deny"}
+{"iid": "permit-p118-c00:prose|boundary|equipment_class=a Class K-2 skylift", "id": "permit-p118-c00:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 skylift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p118-c00:prose|necessity|end_day", "id": "permit-p118-c00:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p118-c00:prose|necessity|equipment_class", "id": "permit-p118-c00:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p118-c00:prose|necessity|night_work", "id": "permit-p118-c00:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p118-c00:prose|necessity|operator_level", "id": "permit-p118-c00:prose", "kind": "necessity", "edits": {"operator_level": null}, "target": "deny"}
+{"iid": "permit-p118-c00:prose|necessity|residential_zone", "id": "permit-p118-c00:prose", "kind": "necessity", "edits": {"residential_zone": null}, "target": "deny"}
+{"iid": "permit-p118-c01:prose|boundary|equipment_class=a Class K-2 boom lift", "id": "permit-p118-c01:prose", "kind": "boundary", "edits": {"equipment_class": "a Class K-2 boom lift"}, "target": "deny", "gold_target": "deny"}
+{"iid": "permit-p118-c01:prose|necessity|end_day", "id": "permit-p118-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "deny"}
+{"iid": "permit-p118-c01:prose|necessity|equipment_class", "id": "permit-p118-c01:prose", "kind": "necessity", "edits": {"equipment_class": null}, "target": "deny"}
+{"iid": "permit-p118-c01:prose|necessity|night_work", "id": "permit-p118-c01:prose", "kind": "necessity", "edits": {"night_work": null}, "target": "deny"}
+{"iid": "permit-p118-c01:prose|necessity|weight_kg", "id": "permit-p118-c01:prose", "kind": "necessity", "edits": {"weight_kg": null}, "target": "deny"}
+{"iid": "permit-p118-c02:prose|boundary|end_day=May 3, 2027", "id": "permit-p118-c02:prose", "kind": "boundary", "edits": {"end_day": "May 3, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p118-c02:prose|necessity|end_day", "id": "permit-p118-c02:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
+{"iid": "permit-p119-c01:prose|boundary|end_day=May 15, 2027", "id": "permit-p119-c01:prose", "kind": "boundary", "edits": {"end_day": "May 15, 2027"}, "target": "approve", "gold_target": "approve"}
+{"iid": "permit-p119-c01:prose|necessity|end_day", "id": "permit-p119-c01:prose", "kind": "necessity", "edits": {"end_day": null}, "target": "approve"}
