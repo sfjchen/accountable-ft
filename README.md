@@ -6,7 +6,7 @@ Can fine-tuning make a model's stated reasons track its decisions? We train Qwen
 
 ## Results so far
 
-Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 95% CI clustered by rule family. v1 = unseen families of the invented domains, mortgage = 24 held-out mortgage families. Logs `final-v1-gemini-eval-053d9ef-20261112-0351`, `final-mortgage-gemini-eval-053d9ef-20261112-0351`, `final-v1-opus-eval-053d9ef-20261112-0353`, `final-mortgage-opus-eval-053d9ef-20261112-0353`.
+Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 95% CI clustered by rule family. v1 = unseen families of the invented domains, mortgage = 24 held-out mortgage families. Logs `final-v1-gemini-eval-e739885-20261118-1812`, `final-mortgage-gemini-eval-e739885-20261118-1815`, `final-v1-opus-eval-e739885-20261118-1817`, `final-mortgage-opus-eval-e739885-20261118-1820`.
 
 | training mix | v1, Gemini | mortgage, Gemini | v1, Opus | mortgage, Opus | accuracy, v1 |
 |---|---|---|---|---|---|
@@ -17,14 +17,15 @@ Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 9
 - Explanation SFT matches or beats decision-only on accuracy in every mix and is the only condition with valid explanations (0.756 vs 0.000 on v1, round 1).
 - Each kind of training row helps most on tests like it. The row-matched grid below separates mix from size.
 
-## Status (Nov 14)
+## Status (Nov 18)
 
 - Row-matched grid: 3 mixes (`rm-inv` grant + trial, `rm-real` mortgage + SNAP, `rm-mix` all 4) at 3,600 train rows x 2 conditions x 3 seeds = 18 runs. Tests: unseen families of the 4 training domains, review and IRS dependent (both held out from every mix). Pre-registration in DECISIONS.md.
-  - All 18 done and scored with Gemini. Main score failed: paired gain on IRS dependent is below 0 for every mix (-3.6 to -6.6), no contrast clears Holm. Mix comes close to the best specialist on explanation correctness on every test. Details in DECISIONS.md.
-  - Still running: Opus on the grid (`~/dev/logs/opus-chain.sh`, after permit and `pe-*`), and fill array 18493125 on sc (repeat and self-prediction passes).
-- Prompted-explanation control (`--mode explain`, runs `pe-*`): a fluent untrained explanation gets half the invented-test gain and all of the mortgage gain at 8% correct. Trained explanations win on answer-changing edits (+11.8). Logs in DECISIONS.md.
+  - Main score failed: paired gain on IRS dependent is below 0 for every mix (-3.6 to -6.6), no contrast clears Holm. Opus agrees (no CI clear of 0).
+  - New test families for every test (post hoc): pooled, real and mixed beat invented-only on mortgage (+6.6 to +6.7) and SNAP (+8.1 to +8.4) after Holm. IRS dependent real and mixed gain more on the new families than the old, so they are not pooled. Details in DECISIONS.md.
+- Error analysis of 50 IRS dependent failures (`errors.py`): 61% of wrong decisions cite a rule that is waived or covers the other claim type.
+- Prompted-explanation control (`--mode explain`, runs `pe-*`): a fluent untrained explanation gets half the invented-test gain and all of the mortgage gain at 8% correct. Trained explanations win on answer-changing edits (+11.8).
 - Permit transfer (round 1 on a never-trained invented domain): paired gain +10.0 [6.5, 13.6].
-- New metrics: `sim_delta[hard]` (edits the simulator misses without an explanation) and `sim_delta[valid]`/`[invalid]` (whether the explanation it reads is correct, descriptive).
+- Every number above was rescored at e739885 (`score.sh`, FarmShare array 1996732, logs `final-*-eval-e739885-20261118-*`).
 
 ## Files
 
@@ -59,7 +60,7 @@ From the repo root. Once per shell: `export PATH=/opt/homebrew/share/google-clou
    - sc, the 18-run grid (trains, then answers all 4 test files): `MAIL=<address> bash cluster.sh grid`
    - Prompted base: `bash cluster.sh base`
 7. Copy back: `rsync -av --exclude slurm $USER@login.farmshare.stanford.edu:/scratch/users/$USER/accountable-ft/runs/ runs/`.
-8. Simulate, all 3 passes on a frozen run: `python infer.py --mode simulate --all-sim --data data/v1.jsonl --bank data/v1.bank.jsonl --frozen runs/<run>.jsonl $F`. Opus: `--backend claude-cli --model claude-opus-5-5` in place of `$F`, outputs in `runs/sim-opus/`.
-9. Score: `python evaluate.py runs/*-e2-s*.jsonl --data data/v1.jsonl --bank data/v1.bank.jsonl --epoch 2`. Mix contrasts: `--contrast rm-mix rm-real rm-inv` on v1, `--contrast <file>-rm-mix <file>-rm-real <file>-rm-inv` on the other files.
+8. Simulate, all 3 passes on a frozen run: `python infer.py --mode simulate --all-sim --data data/v1.jsonl --bank data/v1.bank.jsonl --frozen runs/<run>.jsonl $F`. Opus: `--backend claude-cli --model claude-opus-5-5` in place of `$F`, outputs in `runs/sim-opus/`. Over many runs and files, on any host: `TAG=<name> PAT='<run regex>' FILES='<files>' CONC=32 bash sim.sh gemini`.
+9. Score: `python evaluate.py runs/*-e2-s*.jsonl --data data/v1.jsonl --bank data/v1.bank.jsonl --epoch 2`. Mix contrasts: `--contrast rm-mix rm-real rm-inv` on v1, `--contrast <file>-rm-mix <file>-rm-real <file>-rm-inv` on the other files. Every eval the report cites: `bash score.sh list`, then `bash score.sh run <i>` (1 per Slurm array task) or `bash score.sh all`, from a clean checkout with `stamp-run` on PATH.
 
 Every cited number comes from a stamped log (`~/dev/scripts/stamp-run`) whose name sits next to its table.
