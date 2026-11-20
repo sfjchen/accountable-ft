@@ -28,8 +28,8 @@ Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 9
 - Arithmetic: case text states every computed value, so no model computes. Among denials, real and mixed models gain most where the failing rule reads a derived value (mortgage +14.5 and +14.9, SNAP mixed +22.9), invented-trained models don't, so it tracks training domain, not arithmetic.
 - Opus agrees on prompted explanations: trained minus prompted on the same decisions is +11.1 [8.2, 14.1] on the invented test and +0.9 [-2.6, 4.6] on mortgage.
 - Permit transfer (round 1 on a never-trained invented domain): paired gain +10.0 [6.5, 13.6], +13.3 [9.7, 16.8] with Opus.
-- Recommendation: train on the mixed set. Averaged over the 6 grid tests it has the best paired gain, correctness and accuracy, ties real-only on real tests and beats invented-only there. Its comparison with real-only is not dose-matched (half the real rows) and rests on 1 held-out domain per kind.
-- Every number above was rescored at b93793f (`score.sh`, sc job 18610721, 34 evals, logs `final-*-eval-b93793f-20261120-*`).
+- Recommendation: train on the mixed set. It has the best grid gain on trained-on domains (+6.9 vs +4.5 real, +3.2 invented) and held-out ones (0.0 vs -2.3, -3.5), the best correctness and accuracy, at a cost of 2-6 points of correctness on each specialist's own tests. Its comparison with real-only is not dose-matched (half the real rows) and rests on 1 held-out domain per kind.
+- Every number above was rescored at abaa830 (`score.sh`, sc job 18610835, 34 evals, logs `final-*-eval-abaa830-20261120-*`).
 
 ## Files
 
