@@ -1,6 +1,6 @@
 # accountable-ft
 
-Jon Chen and Eitan Green, CS 224V fall 2026. Design decisions, every run's history and the technical reference are in [DECISIONS.md](DECISIONS.md).
+Jon Chen and Eitan Green, CS 224V fall 2026. Design decisions, results and run history are in [DECISIONS.md](DECISIONS.md), compute, cluster notes, commands and the file map in [OPS.md](OPS.md).
 
 Can fine-tuning make a model's stated reasons track its decisions? We train Qwen3.5-9B on rule-based eligibility cases (invented policies with exact labels from a rule engine, plus real mortgage, SNAP and IRS dependent rules). Explanation SFT (supervised fine-tuning) learns the decision and an engine-verified explanation. The matched control, decision-only SFT, sees the same rows with the explanation tokens masked out of the loss. The main score is simulatability gain: how much better a frozen simulator (Gemini 3.5 Flash-Lite, Claude Opus 5.5 as the 2nd) predicts the model's answer after an edit when it sees the model's own explanation rather than another case's. The simulator never sees the case.
 
@@ -28,7 +28,8 @@ Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 9
 - Arithmetic: case text states every computed value, so no model computes. Among denials, real and mixed models gain most where the failing rule reads a derived value (mortgage +14.5 and +14.9, SNAP mixed +22.9), invented-trained models don't, so it tracks training domain, not arithmetic.
 - Opus agrees on prompted explanations: trained minus prompted on the same decisions is +11.1 [8.2, 14.1] on the invented test and +0.9 [-2.6, 4.6] on mortgage.
 - Permit transfer (round 1 on a never-trained invented domain): paired gain +10.0 [6.5, 13.6], +13.3 [9.7, 16.8] with Opus.
-- Every number above was rescored at 4f9300a (`score.sh`, sc job 18602695, 34 evals, logs `final-*-eval-4f9300a-20261120-*`), with the engine's step-budget validity check (3b3166f).
+- Recommendation: train on the mixed set. Averaged over the 6 grid tests it has the best paired gain, correctness and accuracy, ties real-only on real tests and beats invented-only there. Its comparison with real-only is not dose-matched (half the real rows) and rests on 1 held-out domain per kind.
+- Every number above was rescored at b93793f (`score.sh`, sc job 18610721, 34 evals, logs `final-*-eval-b93793f-20261120-*`).
 
 ## Files
 
@@ -36,7 +37,8 @@ Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 9
 - `gen.py`: case generator, 3 views, optional Gemini prose, stats and audits.
 - `domains/*.yaml`: policy domains. `*.md` beside a real domain lists its sources.
 - `infer.py`: model runner (vLLM, Gemini, Claude Code headless), edit-set bank, predict and simulate modes, response cache.
-- `evaluate.py`: every metric with clustered bootstrap CIs, paired comparisons, mix contrasts, power.
+- `evaluate.py`: every metric with clustered bootstrap CIs, paired comparisons, mix contrasts, power. Prints the CORE metrics (`--full` for all), and its JSON holds every metric and the commit.
+- `score.sh`, `sim.sh`: every stamped eval the report cites, and the simulator passes over a set of runs.
 - `compare_sims.py`: 2 simulators on the same runs.
 - `train.py`: LoRA SFT with the matched loss, `train.py export` for SFT rows.
 - `cluster.sh`: setup and Slurm jobs on FarmShare or sc (smoke, train, eval, base, grid, notify).
