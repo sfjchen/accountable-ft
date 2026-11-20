@@ -1,14 +1,14 @@
 """Rule engine for invented-domain policies: typed facts with small finite domains, require rules with "unless"
 exceptions, defaults for missing facts, derived facts and validity conditions, compiled from condition strings.
 Entry points: Policy, decide, sufficient_sets, necessary_facts, single_condition, min_flip, min_reveal,
-invariant_edit, cd_witnesses, fact_states and is_valid_justification, exact and deterministic under a time budget.
+invariant_edit, cd_witnesses, fact_states and is_valid_justification, exact and deterministic under a step budget.
 """
 import ast
 import functools
 import itertools
-import time
 
-MAX_DOM, MAX_FACTS, MAX_RADIUS, BUDGET = 8, 12, 4, 2.0
+# BUDGET: search steps per outermost search, about 2-3 s on an idle M-series Mac (100-150k steps/s)
+MAX_DOM, MAX_FACTS, MAX_RADIUS, BUDGET = 8, 12, 4, 300_000
 
 
 class InvalidRecord(ValueError):
@@ -109,7 +109,7 @@ class Policy:
             self.cons["+" + r.id] = (r.holds, r.all_refs)
             self.cons["-" + r.id] = (lambda f, r=r: not r.holds(f), r.all_refs)
             self.cons["c" + r.id] = (r.fc, r.refs)
-        self.cache, self.deadline = {}, None
+        self.cache, self.used, self.limit = {}, 0, None
         if len(self.referenced()) > MAX_FACTS:
             raise ValueError(f"policy reads {len(self.referenced())} facts, max {MAX_FACTS}")
 
@@ -155,26 +155,30 @@ def fact_states(pol, facts):
 
 
 def budgeted(fn):
-    """Wraps a search so its outermost call sets pol.deadline to now + budget seconds (keyword, default BUDGET)."""
+    """
+    Wraps a search so its outermost call allows `budget` search steps (keyword, default BUDGET). Steps, not seconds,
+    so a search certifies the same way on a loaded cluster node as on an idle laptop.
+    """
 
     @functools.wraps(fn)
     def run(pol, *a, budget=BUDGET, **kw):
-        """Runs fn under the policy deadline, set only by the outermost budgeted call."""
-        outer = pol.deadline is None
+        """Runs fn under the policy step limit, set only by the outermost budgeted call."""
+        outer = pol.limit is None
         if outer:
-            pol.deadline = time.monotonic() + budget
+            pol.limit = pol.used + budget
         try:
             return fn(pol, *a, **kw)
         finally:
             if outer:
-                pol.deadline = None
+                pol.limit = None
 
     return run
 
 
-def tick(pol):
-    """Raises Timeout once the policy's search deadline has passed."""
-    if pol.deadline is not None and time.monotonic() > pol.deadline:
+def tick(pol, k=1):
+    """Counts k search steps and raises Timeout once the policy's step limit is passed."""
+    pol.used += k
+    if pol.limit is not None and pol.used > pol.limit:
         raise Timeout(f"search budget exceeded for {pol.id}")
 
 
@@ -191,9 +195,12 @@ def solve(pol, keys, known):
     """
     keys = list(keys) + [k for k in pol.cons if k[0] == "v"]
     key = ("s", tuple(sorted(keys)), fkey(known))
+    # a cache hit is charged the steps its first search took, so budget outcomes don't depend on what ran before
     if key in pol.cache:
-        return pol.cache[key]
-    comps, res = [], {}
+        res, used = pol.cache[key]
+        tick(pol, used)
+        return res
+    comps, res, s0 = [], {}, pol.used
     for k in keys:
         fn, refs = pol.cons[k]
         fr = {n for n in refs if n not in known}
@@ -230,7 +237,7 @@ def solve(pol, keys, known):
             res = None
             break
         res.update({n: f[n] for n in free})
-    pol.cache[key] = res
+    pol.cache[key] = (res, pol.used - s0)
     return res
 
 
@@ -244,16 +251,19 @@ def possible(pol, known):
     Returns the decisions ("approve", "deny") possible completions of `known` reach; raises InvalidRecord on none.
     """
     key = ("p", fkey(known))
-    if key not in pol.cache:
-        out = set()
-        if sat(pol, ["+" + r.id for r in pol.requires], known):
-            out.add("approve")
-        if any(sat(pol, ["-" + r.id], known) for r in pol.requires):
-            out.add("deny")
-        if not out:
-            raise InvalidRecord(f"no possible completion of {sorted(known)} under {pol.id}")
-        pol.cache[key] = out
-    return pol.cache[key]
+    if key in pol.cache:
+        out, used = pol.cache[key]
+        tick(pol, used)
+        return out
+    s0, out = pol.used, set()
+    if sat(pol, ["+" + r.id for r in pol.requires], known):
+        out.add("approve")
+    if any(sat(pol, ["-" + r.id], known) for r in pol.requires):
+        out.add("deny")
+    if not out:
+        raise InvalidRecord(f"no possible completion of {sorted(known)} under {pol.id}")
+    pol.cache[key] = (out, pol.used - s0)
+    return out
 
 
 def decide(pol, facts, rid=None):
@@ -386,6 +396,7 @@ def min_flip(pol, facts, target=None, radius=MAX_RADIUS, exclude=(), prefer_disj
                     continue
                 alts = [[v for v in pol.dom[n] if v != known[n] and pairs.get(n) != v] for n in combo]
                 for vals in itertools.product(*alts):
+                    tick(pol)
                     f = {**known, **dict(zip(combo, vals))}
                     if not pol.ok(f):
                         continue
@@ -429,6 +440,7 @@ def min_reveal(pol, facts, radius=2):
             for combo in itertools.combinations(cand, k):
                 tick(pol)
                 for vals in itertools.product(*(pol.dom[n] for n in combo)):
+                    tick(pol)
                     try:
                         poss = possible(pol, {**known, **dict(zip(combo, vals))})
                     except InvalidRecord:
@@ -530,7 +542,7 @@ def is_valid_justification(pol, facts, cited_facts, cited_rules, assumptions):
     be dropped. "cannot determine": sufficient (could_decide) when revealing the cited missing facts could decide
     the case, covers_needed when they include every fact behind needs_fact_for, minimal None. missing_defaults:
     unstated applied defaults that are necessary, that the cited facts need, or that an undecided rule reads. Over
-    budget: valid False, "uncertified".
+    budget: valid None, "uncertified", so callers count it apart instead of as invalid.
     """
     try:
         known, applied = known_facts(pol, facts)
@@ -608,4 +620,4 @@ def is_valid_justification(pol, facts, cited_facts, cited_rules, assumptions):
                 "wrong_rules": wrong, "wrong_assumptions": wrong_asm, "missing_defaults": missing,
                 "wrong_values": wrong_vals}
     except Timeout as e:
-        return {"valid": False, "uncertified": True, "reason": "uncertified", "detail": str(e)}
+        return {"valid": None, "uncertified": True, "reason": "uncertified", "detail": str(e)}

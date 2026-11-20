@@ -193,8 +193,12 @@ def test_acceptance():
     assert E.min_flip(p, {x: False for x in "abcde"}) == {"kind": "replace", "edits": None, "exhausted_radius": 4,
                                                          "target": "approve"}
     p = pol({x: {"type": "int", "values": list(range(8))} for x in "abcdefg"}, "a + b + c + d + e + f + g >= 49")
-    mf = E.min_flip(p, {x: 0 for x in "abcdefg"}, budget=0.01)
+    mf = E.min_flip(p, {x: 0 for x in "abcdefg"}, budget=1000)
     assert mf["uncertified"] and "budget" in mf["reason"] and mf["edits"] is None and "exhausted_radius" not in mf
+    fresh = pol({x: {"type": "int", "values": list(range(8))} for x in "abcdefg"}, "a + b + c + d + e + f + g >= 49")
+    E.min_flip(p, {x: 0 for x in "abcdefg"}, budget=10 ** 9)
+    assert E.min_flip(p, {x: 0 for x in "abcdefg"}, budget=1000) == E.min_flip(fresh, {x: 0 for x in "abcdefg"},
+                                                                              budget=1000)
 
 
 def test_generated_policies_and_rendering():
