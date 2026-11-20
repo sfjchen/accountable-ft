@@ -193,10 +193,11 @@ train_one() {
   echo "done: $out, meta in $META_HOME"
 }
 
-# Serves a model with vllm on this job's GPU and runs the answer, repeat and both predict passes on the primary
-# slice of each data file (CASES=N for a stratified subset, THINKING=on|off, CONC=N parallel requests, default 32,
-# DATA a comma list of data files, default data/v1.jsonl, SLICE for another slice, e.g. DATA=data/mortgage.jsonl
-# SLICE=real_transfer, PASSES=answer for the answer pass alone, PASSES=explain FROZEN=<run>,... for the
+# Serves a model with vllm on this job's GPU and runs the answer pass on the primary slice of each data file
+# (CASES=N for a stratified subset, THINKING=on|off, CONC=N parallel requests, default 32, DATA a comma list of data
+# files, default data/v1.jsonl, SLICE for another slice, e.g. DATA=data/mortgage.jsonl SLICE=real_transfer,
+# PASSES=all to add the repeat and both self-prediction passes, which the report does not use, PASSES=explain
+# FROZEN=<run>,... for the
 # prompted-explanation control in place of every pass). Runs on a file other than v1 are named <file stem>-<run>,
 # so 1 served model covers several files without their outputs colliding.
 # Usage: run_passes <model path> <run name> <cache tag>
@@ -228,7 +229,7 @@ run_passes() {
     [[ ${CASES:-0} -gt 0 ]] && S+=(--cases "$CASES")
     S+=(--backend openai --base-url "http://127.0.0.1:$port/v1" --model "$run" --cache-tag "$tag"
       --cache "runs/cache.$r.jsonl" --conc "${CONC:-32}" --max-tokens "$MAX_TOKENS" --thinking "${THINKING:-off}")
-    if [[ ${PASSES:-all} == explain ]]; then
+    if [[ ${PASSES:-answer} == explain ]]; then
       # prompted-explanation control: this model explains each FROZEN run's decisions, written as pe-<run>
       for f in ${FROZEN//,/ }; do
         local fr=runs/${r%"$run"}$f.jsonl
@@ -238,7 +239,7 @@ run_passes() {
       continue
     fi
     python infer.py "${S[@]}" --out "runs/$r.jsonl"
-    [[ ${PASSES:-all} == answer ]] && continue
+    [[ ${PASSES:-answer} == answer ]] && continue
     python infer.py "${S[@]}" --rep 1 --out "runs/$r.repeat.jsonl"
     python infer.py --mode predict "${S[@]}" --frozen "runs/$r.jsonl" --out "runs/$r.predict.jsonl"
     python infer.py --mode predict "${S[@]}" --frozen "runs/$r.jsonl" --no-account \
@@ -424,7 +425,6 @@ PY
     # every grid model answers the same 4 test files (DATA overrides them, e.g. the extended test families); the
     # simulator passes run on the Mac
     DATA=${DATA:-$GRID_DATA} \
-        PASSES=${PASSES:-answer} \
         REUSE_MERGED=1 \
         eval_one "rm-$MIX-$cond-s$seed" 2 ;;
   base)  # prompted base model, the same passes as eval: THINKING=on|off, CASES=N for a stratified subset
