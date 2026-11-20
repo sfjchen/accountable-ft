@@ -573,8 +573,8 @@ def test_prior_conflict_split(stub):
     ag0 = aggregate(score(RECS, fake_rows(), {})[0])
     assert not any("prior_conflict" in m for g in ag0.values() for m in g)
     assert not any("[arith_deny=" in m for m in ag0["all"])
-    recs = {i: r | {"gold": (r.get("gold") or {}) | {"minimum_sets": [["x"]], "decision": "deny"}, "fact_sources": {"d": ["x"]} if
-            r["domain"] == "grant" else {}} for i, r in RECS.items()}
+    recs = {i: r | {"gold": (r.get("gold") or {}) | {"minimum_sets": [["x"]], "decision": "deny"},
+            "fact_sources": {"d": ["x"]} if r["domain"] == "grant" else {}} for i, r in RECS.items()}
     ag = aggregate(score(recs, fake_rows(), {})[0])
     for m in evaluate.PC_SPLIT:
         assert ag["all"][f"{m}[arith_deny=true]"] == ag["domain=grant"][m]

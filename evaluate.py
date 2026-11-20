@@ -51,8 +51,8 @@ ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_dwrong", "sim_wrong", "sim_wr
 # the metrics printed by default (--full prints all of ORDER): the simulator family and its baselines, accuracy and
 # counterfactual consistency, explanation correctness and its parts the report reads, self-prediction, format, length
 CORE = {"sim_delta", "sim_acct", "sim_shuf", "sim_dwrong", "sim_wrong", "sim_wrong_shuf", "sim_gross", "sim_noacc",
-        "sim_const_unchanged", "sim_oracle", "self_S", "self_V", "bank_unchanged", "acc_maj", "acc_class", "cf_pair_acc",
-        "invariance", "expl_valid", "acct_consistent", "cite_distractor", "assume_val", "fmt_err", "len_chars"}
+        "sim_const_unchanged", "sim_oracle", "self_S", "self_V", "bank_unchanged", "acc_maj", "acc_class",
+        "cf_pair_acc", "invariance", "expl_valid", "acct_consistent", "cite_distractor", "assume_val", "fmt_err", "len_chars"}
 LABEL = {"sim_delta": "sim_delta (primary: acct - shuf)", "sim_dwrong": "sim_dwrong (acct - wrong)",
         "sim_wrong_shuf": "sim_wrong_shuf (wrong - shuf)", "sim_gross": "sim_gross (acct - noacc)",
         "self_V": "self_V (secondary)", "sim_const_unchanged": "sim_const_unchanged (baseline: frozen decision)",
@@ -771,7 +771,8 @@ def main():
     Path(a.json).parent.mkdir(parents=True, exist_ok=True)
     head = subprocess.run(["git", "rev-parse", "--short=7", "HEAD"], capture_output=True, text=True).stdout.strip()
     dirty = bool(subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True).stdout.strip())
-    Path(a.json).write_text(json.dumps({"commit": head + ("-dirty" if dirty else ""), "primary": PRIMARY, "conditions": res, "coverage": covs, "compute": comp,
+    Path(a.json).write_text(json.dumps({"commit": head + ("-dirty" if dirty else ""), "primary": PRIMARY,
+            "conditions": res, "coverage": covs, "compute": comp,
             "seed_groups": seeds, "paired_vs": a.compare, "paired": paired, "contrasts": contrasts,
             "old_minus_new": drift, "selection": sel,
             "decoding": {c: sorted(s) for c, s in sigs.items()}}, indent=1))
