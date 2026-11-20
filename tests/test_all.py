@@ -581,18 +581,18 @@ def test_domain_groups(stub, capsys):
 def test_prior_conflict_split(stub):
     """
     Checks that accuracy and account validity split by prior_conflict when records carry it, and only then, and that
-    only ARITH_SPLIT metrics split by arithmetic need.
+    only ARITH_SPLIT metrics split by arithmetic need on deny cases.
     """
     ag0 = aggregate(score(RECS, fake_rows(), {})[0])
     assert not any("prior_conflict" in m for g in ag0.values() for m in g)
-    assert not any("[arith=" in m for m in ag0["all"])
-    recs = {i: r | {"gold": (r.get("gold") or {}) | {"minimum_sets": [["x"]]}, "fact_sources": {"d": ["x"]} if
+    assert not any("[arith_deny=" in m for m in ag0["all"])
+    recs = {i: r | {"gold": (r.get("gold") or {}) | {"minimum_sets": [["x"]], "decision": "deny"}, "fact_sources": {"d": ["x"]} if
             r["domain"] == "grant" else {}} for i, r in RECS.items()}
     ag = aggregate(score(recs, fake_rows(), {})[0])
     for m in evaluate.PC_SPLIT:
-        assert ag["all"][f"{m}[arith=true]"] == ag["domain=grant"][m]
-        assert ag["all"][f"{m}[arith=false]"] == ag["domain=permit"][m]
-    assert not [m for m in ag["all"] if "[arith=" in m and m.split("[")[0] not in evaluate.ARITH_SPLIT]
+        assert ag["all"][f"{m}[arith_deny=true]"] == ag["domain=grant"][m]
+        assert ag["all"][f"{m}[arith_deny=false]"] == ag["domain=permit"][m]
+    assert not [m for m in ag["all"] if "[arith_deny=" in m and m.split("[")[0] not in evaluate.ARITH_SPLIT]
     recs = {i: r | {"prior_conflict": r["domain"] == "grant"} for i, r in RECS.items()}
     ag = aggregate(score(recs, fake_rows(), {})[0])
     for m in evaluate.PC_SPLIT:

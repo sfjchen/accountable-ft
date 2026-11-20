@@ -33,7 +33,8 @@ COMPANIONS = ("repeat", "answers", "predict", "predict_noacc", "simulate", "simu
 SIM3 = ("simulate", "simulate_shuf", "simulate_noacc")
 # metrics also split by the record's prior_conflict flag (gen.py --counter): decision accuracy and account validity
 PC_SPLIT = ("acc_maj", "expl_valid", "acct_consistent")
-# metrics also split by arithmetic need: every minimum sufficient set of the case cites a derived fact or a source
+# metrics also split, on deny cases only, by arithmetic need: every minimum sufficient set of the case cites a derived
+# fact or one of its sources (on approvals nearly every case needs one, so the split would track the label)
 ARITH_SPLIT = PC_SPLIT + ("sim_delta", "sim_dwrong")
 PRED = {"predict": "self_S", "predict_noacc": "self_S_noacc", "simulate": "sim_acct", "simulate_noacc": "sim_noacc",
         "simulate_shuf": "sim_shuf", "simulate_wrong": "sim_wrong"}
@@ -237,15 +238,16 @@ def score(recs, rows, aux, bank=(), dump=None):
         """
         Appends one unit value for metric m, tagged with the record's cluster, slice, view, a unit id and domain, for
         a PC_SPLIT metric on a record with prior_conflict also under m[prior_conflict=true|false], and for an
-        ARITH_SPLIT metric also under m[arith=true|false].
+        ARITH_SPLIT metric on a deny case also under m[arith_deny=true|false].
         """
         u = (float(v), rec.get("template_family") or rec["policy_id"], rec.get("slice") or rec["split"],
                 rec.get("view", "prose"), bc, uid or rec["id"], rec.get("domain") or rec["policy_id"].split("-")[0])
-        ms = (rec.get("gold") or {}).get("minimum_sets") or []
+        ms = (g := rec.get("gold") or {}).get("minimum_sets") or []
         src = set(fs := rec.get("fact_sources") or {}) | {x for v in fs.values() for x in v}
         ar = str(all(set(x) & src for x in ms)).lower()
         for mm in [m] + [f"{m}[prior_conflict={str(rec.get('prior_conflict')).lower()}]"] * (m in PC_SPLIT and
-                "prior_conflict" in rec) + [f"{m}[arith={ar}]"] * (m in ARITH_SPLIT and bool(ms)):
+                "prior_conflict" in rec) + [f"{m}[arith_deny={ar}]"] * (m in ARITH_SPLIT and
+                bool(ms) and g.get("decision") == "deny"):
             U[mm].append(u)
 
     for r in rows:
