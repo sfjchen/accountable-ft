@@ -6,7 +6,7 @@ Can fine-tuning make a model's stated reasons track its decisions? We train Qwen
 
 ## Results so far
 
-Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 95% CI clustered by rule family. v1 = unseen families of the invented domains, mortgage = 24 held-out mortgage families. Logs `final-v1-gemini-eval-3b3166f-20261119-1855`, `final-mortgage-gemini-eval-3b3166f-20261119-1855`, `final-v1-opus-eval-3b3166f-20261119-1855`, `final-mortgage-opus-eval-3b3166f-20261119-1855`.
+Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 95% CI clustered by rule family. v1 = unseen families of the invented domains, mortgage = 24 held-out mortgage families. Logs `final-v1-gemini-eval-4f9300a-20261120-0254`, `final-mortgage-gemini-eval-4f9300a-20261120-0254`, `final-v1-opus-eval-4f9300a-20261120-0254`, `final-mortgage-opus-eval-4f9300a-20261120-0254`.
 
 | training mix | v1, Gemini | mortgage, Gemini | v1, Opus | mortgage, Opus | accuracy, v1 |
 |---|---|---|---|---|---|
@@ -17,17 +17,18 @@ Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 9
 - Explanation SFT matches or beats decision-only on accuracy in every mix and is the only condition with valid explanations (0.756 vs 0.000 on v1, round 1).
 - Each kind of training row helps most on tests like it. The row-matched grid below separates mix from size.
 
-## Status (Nov 19)
+## Status (Nov 20)
 
 - Row-matched grid: 3 mixes (`rm-inv` grant + trial, `rm-real` mortgage + SNAP, `rm-mix` all 4) at 3,600 train rows x 2 conditions x 3 seeds = 18 runs. Tests: unseen families of the 4 training domains, review and IRS dependent (both held out from every mix). Pre-registration in DECISIONS.md.
   - Main score failed: paired gain on IRS dependent is below 0 for every mix (-3.6 to -6.6), no contrast clears Holm. Opus agrees (no CI clear of 0).
   - New test families for every test (post hoc): pooled, real and mixed beat invented-only on mortgage (+6.6 to +6.7) and SNAP (+8.1 to +8.4) after Holm. IRS dependent real and mixed gain more on the new families than the old, so they are not pooled. Details in DECISIONS.md.
 - Error analysis of 50 IRS dependent failures (`errors.py`): 61% of wrong decisions cite a rule that is waived or covers the other claim type.
 - Prompted-explanation control (`--mode explain`, runs `pe-*`): a fluent untrained explanation gets half the invented-test gain and all of the mortgage gain at 8% correct. Trained explanations win on answer-changing edits (+11.8).
-- Wrong-reason control (`infer.py --wrong-accounts`): each round 1 explanation keeps its decision, format, item count and length, with its cited facts swapped for true facts that leave the case open. Own minus wrong is +9.1 on the invented test (every seed's CI clear of 0) and -0.2 on mortgage, so the invented-test gain needs the right reason and the mortgage gain doesn't.
+- Wrong-reason control (`infer.py --wrong-accounts`): each round 1 explanation keeps its decision, format, item count and length, with its cited facts swapped for true facts that leave the case open. Own minus wrong is +9.1 on the invented test (every seed's CI clear of 0) and -0.2 on mortgage, so the invented-test gain needs the right reason and the mortgage gain doesn't. On the grid, every mix gets +6.1 to +7.5 on the invented test, -0.2 to +1.6 on the original mortgage families (+5.0 and +6.7 for real and mixed with the new families pooled) and +5.4 to +9.7 on SNAP.
+- Arithmetic: case text states every computed value, so no model computes. Among denials, real and mixed models gain most where the failing rule reads a derived value (mortgage +14.5 and +14.9, SNAP mixed +22.9), invented-trained models don't, so it tracks training domain, not arithmetic.
 - Opus agrees on prompted explanations: trained minus prompted on the same decisions is +11.1 [8.2, 14.1] on the invented test and +0.9 [-2.6, 4.6] on mortgage.
 - Permit transfer (round 1 on a never-trained invented domain): paired gain +10.0 [6.5, 13.6], +13.3 [9.7, 16.8] with Opus.
-- Every number above was rescored at 3b3166f (`score.sh`, sc job 18595313, 34 evals, logs `final-*-eval-3b3166f-20261119-*`), after the engine's validity check moved from a 2 s wall clock to a step budget.
+- Every number above was rescored at 4f9300a (`score.sh`, sc job 18602695, 34 evals, logs `final-*-eval-4f9300a-20261120-*`), with the engine's step-budget validity check (3b3166f).
 
 ## Files
 
