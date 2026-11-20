@@ -1,14 +1,17 @@
-"""Scores infer.py run files and their companions (<run>.{repeat,answers,predict,predict_noacc,simulate,simulate_noacc,
-simulate_shuf}.jsonl) against engine-labeled records, with family-clustered bootstrap CIs per slice, view and domain
-(accuracy and account validity also by prior_conflict when records carry it).
-Entry point: main (markdown tables to stdout, every number to --json; --render writes <run>.edits.jsonl, --power
-prints the intra-cluster correlation and power table). parse, load and bank_recs are shared with infer.py.
+"""Scores infer.py run files and their companions (<run>.{repeat,predict,predict_noacc,simulate,simulate_noacc,
+simulate_shuf,simulate_wrong}.jsonl) against engine-labeled records, with family-clustered bootstrap CIs per slice, view
+and domain (accuracy and account validity also by prior_conflict when records carry it, and by arithmetic need on
+denials).
+Entry point: main (markdown tables of the CORE metrics to stdout, --full for every metric, every number to --json with
+the commit it ran on; --power prints the intra-cluster correlation and power table). parse, load and bank_recs are
+shared with infer.py.
 """
 import argparse
 import datetime
 import difflib
 import json
 import re
+import subprocess
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -26,7 +29,7 @@ CD = "cannot determine"
 DEC_KEYS = ["temperature", "top_p", "top_k", "max_tokens", "thinking"]
 PRIME = ("unseen_family_train_vocab", "prose")
 PRIMARY = f"slice={PRIME[0]} view={PRIME[1]}"
-COMPANIONS = ("repeat", "answers", "predict", "predict_noacc", "simulate", "simulate_noacc", "simulate_shuf",
+COMPANIONS = ("repeat", "predict", "predict_noacc", "simulate", "simulate_noacc", "simulate_shuf",
         "simulate_wrong")
 # the 3 main simulator passes, scored on their shared items; simulate_wrong (infer.py --wrong-accounts) covers only
 # cases with a wrong set and is paired with them item by item, so it never shrinks the main metrics
@@ -44,9 +47,12 @@ ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_dwrong", "sim_wrong", "sim_wr
         "bank_unchanged", "acc_maj", "acc_mean", "acc_class",
         "repeat_disagree", "flip", "flip_to_cd", "cf_pair_acc", "invariance", "inv_pair_acc", "expl_valid",
         "acct_consistent", "expl_minimal", "cite_distractor", "cite_p_nec", "cite_r_nec", "assume_dec", "assume_val",
-        "none_claim_disproved", "none_claim_correct", "none_claim_unresolved", "bnd_both", "bnd_oracle_only",
-        "bnd_model_only", "bnd_neither", "bnd_oracle_minimal", "bnd_invalid", "necessity_flip", "fmt_err", "len_chars",
-        "len_tok"]
+        "fmt_err", "len_chars", "len_tok"]
+# the metrics printed by default (--full prints all of ORDER): the simulator family and its baselines, accuracy and
+# counterfactual consistency, explanation correctness and its parts the report reads, self-prediction, format, length
+CORE = {"sim_delta", "sim_acct", "sim_shuf", "sim_dwrong", "sim_wrong", "sim_wrong_shuf", "sim_gross", "sim_noacc",
+        "sim_const_unchanged", "sim_oracle", "self_S", "self_V", "bank_unchanged", "acc_maj", "acc_class", "cf_pair_acc",
+        "invariance", "expl_valid", "acct_consistent", "cite_distractor", "assume_val", "fmt_err", "len_chars"}
 LABEL = {"sim_delta": "sim_delta (primary: acct - shuf)", "sim_dwrong": "sim_dwrong (acct - wrong)",
         "sim_wrong_shuf": "sim_wrong_shuf (wrong - shuf)", "sim_gross": "sim_gross (acct - noacc)",
         "self_V": "self_V (secondary)", "sim_const_unchanged": "sim_const_unchanged (baseline: frozen decision)",
@@ -227,12 +233,12 @@ def policy(rec):
 
 def score(recs, rows, aux, bank=(), dump=None):
     """
-    Returns (units, coverage, interventions) for one condition: units maps metric -> [(value, cluster, slice, view,
+    Returns (units, coverage) for one condition: units maps metric -> [(value, cluster, slice, view,
     correct or None, unit id, domain)], aux maps COMPANIONS names to companion rows. A dump list gets 1 row per scored
     case (decision vs gold) and per scored edit (the model's answers before and after, each simulator pass's
     prediction), for reading failures.
     """
-    U, cov, ivs = defaultdict(list), Counter(), []
+    U, cov = defaultdict(list), Counter()
 
     def add(m, v, rec, bc=None, uid=None):
         """
@@ -266,7 +272,7 @@ def score(recs, rows, aux, bank=(), dump=None):
         cov["truncated"] += failed(r)
         cov["api_error"] += bool(r.get("error"))
     P, maj = votes(rows)
-    R, A = votes(aux.get("repeat", []))[1], votes(aux.get("answers", []))[1]
+    R = votes(aux.get("repeat", []))[1]
     cov["items_in_data"] = sum(not r.get("intervention") for r in recs.values())
     cov["items_scored"] = sum(not recs[i].get("intervention") for i in maj if i in recs)
     # V: whether sample 0's explanation (the one the simulator reads) is correct, per case
@@ -326,8 +332,7 @@ def score(recs, rows, aux, bank=(), dump=None):
         if b["variant"] != "base" or b["id"] not in maj or b.get("intervention"):
             continue
         g, ps, lab, bid = b["gold"], P[b["id"]], b.get("fact_labels", {}), b["id"]
-        mf, src = g.get("min_flip") or {}, b.get("fact_sources", {})
-        tgt, bc = g.get("target"), maj[bid] == g["decision"]
+        bc = maj[bid] == g["decision"]
         for m in ("acc_maj", "acc_maj[interaction]") if b.get("interaction") else ("acc_maj",):
             add(m, bc, b)
         add("acc_mean", np.mean([p["dec"] == g["decision"] for p in ps]), b)
@@ -357,61 +362,6 @@ def score(recs, rows, aux, bank=(), dump=None):
                 cov["none_unsupported_assume"] += sum(not p["assume"] and "assumptions" not in p["miss"] for p in mp)
                 add("assume_val", np.mean([all(any(to_name(l, lab) == n and same_val(v, w) for l, v, _ in p["assume"])
                         for n, w in da.items()) for p in mp]), b, bc, m["id"])
-        own = maj[bid]
-        otg = {"approve": {"deny"}, "deny": {"approve"}, CD: {"approve", "deny"}}.get(own)
-        ref = mf if own == g["decision"] != CD else None
-        nclaim = sum(not p["change"] for p in ps if p["dec"] is not None and "smallest change" not in p["miss"])
-        if nclaim and otg:
-            st = "unresolved" if ref is None else "disproved" if ref.get("edits") else "correct" if \
-                ref.get("exhausted_radius") else "unresolved"
-            cov[f"none_claim_{st}"] += nclaim
-            for s in ("disproved", "correct", "unresolved"):
-                add(f"none_claim_{s}", st == s, b, bc)
-        bo, nf, pol = defaultdict(list), [], policy(b)
-        for c in sorted({tuple(sorted(((to_name(l, lab), v) for l, v in p["change"]), key=str)) for p in ps if
-                p["change"]},
-                key=str):
-            if any(n is None for n, _ in c) or not otg:
-                cov["boundary_unmapped_or_no_target"] += 1
-                continue
-            if any(n in src for n, _ in c):
-                cov["boundary_derived_refused"] += 1
-                continue
-            bad = [n for n, v in c if hasattr(pol, "dom") and (x := engine.coerce(pol, n, to_val(pol, n, v))) not in
-                    pol.dom[n] and not (pol.facts[n]["type"] == "int" and type(x) is int)]
-            bo["bnd_invalid"].append(bool(bad))
-            if bad:
-                cov["boundary_invalid_value"] += 1
-                for sfx in ("", "[vs_gold]") if tgt else ("",):
-                    for m in ("bnd_both", "bnd_oracle_only", "bnd_model_only", "bnd_neither", "bnd_oracle_minimal"):
-                        bo[m + sfx].append(m == "bnd_neither")
-                continue
-            iid = f"{bid}|boundary|" + ";".join(f"{n}={v}" for n, v in c)
-            ivs.append({"iid": iid, "id": bid, "kind": "boundary", "edits": dict(c), "target": "|".join(sorted(otg)),
-                    "gold_target": tgt})
-            if iid not in recs or iid not in A:
-                cov["boundary_pending"] += 1
-                continue
-            od, small = recs[iid]["gold"]["decision"], mf.get("edits") and mf.get("radius", len(c)) < len(c)
-            for sfx, ov, mv, om in (("", od in otg, A[iid] in otg, od in otg and ref is not None and not small),
-                    ("[vs_gold]", od == tgt, A[iid] == tgt, od == tgt and not small) if tgt else ()):
-                for m, x in (("bnd_both", ov and mv), ("bnd_oracle_only", ov and not mv),
-                        ("bnd_model_only", mv and not ov), ("bnd_neither", not ov and not mv),
-                        ("bnd_oracle_minimal", om)):
-                    bo[m + sfx].append(x)
-        for m, vs in bo.items():
-            add(m, np.mean(vs), b, bc)
-        cited = {n for p in ps for l, _, _ in p["relied"] if (n := to_name(l, lab))}
-        for n in sorted({s for c in cited for s in src.get(c, [c])}) if g["single_condition"] else []:
-            iid = f"{bid}|necessity|{n}"
-            ivs.append({"iid": iid, "id": bid, "kind": "necessity", "edits": {n: None}, "target": tgt})
-            if iid not in recs or iid not in A:
-                cov["necessity_pending"] += 1
-                continue
-            nf.append(A[iid] is not None and maj[bid] is not None and A[iid] != maj[bid])
-        for m in ("necessity_flip", "necessity_flip[interaction]") if nf else ():
-            if m == "necessity_flip" or b.get("interaction"):
-                add(m, np.mean(nf), b, bc)
     for d in dump or ():
         d["valid"] = V.get(d["id"])
     pred = defaultdict(lambda: defaultdict(list))
@@ -462,8 +412,7 @@ def score(recs, rows, aux, bank=(), dump=None):
     if nofresh:
         sys.exit(f"refusing: {len(nofresh)} bank items have no fresh decision on their edited record (e.g. "
                 f"{nofresh[:3]}); rerun the answer run with --bank so every edited case is answered")
-    cov["interventions_requested"] = len(ivs)
-    return U, cov, ivs
+    return U, cov
 
 
 def boot(vals, clus, B=1000, seed=0):
@@ -617,12 +566,12 @@ def icc(vals, clus):
 
 def main():
     """
-    Parses the CLI, scores every run with its companions, optionally renders interventions and prints the power
+    Parses the CLI, scores every run with its companions, prints the CORE metrics (all with --full) and the power
     table, prints the markdown tables and writes every number to the JSON file.
     """
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("runs", nargs="+", help="run files; a.jsonl+b.jsonl scores 2 runs of the same model on different "
-                    "test files as 1 run named a (pooled), companions joined the same way, no interventions written")
+                    "test files as 1 run named a (pooled), companions joined the same way")
     ap.add_argument("--data", nargs="+", required=True)
     ap.add_argument("--bank", nargs="+", help="intervention bank(s) from infer.py --mode bank; with 2, every "
                     "seed-pooled paired sim_delta is also reported on the 1st bank's families minus the 2nd's")
@@ -630,7 +579,7 @@ def main():
     ap.add_argument("--compare", help="reference run stem, or a condition name (decision) to pair each run with "
             "that condition's run at the same epoch and seed")
     ap.add_argument("--allow-thinking-diff", action="store_true", help="allow thinking on vs off across runs")
-    ap.add_argument("--render", action="store_true", help="write <run>.edits.jsonl via gen.policy_for/render_case")
+    ap.add_argument("--full", action="store_true", help="print every metric, not only CORE (the JSON always has all)")
     ap.add_argument("--epoch", type=int, help="checkpoint selection: the fixed epoch k taken for every condition "
             "(runs named <cond>-e<k>[-s<seed>])")
     ap.add_argument("--select", default=r".*", help="regex over condition names: checkpoint candidates")
@@ -689,7 +638,7 @@ def main():
             if mp.exists():
                 comp[rp.stem][mp.name] = {k: v for k, v in json.loads(mp.read_text()).items() if k != "decoding"}
         dump = [] if a.dump else None
-        U, cov, ivs = score(recs, rows, aux, bank, dump)
+        U, cov = score(recs, rows, aux, bank, dump)
         if a.dump:
             Path(a.dump).mkdir(parents=True, exist_ok=True)
             Path(a.dump, rp.stem + ".items.jsonl").write_text("".join(json.dumps(d) + "\n" for d in dump))
@@ -724,28 +673,6 @@ def main():
                         f"{len(ns)} fam x {int(ns.sum())} {kind} | {m:.1f} | {cv:.2f} | {de:.2f} | {ne:.0f} | "
                         f"{100 * 1.959964 * np.sqrt(0.20 / ne):.1f} pts | "
                         f"{100 * (1.959964 + 0.841621) * np.sqrt(var_d / ne):.1f} pts |")
-        # written only when changed, so parallel evals sharing a run never truncate a file another one's stamp checks
-        ip, it = rp.with_name(rp.stem + ".interventions.jsonl"), "".join(json.dumps(i) + "\n" for i in ivs)
-        if len(ps) == 1 and not (ip.exists() and ip.read_text() == it):
-            ip.write_text(it)
-        eds = []
-        for iv in ivs if a.render else []:
-            b = recs[iv["id"]]
-            pol, f, src = policy(b), dict(b["facts"]), b.get("fact_sources", {})
-            if any(n in src for n in iv["edits"]):
-                sys.exit(f"refusing to render {iv['iid']}: derived facts are edited through their sources {src}")
-            for n, v in iv["edits"].items():
-                alt = [x for x in pol.dom[n] if x != f.get(n)]
-                f[n] = engine.coerce(pol, n, to_val(pol, n, v)) if v is not None else next((x for x in alt if
-                        engine.decide(pol, f | {n: x})["decision"] != b["gold"]["decision"]), alt[0])
-            eds.append(b | {"id": iv["iid"], "parent": b["id"], "variant": "intervention", "facts": f,
-                    "case_text": gen.render_case(pol, f, b["id"].rsplit(":", 1)[0], b.get("prose_source", "template"),
-                    view=b.get("view", "prose"), base=b.get("case_sentences")),
-                    "gold": gen.gold_for(pol, f) if all(f[n] in pol.dom[n] for n in iv["edits"]) else
-                    {"decision": engine.decide(pol, f)["decision"], "off_domain": True},
-                    "intervention": {"base": b["id"]} | iv})
-        if a.render:
-            rp.with_name(rp.stem + ".edits.jsonl").write_text("".join(json.dumps(e) + "\n" for e in eds))
         res[rp.stem], covs[rp.stem], units[rp.stem] = aggregate(U, a.boot, a.seed), dict(cov), U
     if len(simsig) > 1:
         sys.exit(f"refusing: simulate companions use different simulators or decoding {sorted(simsig)}")
@@ -842,18 +769,21 @@ def main():
         sel["exploratory"] = explore_ckpt(res, [c for c in cands if c != a.select_control], a.select_control,
                 a.select_by)
     Path(a.json).parent.mkdir(parents=True, exist_ok=True)
-    Path(a.json).write_text(json.dumps({"primary": PRIMARY, "conditions": res, "coverage": covs, "compute": comp,
+    head = subprocess.run(["git", "rev-parse", "--short=7", "HEAD"], capture_output=True, text=True).stdout.strip()
+    dirty = bool(subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True).stdout.strip())
+    Path(a.json).write_text(json.dumps({"commit": head + ("-dirty" if dirty else ""), "primary": PRIMARY, "conditions": res, "coverage": covs, "compute": comp,
             "seed_groups": seeds, "paired_vs": a.compare, "paired": paired, "contrasts": contrasts,
             "old_minus_new": drift, "selection": sel,
             "decoding": {c: sorted(s) for c, s in sigs.items()}}, indent=1))
+    shown = lambda m: a.full or re.split(r"[\[|~]", m)[0] in CORE
     for c, s in sigs.items():
         print(f"{c}: decoding {sorted(s)}; compute {comp[c]}")
     gks = sorted({g for r in res.values() for g in r if "domain=" not in g},
             key=lambda g: (g != PRIMARY, g != "all", g))
     for gk in gks:
         table(("PRIMARY " if gk == PRIMARY else "secondary: " if gk != "all" else "") + gk, res, gk,
-                lambda m: "|" not in m)
-    table("descriptive splits by correctness (all)", res, "all", lambda m: "|" in m)
+                lambda m: "|" not in m and shown(m))
+    table("descriptive splits by correctness (all)", res, "all", lambda m: "|" in m and shown(m))
     conds = list(covs)
     print("\n### coverage\n\n| count | " + " | ".join(conds) + " |\n|---|" + "---|" * len(conds))
     for k in sorted({k for cv in covs.values() for k in cv}):
@@ -862,12 +792,12 @@ def main():
         doms = sorted({g.rsplit("domain=", 1)[1] for g in s["metrics"] if "domain=" in g})
         for gk in [k for g in (PRIMARY, "all") for d in [""] + doms if (k := dkey(g, d) if d else g) in s["metrics"]]:
             print(f"\n### seed aggregate {gname} {gk} ({', '.join(s['seeds'])}): mean of per-seed means [min, max]\n")
-            for m in sorted((m for m in s["metrics"].get(gk, {}) if "|" not in m), key=okey):
+            for m in sorted((m for m in s["metrics"].get(gk, {}) if "|" not in m and shown(m)), key=okey):
                 x = s["metrics"][gk][m]
                 print(f"- {m}: {x['mean']:.2f} [{x['min']:.2f}, {x['max']:.2f}] k={x['k']}")
     for c, pg in paired.items():
         for gk in (PRIMARY, "all"):
-            table(f"paired difference {c} ({gk})", {c: pg}, gk, lambda m: "|" not in m)
+            table(f"paired difference {c} ({gk})", {c: pg}, gk, lambda m: "|" not in m and shown(m))
     for gk in sorted(contrasts, key=lambda g: (g != PRIMARY, g)):
         if gk not in (PRIMARY, "all") and not gk.startswith(PRIMARY + " domain="):
             continue

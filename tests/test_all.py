@@ -495,7 +495,7 @@ def check(ag, want, n=None):
 
 def test_metrics(stub):
     """Checks every metric and coverage count on the fixture against values computed by hand from fake_rows."""
-    U, cov, ivs = score(RECS, fake_rows(), {"repeat": fake_rows({"p1-b1-f": ["approve"] * 3})})
+    U, cov = score(RECS, fake_rows(), {"repeat": fake_rows({"p1-b1-f": ["approve"] * 3})})
     ag = aggregate(U)
     check(ag["all"], {"acc_maj": 3 / 4, "acc_mean": 2 / 3, "acc_class[approve]": 5 / 7, "acc_class[deny]": 1.0,
                       "acc_class[cannot determine]": 1.0, "repeat_disagree": 1 / 12, "flip": 3 / 4,
@@ -505,24 +505,14 @@ def test_metrics(stub):
                       "flip|wrong": 1.0, "expl_valid": 2 / 11, "acct_consistent": 29 / 36, "expl_minimal": 2 / 10,
                       "cite_distractor": 1 / 12,
                       "cite_p_nec": 11 / 12, "cite_r_nec": 35 / 132, "assume_dec": 1.0, "assume_val": 1.0,
-                      "none_claim_disproved": 1.0, "none_claim_unresolved": 0.0, "fmt_err": 3 / 36})
+                      "fmt_err": 3 / 36})
     assert ag["all"]["acc_maj"]["n"] == 4 and ag["all"]["acc_maj"]["n_clus"] == 2
     assert ag["slice=combined_transfer"]["acc_mean"]["mean"] == pytest.approx(5 / 6)
     assert ag[evaluate.PRIMARY]["acc_maj"]["mean"] == pytest.approx(1 / 2)
-    assert (cov["none_claim_disproved"], cov["parse_fail"], cov["fmt_err"], cov["items_scored"],
-            cov["expl_uncertified"]) == (3, 0, 3, 12, 3)
-    edits = {"p1-b2|boundary|noise_rating_db=65 dB": ("approve", "approve"),
-             "p2-b1|boundary|amount_credits=25,000 credits;project_region=outside": ("deny", "approve"),
-             "p2-b2|boundary|org_type=registered nonprofit": ("approve", "deny"),
-             "p1-b2|necessity|site_zone": ("approve", "approve"),
-             "p1-b2|necessity|noise_rating_db": ("approve", "deny"),
-             "p2-b2|necessity|org_type": ("approve", "approve")}
-    assert {i["iid"] for i in ivs} == set(edits)
-    recs = RECS | {iv["iid"]: RECS[iv["id"]] | {"id": iv["iid"], "gold": RECS[iv["id"]]["gold"] | {
-        "decision": edits[iv["iid"]][0]}, "intervention": {"base": iv["id"]} | iv} for iv in ivs}
+    assert (cov["parse_fail"], cov["fmt_err"], cov["items_scored"], cov["expl_uncertified"]) == (0, 3, 12, 3)
+    recs = RECS
     ks = [b["bank_id"] for b in BANK]
-    aux = {"answers": [{"id": i, "sample": 0, "output": f"Decision: {e[1]}"} for i, e in edits.items()],
-           "predict": [pr(ks[0], "deny"), pr(ks[1], "deny"), {"id": ks[2], "sample": 0, "output": "it depends"},
+    aux = {"predict": [pr(ks[0], "deny"), pr(ks[1], "deny"), {"id": ks[2], "sample": 0, "output": "it depends"},
                        pr(ks[3], "deny")],
            "predict_noacc": [pr(ks[0], "deny", "zzz"), pr(ks[1], "deny"), pr(ks[2], "cannot determine"),
                              pr(ks[3], "approve")]}
@@ -530,12 +520,9 @@ def test_metrics(stub):
                   ("simulate_noacc", ["approve", "deny", "cannot determine", "deny"]),
                   ("simulate_shuf", ["approve"] * 4)):
         aux[k] = [pr(i, d) for i, d in zip(ks, ds)]
-    U, cov, _ = score(recs, fake_rows(), aux, BANK)
+    U, cov = score(recs, fake_rows(), aux, BANK)
     a = aggregate(U)["all"]
-    check(a, {"bnd_both": 1 / 3, "bnd_oracle_only": 1 / 3, "bnd_model_only": 1 / 3, "bnd_neither": 0.0,
-              "bnd_oracle_minimal": 2 / 3, "bnd_invalid": 0.0, "bnd_both[vs_gold]": 1 / 3,
-              "bnd_oracle_only[vs_gold]": 2 / 3, "bnd_model_only[vs_gold]": 0.0, "bnd_oracle_minimal[vs_gold]": 2 / 3,
-              "necessity_flip": 3 / 4, "necessity_flip[interaction]": 1 / 2, "acc_maj": 3 / 4, "self_S": 1 / 2,
+    check(a, {"acc_maj": 3 / 4, "self_S": 1 / 2,
               "self_S[pivotal_replace]": 1.0, "self_S_noacc": 1 / 4, "self_G": -1 / 4, "self_V": 1 / 4,
               "bank_unchanged": 0.0, "sim_acct": 3 / 4, "sim_noacc": 1 / 2, "sim_shuf": 1 / 4, "sim_delta": 1 / 2,
               "sim_delta[pivotal_replace]": 1.0, "sim_delta[invariant_replace]": 0.0, "sim_delta[add]": 0.0,
@@ -555,7 +542,7 @@ def test_metrics(stub):
     rows = fake_rows()
     for r in rows:
         r |= {"finish": "length"} if r["id"] == "p2-b2-f" else {"output": "<think>go"} if r["id"] == "p1-b1-i" else {}
-    U, cov, _ = score(RECS, rows, {})
+    U, cov = score(RECS, rows, {})
     a = aggregate(U)["all"]
     assert (a["flip"]["mean"], a["invariance"]["mean"], a["acc_class[approve]"]["mean"]) == pytest.approx(
         (1 / 2, 0.0, 3 / 7))
@@ -601,8 +588,11 @@ def test_prior_conflict_split(stub):
     assert not [m for m in ag["all"] if "prior_conflict" in m and m.split("[")[0] not in evaluate.PC_SPLIT]
 
 
-def test_refusals(stub, tmp_path, monkeypatch):
-    """Checks that evaluate.main refuses an old-shuffle shuf file and a companion from another model."""
+def test_refusals(stub, tmp_path, monkeypatch, capsys):
+    """
+    Checks that evaluate.main refuses an old-shuffle shuf file and a companion from another model, stamps its JSON
+    with the commit and prints only CORE metrics unless --full.
+    """
     rows = [r | {"model": "m", "backend": "b"} for r in fake_rows()]
     rp = tmp_path / "r.jsonl"
     rp.write_text("".join(json.dumps(r) + "\n" for r in rows))
@@ -618,6 +608,14 @@ def test_refusals(stub, tmp_path, monkeypatch):
     (tmp_path / "r.simulate_shuf.jsonl").write_text("".join(json.dumps(r | {"shuf_src": "frozen",
                                                     "shuf_decision_match": True}) + "\n" for r in shuf))
     evaluate.main()
+    # the JSON names the commit it ran on, and stdout keeps to CORE metrics unless --full
+    assert json.loads((tmp_path / "e.json").read_text())["commit"].startswith(
+            subprocess.run(["git", "rev-parse", "--short=7", "HEAD"], capture_output=True, text=True).stdout.strip())
+    assert "acc_mean" not in capsys.readouterr().out
+    monkeypatch.setattr(sys, "argv", sys.argv + ["--full"])
+    evaluate.main()
+    assert "acc_mean" in capsys.readouterr().out
+    monkeypatch.setattr(sys, "argv", sys.argv[:-1])
     # a 2nd model on sample 0 is refused unless those rows are a prompted explainer's (explained_from set)
     for ex, msg in (({}, "mixed decoding"), ({"explained_from": "f.jsonl"}, None)):
         rp.write_text("".join(json.dumps(r | ({"model": "m2"} | ex if r["sample"] == 0 else {})) + "\n" for r in rows))
