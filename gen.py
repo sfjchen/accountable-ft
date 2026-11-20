@@ -602,7 +602,8 @@ def report(a):
                                  "defaults_applied": r["gold"]["defaults_applied"],
                                  "changed_facts": r["changed_facts"], "removed_fact": r["removed_fact"]}) + "\n")
     md += ["## Blind validation sample", "",
-           f"`{bl.name}` ({len(picks)} prose items, at most 1 per base family, answers in `{ans.name}`). Each of us fills "
+           f"`{bl.name}` ({len(picks)} prose items, at most 1 per base family, answers in `{ans.name}`). "
+           "Each of us fills "
            "label_decision (approve, deny, cannot determine) and label_facts without opening the answer file.", "",
            crosstab(picks, lambda r: r["domain"], dec, DECISIONS), "",
            "By variant: " + ", ".join(f"{k} {v}" for k, v in sorted(collections.Counter(

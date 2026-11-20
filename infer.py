@@ -123,9 +123,9 @@ def show(dom, n, v):
 
 def format_target(rec):
     """
-    Returns the correct explanation of rec in FORMAT, decision first: the SFT target. Policy support is the first minimum
-    sufficient set (stated facts) with the rule each fact triggers, or the missing facts behind the undecided rules
-    as "not stated"; Assumptions are the defaults applied; the last line is min_flip, min_reveal for cannot
+    Returns the correct explanation of rec in FORMAT, decision first: the SFT target. Policy support is the first
+    minimum sufficient set (stated facts) with the rule each fact triggers, or the missing facts behind the undecided
+    rules as "not stated"; Assumptions are the defaults applied; the last line is min_flip, min_reveal for cannot
     determine, else "no change within 4 edits".
     """
     g, pol, lab = rec["gold"], gen.policy_for(rec), rec.get("fact_labels", {})

@@ -359,9 +359,9 @@ def min_flip(pol, facts, target=None, radius=MAX_RADIUS, exclude=(), prefer_disj
     """
     Returns the smallest "replace" edit of stated source facts that makes the decision `target` (default
     flip_target), by increasing edit count up to `radius`, then smallest total move in bucket steps, then schema
-    order. Edits stay within each fact's allowed values, and for deny they touch every failed rule. exclude: fact names never edited, or a
-    {fact: value} dict of edits never made that also rules out every edit of exactly its fact set. prefer_disjoint:
-    a flip sharing no fact with it wins at any radius, else the smallest overlapping one, and the result gains
+    order. Edits stay within each fact's allowed values, and for deny they touch every failed rule. exclude: fact
+    names never edited, or a {fact: value} dict of edits never made that also rules out every edit of exactly its
+    fact set. prefer_disjoint: a flip sharing no fact with it wins at any radius, else the smallest overlapping one, and the result gains
     "disjoint". Returns {"kind": "replace", "edits", "radius", "certified_minimum", "target"}, {"edits": None,
     "exhausted_radius"} for certified absence, {"edits": None, "searched_radius", "uncertified", "reason"} over
     budget, and edits and target None for "cannot determine".

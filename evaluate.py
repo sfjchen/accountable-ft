@@ -52,7 +52,8 @@ ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_dwrong", "sim_wrong", "sim_wr
 # counterfactual consistency, explanation correctness and its parts the report reads, self-prediction, format, length
 CORE = {"sim_delta", "sim_acct", "sim_shuf", "sim_dwrong", "sim_wrong", "sim_wrong_shuf", "sim_gross", "sim_noacc",
         "sim_const_unchanged", "sim_oracle", "self_S", "self_V", "bank_unchanged", "acc_maj", "acc_class",
-        "cf_pair_acc", "invariance", "expl_valid", "acct_consistent", "cite_distractor", "assume_val", "fmt_err", "len_chars"}
+        "cf_pair_acc", "invariance", "expl_valid", "acct_consistent", "cite_distractor", "assume_val", "fmt_err",
+        "len_chars"}
 LABEL = {"sim_delta": "sim_delta (primary: acct - shuf)", "sim_dwrong": "sim_dwrong (acct - wrong)",
         "sim_wrong_shuf": "sim_wrong_shuf (wrong - shuf)", "sim_gross": "sim_gross (acct - noacc)",
         "self_V": "self_V (secondary)", "sim_const_unchanged": "sim_const_unchanged (baseline: frozen decision)",
@@ -587,8 +588,8 @@ def main():
     ap.add_argument("--select-control", help="--select-by: decision-only control whose dev acc_maj bounds the pick")
     ap.add_argument("--power", action="store_true", help="print the ICC and power table on the primary population")
     ap.add_argument("--contrast", nargs="+", metavar="GROUP", help="mix contrasts: run-name prefixes (rm-inv rm-real "
-                    "rm-mix) whose seed-pooled paired gains (vs --compare) are differenced on shared items, every pair, "
-                    "with family-clustered CIs and Holm-adjusted p-values per group")
+                    "rm-mix) whose seed-pooled paired gains (vs --compare) are differenced on shared items, every "
+                    "pair, with family-clustered CIs and Holm-adjusted p-values per group")
     ap.add_argument("--dump", metavar="DIR", help="write DIR/<run>.items.jsonl: every scored case and edit, for "
                     "reading failures")
     ap.add_argument("--boot", type=int, default=1000)
@@ -628,8 +629,8 @@ def main():
                 if k == "simulate_shuf" and not all(r.get("shuf_src") == "frozen" and "shuf_decision_match" in r
                         for r in aux[k]):
                     sys.exit(f"refusing {cp.name}: rows without shuf_src frozen and shuf_decision_match come from "
-                            f"the old shuffle (partner decision or correct explanations); rerun infer.py --mode simulate "
-                            f"--all-sim")
+                            f"the old shuffle (partner decision or correct explanations); rerun infer.py --mode "
+                            f"simulate --all-sim")
                 if k.startswith("simulate"):
                     simsig |= {s for r in aux[k] for s in sig([r], DEC_KEYS)}
                 elif sig(aux[k], DEC_KEYS) != sigs[rp.stem]:
@@ -657,7 +658,7 @@ def main():
             print(f"run={rp.stem} population=slice={PRIME[0]} view={PRIME[1]}; Var(delta_A - delta_B) = 2 * "
                     f"Var(sim_delta) = {var_d:.3f}\n")
             print("| metric | units / families (run) | mean | ICC [95% cluster boot] | design | m | CV | DE | n_eff | "
-                    "acc CI half-width (20% disc.) | MDE sim_delta (80%) |\n|---|---|---|---|---|---|---|---|---|---|---|")
+                    "acc CI half-width (20% disc.) | MDE sim_delta (80%) |\n" + "|---" * 11 + "|")
             for name, (uu, kind) in us.items():
                 rho, k, N = icc([u[0] for u in uu], [u[1] for u in uu])
                 byc = defaultdict(list)
@@ -752,8 +753,9 @@ def main():
             for y in (a.contrast or ())[i + 1:]:
                 pu = [(per[x][k][0] - per[y][k][0],) + per[x][k][1:] for k in sorted(set(per[x]) & set(per[y]))]
                 for gk, sel in groups(pu).items():
-                    contrasts[gk][m][f"{x or 'round1'} - {y or 'round1'}"] = boot([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed) | \
-                        {"p": boot_p([u[0] for u in sel], [u[1] for u in sel], a.boot, a.seed)}
+                    vs, cl = [u[0] for u in sel], [u[1] for u in sel]
+                    contrasts[gk][m][f"{x or 'round1'} - {y or 'round1'}"] = boot(vs, cl, a.boot, a.seed) | \
+                        {"p": boot_p(vs, cl, a.boot, a.seed)}
     for gk in contrasts:
         for m, cs in contrasts[gk].items():
             for k, hp in holm({k: c["p"] for k, c in cs.items()}).items():
