@@ -94,9 +94,11 @@ Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus 
 
 #### Mix recommendation
 
-- Train on the mixed set. Inv / real / mix: gain on the 4 trained-on tests +3.2 / +4.5 / +6.9, on the 2 held-out ones -3.5 / -2.3 / 0.0, mean correctness over all 6 tests 39% / 36% / 44%, accuracy 78% / 80% / 87%.
-- Mixed ties real-only on real tests (gain -0.7 to +1.4, correctness 2-6 points lower) and beats it on invented tests (correctness +12 to +27).
-- Limits: 2 domains per kind and 1 held out per kind, no Gemini gain contrast between mixes clears Holm on the original families, and with Opus real-only beats mixed on mortgage by 6.5 [2.8, 10.5] after Holm.
+- Train on the mixed set, on correctness and accuracy, not on gain. Mean over all 6 tests, inv / real / mix: correctness 39% / 36% / 44%, accuracy 78% / 80% / 87%. Mixed beats real-only on invented tests (correctness +12 to +27) and trails it by 2-6 points on real tests.
+- Not more data (log `final-grid-seeds-2005f39-20261120-1856`): every mix has 3,600 rows, 266-270 root cases, the same variant shares and the same steps. Real-only has the most text, 1.49M explanation characters vs 1.28M mixed (5.55M vs 4.76M training tokens in sc's `train_meta.json`). Mixed has 2x the families (120 vs 60) and 1.7x the policies (202 vs 119) at half the rows per domain, so the open confound is diversity vs per-domain dose, not volume.
+- Gain does not separate mixed from real-only, and the 2 simulators disagree. Average over the 6 tests by seed (same log): Gemini mix 4.5 / 4.7 / 4.6, real 2.5 / 2.4 / 1.9, mix higher in 9 of 9 seed pairs. Opus mix 6.1 / 4.4 / 2.3, real 5.9 / 3.5 / 6.4, 3 of 9. On real tests Opus favors real-only (mix higher in 1 of 9 pairs, mortgage -6.5 [-10.5, -2.8] after Holm). On the 2 held-out tests mixed is higher in 7 of 9 pairs under both.
+- The earlier "+6.9 / +4.5 / +3.2 on trained-on tests" (mix / real / inv) averaged Gemini over 4 tests, 2 of which each specialist never trained on. Opus gives 4.6 / 7.1 / 6.4.
+- Limits: CIs pool the 3 seeds and resample families only. Holm covers the 3 contrasts within 1 test, metric and simulator, not 6 tests x 2 simulators. 1 held-out domain per kind.
 
 ### Error analysis and diagnostics
 
@@ -110,7 +112,7 @@ Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus 
 
 - 1 schema, 1 model size (9B), 2 domains per kind. "Unseen family" reuses training rule shapes.
 - Real-rules transfer is not shown. Mortgage gains on the original families are format-driven, and the registered IRS test is negative.
-- Real-only dose arm not run (rm-real at 1,800 rows, matching mixed's real rows). Neither outcome changes the mix pick: saturation makes the invented rows free coverage, a drop makes them a substitute. A naive 1,800-row arm would not reuse mixed's real rows and halves optimizer steps, so a clean version needs nested rows and a step-matched control, and grid power (5-8 points) could not read a null.
+- Real-only dose arm not run (rm-real at 1,800 rows, matching mixed's real rows). A clean arm filters mixed's own mortgage and SNAP rows (only 1,455 of its 1,800 are in rm-real, and a fresh 900-per-domain export draws other cases), keeps 2 epochs (so half the steps) and reads mixed minus it on mortgage with Opus, the only place the mixes differ. Neither outcome changes the pick, which rests on correctness, and grid power (5-8 points) could not read a null. The cheaper check is Opus on the existing 18 runs' new mortgage and SNAP families.
 - Opus is not temperature-controlled (Claude Code headless), so a rerun can differ slightly.
 
 ## Decision log
