@@ -6,7 +6,7 @@ Can fine-tuning make a model's stated reasons track its decisions? We train Qwen
 
 ## Results so far
 
-Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 95% CI clustered by rule family. v1 = unseen families of the invented domains, mortgage = 24 held-out mortgage families. Logs `final-v1-gemini-eval-4f9300a-20261120-0254`, `final-mortgage-gemini-eval-4f9300a-20261120-0254`, `final-v1-opus-eval-4f9300a-20261120-0254`, `final-mortgage-opus-eval-4f9300a-20261120-0254`.
+Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 95% CI clustered by rule family. v1 = unseen families of the invented domains, mortgage = 24 held-out mortgage families. Logs `final-v1-gemini-eval-abaa830-20261120-1542`, `final-mortgage-gemini-eval-abaa830-20261120-1542`, `final-v1-opus-eval-abaa830-20261120-1542`, `final-mortgage-opus-eval-abaa830-20261120-1542`.
 
 | training mix | v1, Gemini | mortgage, Gemini | v1, Opus | mortgage, Opus | accuracy, v1 |
 |---|---|---|---|---|---|
