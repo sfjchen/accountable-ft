@@ -91,6 +91,7 @@ Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus 
 - Families of review and IRS dependent that no grid model trained on, and new families of the 4 training domains (`data/*-x.jsonl`). Pooled only where old minus new covers 0, so IRS dependent real and mix are not pooled (-5.5 [-10.9, -0.1], -5.7 [-11.3, -0.8]).
 - Holm-clear pooled contrasts: mix - inv +6.6 [3.1, 10.1] on mortgage and +8.4 [4.9, 12.0] on SNAP, real - inv +6.7 and +8.1. None on review.
 - Own minus wrong, pooled: mortgage +1.1 / +5.0 / +6.7, SNAP +8.8 / +7.2 / +6.9, review +6.8 / +8.0 / +7.7.
+- Opus on the new mortgage and SNAP families, registered Nov 20 before any result (`sim.sh` with `SIMS=own+shuf`, own and shuffled passes on all 18 runs). Read: mix - real on mortgage, new alone and pooled. The Opus mortgage gap (-6.5 on the original 24 families) replicates if the pooled CI stays below 0, and is a small-sample result if it covers 0. SNAP and the other 2 contrasts are secondary.
 
 #### Mix recommendation
 
