@@ -27,5 +27,5 @@ Paired simulatability gain, explanation SFT minus decision-only, seed by seed, 9
 
 - `engine.py` rule engine, `gen.py` data generator, `domains/` policies.
 - `infer.py` model runner and simulator passes, `evaluate.py` metrics and CIs, `train.py` LoRA SFT with the matched loss.
-- `cluster.sh`, `score.sh`, `sim.sh` jobs, `compare_sims.py`, `errors.py` analyses, `tests/test_all.py`.
+- `cluster.sh`, `score.sh`, `sim.sh` jobs, `compare_sims.py`, `errors.py`, `seeds.py` (grid gains seed by seed) analyses, `tests/test_all.py`.
 - `runs/` outputs, `data/` datasets. Commands in [OPS.md](OPS.md).
