@@ -6,7 +6,7 @@ Stack, clusters, commands and the file map. Design and results in [DECISIONS.md]
 
 - Trained model: Qwen3.5-9B, bf16 LoRA (r 16, alpha 32, all 7 projections), thinking off (`enable_thinking=False` in training and inference).
 - Pins in `train.PINS` (unsloth 2026.11.3 caps trl and transformers): `pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cu126 && pip install unsloth==2026.11.3 trl==1.15.0 transformers==5.17.0 peft==0.21.2 vllm==0.33.0`. vllm serves from its own venv (`.venv-serve`), since its CUDA 13 build dies on the training venv's cu126 torch.
-- Simulators: Gemini 3.5 Flash-Lite on Vertex (ADC, thinking off, temperature 0), also the prose writer. Claude Opus 5.5 through Claude Code headless (`--backend claude-cli`).
+- Simulators: Gemini 3.5 Flash-Lite on Vertex (ADC, thinking off, temperature 0), also the prose writer. Claude Opus 5.5 through Claude Code headless (`--backend claude-cli`), on the CLI login, or on another account with `CLAUDE_CONFIG_DIR=<dir>` after `CLAUDE_CONFIG_DIR=<dir> claude auth login`.
 - Loss: mean_dec + λ mean_acc per example (`--acc-weight`, default 1). Decision-only uses λ = 0 with explanation labels at -100. `train_meta.json` in each output records flags, commit, versions, GPU and token counts.
 - Every served run uses `--max-tokens 16384`, since `evaluate.py` refuses to compare runs with different decoding.
 

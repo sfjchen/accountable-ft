@@ -279,8 +279,10 @@ class Runner:
             self.cli = gen.gemini_client(vertex)
         elif backend == "claude-cli":
             # Claude Code headless on the signed-in subscription: no API key, no base URL, none of the env of a
-            # parent Claude Code session (its host-auth vars make the child fail to sign in)
-            self.cli = {k: v for k, v in os.environ.items() if not k.startswith(("CLAUDE", "ANTHROPIC"))}
+            # parent Claude Code session (its host-auth vars make the child fail to sign in). CLAUDE_CONFIG_DIR stays,
+            # so a config dir signed in to another account (claude auth login) picks the subscription that pays
+            self.cli = {k: v for k, v in os.environ.items()
+                    if k == "CLAUDE_CONFIG_DIR" or not k.startswith(("CLAUDE", "ANTHROPIC"))}
             self.exe = shutil.which("claude") or "claude"
         elif backend == "vllm":
             from vllm import LLM
