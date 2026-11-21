@@ -590,6 +590,9 @@ def main():
     ap.add_argument("--contrast", nargs="+", metavar="GROUP", help="mix contrasts: run-name prefixes (rm-inv rm-real "
                     "rm-mix) whose seed-pooled paired gains (vs --compare) are differenced on shared items, every "
                     "pair, with family-clustered CIs and Holm-adjusted p-values per group")
+    ap.add_argument("--contrast-raw", metavar="COND", help="mix contrasts on COND's own seed-pooled units (e.g. "
+                    "account: own minus shuffled gain of the explanation models), with no decision-only run "
+                    "subtracted, since decision-only runs of different mixes print different placeholder lines")
     ap.add_argument("--dump", metavar="DIR", help="write DIR/<run>.items.jsonl: every scored case and edit, for "
                     "reading failures")
     ap.add_argument("--boot", type=int, default=1000)
@@ -733,6 +736,12 @@ def main():
             lo, hi = np.percentile(bm[0] - bm[1], [2.5, 97.5])
             drift[gk][name] = {"old": mo, "new": mn, "mean": mo - mn, "lo": float(lo), "hi": float(hi),
                     "n_clus": [len({u[1] for u in pt}) for pt in parts]}
+    # --contrast-raw: the contrasts read each COND run's own units, seeds pooled, instead of the paired ones
+    raw = defaultdict(lambda: defaultdict(list))
+    for c in res if a.contrast_raw else []:
+        if re.search(rf"-{re.escape(a.contrast_raw)}-e\d+-s\d+$", c):
+            for m, us in units[c].items():
+                raw[re.sub(r"-s\d+$", "", c) + " - none (seeds pooled)"][m] += us
     # difference in differences: each prefix's paired units averaged over seeds per item, then prefix X minus Y on
     # the items both have, so a contrast is paired on items and clustered on families like every other CI here
     contrasts = defaultdict(lambda: defaultdict(dict))
@@ -742,7 +751,8 @@ def main():
             # "<pre>-<cond>-e<k> - ..." only, so prefix "mortgage-split" (round 1) leaves out "mortgage-split-r2-..."
             # and the empty prefix (round 1 on v1, "account-e2 - ...") leaves out "r2-..." and "mo-..."
             lead = re.escape(pre) + "-" if pre else ""
-            hit = [ms[m] for n, ms in pool.items() if re.match(rf"{lead}[a-z]+-e\d+ - ", n) and m in ms]
+            hit = [ms[m] for n, ms in (raw if a.contrast_raw else pool).items() if
+                    re.match(rf"{lead}[a-z]+-e\d+ - ", n) and m in ms]
             if len(hit) != 1:
                 sys.exit(f"--contrast {pre}: expected 1 seed-pooled paired group with {m}, found {len(hit)}")
             by = defaultdict(list)
@@ -804,7 +814,8 @@ def main():
     for gk in sorted(contrasts, key=lambda g: (g != PRIMARY, g)):
         if gk not in (PRIMARY, "all") and not gk.startswith(PRIMARY + " domain="):
             continue
-        print(f"\n### mix contrasts ({gk}): paired gain difference [95% CI], p, Holm p\n")
+        what = f"{a.contrast_raw} runs' own difference" if a.contrast_raw else "paired gain difference"
+        print(f"\n### mix contrasts ({gk}): {what} [95% CI], p, Holm p\n")
         for m, cs in contrasts[gk].items():
             for k, c in cs.items():
                 print(f"- {m} {k}: {c['mean']:+.3f} [{c['lo']:+.3f}, {c['hi']:+.3f}] n={c['n']} p={c['p']:.3f} "

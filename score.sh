@@ -4,7 +4,8 @@
 #   bash score.sh list        prints the evals, 1 per line: <log label> <command>
 #   bash score.sh run <i>     runs eval i (1-based) under stamp-run, log final-<label>-eval-<commit>-<date>.log
 #   bash score.sh all         runs every eval in turn
-# Env: LOGS (stamp-run logs, default ~/dev/logs; JSON tables go to LOGS/evals-final), PY (default python3).
+# Env: LOGS (stamp-run logs, default ~/dev/logs; JSON tables go to LOGS/evals-final), PY (default python3),
+#   RAW=<cond> (run only: adds --contrast-raw <cond>, label and JSON get a -raw suffix).
 # The extended test families are scored only once their simulator passes exist (the last run's shuf file).
 set -euo pipefail
 LOGS=${LOGS:-$HOME/dev/logs} PY=${PY:-python3} J=${LOGS:-$HOME/dev/logs}/evals-final
@@ -93,6 +94,7 @@ case ${1:?usage: bash score.sh list | run <i> | all} in
   run)
     ln=$(evals | sed -n "${2:?missing eval number}p")
     [ -n "$ln" ] || { echo "no eval $2"; exit 1; }
+    [ -z "${RAW:-}" ] || ln=$(sed -E "s/^([^ ]+)/\1-raw/; s/\.json( |\$)/-raw.json --contrast-raw $RAW\1/" <<< "$ln")
     eval "STAMP_DIR=$LOGS stamp-run final-${ln%% *}-eval -- ${ln#* }" > /dev/null ;;
   all) n=$(evals | wc -l); for i in $(seq "$n"); do bash "$0" run "$i"; done ;;
 esac
