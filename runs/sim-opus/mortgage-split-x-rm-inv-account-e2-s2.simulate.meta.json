@@ -1,0 +1,39 @@
+{
+ "model": "claude-opus-5-5",
+ "backend": "claude-cli",
+ "vertex": null,
+ "mode": "simulate",
+ "no_account": false,
+ "shuffle_accounts": false,
+ "shuf_missing": null,
+ "wrong_missing": null,
+ "cases": 0,
+ "cache_tag": "",
+ "sample_seed": 0,
+ "decoding": {
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "top_k": 0,
+  "max_tokens": 4096,
+  "seed": 0,
+  "thinking": false
+ },
+ "n": 1,
+ "rows": 726,
+ "cached": 726,
+ "errors": 0,
+ "fresh_calls": 0,
+ "wall_s": 0.31,
+ "in_tokens": 957549,
+ "out_tokens": 80593,
+ "think_tokens": 49874,
+ "finish": {
+  "end_turn": 726
+ },
+ "model_versions": [
+  "claude-opus-5-5"
+ ],
+ "mean_latency_s": 0.0,
+ "cost_usd_fresh": null,
+ "cost_usd_if_uncached": null
+}
