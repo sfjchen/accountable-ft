@@ -68,13 +68,17 @@ evals() {
   for fo in review-x:v1 dependent-x:dependent v1-x:v1 snap-x:snap mortgage-split-x:mortgage-split; do
     f=${fo%:*} o=${fo#*:} op=
     [ $o = v1 ] || op=$o-
-    [ -s runs/$f-rm-mix-decision-e2-s2.simulate_shuf.jsonl ] || continue
-    B=; [ -s runs/$f-base-thinkoff.simulate_shuf.jsonl ] && B="runs/$f-base-thinkoff.jsonl "
-    echo "$f-grid-gemini $E $(g $f-)$B--data data/$f.jsonl --bank data/$f.bank.jsonl --compare decision" \
-      "--contrast $f-rm-mix $f-rm-real $f-rm-inv --json $J/$f-grid-gemini.json"
-    echo "$f-pool-grid-gemini $E $(g "$op" $f-)--data data/$o.jsonl data/$f.jsonl --bank data/$o.bank.jsonl" \
-      "data/$f.bank.jsonl --compare decision --contrast ${op}rm-mix ${op}rm-real ${op}rm-inv" \
-      "--json $J/$f-pool-grid-gemini.json"
+    # Opus scores only the files it simulated (the new mortgage and SNAP families, own and shuffled passes)
+    for sd in gemini:runs/ opus:runs/sim-opus/; do
+      d=${sd#*:}
+      [ -s $d$f-rm-mix-decision-e2-s2.simulate_shuf.jsonl ] || continue
+      B=; [ -s $d$f-base-thinkoff.simulate_shuf.jsonl ] && B="$d$f-base-thinkoff.jsonl "
+      echo "$f-grid-${sd%:*} $E $(g $f- | sed "s#runs/#$d#g")$B--data data/$f.jsonl --bank data/$f.bank.jsonl" \
+        "--compare decision --contrast $f-rm-mix $f-rm-real $f-rm-inv --json $J/$f-grid-${sd%:*}.json"
+      echo "$f-pool-grid-${sd%:*} $E $(g "$op" $f- | sed "s#runs/#$d#g")--data data/$o.jsonl data/$f.jsonl" \
+        "--bank data/$o.bank.jsonl data/$f.bank.jsonl --compare decision --contrast ${op}rm-mix ${op}rm-real" \
+        "${op}rm-inv --json $J/$f-pool-grid-${sd%:*}.json"
+    done
   done
   # error analysis on IRS dependents: the dump of every scored case and edit, then the tally of leading causes
   R=$(for m in inv real mix; do for s in 0 1 2; do printf 'dependent-rm-%s-account-e2-s%s ' $m $s; done; done)
