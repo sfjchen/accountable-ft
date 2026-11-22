@@ -26,6 +26,14 @@ g() {
   done; done; done
 }
 
+# The same with the mixed-2 arm (gm, ts) added: 30 run files on test prefix $1.
+g2() {
+  local m c s
+  for m in inv real mix gm ts; do for c in account decision; do for s in 0 1 2; do
+    printf '%s ' "runs/$1rm-$m-$c-e2-s$s.jsonl"
+  done; done; done
+}
+
 # Prints every eval as "<label> <command>".
 evals() {
   local f p d sd o op fo B R
@@ -86,6 +94,33 @@ evals() {
   echo "dependent-errors bash -c \"$E $(for x in $R; do printf 'runs/%s.jsonl ' $x; done)--data data/dependent.jsonl" \
     "--bank data/dependent.bank.jsonl --json $J/errors-dump.json --dump $J/errors > /dev/null &&" \
     "$PY errors.py --dump $J/errors --runs $R--data data/dependent.jsonl --tally\""
+  # mixed-2 arm (registered Nov 21): its own contrast family on the 4 original test files, once its runs exist
+  for f in v1 mortgage-split snap dependent; do
+    p=; [ $f = v1 ] || p=$f-
+    [ -s runs/${p}rm-ts-decision-e2-s2.simulate_shuf.jsonl ] || continue
+    for sd in gemini:runs/ opus:runs/sim-opus/; do
+      [ -s ${sd#*:}${p}rm-ts-decision-e2-s2.simulate_shuf.jsonl ] || continue
+      echo "$f-grid2-${sd%:*} $E $(g2 "$p" | sed "s#runs/#${sd#*:}#g")--data data/$f.jsonl --bank" \
+        "data/$f.bank.jsonl --compare decision --contrast ${p}rm-gm ${p}rm-ts ${p}rm-real ${p}rm-inv ${p}rm-mix" \
+        "--json $J/$f-grid2-${sd%:*}.json"
+    done
+  done
+  # prior-conflict probe (registered Nov 21): every grid model on the moved-threshold real files, evaluate.py
+  # (accuracy, validity and gain split by prior_conflict) and faith.py (prior_follow, engine faithfulness)
+  for f in mortgage-split-pc snap-pc dependent-pc; do
+    [ -s runs/$f-rm-mix-decision-e2-s2.simulate_shuf.jsonl ] || continue
+    R=$(g2 $f- | tr ' ' '\n' | while read -r x; do [ -s "$x" ] && printf '%s ' "$x"; done)
+    echo "$f-grid-gemini $E $R--data data/$f.jsonl --bank data/$f.bank.jsonl --compare decision --contrast" \
+      "$f-rm-mix $f-rm-real $f-rm-inv --json $J/$f-grid-gemini.json"
+    echo "$f-faith $PY faith.py $R--data data/$f.jsonl --bank data/$f.bank.jsonl --json $J/$f-faith.json"
+  done
+  # engine-scored faithfulness (E4, registered Nov 21) on every grid model, original and held-out test files
+  for f in v1 mortgage-split snap dependent review-x; do
+    p=; [ $f = v1 ] || p=$f-
+    d=$f
+    R=$(g2 "$p" | tr ' ' '\n' | while read -r x; do [ -s "$x" ] && printf '%s ' "$x"; done)
+    echo "$f-faith $PY faith.py $R--data data/$d.jsonl --bank data/$d.bank.jsonl --json $J/$f-faith.json"
+  done
 }
 
 mkdir -p "$J"

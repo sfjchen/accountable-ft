@@ -15,7 +15,7 @@
 set -u
 # node for the Opus CLI and gcloud on the Mac (absent elsewhere, harmless)
 export PATH=$HOME/.nvm/versions/node/v22.18.0/bin:/opt/homebrew/share/google-cloud-sdk/bin:/opt/homebrew/bin:$PATH
-SIMS=${SIMS:-all} NICE=${NICE:-} TAG=${TAG:-grid} PAT=${PAT:-'^rm-(inv|real|mix)-(account|decision)-e2-s[0-2]$'}
+SIMS=${SIMS:-all} NICE=${NICE:-} TAG=${TAG:-grid} PAT=${PAT:-'^rm-(inv|real|mix|gm|ts)-(account|decision)-e2-s[0-2]$'}
 FILES=${FILES:-"v1 mortgage-split snap dependent"} CONC=${CONC:-16} PY=${PY:-python3} LOGS=${LOGS:-$HOME/dev/logs}
 mkdir -p "$LOGS"
 if [ "$1" = gemini ]; then

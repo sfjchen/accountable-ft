@@ -17,7 +17,7 @@ TESTS = {"grant": ("v1", "grant"), "trial": ("v1", "trial"), "mortgage": ("mortg
          "review": ("v1", "review"), "dependent": ("dependent", None)}
 GROUPS = {"invented trained": ["grant", "trial"], "real trained": ["mortgage", "snap"],
           "held out": ["review", "dependent"], "all 6": list(TESTS)}
-MIXES = ["inv", "real", "mix"]
+MIXES = ["inv", "real", "mix"]  # --mixes adds the mixed-2 arm (gm, ts)
 
 
 def main():
@@ -30,12 +30,15 @@ def main():
     ap.add_argument("--sim", nargs="+", default=["gemini", "opus"])
     ap.add_argument("--sft", metavar="DIR", help="also count each mix's training rows, families, policies, root "
                     "cases and explanation characters from DIR/rm-<mix>.sft.train.jsonl")
+    ap.add_argument("--mixes", nargs="+", default=MIXES, help="mixes to read (default inv real mix)")
+    ap.add_argument("--json-tag", default="grid", help="JSON name part: <file>-<tag>-<sim>.json (grid2 for mixed-2)")
     a = ap.parse_args()
+    mixes = a.mixes
     if a.sft:
         recs = {r["id"]: r for f in ("data/v1.jsonl", "data/mortgage-split.jsonl", "data/snap.jsonl")
                 for r in map(json.loads, Path(f).read_text().splitlines())}
         print("| mix | rows | families | policies | root cases | explanation characters |\n|---|---|---|---|---|---|")
-        for x in MIXES:
+        for x in mixes:
             rows, roots = [json.loads(ln) for ln in (Path(a.sft) / f"rm-{x}.sft.train.jsonl").open()], set()
             for row in rows:
                 r = recs[row["id"]]
@@ -50,23 +53,23 @@ def main():
     for sim in a.sim:
         g, commits = {}, set()
         for t, (f, dom) in TESTS.items():
-            j = json.loads((Path(a.dir) / f"{f}-grid-{sim}.json").read_text())
+            j = json.loads((Path(a.dir) / f"{f}-{a.json_tag}-{sim}.json").read_text())
             commits.add(j["commit"])
             gk = PRIMARY + (f" domain={dom}" if dom else "")
             for k, v in j["paired"].items():
-                if m := re.search(r"rm-(inv|real|mix)-account-e2-s(\d) - ", k):
+                if m := re.search(r"rm-([a-z]+)-account-e2-s(\d) - ", k):
                     g[t, m[1], int(m[2])] = 100 * v[gk]["sim_delta"]["mean"]
         assert len(commits) == 1, f"{sim} JSONs come from several commits: {commits}"
         print(f"## {sim}, commit {commits.pop()}: paired gain in points, seeds 0 / 1 / 2\n")
-        print("| test | " + " | ".join(MIXES) + " |\n|---|---|---|---|")
+        print("| test | " + " | ".join(mixes) + " |\n|---|" + "---|" * len(mixes))
         for t in TESTS:
-            print(f"| {t} | " + " | ".join(" / ".join(f"{g[t, x, s]:.1f}" for s in range(3)) for x in MIXES) + " |")
-        print("\n| group | " + " | ".join(MIXES) + " | mix > real, seed pairs | mix > inv, seed pairs |\n" +
-              "|---|---|---|---|---|---|")
+            print(f"| {t} | " + " | ".join(" / ".join(f"{g[t, x, s]:.1f}" for s in range(3)) for x in mixes) + " |")
+        print("\n| group | " + " | ".join(mixes) + " | mix > real, seed pairs | mix > inv, seed pairs |\n" +
+              "|---|" + "---|" * (len(mixes) + 2))
         for name, ts in GROUPS.items():
-            av = {(x, s): st.mean(g[t, x, s] for t in ts) for x in MIXES for s in range(3)}
+            av = {(x, s): st.mean(g[t, x, s] for t in ts) for x in mixes for s in range(3)}
             win = [sum(av["mix", i] > av[y, k] for i in range(3) for k in range(3)) for y in ("real", "inv")]
-            print(f"| {name} | " + " | ".join(" / ".join(f"{av[x, s]:.1f}" for s in range(3)) for x in MIXES) +
+            print(f"| {name} | " + " | ".join(" / ".join(f"{av[x, s]:.1f}" for s in range(3)) for x in mixes) +
                   f" | {win[0]} of 9 | {win[1]} of 9 |")
         print()
 

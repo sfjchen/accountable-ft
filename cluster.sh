@@ -8,7 +8,8 @@
 # MIX picks the training mix data/$MIX.sft.{train,dev}.jsonl: v1 (default, outputs/<cond>-s<seed>), r2 (grant, trial
 # and mortgage, review held out) or mo (mortgage only), the last 2 under outputs/$MIX-<cond>-s<seed>. The row-matched
 # grid trains inv (grant + trial), real (mortgage + SNAP) and mix (all 4) at 3,600 rows each, every domain an equal
-# share, and tests on review and the dependent tests, which none of them trains on.
+# share, and tests on review and the dependent tests, which none of them trains on. Array 18-29 adds the mixed-2
+# arm: gm (grant + mortgage) and ts (trial + SNAP), 1,800 rows per domain like the specialists.
 # Usage: bash cluster.sh setup | probe | smoke [account|decision] | train [--chunks [--runs <cond>-s<seed>,...]] |
 #   eval [r2-|mo-]<cond>-s<seed> <epoch> (DATA=<file>[,<file>] for other data files) |
 #   base (THINKING=on|off, CASES=N for a stratified subset) | notify <group> <jobid>[,<jobid>...] |
@@ -360,6 +361,11 @@ PY
       python train.py export --split "$s" --data data/v1.jsonl data/mortgage-split.jsonl data/snap.jsonl --domains \
           grant trial mortgage snap --drop-flagged data/v1.flagged.txt --rows-per-domain $((n / 2)) \
           --out "data/rm-mix.sft.$s.jsonl"
+      # mixed-2 arm (registered Nov 21): 1 invented + 1 real domain at the specialists' 1,800 rows per domain
+      python train.py export --split "$s" --data data/v1.jsonl data/mortgage-split.jsonl --domains grant mortgage \
+          --drop-flagged data/v1.flagged.txt --rows-per-domain "$n" --out "data/rm-gm.sft.$s.jsonl"
+      python train.py export --split "$s" --data data/v1.jsonl data/snap.jsonl --domains trial snap \
+          --drop-flagged data/v1.flagged.txt --rows-per-domain "$n" --out "data/rm-ts.sft.$s.jsonl"
     done
     python - <<'PY'
 import importlib.metadata as md
@@ -417,8 +423,9 @@ PY
         "${fl[@]}" ;;
   eval)  # merges the epoch-k checkpoint, serves it with vllm, runs answer, repeat and both predict passes
     eval_one "${1:?usage: bash cluster.sh eval [r2-|mo-]<cond>-s<seed> <epoch>}" "${2:?missing epoch}" ;;
-  grid)  # array index i: mix (inv, real, mix) i / 6, account (0-2) or decision (3-5) by i % 6, seed i % 3
-    mixes=(inv real mix) conds=(account decision) i=${SLURM_ARRAY_TASK_ID:?grid runs as an array job}
+  grid)  # array index i: mix (inv, real, mix, gm, ts) i / 6, account (0-2) or decision (3-5) by i % 6, seed i % 3;
+    # 0-17 are the registered grid, 18-29 the mixed-2 arm (gm grant + mortgage, ts trial + SNAP)
+    mixes=(inv real mix gm ts) conds=(account decision) i=${SLURM_ARRAY_TASK_ID:?grid runs as an array job}
     MIX=${mixes[i / 6]} cond=${conds[i % 6 / 3]} seed=$((i % 3))
     RESUME_OK=1 train_one "$cond" "$seed" "$REPO/outputs/rm-$MIX-$cond-s$seed" "data/rm-$MIX.sft.train.jsonl" \
         "data/rm-$MIX.sft.dev.jsonl" --epochs 2

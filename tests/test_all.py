@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 import engine as E  # noqa: E402
 import evaluate  # noqa: E402
+import faith  # noqa: E402
 import gen  # noqa: E402
 import infer  # noqa: E402
 from evaluate import aggregate, boot, explore_ckpt, norm_dec, parse, score, select_ckpt  # noqa: E402
@@ -285,6 +286,30 @@ def test_mortgage_domain():
     assert E.implied_decision(p, f, {"credit_score": 700, "dti": 40}, {}) == "approve"
     assert E.implied_decision(p, f, {"credit_score": 701}, {}) is None
     assert E.implied_decision(p, f, {"dti": 30}, {}, ["dti"]) is None
+
+
+def test_faith_implied_after_edit():
+    """Checks faith.py: a derived fact counts as its sources, an edited fact's cited old value is dropped so the edit
+    decides, a cited derived fact whose source was edited is dropped too, and removals are classed by gold."""
+    dom = gen.load_domain("mortgage")
+    rules = [{"id": "R1", "kind": "require", "cond": "dti <= 45"},
+             {"id": "R2", "kind": "require", "cond": "ltv <= 75 or credit_score >= 700"}]
+    p = E.Policy("m", dom["facts"], rules, dom["valid"], {n: d["expr"] for n, d in dom["derived_facts"].items()})
+    f = {"credit_score": 700, "monthly_income": 9000, "housing_payment": 2100, "monthly_debts": 1500,
+         "loan_amount": 420000, "property_value": 450000, "liquid_assets": 60000, "gift_funds": 20000,
+         "cash_to_close": 50000}
+    cit = {"credit_score": 700, "dti": 40}
+    assert faith.expand(cit, p) == {"credit_score", "monthly_income", "housing_payment", "monthly_debts"}
+    # the account cites score 700: after the score edit to 680 the edit wins (deny), not the cited 700
+    assert faith.implied_after(p, {**f, "credit_score": 680}, cit, {}, {"credit_score"}) == "deny"
+    assert E.implied_decision(p, {**f, "credit_score": 680}, cit, {}) == "approve"
+    # an income edit moves DTI to 51%: the cited dti=40 is dropped with its source, so deny
+    assert faith.implied_after(p, {**f, "monthly_income": 7000}, cit, {}, {"monthly_income"}) == "deny"
+    assert faith.implied_after(p, {**f, "gift_funds": 0}, cit, {}, {"gift_funds"}) == "approve"
+    case = {"gold": {"sufficient_sets": [["credit_score", "dti"]]}}
+    assert faith.removal_class(case, {"removed_effect": "cannot determine"}, "credit_score", p) == "cd"
+    assert faith.removal_class(case, {"removed_effect": "unchanged"}, "monthly_debts", p) == "partial"
+    assert faith.removal_class(case, {"removed_effect": "unchanged"}, "gift_funds", p) == "irrelevant"
 
 def test_snap_and_dependent_domains():
     """Checks the 2 added real-rules domains: held out of "all" with the real slice, generated policies keep their
