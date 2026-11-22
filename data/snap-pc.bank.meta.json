@@ -1,0 +1,33 @@
+{
+ "data": "data/snap-pc.jsonl",
+ "slice": "unseen_family_train_vocab",
+ "view": "prose",
+ "seed": 0,
+ "kinds_kept": {
+  "pivotal_replace": [
+   "pivotal_replace"
+  ],
+  "invariant": [
+   "noncrossing_replace"
+  ]
+ },
+ "items": 301,
+ "kinds": {
+  "noncrossing_replace": 129,
+  "pivotal_replace": 172
+ },
+ "groups": {
+  "pivotal_replace": 0.5714285714285714,
+  "invariant": 0.42857142857142855
+ },
+ "sources": {
+  "engine_alt_disjoint": 172,
+  "engine_noncrossing": 129
+ },
+ "candidates": {
+  "prose/noncrossing_replace": 172,
+  "prose/pivotal_replace": 172
+ },
+ "drop_reasons": {},
+ "drops": []
+}

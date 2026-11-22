@@ -1,0 +1,34 @@
+{
+ "data": "data/mortgage-split-pc.jsonl",
+ "slice": "unseen_family_train_vocab",
+ "view": "prose",
+ "seed": 0,
+ "kinds_kept": {
+  "pivotal_replace": [
+   "pivotal_replace"
+  ],
+  "invariant": [
+   "noncrossing_replace"
+  ]
+ },
+ "items": 402,
+ "kinds": {
+  "noncrossing_replace": 172,
+  "pivotal_replace": 230
+ },
+ "groups": {
+  "pivotal_replace": 0.572139303482587,
+  "invariant": 0.42786069651741293
+ },
+ "sources": {
+  "engine_alt_disjoint": 120,
+  "engine_alt_overlap": 110,
+  "engine_noncrossing": 172
+ },
+ "candidates": {
+  "prose/noncrossing_replace": 204,
+  "prose/pivotal_replace": 230
+ },
+ "drop_reasons": {},
+ "drops": []
+}
