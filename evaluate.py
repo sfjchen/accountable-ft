@@ -745,13 +745,17 @@ def main():
     # difference in differences: each prefix's paired units averaged over seeds per item, then prefix X minus Y on
     # the items both have, so a contrast is paired on items and clustered on families like every other CI here
     contrasts = defaultdict(lambda: defaultdict(dict))
-    for m in ("sim_delta", "expl_valid", "acc_maj"):
+    for m in ("sim_delta", "sim_dwrong", "expl_valid", "acc_maj"):
+        # sim_dwrong (own minus wrong-reason) exists only where wrong passes do: explanation runs, so --contrast-raw
+        src = raw if a.contrast_raw else pool
+        if m == "sim_dwrong" and not any(m in ms for ms in src.values()):
+            continue
         per = {}
         for pre in a.contrast or ():
             # "<pre>-<cond>-e<k> - ..." only, so prefix "mortgage-split" (round 1) leaves out "mortgage-split-r2-..."
             # and the empty prefix (round 1 on v1, "account-e2 - ...") leaves out "r2-..." and "mo-..."
             lead = re.escape(pre) + "-" if pre else ""
-            hit = [ms[m] for n, ms in (raw if a.contrast_raw else pool).items() if
+            hit = [ms[m] for n, ms in src.items() if
                     re.match(rf"{lead}[a-z]+-e\d+ - ", n) and m in ms]
             if len(hit) != 1:
                 sys.exit(f"--contrast {pre}: expected 1 seed-pooled paired group with {m}, found {len(hit)}")

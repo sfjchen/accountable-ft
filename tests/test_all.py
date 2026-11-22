@@ -629,7 +629,8 @@ def test_refusals(stub, tmp_path, monkeypatch, capsys):
 def test_contrast_raw(stub, tmp_path, monkeypatch):
     """
     Checks --contrast against hand-made simulator passes on 2 prefixes: the default differences the paired gains
-    (account minus decision-only), --contrast-raw account differences the account runs' own gains.
+    (account minus decision-only), --contrast-raw account differences the account runs' own gains, and adds own
+    minus wrong-reason, which only the account runs have.
     """
     ks, bp = [b["bank_id"] for b in BANK], tmp_path / "bank.jsonl"
     bp.write_text("".join(json.dumps(b) + "\n" for b in BANK))
@@ -644,7 +645,8 @@ def test_contrast_raw(stub, tmp_path, monkeypatch):
                                                     for r in fake_rows()))
         for x, rs in (("simulate", [pr(k, d) for k, d in zip(ks, ds)]),
                       ("simulate_shuf", [pr(k, "approve") | {"shuf_src": "frozen", "shuf_decision_match": True}
-                                         for k in ks])):
+                                         for k in ks])) + ((("simulate_wrong", [pr(k, "deny") for k in ks]),)
+                                                           if "account" in n else ()):
             Path(f"{st}.{x}.jsonl").write_text("".join(json.dumps(r | {"model": "sim"}) + "\n" for r in rs))
         runs.append(str(st.with_suffix(".jsonl")))
     out = {}
@@ -656,7 +658,12 @@ def test_contrast_raw(stub, tmp_path, monkeypatch):
         evaluate.main()
         j = json.loads(jp.read_text())
         g = {n: j["conditions"][f"{n}-e2-s0"]["all"]["sim_delta"]["mean"] for n in own}
+        w = {n: j["conditions"][f"{n}-e2-s0"]["all"].get("sim_dwrong", {}).get("mean") for n in own}
         out[bool(raw)] = (j["contrasts"]["all"]["sim_delta"]["a - b"]["mean"], g)
+        assert ("sim_dwrong" in j["contrasts"]["all"]) == bool(raw)
+        if raw:
+            assert j["contrasts"]["all"]["sim_dwrong"]["a - b"]["mean"] == pytest.approx(w["a-account"] -
+                                                                                         w["b-account"])
     (paired, g), (rawc, _) = out[False], out[True]
     assert paired == pytest.approx(g["a-account"] - g["a-decision"] - g["b-account"] + g["b-decision"])
     assert rawc == pytest.approx(g["a-account"] - g["b-account"]) and rawc != pytest.approx(paired)
