@@ -6,14 +6,16 @@
 # Env: TAG (names the done marker LOGS/sim-<TAG>-<sim>.done), PAT, FILES, CONC (parallel Gemini requests, default 16,
 # OCONC for Opus, default 8),
 # PY (python, default python3), LOGS (marker dir, default ~/dev/logs), PUSH (branch to push the results to), SIMS
-# (all, the default, for the own, shuffled and no-explanation passes, or own+shuf for the 2 the paired gain needs).
+# (passes joined by +: own, shuf, noacc, wrong; all, the default, is own+shuf+noacc; own+shuf are the 2 the paired
+# gain needs; wrong, the wrong-reason control, runs on explanation runs only), NICE (a command prefix for every
+# simulator call, e.g. "taskpolicy -b" to run it at background priority on the Mac).
 # Finished calls come from the response cache, so a rerun after more runs land, or on another host with the cache
 # copied over (or gunzip -k runs/cache.jsonl.gz on a fresh clone), is cheap.
 # Fails at once when a frozen answer file or data file is missing.
 set -u
 # node for the Opus CLI and gcloud on the Mac (absent elsewhere, harmless)
 export PATH=$HOME/.nvm/versions/node/v22.18.0/bin:/opt/homebrew/share/google-cloud-sdk/bin:/opt/homebrew/bin:$PATH
-SIMS=${SIMS:-all} TAG=${TAG:-grid} PAT=${PAT:-'^rm-(inv|real|mix)-(account|decision)-e2-s[0-2]$'}
+SIMS=${SIMS:-all} NICE=${NICE:-} TAG=${TAG:-grid} PAT=${PAT:-'^rm-(inv|real|mix)-(account|decision)-e2-s[0-2]$'}
 FILES=${FILES:-"v1 mortgage-split snap dependent"} CONC=${CONC:-16} PY=${PY:-python3} LOGS=${LOGS:-$HOME/dev/logs}
 mkdir -p "$LOGS"
 if [ "$1" = gemini ]; then
@@ -38,11 +40,16 @@ for try in $(seq 12); do
       # Opus gets its own copy of the frozen answers so its simulate files never overwrite Gemini's
       [ $D = runs ] || [ -s $D/$fr.jsonl ] || cp runs/$fr.jsonl $D/$fr.jsonl
       # captured, then printed once: tee to /dev/stderr truncated the shared Slurm log on every pass
-      if [ "$SIMS" = all ]; then sp=(--all-sim); else sp=(--out $D/$fr.simulate.jsonl); fi
-      out=$($PY infer.py --mode simulate "${sp[@]}" --data data/$f.jsonl --bank data/$f.bank.jsonl \
-          --frozen $D/$fr.jsonl $F 2>&1)
-      [ "$SIMS" = all ] || out+=$'\n'$($PY infer.py --mode simulate --shuffle-accounts \
-          --out $D/$fr.simulate_shuf.jsonl --data data/$f.jsonl --bank data/$f.bank.jsonl --frozen $D/$fr.jsonl $F 2>&1)
+      out=
+      for s in $(tr + ' ' <<< "${SIMS/#all/own+shuf+noacc}"); do
+        case $s in
+          own) sp=() x=;; shuf) sp=(--shuffle-accounts) x=_shuf;; noacc) sp=(--no-account) x=_noacc;;
+          wrong) [[ $r == *decision* ]] && continue; sp=(--wrong-accounts) x=_wrong;;
+          *) echo "unknown pass $s in SIMS"; exit 1;;
+        esac
+        out+=$($NICE $PY infer.py --mode simulate "${sp[@]}" --out $D/$fr.simulate$x.jsonl --data data/$f.jsonl \
+            --bank data/$f.bank.jsonl --frozen $D/$fr.jsonl $F 2>&1)$'\n'
+      done
       echo "$out"
       grep -q "errors=[1-9]" <<< "$out" && bad=1
     done

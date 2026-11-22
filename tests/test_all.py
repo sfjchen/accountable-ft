@@ -626,6 +626,42 @@ def test_refusals(stub, tmp_path, monkeypatch, capsys):
             evaluate.main()
 
 
+def test_contrast_raw(stub, tmp_path, monkeypatch):
+    """
+    Checks --contrast against hand-made simulator passes on 2 prefixes: the default differences the paired gains
+    (account minus decision-only), --contrast-raw account differences the account runs' own gains.
+    """
+    ks, bp = [b["bank_id"] for b in BANK], tmp_path / "bank.jsonl"
+    bp.write_text("".join(json.dumps(b) + "\n" for b in BANK))
+    # own-pass decisions per run; every shuffled pass predicts approve, so each run's gain is its own-pass hits
+    # minus the approve hits
+    own = {"a-account": ["deny", "approve", "cannot determine", "approve"], "a-decision": ["approve"] * 4,
+           "b-account": ["deny", "deny", "deny", "deny"], "b-decision": ["deny", "approve", "approve", "approve"]}
+    runs = []
+    for n, ds in own.items():
+        st = tmp_path / f"{n}-e2-s0"
+        st.with_suffix(".jsonl").write_text("".join(json.dumps(r | {"model": "m", "backend": "b"}) + "\n"
+                                                    for r in fake_rows()))
+        for x, rs in (("simulate", [pr(k, d) for k, d in zip(ks, ds)]),
+                      ("simulate_shuf", [pr(k, "approve") | {"shuf_src": "frozen", "shuf_decision_match": True}
+                                         for k in ks])):
+            Path(f"{st}.{x}.jsonl").write_text("".join(json.dumps(r | {"model": "sim"}) + "\n" for r in rs))
+        runs.append(str(st.with_suffix(".jsonl")))
+    out = {}
+    for raw in ([], ["--contrast-raw", "account"]):
+        jp = tmp_path / "e.json"
+        monkeypatch.setattr(sys, "argv", ["evaluate.py", *runs, "--data", str(ROOT / "tests/mini.jsonl"), "--bank",
+                                          str(bp), "--compare", "decision", "--contrast", "a", "b", "--json",
+                                          str(jp), "--boot", "50", *raw])
+        evaluate.main()
+        j = json.loads(jp.read_text())
+        g = {n: j["conditions"][f"{n}-e2-s0"]["all"]["sim_delta"]["mean"] for n in own}
+        out[bool(raw)] = (j["contrasts"]["all"]["sim_delta"]["a - b"]["mean"], g)
+    (paired, g), (rawc, _) = out[False], out[True]
+    assert paired == pytest.approx(g["a-account"] - g["a-decision"] - g["b-account"] + g["b-decision"])
+    assert rawc == pytest.approx(g["a-account"] - g["b-account"]) and rawc != pytest.approx(paired)
+
+
 def test_prompts_and_cache_key():
     """Checks the decision prompt names no target, predict and simulate prompts, and the response cache key."""
     tail = [build_prompt(RECS[i])[1].split(RECS[i]["case_text"].strip())[1] for i in ("p1-b1", "p1-b2")]
@@ -634,7 +670,9 @@ def test_prompts_and_cache_key():
     it = {"bank_id": "p1-b1|remove", "kind": "remove", "edits": {"site_zone": None}}
     for sim in (False, True):
         u = build_prompt(RECS["p1-b1"], it, "Decision: approve\nPolicy support: x=y (R2)", sim)[1]
-        assert f"Edit ID: {it['bank_id']}" in u and "Policy support: x=y (R2)" in u and "is no longer stated" in u
+        assert "Policy support: x=y (R2)" in u and "is no longer stated" in u
+        # the simulator sees an opaque Edit ID, never the bank id that names the edit kind
+        assert (f"Edit ID: {it['bank_id']}" in u) != sim and ("remove" in u.split("Edit:")[0]) != sim
         assert (RECS["p1-b1"]["case_text"].strip() in u) != sim
     dec, ks = {"temperature": 0.0, "top_p": 1.0, "top_k": 0, "max_tokens": 64, "seed": 0, "thinking": False}, []
     for vx, ct in ((None, ""), ("global", ""), ("us-central1", ""), (None, "sft-e1"), (None, "sft-e2")):
@@ -773,6 +811,8 @@ def test_simulate_accounts(monkeypatch, tmp_path):
         ok = [j for j in fz if cs[j]["policy_id"] == BY[i]["policy_id"] and root(cs[j], cs) != root(BY[i], cs)]
         assert (i in sp) == bool(ok) and (not ok or sp[i][0] in ok and sp[i][1] == (
             parse(fz[sp[i][0]])["dec"] == parse(fz[i])["dec"])), i
+        # a partner with the same decision wins whenever the policy has one
+        assert not ok or sp[i][1] == any(parse(fz[j])["dec"] == parse(fz[i])["dec"] for j in ok), i
     fz = {i: t for i, t in fz.items() if cs[i]["policy_id"] != c0["policy_id"] or root(cs[i], cs) == root(c0, cs)}
     bp, fp = tmp_path / "b.jsonl", tmp_path / "f.jsonl"
     bp.write_text("".join(json.dumps(b) + "\n" for b in bk))

@@ -160,7 +160,10 @@ def build_prompt(rec, item=None, frozen=None, sim=False):
             f"{lab.get(f, f)} is now stated as {show(dom, f, v)}" if item["kind"] == "add" else
             f"{lab.get(f, f)} changes to {show(dom, f, v)}" for f, v in item["edits"].items())
     if sim:
-        return SIM_SYSTEM, head + SIM.format(frozen=frozen.strip(), bid=item["bank_id"], desc=desc)
+        # an opaque Edit ID: the bank id ends in the edit kind (pivotal_replace, noncrossing_replace, ...), which
+        # tells the simulator whether the edit was built to flip the decision
+        bid = "E" + hashlib.sha256(item["bank_id"].encode()).hexdigest()[:10]
+        return SIM_SYSTEM, head + SIM.format(frozen=frozen.strip(), bid=bid, desc=desc)
     return SYSTEM, head + case + PREDICT.format(frozen=frozen.strip(), bid=item["bank_id"], desc=desc)
 
 
@@ -459,15 +462,17 @@ class Runner:
 
 def shuffle_partners(fz, cases, byid, seed=0):
     """
-    Returns {id: (partner id, same decision)}: a seeded frozen answer on another base case under the same policy,
-    ids without one left out.
+    Returns {id: (partner id, same decision)}: a seeded frozen answer on another base case under the same policy
+    with the same decision, or with another decision when the policy has none, ids without any left out. A partner
+    with another decision gives Policy support that contradicts the Decision line kept, which a simulator spots.
     """
     rng, pf, out = random.Random(seed), defaultdict(list), {}
     for j in sorted(j for j in fz if j in cases):
         pf[cases[j]["policy_id"]].append(j)
     for i in sorted(i for i in fz if i in byid):
         if o := [j for j in pf[byid[i]["policy_id"]] if root(cases[j], cases) != root(byid[i], cases)]:
-            j = rng.choice(o)
+            d = parse(fz[i])["dec"]
+            j = rng.choice([j for j in o if parse(fz[j])["dec"] == d] or o)
             out[i] = (j, parse(fz[j])["dec"] == parse(fz[i])["dec"])
     return out
 
