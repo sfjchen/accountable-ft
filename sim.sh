@@ -47,8 +47,10 @@ for try in $(seq 12); do
           wrong) [[ $r == *decision* ]] && continue; sp=(--wrong-accounts) x=_wrong;;
           *) echo "unknown pass $s in SIMS"; exit 1;;
         esac
-        out+=$($NICE $PY infer.py --mode simulate "${sp[@]}" --out $D/$fr.simulate$x.jsonl --data data/$f.jsonl \
-            --bank data/$f.bank.jsonl --frozen $D/$fr.jsonl $F 2>&1)$'\n'
+        # ${sp[@]+...}: bash 3.2 under set -u calls an empty array unbound; a failed call counts as a pass with errors
+        o=$($NICE $PY infer.py --mode simulate ${sp[@]+"${sp[@]}"} --out $D/$fr.simulate$x.jsonl --data data/$f.jsonl \
+            --bank data/$f.bank.jsonl --frozen $D/$fr.jsonl $F 2>&1) || bad=1
+        out+=$o$'\n'
       done
       echo "$out"
       grep -q "errors=[1-9]" <<< "$out" && bad=1
