@@ -6,6 +6,7 @@
  "no_account": false,
  "shuffle_accounts": false,
  "shuf_missing": null,
+ "wrong_missing": null,
  "cases": 0,
  "cache_tag": "",
  "sample_seed": 0,
@@ -22,10 +23,10 @@
  "cached": 287,
  "errors": 0,
  "fresh_calls": 0,
- "wall_s": 0.14,
- "in_tokens": 361603,
- "out_tokens": 27098,
- "think_tokens": 15093,
+ "wall_s": 0.23,
+ "in_tokens": 354935,
+ "out_tokens": 26820,
+ "think_tokens": 17985,
  "finish": {
   "end_turn": 287
  },

@@ -605,6 +605,12 @@ def test_refusals(stub, tmp_path, monkeypatch, capsys):
         with pytest.raises(SystemExit, match=msg):
             evaluate.main()
         cp.unlink()
+    # a simulate pass whose prompts show the bank id (edit kind) as Edit ID is refused
+    (cp := tmp_path / "r.simulate.jsonl").write_text("".join(json.dumps(r | {"prompt": f"Edit ID: {r['id']}\nEdit: x"})
+                                                     + "\n" for r in shuf))
+    with pytest.raises(SystemExit, match="name the edit kind"):
+        evaluate.main()
+    cp.unlink()
     (tmp_path / "r.simulate_shuf.jsonl").write_text("".join(json.dumps(r | {"shuf_src": "frozen",
                                                     "shuf_decision_match": True}) + "\n" for r in shuf))
     evaluate.main()

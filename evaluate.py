@@ -634,6 +634,11 @@ def main():
                     sys.exit(f"refusing {cp.name}: rows without shuf_src frozen and shuf_decision_match come from "
                             f"the old shuffle (partner decision or correct explanations); rerun infer.py --mode "
                             f"simulate --all-sim")
+                # the bank id as Edit ID ends in the edit kind, which tells the simulator whether the edit flips
+                if k.startswith("simulate") and any(re.search(r"Edit ID: \S+\|[a-z_]+\n", r.get("prompt") or "")
+                        for r in aux[k]):
+                    sys.exit(f"refusing {cp.name}: its prompts name the edit kind in the Edit ID; rerun the "
+                            f"simulator pass (python resim.py)")
                 if k.startswith("simulate"):
                     simsig |= {s for r in aux[k] for s in sig([r], DEC_KEYS)}
                 elif sig(aux[k], DEC_KEYS) != sigs[rp.stem]:

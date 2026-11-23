@@ -29,7 +29,9 @@ g() {
 # Prints every eval as "<label> <command>".
 evals() {
   local f p d sd o op fo B R
-  for sd in gemini:runs/ opus:runs/sim-opus/; do
+  # Opus reran only the grid after the Edit ID fix (resim.py), so the main, permit and prompted-control evals are
+  # Gemini only
+  for sd in gemini:runs/; do
     d=${sd#*:}
     echo "v1-${sd%:*} $E $(r $d account decision) ${d}base-thinkoff.jsonl $(r $d r2-account r2-decision)" \
       "${d}mo-account-e2-s0.jsonl ${d}mo-decision-e2-s0.jsonl --data data/v1.jsonl --bank data/v1.bank.jsonl" \
@@ -40,7 +42,7 @@ evals() {
       "--data data/mortgage-split.jsonl --bank data/mortgage-split.bank.jsonl --compare decision" \
       "--contrast mortgage-split mortgage-split-r2 mortgage-split-mo --json $J/mortgage-${sd%:*}.json"
   done
-  for sd in gemini:runs/ opus:runs/sim-opus/; do
+  for sd in gemini:runs/; do
     d=${sd#*:} o=${sd%:*}
     echo "permit-$o $E $(r $d permit-account permit-decision) ${d}permit-base-thinkoff.jsonl" \
       "--data data/permit.jsonl --bank data/permit.bank.jsonl --compare decision --json $J/permit-$o.json"
@@ -69,7 +71,7 @@ evals() {
   for fo in review-x:v1 dependent-x:dependent v1-x:v1 snap-x:snap mortgage-split-x:mortgage-split; do
     f=${fo%:*} o=${fo#*:} op=
     [ $o = v1 ] || op=$o-
-    # Opus scores only the files it simulated (the new mortgage and SNAP families, own and shuffled passes)
+    # Opus scores only the files it simulated (the new mortgage and SNAP families, own, shuffled and wrong passes)
     for sd in gemini:runs/ opus:runs/sim-opus/; do
       d=${sd#*:}
       [ -s $d$f-rm-mix-decision-e2-s2.simulate_shuf.jsonl ] || continue
