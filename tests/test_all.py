@@ -20,7 +20,7 @@ import engine as E  # noqa: E402
 import evaluate  # noqa: E402
 import gen  # noqa: E402
 import infer  # noqa: E402
-from evaluate import aggregate, boot, explore_ckpt, norm_dec, parse, score, select_ckpt  # noqa: E402
+from evaluate import aggregate, boot, explore_ckpt, norm_dec, parse, pred_dec, score, select_ckpt  # noqa: E402
 from infer import CHANGE, PROPS, Runner, build_bank, build_prompt, format_target, root, select_recs  # noqa: E402
 
 V5, BOOL = {"type": "int", "values": [0, 2, 4, 6, 8]}, {"type": "bool"}
@@ -485,6 +485,14 @@ BANK = [{"bank_id": f"{c}|{k}", "kind": k, "case_id": c, "edited_id": e, "edits"
 def pr(bid, d, eid=None):
     """Returns one predict row for bank item bid with predicted decision d, echoing eid as the Edit ID."""
     return {"id": bid, "sample": 0, "output": f"Edit ID: {eid or bid}\nPredicted decision after edit: {d}"}
+
+
+def test_pred_dec():
+    """Checks that a prediction counts only when it echoes the Edit ID its prompt showed, or the bank id without one."""
+    q = {"prompt": "Edit ID: E0123456789\nEdit: x\n\nReply:\nEdit ID: E0123456789\nPredicted decision after edit: ..."}
+    assert pred_dec(pr("p1-b1", "deny", "E0123456789") | q) == "deny"
+    assert pred_dec(pr("p1-b1", "deny") | q) is None
+    assert pred_dec(pr("p1-b1", "deny")) == "deny" and pred_dec(pr("p1-b1", "deny", "zzz")) is None
 
 
 def check(ag, want, n=None):

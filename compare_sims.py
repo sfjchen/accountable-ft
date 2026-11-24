@@ -8,20 +8,14 @@ import argparse
 import re
 from collections import defaultdict
 
-from evaluate import bank_recs, boot, failed, load, norm_dec, votes
+from evaluate import bank_recs, boot, load, pred_dec, votes
 
 PASSES = {"simulate": "acct", "simulate_shuf": "shuf", "simulate_noacc": "noacc"}
 
 
 def preds(path):
     """Returns {bank id: predicted decision or None}, read the way evaluate.py reads simulator rows."""
-    out = {}
-    for r in load(path):
-        o = "" if failed(r) else r.get("output") or ""
-        pm = re.search(r"predicted\s+decision[^:\n]*:\s*(.*)", o, re.I)
-        ids = [x.strip("*`. ") for x in re.findall(r"edit\s*id\s*[:\-]\s*(\S+)", o, re.I)]
-        out[r["id"]] = norm_dec(pm[1]) if pm and ids[-1:] == [r["id"]] else None
-    return out
+    return {r["id"]: pred_dec(r) for r in load(path)}
 
 
 def main():

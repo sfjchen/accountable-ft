@@ -148,6 +148,19 @@ def failed(r):
     return r.get("finish") in ("length", "truncated") or ("<think>" in o and "</think>" not in o)
 
 
+def pred_dec(r):
+    """
+    Returns the predicted decision in a predict or simulate row, or None when the output is truncated, has no decision
+    line or echoes another Edit ID than the one its prompt showed (an opaque id since 539e723, the bank id before and
+    in rows without a prompt).
+    """
+    o = "" if failed(r) else r.get("output") or ""
+    pm = re.search(r"predicted\s+decision[^:\n]*:\s*(.*)", o, re.I)
+    ids = [x.strip("*`. ") for x in re.findall(r"edit\s*id\s*[:\-]\s*(\S+)", o, re.I)]
+    want = re.findall(r"^Edit ID: (\S+)$", r.get("prompt") or "", re.M)[-1:] or [r["id"]]
+    return norm_dec(pm[1]) if pm and ids[-1:] == want else None
+
+
 def to_name(lbl, labels):
     """
     Maps a cited label to a fact name by exact match on the label, the label without parentheses or the name, else
@@ -368,10 +381,7 @@ def score(recs, rows, aux, bank=(), dump=None):
     pred = defaultdict(lambda: defaultdict(list))
     for k in PRED:
         for r in sorted(aux.get(k, []), key=lambda r: (r["id"], r["sample"])):
-            o = "" if failed(r) else r.get("output") or ""
-            pm = re.search(r"predicted\s+decision[^:\n]*:\s*(.*)", o, re.I)
-            ids = [x.strip("*`. ") for x in re.findall(r"edit\s*id\s*[:\-]\s*(\S+)", o, re.I)]
-            pred[k][r["id"]].append(norm_dec(pm[1]) if pm and ids[-1:] == [r["id"]] else None)
+            pred[k][r["id"]].append(pred_dec(r))
     pred = {k: {i: major(ds) for i, ds in d.items()} for k, d in pred.items()}
     sims = [set(d) for k, d in pred.items() if k in SIM3]
     shared = set.intersection(*sims) if sims else set()
