@@ -119,6 +119,15 @@ Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus 
 - Gain does not separate mixed from real-only. The primary contrast shows no difference on mortgage or SNAP under either simulator (Simulator prompt fix). On the paired gain averaged over the 6 tests by seed, mixed is higher in 8 of 9 seed pairs under Gemini (mix 4.1 / 3.5 / 2.6, real 0.5 / 3.4 / 2.5) and 7 of 9 under Opus (7.6 / 5.3 / 5.7 vs 5.0 / 4.2 / 6.7). On the 2 real tests Opus favors real-only in 7 of 9 pairs, mostly through the decision-only runs (above). Opus mortgage mix - real on the 24 original families flips by seed (+3.1, -9.0, -5.6).
 - Limits: CIs pool the 3 seeds and resample families only. Holm covers the 3 contrasts within 1 test, metric and simulator, not 6 tests x 2 simulators. 1 held-out domain per kind.
 
+### Real vs invented for real-rule use (registered Nov 24, before any data)
+
+- Question: when the target is real rules, does a real domain beat an invented one at matched structure? The grid could not say, since real-only had 60 families and mixed 120.
+- Arms, explanation SFT only, 3,600 train rows, 2 epochs, seeds 0-4. M = `rm-mix` (grant, trial, mortgage, SNAP; seeds 0-2 exist, 3-4 new). R4 = Medicaid (expansion adults) and WIC, both new real domains, plus M's exact mortgage and SNAP rows (`train.py export --reuse`). Each arm has 120 rule families and 900 rows per domain, so R4 - M swaps 2 invented domains for 2 real ones and nothing else.
+- Held-out tests, never trained by either arm, equal weight: IRS dependent (original and new families pooled) and FMLA leave, a new real domain outside tax and benefits. Domain files written before any model answers them. Secondary: mortgage-x and SNAP-x, own minus wrong-reason with Gemini.
+- Primary endpoint: joint success, the decision is right and the explanation is engine-valid and cites at least 1 binding rule when it denies or cannot determine (`joint`). Uncertified explanations count as failures. Score per seed = mean of the 2 held-out domains' rates.
+- Test: R4 - M on per-seed scores, Welch t 95% CI over the 5 + 5 seeds (seeds are the unit, since seed spread exceeds family noise), family-clustered CI reported beside it. R4 better if the CI excludes 0, equivalent if it lies within ±3 points, otherwise inconclusive. Guardrail: the accuracy CI must exclude a 5-point loss for the winner.
+- Readout: R4 better -> for real-rule use, train on real domains, invented ones add nothing. Equivalent -> invented domains substitute for real ones of the same structure. M better -> invented domains help real-rule transfer. Each held-out domain is also reported alone, and a split between them is reported as such.
+
 ### Error analysis and diagnostics
 
 - IRS dependent failures (`errors.py`, 25 wrong decisions and 25 simulator misses from the 9 explanation-trained grid runs, labels in `data/errors-dependent.jsonl`, log `final-dependent-errors-eval-e6fbbe1-20261124-1330`).
@@ -145,6 +154,7 @@ Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus 
 - Nov 20: metrics review. Boundary and necessity metrics removed (their GPU pass never ran), repeat and self-prediction passes opt-in. Every report eval rescored at abaa830.
 - Nov 21: Edit ID leak and cross-decision shuffle partners found. Fix and readout order registered before any rerun (539e723).
 - Nov 22-24: every cited simulator pass rerun (Gemini everywhere, Opus on the grid plus wrong-reason passes). Scoring fixed to read the opaque Edit ID (e6fbbe1), every report eval rescored there.
+- Nov 24: real vs invented arms registered (R4 vs M, 5 seeds, joint success on IRS dependent and FMLA).
 - Not triggered: the CREDIT-style relabel round, planned only below the accuracy ceiling (round 1 is at 0.976).
 
 ## Split of work
