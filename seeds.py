@@ -3,8 +3,8 @@ Tables the row-matched grid's paired simulatability gain (explanation minus deci
 and mix, then averages over test groups per seed, from evaluate.py JSON files. The CIs evaluate.py prints pool the 3
 seeds and resample families only, so they treat the trained adapters as fixed. This shows the seed spread they leave
 out: for each group, every mix's 3 per-seed averages and how many of the 9 seed pairs favor one mix over another.
-It also prints each mix's explanation-run means over the 6 tests (accuracy, explanation correctness, raw gain, own
-minus wrong-reason), which need no decision-only subtraction.
+It also prints each mix's explanation-run means over the 6 tests and over the 3 real-rule tests (accuracy,
+explanation correctness, raw gain, own minus wrong-reason), which need no decision-only subtraction.
 Usage: python seeds.py <dir with <file>-grid-<sim>.json> [--sim gemini opus]
 """
 import argparse
@@ -20,6 +20,7 @@ TESTS = {"grant": ("v1", "grant"), "trial": ("v1", "trial"), "mortgage": ("mortg
 GROUPS = {"invented trained": ["grant", "trial"], "real trained": ["mortgage", "snap"],
           "held out": ["review", "dependent"], "all 6": list(TESTS)}
 MIXES = ["inv", "real", "mix"]
+REAL = ["mortgage", "snap", "dependent"]
 # explanation-run metrics averaged over the 6 tests: metric: label
 OWN = {"acc_maj": "accuracy", "expl_valid": "explanation correctness",
        "sim_delta": "raw gain (own - shuffled)", "sim_dwrong": "own - wrong-reason"}
@@ -61,7 +62,7 @@ def main():
             for x in MIXES:
                 ms = j["seed_groups"][f"{f + '-' if f != 'v1' else ''}rm-{x}-account-e2"]["metrics"][gk]
                 for k in OWN:
-                    own.setdefault((x, k), []).append(100 * ms[k]["mean"] if k in ms else float("nan"))
+                    own[t, x, k] = 100 * ms[k]["mean"] if k in ms else float("nan")
             for k, v in j["paired"].items():
                 if m := re.search(r"rm-(inv|real|mix)-account-e2-s(\d) - ", k):
                     g[t, m[1], int(m[2])] = 100 * v[gk]["sim_delta"]["mean"]
@@ -77,9 +78,10 @@ def main():
             win = [sum(av["mix", i] > av[y, k] for i in range(3) for k in range(3)) for y in ("real", "inv")]
             print(f"| {name} | " + " | ".join(" / ".join(f"{av[x, s]:.1f}" for s in range(3)) for x in MIXES) +
                   f" | {win[0]} of 9 | {win[1]} of 9 |")
-        print("\n| explanation runs, mean of 6 tests | " + " | ".join(MIXES) + " |\n|---|---|---|---|")
-        for k, lab in OWN.items():
-            print(f"| {lab} | " + " | ".join(f"{st.mean(own[x, k]):.1f}" for x in MIXES) + " |")
+        for name, ts in (("6 tests", list(TESTS)), ("3 real-rule tests", REAL)):
+            print(f"\n| explanation runs, mean of {name} | " + " | ".join(MIXES) + " |\n|---|---|---|---|")
+            for k, lab in OWN.items():
+                print(f"| {lab} | " + " | ".join(f"{st.mean(own[t, x, k] for t in ts):.1f}" for x in MIXES) + " |")
         print()
 
 
