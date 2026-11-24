@@ -1,8 +1,9 @@
 #!/bin/bash
 # Runs the simulator ($1 = gemini or opus) over the runs named in runs/ by the regex PAT (v1 file names, default the
 # row-matched grid) on each test file in FILES (default the 4 original ones), repeating until a pass has no errors,
-# with a 10 min pause after a pass with errors (rate or usage limit), up to 12 passes. Runs from any host with the
-# repo as the working directory: the Mac under ljob, a FarmShare or sc Slurm job, a VM.
+# with a pause after a pass with errors (10 min after a rate or usage limit, 2 min after a transport error such as a
+# dropped connection or token refresh), up to 12 passes. Runs from any host with the repo as the working directory:
+# the Mac under ljob, a FarmShare or sc Slurm job, a VM.
 # Env: TAG (names the done marker LOGS/sim-<TAG>-<sim>.done), PAT, FILES, CONC (parallel Gemini requests, default 16,
 # OCONC for Opus, default 8),
 # PY (python, default python3), LOGS (marker dir, default ~/dev/logs), PUSH (branch to push the results to), SIMS
@@ -33,7 +34,7 @@ for r in $RS; do for f in $FILES; do fr=$r; [ $f = v1 ] || fr=$f-$r
       { echo "missing runs/$fr.jsonl or data/$f"; exit 1; }
 done; done
 for try in $(seq 12); do
-  bad=0
+  bad=0 all=
   for r in $RS; do
     for f in $FILES; do
       fr=$r; [ $f = v1 ] || fr=$f-$r
@@ -53,6 +54,7 @@ for try in $(seq 12); do
         out+=$o$'\n'
       done
       echo "$out"
+      all+=$out
       grep -q "errors=[1-9]" <<< "$out" && bad=1
     done
   done
@@ -67,6 +69,8 @@ for try in $(seq 12); do
     fi
     exit 0
   fi
-  echo "pass $try had errors, sleeping"; sleep 600
+  # a rate or usage limit needs the long pause, a transport error only a short one
+  w=120; grep -qiE "^error:.*(429|resource.?exhausted|rate.?limit|quota|usage limit|overloaded)" <<< "$all" && w=600
+  echo "pass $try had errors, sleeping $w s"; sleep $w
 done
 echo GAVE_UP; exit 1
