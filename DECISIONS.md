@@ -108,12 +108,12 @@ Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus 
 
 - No primary contrast clears 0 under either simulator. The Opus paired mortgage gap sits in the decision-only runs: -1.2 of it from the explanation runs, the rest from subtracting decision-only runs whose placeholder lines Opus reads.
 - On invented tests the raw contrast favors mixed (v1 +5.2 [2.0, 8.3] / +8.2 [5.4, 11.1]), since real-only never trained there, while own minus wrong ties (-1.8 / +1.3).
-- Over all 6 tests, own minus wrong averages inv / real / mix 6.6 / 5.7 / 4.6 under Gemini and 6.9 / 8.6 / 9.7 under Opus (log `final-grid-seeds-e6fbbe1-*`). Opposite order, no test where either clears Holm.
+- Over all 6 tests, own minus wrong averages inv / real / mix 6.6 / 5.7 / 4.6 under Gemini and 6.9 / 8.6 / 9.7 under Opus (log `final-grid-seeds-7cfaf16-20261124-1339`). Opposite order, no test where either clears Holm.
 - Before the fix (logs `final-*-grid-{gemini,opus}-raw-eval-b8301d2-*`, before (b8301d2)): the Opus mortgage gap was -6.5, -2.8 from the explanation runs and -3.7 from the subtraction.
 
 #### Mix recommendation
 
-- Train on the mixed set, on correctness and accuracy, not on gain. Mean over all 6 tests, inv / real / mix: correctness 39.0% / 35.8% / 44.5%, accuracy 78.2% / 79.8% / 87.1% (log `final-grid-seeds-e6fbbe1-*`). Mixed beats real-only on invented tests (correctness +12 to +27) and trails it by 2-6 points on real tests.
+- Train on the mixed set, on correctness and accuracy, not on gain. Mean over all 6 tests, inv / real / mix: correctness 39.0% / 35.8% / 44.5%, accuracy 78.2% / 79.8% / 87.1% (log `final-grid-seeds-7cfaf16-20261124-1339`). Mixed beats real-only on invented tests (correctness +12 to +27) and trails it by 2-6 points on real tests.
 - Not more data (log `final-grid-seeds-2005f39-20261120-1856`): every mix has 3,600 rows, 266-270 root cases, the same variant shares and the same steps. Real-only has the most text, 1.49M explanation characters vs 1.28M mixed (5.55M vs 4.76M training tokens in sc's `train_meta.json`). Mixed has 2x the families (120 vs 60) and 1.7x the policies (202 vs 119) at half the rows per domain, so the open confound is diversity vs per-domain dose, not volume.
 - Gain does not separate mixed from real-only. The primary contrast ties on mortgage and SNAP under both simulators (Simulator prompt fix). On the paired gain averaged over the 6 tests by seed, mixed is higher in 8 of 9 seed pairs under Gemini (mix 4.1 / 3.5 / 2.6, real 0.5 / 3.4 / 2.5) and 7 of 9 under Opus (7.6 / 5.3 / 5.7 vs 5.0 / 4.2 / 6.7). On the 2 real tests Opus favors real-only in 7 of 9 pairs, through the decision-only subtraction above.
 - Limits: CIs pool the 3 seeds and resample families only. Holm covers the 3 contrasts within 1 test, metric and simulator, not 6 tests x 2 simulators. 1 held-out domain per kind.
