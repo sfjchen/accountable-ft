@@ -6,6 +6,7 @@
  "no_account": false,
  "shuffle_accounts": false,
  "shuf_missing": null,
+ "wrong_missing": null,
  "cases": 0,
  "cache_tag": "",
  "sample_seed": 0,
@@ -22,9 +23,9 @@
  "cached": 1274,
  "errors": 0,
  "fresh_calls": 0,
- "wall_s": 4.8,
- "in_tokens": 680215,
- "out_tokens": 35443,
+ "wall_s": 6.36,
+ "in_tokens": 660019,
+ "out_tokens": 25354,
  "think_tokens": 0,
  "finish": {
   "FinishReason.STOP": 1274
@@ -34,5 +35,5 @@
  ],
  "mean_latency_s": 0.0,
  "cost_usd_fresh": 0.0,
- "cost_usd_if_uncached": 0.2927
+ "cost_usd_if_uncached": 0.2614
 }

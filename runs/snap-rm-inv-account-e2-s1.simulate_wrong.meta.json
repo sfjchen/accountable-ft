@@ -23,9 +23,9 @@
  "cached": 87,
  "errors": 0,
  "fresh_calls": 225,
- "wall_s": 14.89,
- "in_tokens": 211804,
- "out_tokens": 8667,
+ "wall_s": 8.12,
+ "in_tokens": 206840,
+ "out_tokens": 6179,
  "think_tokens": 0,
  "finish": {
   "FinishReason.STOP": 312
@@ -33,7 +33,7 @@
  "model_versions": [
   "gemini-3.5-flash-lite"
  ],
- "mean_latency_s": 0.797,
- "cost_usd_fresh": 0.062,
- "cost_usd_if_uncached": 0.0852
+ "mean_latency_s": 0.8,
+ "cost_usd_fresh": 0.0564,
+ "cost_usd_if_uncached": 0.0775
 }

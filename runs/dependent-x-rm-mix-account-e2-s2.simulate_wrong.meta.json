@@ -20,12 +20,12 @@
  },
  "n": 1,
  "rows": 411,
- "cached": 280,
+ "cached": 245,
  "errors": 0,
- "fresh_calls": 131,
- "wall_s": 7.96,
- "in_tokens": 245064,
- "out_tokens": 11400,
+ "fresh_calls": 166,
+ "wall_s": 15.71,
+ "in_tokens": 238484,
+ "out_tokens": 8104,
  "think_tokens": 0,
  "finish": {
   "FinishReason.STOP": 411
@@ -33,7 +33,7 @@
  "model_versions": [
   "gemini-3.5-flash-lite"
  ],
- "mean_latency_s": 0.722,
- "cost_usd_fresh": 0.0345,
- "cost_usd_if_uncached": 0.102
+ "mean_latency_s": 0.848,
+ "cost_usd_fresh": 0.039,
+ "cost_usd_if_uncached": 0.0918
 }

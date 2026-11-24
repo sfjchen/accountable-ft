@@ -6,6 +6,7 @@
  "no_account": false,
  "shuffle_accounts": true,
  "shuf_missing": 34,
+ "wrong_missing": null,
  "cases": 0,
  "cache_tag": "",
  "sample_seed": 0,
@@ -19,12 +20,12 @@
  },
  "n": 1,
  "rows": 748,
- "cached": 672,
+ "cached": 614,
  "errors": 0,
- "fresh_calls": 76,
- "wall_s": 5.1,
- "in_tokens": 397449,
- "out_tokens": 20745,
+ "fresh_calls": 134,
+ "wall_s": 19.69,
+ "in_tokens": 386157,
+ "out_tokens": 14824,
  "think_tokens": 0,
  "finish": {
   "FinishReason.STOP": 748
@@ -32,7 +33,7 @@
  "model_versions": [
   "gemini-3.5-flash-lite"
  ],
- "mean_latency_s": 0.756,
- "cost_usd_fresh": 0.0178,
- "cost_usd_if_uncached": 0.1711
+ "mean_latency_s": 1.127,
+ "cost_usd_fresh": 0.0277,
+ "cost_usd_if_uncached": 0.1529
 }
