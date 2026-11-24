@@ -6,6 +6,7 @@
  "no_account": false,
  "shuffle_accounts": false,
  "shuf_missing": null,
+ "wrong_missing": null,
  "cases": 0,
  "cache_tag": "",
  "sample_seed": 0,
@@ -19,20 +20,20 @@
  },
  "n": 1,
  "rows": 782,
- "cached": 373,
+ "cached": 272,
  "errors": 0,
- "fresh_calls": 409,
- "wall_s": 181.47,
- "in_tokens": 934781,
- "out_tokens": 80762,
- "think_tokens": 50026,
+ "fresh_calls": 510,
+ "wall_s": 475.77,
+ "in_tokens": 917613,
+ "out_tokens": 87219,
+ "think_tokens": 63520,
  "finish": {
   "end_turn": 782
  },
  "model_versions": [
   "claude-opus-5-5"
  ],
- "mean_latency_s": 3.502,
+ "mean_latency_s": 9.253,
  "cost_usd_fresh": null,
  "cost_usd_if_uncached": null
 }

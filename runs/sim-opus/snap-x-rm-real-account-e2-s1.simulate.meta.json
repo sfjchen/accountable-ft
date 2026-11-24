@@ -23,17 +23,17 @@
  "cached": 627,
  "errors": 0,
  "fresh_calls": 147,
- "wall_s": 56.25,
- "in_tokens": 1147405,
- "out_tokens": 69424,
- "think_tokens": 38924,
+ "wall_s": 84.22,
+ "in_tokens": 1132355,
+ "out_tokens": 69480,
+ "think_tokens": 46293,
  "finish": {
   "end_turn": 774
  },
  "model_versions": [
   "claude-opus-5-5"
  ],
- "mean_latency_s": 4.348,
+ "mean_latency_s": 8.514,
  "cost_usd_fresh": null,
  "cost_usd_if_uncached": null
 }

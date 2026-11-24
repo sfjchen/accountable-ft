@@ -23,10 +23,10 @@
  "cached": 726,
  "errors": 0,
  "fresh_calls": 0,
- "wall_s": 0.24,
- "in_tokens": 966424,
- "out_tokens": 79522,
- "think_tokens": 48888,
+ "wall_s": 0.91,
+ "in_tokens": 949422,
+ "out_tokens": 80642,
+ "think_tokens": 58567,
  "finish": {
   "end_turn": 726
  },

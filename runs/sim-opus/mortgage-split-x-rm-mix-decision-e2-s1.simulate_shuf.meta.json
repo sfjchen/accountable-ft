@@ -20,20 +20,20 @@
  },
  "n": 1,
  "rows": 716,
- "cached": 248,
+ "cached": 263,
  "errors": 0,
- "fresh_calls": 468,
- "wall_s": 217.38,
- "in_tokens": 898008,
- "out_tokens": 77150,
- "think_tokens": 47170,
+ "fresh_calls": 453,
+ "wall_s": 404.71,
+ "in_tokens": 890849,
+ "out_tokens": 67193,
+ "think_tokens": 45273,
  "finish": {
   "end_turn": 716
  },
  "model_versions": [
   "claude-opus-5-5"
  ],
- "mean_latency_s": 5.482,
+ "mean_latency_s": 13.074,
  "cost_usd_fresh": null,
  "cost_usd_if_uncached": null
 }
