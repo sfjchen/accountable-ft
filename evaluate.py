@@ -45,15 +45,15 @@ ORDER = ["sim_delta", "sim_acct", "sim_shuf", "sim_dwrong", "sim_wrong", "sim_wr
         "sim_const_unchanged", "sim_oracle", "self_V",
         "self_S", "self_S_noacc", "self_G",
         "bank_unchanged", "acc_maj", "acc_mean", "acc_class",
-        "repeat_disagree", "flip", "flip_to_cd", "cf_pair_acc", "invariance", "inv_pair_acc", "expl_valid",
+        "repeat_disagree", "flip", "flip_to_cd", "cf_pair_acc", "invariance", "inv_pair_acc", "joint", "expl_valid",
         "acct_consistent", "expl_minimal", "cite_distractor", "cite_p_nec", "cite_r_nec", "assume_dec", "assume_val",
         "fmt_err", "len_chars", "len_tok"]
 # the metrics printed by default (--full prints all of ORDER): the simulator family and its baselines, accuracy and
 # counterfactual consistency, explanation correctness and its parts the report reads, self-prediction, format, length
 CORE = {"sim_delta", "sim_acct", "sim_shuf", "sim_dwrong", "sim_wrong", "sim_wrong_shuf", "sim_gross", "sim_noacc",
         "sim_const_unchanged", "sim_oracle", "self_S", "self_V", "bank_unchanged", "acc_maj", "acc_class",
-        "cf_pair_acc", "invariance", "expl_valid", "acct_consistent", "cite_distractor", "assume_val", "fmt_err",
-        "len_chars"}
+        "cf_pair_acc", "invariance", "joint", "expl_valid", "acct_consistent", "cite_distractor", "assume_val",
+        "fmt_err", "len_chars"}
 LABEL = {"sim_delta": "sim_delta (primary: acct - shuf)", "sim_dwrong": "sim_dwrong (acct - wrong)",
         "sim_wrong_shuf": "sim_wrong_shuf (wrong - shuf)", "sim_gross": "sim_gross (acct - noacc)",
         "self_V": "self_V (secondary)", "sim_const_unchanged": "sim_const_unchanged (baseline: frozen decision)",
@@ -307,8 +307,8 @@ def score(recs, rows, aux, bank=(), dump=None):
         for p in ps:
             if p["dec"] is None or "policy support" in p["miss"]:
                 cov["expl_failed_parse"] += 1
-                for m, v in (("expl_valid", 0), ("acct_consistent", 0), ("expl_minimal", 0), ("cite_distractor", 1),
-                        ("cite_p_nec", 0), ("cite_r_nec", 0)):
+                for m, v in (("joint", 0), ("expl_valid", 0), ("acct_consistent", 0), ("expl_minimal", 0),
+                        ("cite_distractor", 1), ("cite_p_nec", 0), ("cite_r_nec", 0)):
                     ev[m].append(v)
                 V |= {rid: False} if p is ps[0] else {}
                 continue
@@ -322,6 +322,10 @@ def score(recs, rows, aux, bank=(), dump=None):
             asm = {n: to_val(pol, n, v) for l, v, _ in p["assume"] if (n := to_name(l, lab))}
             j = ({"valid": None, "uncertified": True, "reason": "label uncertified"} if g.get("uncertified") else
                     engine.is_valid_justification(pol, rec["facts"], cit, [r for _, _, r in p["relied"] if r], asm))
+            # joint: the right decision with a valid explanation that, when it denies or cannot decide, names at
+            # least 1 rule (is_valid_justification checks each named rule's scope); uncertified counts as a failure
+            ev["joint"].append(p["dec"] == g["decision"] and bool(j.get("valid")) and not unm and
+                               (g["decision"] == "approve" or any(r for _, _, r in p["relied"])))
             if j.get("valid") is None:
                 cov["expl_uncertified"] += 1
             else:
@@ -760,7 +764,7 @@ def main():
     # difference in differences: each prefix's paired units averaged over seeds per item, then prefix X minus Y on
     # the items both have, so a contrast is paired on items and clustered on families like every other CI here
     contrasts = defaultdict(lambda: defaultdict(dict))
-    for m in ("sim_delta", "sim_dwrong", "expl_valid", "acc_maj"):
+    for m in ("sim_delta", "sim_dwrong", "joint", "expl_valid", "acc_maj"):
         # sim_dwrong (own minus wrong-reason) exists only where wrong passes do: explanation runs, so --contrast-raw
         src = raw if a.contrast_raw else pool
         if m == "sim_dwrong" and not any(m in ms for ms in src.values()):

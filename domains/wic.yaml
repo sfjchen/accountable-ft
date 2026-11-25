@@ -1,0 +1,248 @@
+# WIC (Special Supplemental Nutrition Program for Women, Infants, and Children) participant eligibility, July 1, 2026 -
+# June 30, 2027, 48 states and DC. Real-rules domain: the income limit is 185% of the poverty guidelines from the FNS
+# notice of April 29, 2026 (91 FR, doc 2026-08323) and the rules follow 7 CFR 246.7; see domains/wic.md for sources.
+# Simplifications: infants and children share one applicant type and one months fact (months since the birth for a
+# woman, age in months for an infant or child), the income limit is the annual 185% table written as $29,526 plus
+# $10,508 per extra member (exact for every size), the family size counts a pregnant woman's expected babies as the
+# income rule allows (7 CFR 246.7(d)(2)(vii)), income is 1 annual figure (no income definitions or exclusions),
+# adjunctive eligibility is 1 enum (SNAP, TANF and Medicaid only, no state-administered programs), nutritional risk
+# is 1 enum for the competent professional authority's finding (no risk criteria or priority system), the
+# presumptive eligibility for pregnant women and the infant-born-to-a-WIC-mother nutritional risk are written as
+# exceptions, the physical presence exceptions assume the state adopted every optional one and fold their prior-visit
+# conditions away, dual participation is 1 enum (CSFP or another WIC clinic), and ints are bucketed to at most 8
+# values like every other domain. Income document proof is left out, since adjunctive eligibility already covers the
+# documentation of program participation. State options (a citizenship limit, proof of pregnancy, income guidelines
+# below 185%, a service area) and waivers (public health emergencies) are left out.
+name: wic
+title: "WIC (Special Supplemental Nutrition Program for Women, Infants, and Children): participant eligibility, July 2026 to June 2027"
+preamble: "An applicant is certified for WIC only if every rule below is met. Income figures are annual, before taxes. Rules marked as defaults say what to assume when the application is silent on a point."
+ref_date: 2026-11-24
+required: [category]
+facts:
+  applicant_type:
+    type: enum
+    values: [pregnant, postpartum, breastfeeding, infant_child, other_adult]
+    names:
+      pregnant: "a pregnant woman"
+      postpartum: "a woman who is not breastfeeding and whose pregnancy ended recently"
+      breastfeeding: "a woman who is breastfeeding an infant"
+      infant_child: "an infant or young child"
+      other_adult: "an adult who is not pregnant, not breastfeeding and has not recently been pregnant"
+    label: "who is applying"
+    say:
+      - "The applicant is {v:e}."
+      - "On the application, the participant category is {v:e}."
+  months:
+    type: int
+    values: [1, 3, 6, 7, 12, 13, 59, 60]
+    label: "months since the pregnancy ended for a postpartum or breastfeeding woman, or age in months for an infant or child"
+    say:
+      - "The relevant age or time since birth is {v} months."
+      - "The clinic file records {v} months, counted from the birth or from the child's birth date."
+  household_size:
+    type: int
+    values: [1, 2, 3, 4, 5, 6]
+    label: "number of people in the applicant's family, counting the applicant and, for a pregnant woman, each baby she expects"
+    say:
+      - "The family has {v} members, including the applicant and any babies she is expecting."
+      - "{v} people make up the applicant's family, counting the applicant and any unborn babies."
+  annual_income:
+    type: int
+    values: [0, 20000, 30000, 41000, 51000, 62000, 72000, 83000]
+    label: "annual family income before taxes (dollars)"
+    say:
+      - "The family's income before taxes is {v:money} a year."
+      - "Pay stubs and benefit letters show yearly family income of {v:money}."
+  adjunct_program:
+    type: enum
+    values: [none, snap_self, snap_other_member, tanf_family, medicaid_self, medicaid_pw_or_infant_in_family, medicaid_other_member]
+    names:
+      none: "no SNAP, TANF or Medicaid in the family"
+      snap_self: "the applicant is certified to receive SNAP"
+      snap_other_member: "another family member, but not the applicant, receives SNAP"
+      tanf_family: "the family is certified to receive TANF cash assistance"
+      medicaid_self: "the applicant is enrolled in Medicaid"
+      medicaid_pw_or_infant_in_family: "a pregnant woman or an infant in the family is enrolled in Medicaid"
+      medicaid_other_member: "another family member who is neither pregnant nor an infant is enrolled in Medicaid"
+    label: "SNAP, TANF and Medicaid participation"
+    say:
+      - "For public benefits, {v:e}."
+      - "Benefit records show that {v:e}."
+  risk_status:
+    type: enum
+    values: [cpa_at_risk, referral_at_risk, cpa_not_at_risk, not_assessed, self_reported]
+    names:
+      cpa_at_risk: "a competent professional authority on the clinic staff found the applicant at nutritional risk"
+      referral_at_risk: "a health care provider outside the clinic found the applicant at nutritional risk and sent the referral data"
+      cpa_not_at_risk: "a competent professional authority on the clinic staff found no nutritional risk"
+      not_assessed: "no nutritional assessment has been done yet"
+      self_reported: "the applicant says they have a poor diet, but no health professional has assessed it"
+    label: "nutritional risk determination"
+    say:
+      - "On nutritional risk, {v:e}."
+      - "The file shows that {v:e}."
+  mother_in_wic:
+    type: bool
+    label: "the infant's mother was on WIC during the pregnancy or medical records show she would have qualified"
+    say_true:
+      - "The infant's mother received WIC while pregnant."
+      - "Medical records show the infant's mother would have qualified for WIC during her pregnancy."
+    say_false:
+      - "The infant's mother was not on WIC during the pregnancy and has no record of qualifying."
+      - "The infant's mother did not receive WIC and has no medical record showing she would have qualified."
+  state_resident:
+    type: bool
+    label: "the applicant lives at an address in the state where they applied"
+    say_true:
+      - "The applicant lives at an address in the state where the application was filed."
+      - "The applicant's home address is in this state."
+    say_false:
+      - "The applicant lives in another state."
+      - "The applicant's home address is outside the state where the application was filed."
+  homeless:
+    type: bool
+    label: "the applicant has no fixed address but stays in the state, for example in a shelter"
+    say_true:
+      - "The applicant has no fixed address and stays at a shelter in the state."
+      - "The applicant is homeless and has been staying with friends in the state."
+    say_false:
+      - "The applicant is not homeless."
+      - "The applicant does not stay in a shelter or without a fixed address."
+  proof_provided:
+    type: bool
+    label: "the applicant presented proof of residency and proof of identity"
+    say_true:
+      - "The applicant brought proof of residency and proof of identity."
+      - "A utility bill and a photo ID were presented."
+    say_false:
+      - "The applicant did not bring proof of residency and identity."
+      - "No proof of address or identity was presented."
+  proof_exception:
+    type: bool
+    label: "the applicant cannot produce proof because of homelessness, migrant farmwork, theft, loss or disaster, and signed a written statement"
+    say_true:
+      - "The applicant lost their papers in a house fire and signed a written statement of residency and identity."
+      - "The applicant is a migrant farmworker and signed a statement confirming address and identity."
+    say_false:
+      - "No written statement about missing proof has been signed."
+      - "The applicant has not claimed any reason for lacking proof."
+  physically_present:
+    type: bool
+    label: "the applicant was physically present at the WIC clinic for certification"
+    say_true:
+      - "The applicant came to the WIC clinic in person for certification."
+      - "The applicant was present at the clinic appointment."
+    say_false:
+      - "The applicant did not come to the WIC clinic for certification."
+      - "The certification was done without the applicant at the clinic."
+  absence_exception:
+    type: enum
+    values: [none, disability, working_caretaker, ongoing_care]
+    names:
+      none: "no reason for the absence was given"
+      disability: "the applicant or the parent or caretaker has a disability that prevents travel to the clinic"
+      working_caretaker: "the child was certified before and the caretaker's work schedule is a barrier to coming to the clinic"
+      ongoing_care: "the child was certified before and is receiving ongoing health care that makes a clinic visit an unreasonable barrier"
+    label: "reason the applicant was absent from certification"
+    say:
+      - "As for the absence, {v:e}."
+      - "The clinic's note on the absence says {v:e}."
+  dual_participation:
+    type: enum
+    values: [none, csfp, other_wic_clinic]
+    names:
+      none: "the applicant receives no other food benefits of these kinds"
+      csfp: "the applicant is also enrolled in the Commodity Supplemental Food Program (CSFP)"
+      other_wic_clinic: "the applicant is also certified at another WIC clinic"
+    label: "enrollment in CSFP or at another WIC clinic"
+    say:
+      - "For other programs, {v:e}."
+      - "Program records show {v:e}."
+derived_facts:
+  income_limit:
+    expr: "29526 + 10508 * (household_size - 1)"
+    label: "annual income limit for the family size (dollars)"
+    say: ["The annual income limit for that family size is {v:money}."]
+rules:
+  - key: category
+    cond: "applicant_type != 'other_adult'"
+    text: "The applicant must be a pregnant woman, a postpartum woman, a breastfeeding woman, an infant or a child"
+  - key: postpartum_window
+    scoped: true
+    cond: "applicant_type != 'postpartum' or months <= 6"
+    near: "applicant_type != 'postpartum' and months > 6"
+    text: "A postpartum woman who is not breastfeeding may be certified only up to 6 months after her pregnancy ended"
+  - key: breastfeeding_window
+    scoped: true
+    cond: "applicant_type != 'breastfeeding' or months <= 12"
+    near: "applicant_type != 'breastfeeding' and months > 12"
+    text: "A breastfeeding woman may be certified only until her infant's first birthday, which is 12 months after the birth"
+  - key: child_age
+    scoped: true
+    cond: "applicant_type != 'infant_child' or months < 60"
+    near: "applicant_type != 'infant_child' and months >= 60"
+    text: "An infant or child must be under 5 years old (under 60 months)"
+  - key: nutritional_risk
+    cond: "risk_status in ['cpa_at_risk', 'referral_at_risk']"
+    text: "A competent professional authority, a health professional such as a physician, nutritionist or nurse, must find the applicant at nutritional risk, either on the clinic staff or in referral data from outside the clinic"
+    unless:
+      - cond: "applicant_type == 'infant_child' and months < 6 and mother_in_wic"
+        text: "the applicant is an infant under 6 months old whose mother was on WIC during the pregnancy or would have qualified"
+      - cond: "applicant_type == 'pregnant' and risk_status == 'not_assessed'"
+        text: "the applicant is a pregnant woman certified presumptively while her nutritional risk is still to be assessed"
+  - key: residency
+    cond: "state_resident"
+    text: "The applicant must live in the state where they apply, and the state may not require any minimum length of residence"
+    unless:
+      - cond: "homeless"
+        text: "the applicant has no fixed address but stays in the state, for example in a shelter"
+  - key: proof_docs
+    cond: "proof_provided"
+    text: "At certification the applicant must present proof of where they routinely live and proof of identity"
+    unless:
+      - cond: "proof_exception"
+        text: "the applicant, such as a homeless person, a migrant farmworker or a victim of theft, loss or disaster, cannot produce proof and signed a written statement of residency and identity"
+  - key: presence
+    cond: "physically_present"
+    text: "The applicant must be physically present at each certification"
+    unless:
+      - cond: "absence_exception == 'disability' or (applicant_type == 'infant_child' and (absence_exception != 'none' or months < 2))"
+        text: "the applicant or the applicant's parent or caretaker has a disability that prevents coming to the clinic, or the applicant is an infant or child who is under 8 weeks old, receives ongoing health care, or is in the care of a working caretaker, with a prior certification where required"
+  - key: dual_participation
+    cond: "dual_participation == 'none'"
+    text: "The applicant may not take part in WIC and the Commodity Supplemental Food Program (CSFP) at the same time, or at 2 WIC clinics at once"
+derived:
+  - key: income_test
+    cond: "adjunct_program in ['snap_self', 'tanf_family', 'medicaid_self', 'medicaid_pw_or_infant_in_family'] or annual_income <= income_limit"
+    text: "Annual family income may not exceed 185% of the federal poverty guidelines, which is $29,526 for a family of 1 plus $10,508 for each additional member. A pregnant woman counts each expected baby as an additional family member. The limit does not apply if the applicant is certified to receive SNAP or enrolled in Medicaid, or is in a family certified for TANF or one with a pregnant woman or an infant enrolled in Medicaid"
+defaults:
+  - fact: homeless
+    value: false
+    text: "If the application does not mention homelessness, assume the applicant is not homeless"
+  - fact: mother_in_wic
+    value: false
+    text: "If the application does not show that the infant's mother was on WIC or would have qualified, assume she was not"
+  - fact: proof_exception
+    value: false
+    text: "If the application gives no reason for missing proof of residency or identity, assume no exception applies"
+  - fact: absence_exception
+    value: none
+    text: "If the application gives no reason for an absence from certification, assume there is none"
+  - fact: adjunct_program
+    value: none
+    text: "If the application does not show SNAP, TANF or Medicaid, assume the family receives none of them"
+  - fact: dual_participation
+    value: none
+    text: "If no CSFP or other WIC enrollment is on record, assume there is none"
+names: ["Maria Gonzalez", "Keisha Johnson", "Nguyen Thi Lan", "Aisha Mohamed", "Jasmine Carter", "Linda Svensson", "Priya Patel", "Emily Walker"]
+intro:
+  - "Case {num}: {name} applied for WIC at the local clinic."
+  - "The following summarizes WIC application {num}, filed by {name}."
+  - "{name} came to the WIC office this month for application {num}."
+color:
+  - "The applicant asked whether the clinic offers evening appointments."
+  - "The applicant says a neighbor told them about WIC."
+  - "The nutritionist notes the applicant was friendly and well prepared."
+  - "The applicant asked which stores in the area accept WIC."
+  - "The applicant brought a folder with every document on the checklist."
+  - "The clinic waiting room was busy that morning."

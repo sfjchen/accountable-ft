@@ -515,6 +515,9 @@ def test_metrics(stub):
                       "cite_p_nec": 11 / 12, "cite_r_nec": 35 / 132, "assume_dec": 1.0, "assume_val": 1.0,
                       "fmt_err": 3 / 36})
     assert ag["all"]["acc_maj"]["n"] == 4 and ag["all"]["acc_maj"]["n_clus"] == 2
+    # joint: both valid explanations come with the right decision, and the uncertified case counts as a failure
+    assert (ag["all"]["joint"]["mean"], ag["all"]["joint"]["n"], ag["all"]["expl_valid"]["n"]) == (
+        pytest.approx(2 / 12), 12, 11)
     assert ag["slice=combined_transfer"]["acc_mean"]["mean"] == pytest.approx(5 / 6)
     assert ag[evaluate.PRIMARY]["acc_maj"]["mean"] == pytest.approx(1 / 2)
     assert (cov["parse_fail"], cov["fmt_err"], cov["items_scored"], cov["expl_uncertified"]) == (0, 3, 12, 3)
@@ -920,6 +923,23 @@ def tok():
         return tf.AutoTokenizer.from_pretrained("Qwen/Qwen2.5-0.5B-Instruct")
     except OSError as e:
         pytest.skip(f"Qwen/Qwen2.5-0.5B-Instruct tokenizer unavailable: {e}")
+
+
+def test_export_reuse(tmp_path):
+    """
+    Checks --reuse: the reused domain's rows come back verbatim, the other domain is drawn at --rows-per-domain, and
+    a domain the reused file covers but --domains leaves out stays out.
+    """
+    a, b = tmp_path / "a.jsonl", tmp_path / "b.jsonl"
+    exp = [sys.executable, str(ROOT / "train.py"), "export", "--data", str(ROOT / "data/smoke.jsonl"), "--split",
+           "train", "--rows-per-domain", "30"]
+    subprocess.run(exp + ["--domains", "grant", "review", "--out", str(a)], check=True, capture_output=True)
+    subprocess.run(exp + ["--domains", "grant", "trial", "--reuse", str(a), "--out", str(b)], check=True,
+                   capture_output=True)
+    ra, rb = ([json.loads(ln) for ln in f.read_text().splitlines()] for f in (a, b))
+    dom = lambda rs, d: sorted((x for x in rs if BY[x["id"]]["domain"] == d), key=lambda x: x["id"])
+    assert dom(rb, "grant") == dom(ra, "grant") and len(dom(rb, "trial")) == 30 and not dom(rb, "review")
+    assert len(rb) == 60
 
 
 def test_export_and_weights(rows, tok):

@@ -156,7 +156,8 @@ def export(argv):
     """
     Writes the SFT rows of one split ({id, messages: [system, user, assistant], mask_spans}) from one or more data
     files, optionally only some domains, mask_spans covering everything after the Decision line, shuffled under
-    --seed, and prints counts per view and decision.
+    --seed, and prints counts per view and decision. --reuse copies an earlier export's rows verbatim for the domains
+    it covers, so a new mix keeps an old mix's cases for those domains exactly.
     """
     from collections import Counter, defaultdict
     from infer import build_prompt, format_target, root
@@ -173,11 +174,17 @@ def export(argv):
     ap.add_argument("--drop-flagged", metavar="PATH", help="file of item ids to drop, one per line")
     ap.add_argument("--rows-per-domain", type=int, default=0, help="exactly N rows per domain, whole base cases dealt "
                     "round-robin over template families, the last case cut to fit (0 keeps all)")
+    ap.add_argument("--reuse", metavar="SFT", help="an earlier export of the same split, whose rows are copied for "
+                    "every kept domain it covers instead of being drawn again")
     a = ap.parse_args(argv)
     recs = [json.loads(ln) for f in a.data for ln in Path(f).read_text().splitlines() if ln.strip()]
     recs = [r for r in recs if not a.domains or r["domain"] in a.domains]
     by, drop = {r["id"]: r for r in recs}, set(Path(a.drop_flagged).read_text().split()) if a.drop_flagged else set()
-    sel = [r for r in recs if r["split"] == a.split and r["view"] in a.view]
+    # the reused domains leave the draw, so the shared generator below deals the other domains only
+    old = [x for ln in Path(a.reuse).read_text().splitlines() if ln.strip() and (x := json.loads(ln))["id"] in by
+           ] if a.reuse else []
+    rdom = {by[x["id"]]["domain"] for x in old}
+    sel = [r for r in recs if r["split"] == a.split and r["view"] in a.view and r["domain"] not in rdom]
     nd, sel = len(sel), [r for r in sel if r["id"] not in drop]
     nd -= len(sel)
     rng = random.Random(a.seed)
@@ -214,6 +221,8 @@ def export(argv):
         (sys_, usr), tgt = build_prompt(r), format_target(r)
         rows.append({"id": r["id"], "messages": [{"role": "system", "content": sys_}, {"role": "user", "content": usr},
                 {"role": "assistant", "content": tgt}], "mask_spans": [[tgt.index("\n") + 1, len(tgt)]]})
+    rows += old
+    sel += [by[x["id"]] for x in old]
     rng.shuffle(rows)
     Path(a.out).parent.mkdir(parents=True, exist_ok=True)
     Path(a.out).write_text("".join(json.dumps(x) + "\n" for x in rows))

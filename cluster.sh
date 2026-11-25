@@ -14,10 +14,13 @@
 #   base (THINKING=on|off, CASES=N for a stratified subset) | notify <group> <jobid>[,<jobid>...] |
 #   grid (18 jobs, at most 2 at once: inv, real, mix x account, decision x seeds 0-2, each trains then answers;
 #   PASSES=all adds the repeat and self-prediction passes, skipping a finished adapter and cached answers, DATA=<file>,...
-#   answers other test files with the same adapters)
+#   answers other test files with the same adapters) |
+#   arms (the real vs invented arms: ARMS=<mix>-s<seed>,... explanation runs, default R4 seeds 0-4 and mix seeds 3-4,
+#   at most 2 at once, each trains on data/rm-<mix>.sft.*.jsonl, unpacked from its committed .gz, then answers
+#   ARMS_DATA; DATA=<file>,... answers other test files with the same adapters)
 set -euo pipefail
 {
-cmd=${1:?usage: bash cluster.sh setup|probe|smoke|train|eval|base|grid|notify}
+cmd=${1:?usage: bash cluster.sh setup|probe|smoke|train|eval|base|grid|arms|notify}
 shift
 CLUSTER=${CLUSTER:-$([[ -d /juice2/scr2/nlp/cs224v ]] && echo sc || echo farmshare)}
 if [[ $CLUSTER == sc ]]; then
@@ -90,6 +93,8 @@ check_inputs() {
       tr '\n' ' ')(or STALE_OK=1)"
 }
 GRID_DATA=data/v1.jsonl,data/mortgage-split.jsonl,data/snap.jsonl,data/dependent.jsonl
+ARMS=${ARMS:-r4-s0,r4-s1,r4-s2,r4-s3,r4-s4,mix-s3,mix-s4}
+ARMS_DATA=data/dependent.jsonl,data/dependent-x.jsonl,data/fmla.jsonl,data/mortgage-split-x.jsonl,data/snap-x.jsonl
 
 if [[ $cmd == train && ${1:-} == --chunks && -z ${SLURM_JOB_ID:-} ]]; then
   # chunk 1 stops after epoch 1, chunk 2 resumes from its checkpoint. Everything stays on gpu: normal shares its
@@ -138,6 +143,9 @@ case $cmd in
   base) res="--job-name=aft-base --mem=36G --time=${TIME:-02:00:00} --output=$OUT/base_%j.out" ;;
   grid) res="--job-name=aft-grid --mem=64G --time=${TIME:-08:00:00} --array=${ARRAY:-0-17%2} --requeue
     --output=$OUT/grid_%A_%a.out" ;;
+  arms) n=$(tr , '\n' <<< "$ARMS" | wc -l)
+    res="--job-name=aft-arms --mem=64G --time=${TIME:-08:00:00} --array=${ARRAY:-0-$((n - 1))%2} --requeue
+    --output=$OUT/arms_%A_%a.out" ;;
   *) res= ;;
 esac
 if [[ $cmd == setup && $CLUSTER == sc && -z ${SLURM_JOB_ID:-} ]]; then
@@ -150,6 +158,15 @@ fi
 if [[ -n $res && -z ${SLURM_JOB_ID:-} ]]; then
   case $cmd in
     grid) check_inputs "$GRID_DATA" ;;
+    arms) check_inputs "$ARMS_DATA"
+      # the SFT files unpack here, once, so concurrent array tasks never race on them
+      for m in $(tr , '\n' <<< "$ARMS" | sed 's/-s[0-9]*$//' | sort -u); do
+        for s in train dev; do
+          f=$REPO/data/rm-$m.sft.$s.jsonl
+          [[ -s $f || ! -s $f.gz ]] || gunzip -k "$f.gz"
+          [[ -s $f ]] || die "$f missing"
+        done
+      done ;;
     eval|base) check_inputs "${DATA:-data/v1.jsonl}" ;;
   esac
   mkdir -p "$REPO/runs/slurm"
@@ -427,6 +444,13 @@ PY
     DATA=${DATA:-$GRID_DATA} \
         REUSE_MERGED=1 \
         eval_one "rm-$MIX-$cond-s$seed" 2 ;;
+  arms)  # array index i: the i-th <mix>-s<seed> of ARMS, an explanation run
+    IFS=, read -ra al <<< "$ARMS"
+    a=${al[${SLURM_ARRAY_TASK_ID:?arms runs as an array job}]}
+    MIX=${a%-s*} seed=${a##*-s}
+    RESUME_OK=1 train_one account "$seed" "$REPO/outputs/rm-$MIX-account-s$seed" "data/rm-$MIX.sft.train.jsonl" \
+        "data/rm-$MIX.sft.dev.jsonl" --epochs 2
+    DATA=${DATA:-$ARMS_DATA} REUSE_MERGED=1 eval_one "rm-$MIX-account-s$seed" 2 ;;
   base)  # prompted base model, the same passes as eval: THINKING=on|off, CASES=N for a stratified subset
     [[ -s $MODEL_FILE ]] || die "$MODEL_FILE missing, run bash cluster.sh setup first"
     model_id=$(cat "$MODEL_FILE") run=base-think${THINKING:-off}

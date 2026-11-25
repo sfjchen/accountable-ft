@@ -27,7 +27,8 @@ ROOT = Path(__file__).resolve().parent
 DOMAINS = ["grant", "permit", "trial", "review"]
 # Held-out domains and their split: permit (invented vocabulary) and mortgage (real rules, not in "all", generated with
 # --domains mortgage) each get their own transfer slice, never train or dev.
-HELD_OUT = {"permit": "test_domain", "mortgage": "test_real", "snap": "test_real", "dependent": "test_real"}
+HELD_OUT = {"permit": "test_domain", "mortgage": "test_real", "snap": "test_real", "dependent": "test_real",
+            "medicaid": "test_real", "wic": "test_real", "fmla": "test_real"}
 VIEWS = ["table", "prose", "prose_derive"]
 SLICE = {"train": "train", "dev": "dev", "test_policy": "unseen_family_train_vocab", "test_domain": "combined_transfer",
          "test_real": "real_transfer"}

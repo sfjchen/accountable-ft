@@ -1,0 +1,340 @@
+# Federal Family and Medical Leave Act (FMLA) leave request, as of 2026: whether an employee's request for job-protected
+# leave must be granted. Real-rules domain: rules follow 29 USC 2611-2619 and 29 CFR 825, with DOL Fact Sheets
+# #28 to #28Q; see domains/fmla.md for sources. Simplifications: approve means the leave must be granted with the right
+# to restoration, so the key employee rule (which limits restoration, not the leave) is a rule on the whole request;
+# the covered employer test reads one headcount (employees on the payroll in 20 or more workweeks), joint employers and
+# successors are left out; the 12-month and 1,250-hour tests are bucketed counts, with the hours test waived for airline
+# flight crew in favor of the 504-hour and 60% of monthly guarantee test; break_years is the break before the earlier
+# employment that the 12 months counts, 0 if none; "serious health condition", "covered active duty" and "covered
+# servicemember" are folded into reason and one covered_military fact; a child over 18 and an incapable-adult-child
+# are left out of family_shc, and the spouse share (which really also covers caring for a parent, 825.120(a)(3)) is
+# applied to bonding only; a request longer than the remaining entitlement fails whole (really the leave is
+# protected up to the entitlement), as does a 30-day notice miss (really the employer may delay the leave); the 12-month
+# leave year method (calendar, fixed, rolling) is left out and weeks_used is weeks already used in it; airline flight
+# crew entitlement (72 days) and the 26-week combined cap for military caregiver plus other leave are 1 number (26);
+# intermittent leave, substitution of paid leave, light duty and state laws are left out; ints are bucketed to at most
+# 8 values like every other domain.
+name: fmla
+title: "Federal Family and Medical Leave Act (FMLA): whether a leave request must be granted, 2026"
+preamble: "A leave request must be granted, with the employee's job protected, only if it meets every rule below. Rules marked as defaults say what to assume when the request is silent on a point."
+ref_date: 2026-11-24
+required: [employer_coverage, qualifying_reason]
+facts:
+  employer_size:
+    type: int
+    values: [20, 49, 50, 120, 500]
+    label: "employees on the employer's payroll in each of 20 or more workweeks of this or the last calendar year"
+    say:
+      - "The employer had {v} people on its payroll in each of at least 20 workweeks this year or last."
+      - "Payroll records show {v} employees in every one of 20 or more workweeks of the current or prior calendar year."
+  public_or_school:
+    type: bool
+    label: "the employer is a public agency or an elementary or secondary school"
+    say_true:
+      - "The employer is a county government agency."
+      - "The employee works for a public school district."
+    say_false:
+      - "The employer is a private company that is not a school."
+      - "The employer is a private business, not a government agency or school."
+  months_employed:
+    type: int
+    values: [4, 9, 11, 12, 13, 36, 84]
+    label: "months the employee has worked for the employer, counting earlier employment that counts"
+    say:
+      - "The employee has worked for the employer for {v} months."
+      - "Personnel records show {v} months of employment with the company."
+  break_years:
+    type: int
+    values: [0, 2, 6, 8, 15]
+    label: "years of the break in service before the earlier employment counted toward the 12 months (0 if none)"
+    say:
+      - "The employee's earlier employment ended {v} years before they were rehired."
+      - "There was a {v}-year gap between the employee's earlier job with the employer and the current one."
+  break_excused:
+    type: bool
+    label: "the break was for military service covered by USERRA, or a written agreement says the employer would rehire"
+    say_true:
+      - "The break was for National Guard service, which USERRA covers."
+      - "A written agreement from when the employee left says the employer intended to rehire."
+    say_false:
+      - "The break was not military service and no written rehire agreement exists."
+      - "The employee left for another career, with no agreement to be rehired."
+  hours_worked:
+    type: int
+    values: [600, 1000, 1249, 1250, 1500, 2080]
+    label: "hours the employee worked for the employer in the 12 months before the leave starts"
+    say:
+      - "In the 12 months before the leave, the employee worked {v} hours."
+      - "Timekeeping records show {v} hours worked in the prior 12 months."
+  employees_within_75:
+    type: int
+    values: [20, 49, 50, 75, 300]
+    label: "employees of the employer at the worksite and all its sites within 75 miles"
+    say:
+      - "The employer has {v} employees at the employee's worksite and within 75 miles of it."
+      - "Counting every site within 75 miles, the employer has {v} employees."
+  airline_crew:
+    type: bool
+    label: "the employee is an airline flight crew member (pilot or flight attendant)"
+    say_true:
+      - "The employee is an airline flight attendant."
+      - "The employee is a pilot for an airline."
+    say_false:
+      - "The employee is not airline flight crew."
+      - "The employee works in an office, not as airline flight crew."
+  crew_hours:
+    type: int
+    values: [300, 503, 504, 650, 800]
+    label: "hours the flight crew member worked or was paid for in the 12 months before the leave"
+    say:
+      - "The flight crew member worked or was paid for {v} hours in the prior 12 months."
+      - "Crew records show {v} hours worked or paid in the 12 months before the leave."
+  crew_pct:
+    type: int
+    values: [40, 59, 60, 75, 100]
+    label: "percent of the applicable monthly guarantee the flight crew member worked or was paid for in those 12 months"
+    say:
+      - "That is {v}% of the applicable monthly guarantee."
+      - "The crew member reached {v}% of the monthly guarantee."
+  reason:
+    type: enum
+    values: [birth_bonding, adoption_foster, own_shc, family_shc, family_other, exigency, mil_caregiver, other]
+    names:
+      birth_bonding: "to bond with a newborn child"
+      adoption_foster: "to bond with a child newly placed for adoption or foster care"
+      own_shc: "for the employee's own serious health condition"
+      family_shc: "to care for a spouse, child under 18 or parent with a serious health condition"
+      family_other: "to care for a sibling, grandparent or parent-in-law with a serious health condition"
+      exigency: "for a qualifying exigency (such as arrangements before a deployment) of a spouse, child or parent in the military"
+      mil_caregiver: "to care for a covered servicemember who is the employee's spouse, child, parent or next of kin"
+      other: "for a minor illness such as a cold, or for a vacation or personal errands"
+    label: "reason for the leave"
+    say:
+      - "The employee asked for leave {v:e}."
+      - "The leave request is {v:e}."
+  months_since_event:
+    type: int
+    values: [0, 3, 6, 12, 13, 18]
+    label: "months since the child's birth or placement when the bonding leave is requested"
+    say:
+      - "The child was born or placed with the employee {v} months before the leave starts."
+      - "The leave starts {v} months after the birth or placement of the child."
+  covered_military:
+    type: bool
+    label: "the military member's situation qualifies (covered active duty abroad, or covered servicemember with a serious injury or illness)"
+    say_true:
+      - "The military member has been called to covered active duty in a foreign country."
+      - "The servicemember has a serious injury from duty and is a covered servicemember."
+    say_false:
+      - "The military member is not on covered active duty, with no foreign deployment."
+      - "The servicemember has no qualifying serious injury or illness."
+  weeks_requested:
+    type: int
+    values: [2, 4, 8, 12, 16, 26]
+    label: "weeks of leave requested"
+    say:
+      - "The employee requests {v} weeks of leave."
+      - "The request is for {v} weeks away from work."
+  weeks_used:
+    type: int
+    values: [0, 4, 8, 12]
+    label: "weeks of FMLA leave already used in the 12-month leave year"
+    say:
+      - "The employee has already used {v} weeks of FMLA leave in the leave year."
+      - "Records show {v} weeks of FMLA leave taken in the current 12-month period."
+  spouse_bonding_weeks:
+    type: int
+    values: [0, 4, 6, 8, 12]
+    label: "weeks of birth or placement bonding leave already taken by the employee's spouse at the same employer (0 if none)"
+    say:
+      - "The employee's spouse, who works for the same employer, took {v} weeks of bonding leave."
+      - "The spouse has used {v} weeks of bonding leave at this same employer."
+  notice_days:
+    type: int
+    values: [0, 5, 14, 29, 30, 45, 90]
+    label: "days of notice the employee gave before the leave starts"
+    say:
+      - "The employee gave {v} days of notice before the leave starts."
+      - "Notice reached the employer {v} days before the leave."
+  notice_asap:
+    type: bool
+    label: "30 days of notice was not practicable (emergency or change in plans) and the employee gave notice as soon as practicable"
+    say_true:
+      - "A medical emergency made 30 days of notice impossible, and the employee told the employer the same day."
+      - "The leave date moved up suddenly, and the employee gave notice as soon as possible."
+    say_false:
+      - "The employee knew of the need for weeks and could have given 30 days of notice."
+      - "Nothing prevented earlier notice, and the employee waited to tell the employer."
+  cert_days:
+    type: int
+    values: [0, 7, 15, 16, 30, 60]
+    label: "days the employee took to return a medical or military certification the employer asked for (0 if not asked)"
+    say:
+      - "The employer asked for a certification, and the employee returned it after {v} days."
+      - "The certification came back {v} days after the employer's request."
+  cert_diligent:
+    type: bool
+    label: "it was not practicable to return the certification in 15 days despite the employee's diligent, good-faith effort"
+    say_true:
+      - "The doctor's office was closed, and the employee kept trying in good faith to get the form."
+      - "The employee acted diligently, and the delay came from the provider."
+    say_false:
+      - "The employee simply put the form off."
+      - "Nothing outside the employee's control delayed the certification."
+  key_employee:
+    type: bool
+    label: "the employee is a key employee (salaried and among the highest paid 10% of employees within 75 miles)"
+    say_true:
+      - "The employee is a salaried manager among the highest paid 10% of staff within 75 miles."
+      - "Payroll puts the employee in the top 10% of salaries within 75 miles, and the employee is salaried."
+    say_false:
+      - "The employee is not among the highest paid 10% of salaried staff."
+      - "The employee is paid hourly."
+  key_notice:
+    type: bool
+    label: "the employer gave the employee timely written notice of key employee status"
+    say_true:
+      - "When the leave was requested, the employer told the employee in writing about key employee status."
+      - "The employer gave a written key employee notice at the time of the request."
+    say_false:
+      - "The employer never told the employee in writing about key employee status."
+      - "No key employee notice was given when the leave was requested or began."
+  key_injury:
+    type: bool
+    label: "restoring the key employee would cause the employer substantial and grievous economic injury"
+    say_true:
+      - "The employer shows that taking the employee back would cause it substantial and grievous economic injury."
+      - "The employer finds in good faith that restoring the employee would badly hurt the business financially."
+    say_false:
+      - "Restoring the employee would not cause the employer grievous economic injury."
+      - "The employer could take the employee back without serious economic harm."
+derived_facts:
+  weeks_left:
+    expr: "(reason == 'mil_caregiver') * 26 + (reason != 'mil_caregiver') * 12 - weeks_used"
+    label: "weeks of entitlement left in the leave year (12, or 26 for military caregiver leave, minus weeks used)"
+    say: ["That leaves {v} weeks of FMLA entitlement in the leave year."]
+  combined_bonding:
+    expr: "weeks_requested + spouse_bonding_weeks"
+    label: "weeks of bonding leave requested plus weeks already taken by a spouse at the same employer"
+    say: ["With the spouse's bonding leave, the combined bonding weeks come to {v}."]
+rules:
+  - key: employer_coverage
+    cond: "public_or_school or employer_size >= {t}"
+    text: "The employer must be covered: a public agency or school, or a private employer with {t} or more employees on the payroll in each of 20 or more workweeks of the current or prior calendar year"
+    params: {t: [50]}
+  - key: tenure
+    cond: "months_employed >= {t}"
+    text: "The employee must have worked for the employer for at least {t} months"
+    params: {t: [12]}
+  - key: break_in_service
+    cond: "break_years < 7"
+    text: "Employment before a break in service of 7 years or more does not count toward the 12 months"
+    unless:
+      - cond: "break_excused"
+        text: "the break was for military service covered by USERRA or a written agreement shows the employer meant to rehire the employee"
+  - key: hours
+    scoped: true
+    cond: "airline_crew or hours_worked >= {t}"
+    near: "airline_crew and hours_worked < {t}"
+    text: "The employee must have worked at least {t} hours for the employer in the 12 months before the leave starts (airline flight crew have their own test)"
+    params: {t: [1250]}
+  - key: flight_crew
+    scoped: true
+    cond: "not airline_crew or (crew_pct >= 60 and crew_hours >= 504)"
+    near: "not airline_crew and (crew_pct < 60 or crew_hours < 504)"
+    text: "An airline flight crew member must have worked or been paid for at least 60% of the applicable monthly guarantee and at least 504 hours in the 12 months before the leave"
+  - key: worksite
+    cond: "employees_within_75 >= {t}"
+    text: "The employer must have {t} or more employees at the employee's worksite and within 75 miles of it"
+    params: {t: [50]}
+  - key: qualifying_reason
+    cond: "reason in ['birth_bonding', 'adoption_foster', 'own_shc', 'family_shc', 'exigency', 'mil_caregiver']"
+    text: "The leave must be for bonding with a new child, adoption or foster placement, the employee's own serious health condition, a spouse, child or parent's serious health condition, a qualifying exigency, or military caregiving"
+  - key: bonding_window
+    scoped: true
+    cond: "reason not in ['birth_bonding', 'adoption_foster'] or months_since_event <= 12"
+    near: "reason not in ['birth_bonding', 'adoption_foster'] and months_since_event > 12"
+    text: "Bonding leave for a birth, adoption or foster placement must take place within 12 months of the birth or placement"
+  - key: military_status
+    scoped: true
+    cond: "reason not in ['exigency', 'mil_caregiver'] or covered_military"
+    near: "reason in ['birth_bonding', 'adoption_foster', 'own_shc', 'family_shc', 'family_other', 'other'] and not covered_military"
+    text: "Exigency leave requires a spouse, child or parent on covered active duty in a foreign country, and military caregiver leave requires a covered servicemember with a serious injury or illness"
+  - key: notice
+    cond: "notice_days >= {t}"
+    text: "The employee must give {t} days of notice before the leave starts"
+    params: {t: [30]}
+    unless:
+      - cond: "notice_asap"
+        text: "30 days of notice was not practicable because of an emergency or change in plans and the employee gave notice as soon as practicable"
+  - key: certification
+    scoped: true
+    cond: "reason not in ['own_shc', 'family_shc', 'exigency', 'mil_caregiver'] or cert_days <= {t}"
+    near: "reason in ['birth_bonding', 'adoption_foster', 'family_other', 'other'] and cert_days > {t}"
+    text: "When the employer asks for a certification, the employee must return it within {t} days"
+    params: {t: [15]}
+    unless:
+      - cond: "cert_diligent"
+        text: "it was not practicable to return it in time despite the employee's diligent, good-faith effort"
+  - key: key_employee
+    cond: "not (key_employee and key_injury)"
+    text: "An employer may refuse to restore a key employee (salaried and among the highest paid 10% of employees within 75 miles) whose restoration would cause substantial and grievous economic injury"
+    unless:
+      - cond: "not key_notice"
+        text: "the employer did not give the employee timely written notice of key employee status"
+derived:
+  - key: entitlement
+    cond: "weeks_requested <= weeks_left"
+    text: "The weeks requested may not exceed the employee's remaining entitlement: 12 workweeks in the 12-month leave year, or 26 workweeks for military caregiver leave, minus weeks already used"
+  - key: spouse_share
+    cond: "reason not in ['birth_bonding', 'adoption_foster'] or combined_bonding <= 12"
+    text: "Spouses who work for the same employer share 12 weeks for bonding with a new child: the weeks requested plus the spouse's bonding weeks may not exceed 12"
+defaults:
+  - fact: break_excused
+    value: false
+    text: "If the request does not mention military service or a rehire agreement, assume neither applies to the break"
+  - fact: notice_asap
+    value: false
+    text: "If the request does not say 30 days of notice was impracticable, assume it was practicable"
+  - fact: cert_days
+    value: 0
+    text: "If no certification was requested, treat the return time as 0 days"
+  - fact: cert_diligent
+    value: false
+    text: "If no diligent effort to meet the deadline is described, assume there was none"
+  - fact: key_employee
+    value: false
+    text: "If the employee is not described as a top-paid salaried employee, assume the employee is not a key employee"
+  - fact: key_notice
+    value: false
+    text: "If no written key employee notice is mentioned, assume none was given"
+  - fact: key_injury
+    value: false
+    text: "If the employer does not claim economic injury from restoring the employee, assume none"
+  - fact: spouse_bonding_weeks
+    value: 0
+    text: "If no spouse at the same employer took bonding leave, treat the spouse's weeks as 0"
+  - fact: weeks_used
+    value: 0
+    text: "If no earlier FMLA leave is mentioned, assume 0 weeks used in the leave year"
+  - fact: airline_crew
+    value: false
+    text: "If the employee is not described as airline flight crew, assume the employee is not"
+  - fact: public_or_school
+    value: false
+    text: "If the employer is not described as a public agency or school, assume it is a private employer"
+  - fact: covered_military
+    value: false
+    text: "If the request does not show a covered deployment or injury, assume the military requirement is not met"
+names: ["Rachel Adams", "Marcus Bell", "Priya Natarajan", "Tomas Herrera", "Grace Okafor", "Daniel Kim", "Elena Rossi", "Samuel Brooks"]
+intro:
+  - "Leave request {num} was filed by {name}."
+  - "The following summarizes FMLA leave request {num}, submitted by {name}."
+  - "{name} asked human resources for leave in request {num}."
+color:
+  - "The employee's manager says the team is busy this quarter."
+  - "The employee has a good performance record."
+  - "Human resources noted the employee was polite and well prepared at the meeting."
+  - "The employee asked whether the leave could be started on a Monday."
+  - "The employee has coached a youth soccer team for years."
+  - "The employee's desk is near the break room on the third floor."

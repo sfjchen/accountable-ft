@@ -2,3 +2,4 @@ pyyaml>=6.0
 # 3.x ran the async simulator 3.5x slower at --conc 16 (Nov 17, 366 calls on 1 VM: 94 s on 3.4.0, 27 s on 2.34.0)
 google-genai==2.34.0
 pytest>=8
+scipy>=1.14
