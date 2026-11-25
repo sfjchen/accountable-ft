@@ -1,0 +1,82 @@
+{
+ "data": "data/wic.jsonl",
+ "slice": "unseen_family_train_vocab",
+ "view": "prose",
+ "seed": 0,
+ "items": 220,
+ "kinds": {
+  "add": 33,
+  "invariant_replace": 33,
+  "noncrossing_replace": 33,
+  "pivotal_replace": 88,
+  "remove": 33
+ },
+ "groups": {
+  "pivotal_replace": 0.4,
+  "invariant": 0.3,
+  "remove": 0.15,
+  "add": 0.15
+ },
+ "sources": {
+  "engine_alt_disjoint": 83,
+  "engine_alt_overlap": 5,
+  "engine_noncrossing": 33,
+  "variant_record": 99
+ },
+ "candidates": {
+  "prose/add": 99,
+  "prose/invariant_replace": 99,
+  "prose/noncrossing_replace": 68,
+  "prose/pivotal_replace": 88,
+  "prose/remove": 99
+ },
+ "drop_reasons": {
+  "no certified flip within radius 3 other than gold.min_flip": 11
+ },
+ "drops": [
+  {
+   "case_id": "wic-p001-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "wic-p008-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "wic-p015-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "wic-p046-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "wic-p066-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "wic-p067-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "wic-p079-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "wic-p081-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "wic-p092-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "wic-p093-c02:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "wic-p102-c03:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  }
+ ]
+}
