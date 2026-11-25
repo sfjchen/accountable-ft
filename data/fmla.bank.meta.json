@@ -1,0 +1,35 @@
+{
+ "data": "data/fmla.jsonl",
+ "slice": "unseen_family_train_vocab",
+ "view": "prose",
+ "seed": 0,
+ "items": 382,
+ "kinds": {
+  "add": 57,
+  "invariant_replace": 57,
+  "noncrossing_replace": 58,
+  "pivotal_replace": 153,
+  "remove": 57
+ },
+ "groups": {
+  "pivotal_replace": 0.4005235602094241,
+  "invariant": 0.3010471204188482,
+  "remove": 0.14921465968586387,
+  "add": 0.14921465968586387
+ },
+ "sources": {
+  "engine_alt_disjoint": 124,
+  "engine_alt_overlap": 29,
+  "engine_noncrossing": 58,
+  "variant_record": 171
+ },
+ "candidates": {
+  "prose/add": 153,
+  "prose/invariant_replace": 153,
+  "prose/noncrossing_replace": 131,
+  "prose/pivotal_replace": 153,
+  "prose/remove": 153
+ },
+ "drop_reasons": {},
+ "drops": []
+}
