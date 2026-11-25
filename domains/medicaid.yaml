@@ -2,7 +2,7 @@
 # states and DC. Real-rules domain: the adult group rules follow 42 CFR 435.119, the MAGI income test 435.603, residency
 # 435.403, citizenship and status 435.406, 435.956 and SSA 1903(v)(5) as amended by P.L. 119-21 sec. 71109, the SSN rule
 # 435.910, and the community engagement requirement follows SSA 1902(xx) as added by P.L. 119-21 sec. 71119 and CMS's
-# interim final rule (42 CFR 435.551-435.560); see domains/medicaid.md for sources. Approve means the person is
+# interim final rule (42 CFR 435.550-435.563); see domains/medicaid.md for sources. Approve means the person is
 # eligible for coverage under the adult group. Simplifications: the income limit is 138% of the 2026 HHS poverty
 # guideline for the 48 states and DC ($15,960 plus $5,680 per extra person), a 133% limit plus the 5% income disregard,
 # written as a monthly amount in tenths of dollars (exact to the cent); MAGI is current monthly earned plus unearned
@@ -10,14 +10,14 @@
 # self-employment rules; the applicant's earned income is the whole household's earned income for the $580 income route
 # to community engagement; state variations (Alaska and Hawaii guidelines, state-funded coverage of immigrants,
 # the state option to cover LPRs without the bar) are left out; the
-# immigration facts are 1 status plus 1 bar-exception fact (40 quarters of work, military service or family, or refugee
+# immigration facts are 1 status plus 1 bar-exception fact (military service or family, or refugee
 # origin), and the SHO 26-001 detail on emergency Medicaid, children and pregnant women is left out; the pregnancy
 # exclusion (435.119(b)(2)) is kept while the statute's postpartum exclusion from community engagement is the only
 # pregnancy-related exemption modeled; the exemption groups are 1 enum (plus 1 child fact) instead of the statute's
 # separate clauses, family caregivers of disabled individuals, the 1115 demonstration populations, optional
 # short-term hardship exceptions, the $580 seasonal-worker average and the 30-day noncompliance notice are left out; the
 # 80 hours are 1 monthly count of work, community service, work program and school (half-time school counts as 80) in
-# the verified month, with the look-back length left to states; inmate status is the public-institution test of 435.1009
+# the verified month, with the look-back length left to states; inmate status is the federal funding exclusion of 435.1009 written as ineligibility, with the inpatient exception
 # with 1 inpatient exception; ints are bucketed to at most 8 values like every other domain.
 name: medicaid
 title: "Medicaid adult group (MAGI adults aged 19-64): eligibility rules in an expansion state, 2027"
@@ -79,13 +79,13 @@ facts:
       - "Immigration records show the applicant is {v:e}."
   bar_exception:
     type: bool
-    label: "an exception to the 5-year waiting period applies: 40 quarters of work, military service or family of a service member or veteran, or refugee or asylee origin"
+    label: "an exception to the 5-year waiting period applies: an honorably discharged veteran or active-duty service member, their spouse or child, or refugee or asylee origin"
     say_true:
-      - "Social Security records credit the applicant with 40 quarters of work."
+      - "The applicant is an honorably discharged U.S. Army veteran."
       - "The applicant is the spouse of an active-duty service member."
     say_false:
       - "No exception to the 5-year waiting period applies to the applicant."
-      - "The applicant has under 40 work quarters, no military tie and no refugee origin."
+      - "The applicant has no military tie and did not enter as a refugee or asylee."
   status_verified:
     type: bool
     label: "the applicant's citizenship or immigration status has been verified with the SAVE system or documents"
@@ -223,7 +223,7 @@ rules:
     text: "A green card holder must have had the card for at least 5 years"
     unless:
       - cond: "bar_exception"
-        text: "an exception applies, such as 40 quarters of work, military service or family of a service member or veteran, or refugee or asylee origin"
+        text: "an exception applies: the applicant is an honorably discharged veteran or active-duty service member or their spouse or child, or first entered as a refugee or asylee"
   - key: status_verification
     scoped: true
     cond: "status_verified"

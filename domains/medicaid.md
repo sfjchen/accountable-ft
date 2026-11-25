@@ -7,17 +7,17 @@ Built from the federal rules for the Medicaid adult group (MAGI adults aged 19-6
 | Rule key | Rule | Source |
 |---|---|---|
 | age_range | At least 19 and under 65 | 42 CFR 435.119(b)(1) |
-| magi_limit | Monthly MAGI at most 138% of the poverty line: $1,835.40 for 1 person plus $653.20 per extra member (2026 HHS guideline $15,960 plus $5,680 per person, 133% plus the 5% disregard) | 42 CFR 435.119(c), 435.603; 2026 HHS poverty guidelines |
+| magi_limit | Monthly MAGI at most 138% of the poverty line: $1,835.40 for 1 person plus $653.20 per extra member (2026 HHS guideline $15,960 plus $5,680 per person, 133% plus the 5% disregard) | 42 CFR 435.119(b), 435.603(d); 2026 HHS poverty guidelines |
 | residency | Lives in the state where the application is filed | 42 CFR 435.403 |
 | qualified_status | Citizen or national, green card holder, Cuban or Haitian entrant, or COFA citizen. Refugees, asylees and temporary visa holders lose full federal funding Oct 1, 2026 | SSA 1903(v)(5) as amended by P.L. 119-21 sec. 71109; SHO #26-001 |
-| five_year_bar | A green card holder needs 5 years, unless an exception applies (40 work quarters, military service or family, refugee or asylee origin) | 8 USC 1612(b), 1613; SHO #26-001 |
+| five_year_bar | A green card holder needs 5 years, unless an exception applies (honorably discharged veteran or active-duty service member, their spouse or child, refugee or asylee origin). 40 work quarters does not lift the bar | 8 USC 1613(a), (b); SHO #26-001 |
 | status_verification | Status must be verified, except during the 90-day reasonable opportunity period | 42 CFR 435.406, 435.956(b) |
 | ssn | Give a Social Security number or proof of applying | 42 CFR 435.910 |
 | medicare | Not entitled to or enrolled in Medicare Part A or B | 42 CFR 435.119(b)(3) |
 | other_group | Not eligible for and enrolled in another mandatory group | 42 CFR 435.119(b)(4) |
 | not_pregnant | Not pregnant | 42 CFR 435.119(b)(2) |
-| inmate | Not an inmate of a public institution, except for inpatient care in a medical institution | 42 CFR 435.1009, 435.1010 |
-| community_engagement | In a state applying the rule, 80 hours a month of work, community service, a work program or half-time school, or monthly income of at least the federal minimum wage times 80 hours ($580). Exempt: medically frail, postpartum, American Indian or Alaska Native, veteran with a total disability rating, former foster youth under 26, SNAP or TANF work compliance, substance use treatment, parent, guardian or caretaker of a dependent child 13 or under | SSA 1902(xx) as added by P.L. 119-21 sec. 71119; 42 CFR 435.551-435.560 (CMS-2454-IFC) |
+| inmate | Not an inmate of a public institution, except for inpatient care in a medical institution | 42 CFR 435.1009 (a federal funding exclusion, written here as ineligibility), 435.1010 |
+| community_engagement | In a state applying the rule, 80 hours a month of work, community service, a work program or half-time school, or monthly income of at least the federal minimum wage times 80 hours ($580). Exempt: medically frail, postpartum, American Indian or Alaska Native, veteran with a total disability rating, former foster youth under 26, SNAP or TANF work compliance, substance use treatment, parent, guardian or caretaker of a dependent child 13 or under | SSA 1902(xx) as added by P.L. 119-21 sec. 71119; 42 CFR 435.550-435.563 (CMS-2454-IFC, 91 FR 33348) |
 
 The community engagement requirement must start by Jan 1, 2027. A state with a CMS good faith effort exemption (expires no later than Dec 31, 2028) does not apply it, which the fact `state_ce_active` captures.
 

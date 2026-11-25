@@ -3,32 +3,32 @@
  "slice": "unseen_family_train_vocab",
  "view": "prose",
  "seed": 0,
- "items": 171,
+ "items": 173,
  "kinds": {
   "add": 26,
-  "invariant_replace": 25,
+  "invariant_replace": 26,
   "noncrossing_replace": 26,
-  "pivotal_replace": 68,
+  "pivotal_replace": 69,
   "remove": 26
  },
  "groups": {
-  "pivotal_replace": 0.39766081871345027,
-  "invariant": 0.2982456140350877,
-  "remove": 0.15204678362573099,
-  "add": 0.15204678362573099
+  "pivotal_replace": 0.3988439306358382,
+  "invariant": 0.30057803468208094,
+  "remove": 0.15028901734104047,
+  "add": 0.15028901734104047
  },
  "sources": {
-  "engine_alt_disjoint": 53,
-  "engine_alt_overlap": 15,
+  "engine_alt_disjoint": 55,
+  "engine_alt_overlap": 14,
   "engine_noncrossing": 26,
-  "variant_record": 77
+  "variant_record": 78
  },
  "candidates": {
-  "prose/add": 91,
-  "prose/invariant_replace": 91,
-  "prose/noncrossing_replace": 51,
-  "prose/pivotal_replace": 68,
-  "prose/remove": 91
+  "prose/add": 92,
+  "prose/invariant_replace": 92,
+  "prose/noncrossing_replace": 50,
+  "prose/pivotal_replace": 69,
+  "prose/remove": 92
  },
  "drop_reasons": {
   "no certified flip within radius 3 other than gold.min_flip": 23
@@ -63,14 +63,6 @@
    "reason": "no certified flip within radius 3 other than gold.min_flip"
   },
   {
-   "case_id": "medicaid-p035-c01:prose",
-   "reason": "no certified flip within radius 3 other than gold.min_flip"
-  },
-  {
-   "case_id": "medicaid-p036-c01:prose",
-   "reason": "no certified flip within radius 3 other than gold.min_flip"
-  },
-  {
    "case_id": "medicaid-p037-c00:prose",
    "reason": "no certified flip within radius 3 other than gold.min_flip"
   },
@@ -91,7 +83,7 @@
    "reason": "no certified flip within radius 3 other than gold.min_flip"
   },
   {
-   "case_id": "medicaid-p062-c02:prose",
+   "case_id": "medicaid-p064-c01:prose",
    "reason": "no certified flip within radius 3 other than gold.min_flip"
   },
   {
@@ -108,6 +100,14 @@
   },
   {
    "case_id": "medicaid-p088-c00:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "medicaid-p101-c01:prose",
+   "reason": "no certified flip within radius 3 other than gold.min_flip"
+  },
+  {
+   "case_id": "medicaid-p104-c02:prose",
    "reason": "no certified flip within radius 3 other than gold.min_flip"
   },
   {
