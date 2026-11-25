@@ -193,10 +193,11 @@ def to_val(pol, n, v):
     Returns cited text v of fact n as the one engine value whose raw form, display name, ISO date or case-file
     rendering matches it, an unmatched date as its day offset, a derived fact's single number, else v unchanged
     (negated, bounded or ambiguous text included), so a wrong citation is never mapped onto the true value. An
-    enum value's exact display name maps to it first, since names such as "a member quit a job without good cause"
-    hold words the negation guard reads as bounded.
+    enum value's exact display name (case, spacing, a leading article and an end period aside) maps to it first, since
+    names such as "no member quit a job" hold words the negation guard reads as bounded.
     """
-    sp, art = getattr(pol, "facts", {}).get(n) or {}, lambda t: re.sub(r"^(a|an|the) ", "", norm(t))
+    sp, art = getattr(pol, "facts", {}).get(n) or {}, lambda t: re.sub(r"^(a|an|the) ", "", " ".join(
+        str(t).lower().strip(" .").split()))
     ex = [x for x, nm in sp.get("names", {}).items() if hasattr(pol, "dom") and x in pol.dom.get(n, ()) and
           art(nm) == art(v)]
     if len(ex) == 1:

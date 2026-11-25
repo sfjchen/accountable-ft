@@ -806,7 +806,8 @@ def test_to_val_and_format_target():
 def test_to_val_enum_names():
     """
     Checks that an enum value's exact display name maps to it even when the name holds a word the negation guard reads
-    as bounded ("no", "or"), that negated text still does not, and that real-domain SFT targets justify validly.
+    as bounded ("no", "or"), that negated or re-punctuated text does not, and that real-domain SFT targets justify
+    validly and imply their own decision (an enum value "none" is not read as a missing fact).
     """
     import gzip
     for d, n, v, want in (("wic", "adjunct_program", "no SNAP, TANF or Medicaid in the family", "none"),
@@ -815,6 +816,7 @@ def test_to_val_enum_names():
         recs = [json.loads(ln) for ln in gzip.open(ROOT / f"data/{d}.jsonl.gz", "rt")]
         p = evaluate.policy(recs[0])
         assert evaluate.to_val(p, n, v) == want and evaluate.to_val(p, n, "not " + v) == "not " + v, (d, n)
+        assert evaluate.to_val(p, n, v.replace(" ", ". ", 1)) != want, (d, n)
         for r in [r for r in recs if r["variant"] == "base" and r["gold"]["decision"] != "cannot determine" and
                   not r["gold"].get("uncertified")][:40]:
             q, p, lab = parse(format_target(r)), evaluate.policy(r), r["fact_labels"]
@@ -822,6 +824,7 @@ def test_to_val_enum_names():
             ass = {m: evaluate.to_val(p, m, x) for l, x, _ in q["assume"] if (m := evaluate.to_name(l, lab))}
             assert E.is_valid_justification(p, r["facts"], cit, [x for _, _, x in q["relied"] if x], ass)["valid"], \
                 r["id"]
+            assert E.implied_decision(p, r["facts"], cit, ass) == r["gold"]["decision"], r["id"]
 
 
 def test_bank():
