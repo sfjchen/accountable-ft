@@ -14,6 +14,7 @@ Stack, clusters, commands and the file map. Design and results in [DECISIONS.md]
 
 - FarmShare (round 1, round 2, permit, prompted controls): repo in `/scratch/users/$USER/accountable-ft`, 4 L40S per user. `bash cluster.sh setup`, then `smoke`, `train --chunks` (1-epoch jobs that backfill), `eval <run> <epoch>`, `base`.
 - sc (the grid): repo in `/juice2/scr2/nlp/cs224v/jchen04-aft`, `--partition=sc-loprio --account=nlp`, at most 2 jobs, `MAIL` required (shared account). `MAIL=<address> bash cluster.sh grid` runs array 0-17: train `outputs/rm-<mix>-<cond>-s<seed>`, then answer every test file. Requeued tasks skip finished adapters and resume from the last checkpoint.
+- Real vs invented arms: `ARMS=r4-s0,...,mix-s2 MAIL=<address> bash cluster.sh arms` trains `outputs/rm-<mix>-account-s<seed>` (skipping finished adapters) and answers `ARMS_DATA`. The SFT files come from their committed `.gz`. Read with `python arms.py <evals>/dependent-*.json <evals>/fmla-*.json`.
 - Safeguards: `cluster.sh` refuses to submit when a data file or edit set differs from its committed `.gz` or the code differs from origin/main (`STALE_OK=1` overrides). Each job deletes its merged model on exit, and every sc job puts `TMPDIR` on scratch.
 - Simulator passes and scoring run on the Mac after `rsync`. Long Mac jobs run under `ljob` (`~/dev/scripts`).
 
