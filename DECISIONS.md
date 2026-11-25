@@ -154,7 +154,7 @@ Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus 
 - Nov 20: metrics review. Boundary and necessity metrics removed (their GPU pass never ran), repeat and self-prediction passes opt-in. Every report eval rescored at abaa830.
 - Nov 21: Edit ID leak and cross-decision shuffle partners found. Fix and readout order registered before any rerun (539e723).
 - Nov 22-24: every cited simulator pass rerun (Gemini everywhere, Opus on the grid plus wrong-reason passes). Scoring fixed to read the opaque Edit ID (e6fbbe1), every report eval rescored there.
-- Nov 24: real vs invented arms registered (R4 vs M, 5 seeds, joint success on IRS dependent and FMLA). Medicaid, WIC and FMLA data generated, the arms job submitted on sc (`cluster.sh arms`: R4 s0-4, M s3-4 trained, M s0-2 answer FMLA).
+- Nov 24: Medicaid 5-year bar fixed (40 work quarters is not an exception) before any training. Real vs invented arms registered (R4 vs M, 5 seeds, joint success on IRS dependent and FMLA). Medicaid, WIC and FMLA data generated, the arms job submitted on sc (job 18694708, `cluster.sh arms`: R4 s0-4, M s3-4 trained, M s0-2 answer FMLA).
 - Not triggered: the CREDIT-style relabel round, planned only below the accuracy ceiling (round 1 is at 0.976).
 
 ## Split of work
