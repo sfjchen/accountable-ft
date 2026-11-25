@@ -1,6 +1,6 @@
 # Decisions and results
 
-The design, every result the report cites with its log, and the limits. Short guide in [README.md](README.md), commands and clusters in [OPS.md](OPS.md). Every number comes from a `stamp-run` log at e6fbbe1 (`~/dev/logs/final-*-eval-e6fbbe1-20261124-*`, JSON in `~/dev/logs/evals-final/`) unless a line names another log. Simulator numbers use the fixed prompts (see Simulator prompt fix). Opus was rerun on the grid only.
+The design, every result the report cites with its log, and the limits. Short guide in [README.md](README.md), commands and clusters in [OPS.md](OPS.md). Every number comes from a `stamp-run` log at 28ca8c9 (`~/dev/logs/final-*-eval-28ca8c9-*`, JSON in `~/dev/logs/evals-final/`) unless a line names another log. Simulator numbers use the fixed prompts (see Simulator prompt fix). Opus was rerun on the grid only.
 
 ## Claim
 
@@ -49,26 +49,26 @@ The design, every result the report cites with its log, and the limits. Short gu
 
 ### Round 1: grant, trial, review
 
-Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus decision-only, seed by seed (logs `final-v1-gemini-eval-e6fbbe1-20261124-1308`, `final-mortgage-gemini-eval-e6fbbe1-20261124-1320`).
+Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus decision-only, seed by seed (logs `final-v1-gemini-eval-28ca8c9-20261125-0023`, `final-mortgage-gemini-eval-28ca8c9-20261125-0023`).
 
 | v1 unseen families | explanation SFT | decision-only | prompted base | paired |
 |---|---|---|---|---|
 | accuracy | 0.976 | 0.972 | 0.627 | 0.004 [-0.008, 0.016] |
-| explanation validity | 0.756 | 0.000 | 0.067 | 0.756 [0.729, 0.781] |
+| explanation validity | 0.773 | 0.000 | 0.067 | 0.773 [0.746, 0.797] |
 | decision follows own explanation | 0.968 | | 0.550 | |
 | simulatability gain, Gemini | 0.115 | 0.016 | -0.008 | 0.099 [0.066, 0.131] |
 | always-"unchanged" baseline | 0.412 | 0.425 | 0.856 | |
 
 - Both SFT conditions fix the base model's failure modes (accuracy 0.63 to 0.97, "cannot determine" 0 to 0.95), so accuracy comes from the shared data and the explanation loss adds predictiveness on top. Gain is 0.09-0.14 in each of the 3 domains (paired +12.8 grant, +8.6 trial, +7.5 review, each CI clear of 0).
 - Mortgage (never trained on): validity 0.374, accuracy +0.014 [-0.020, 0.049], gain +0.008 [-0.036, 0.050].
-- Permit (never trained on, log `final-permit-gemini-eval-e6fbbe1-20261124-1320`): gain +9.9 [6.6, 12.9], validity 43% vs 0, accuracy 93.0% vs 94.6% (-1.6 [-3.5, 0.5]), base 70.4%.
+- Permit (never trained on, log `final-permit-gemini-eval-28ca8c9-20261125-0023`): gain +9.9 [6.6, 12.9], validity 43% vs 0, accuracy 93.0% vs 94.6% (-1.6 [-3.5, 0.5]), base 70.4%.
 - Power (log `r1-v1-power-1332e96-20261110-1459`, before (1332e96)): minimum detectable gain difference 5-8 points per seed pair.
 
 ### Controls
 
 - Placeholder confound. Decision-only still prints explanation lines as unlearned placeholders, so the paired gap partly compares well-formed with malformed lines. The 2 controls below remove that.
 - Wrong-reason control (`infer.py --wrong-accounts`): keeps decision, format, item count and length, swaps the cited facts for true stated facts that leave the case open. Own minus wrong +7.9 on v1 (seeds 7.9, 6.8, 8.9, each CI clear of 0), +10.7 on answer-changing edits. Mortgage +2.1 (seeds 2.4, 2.8, 1.0, each CI covers 0), wrong minus shuffled +0.5. So the invented-test gain needs the right reason, while on mortgage little of it does.
-- Prompted-explanation control (`--mode explain`, logs `final-v1-peB-gemini-eval-e6fbbe1-20261124-1325`, `final-mortgage-split-peB-gemini-eval-e6fbbe1-20261124-1328`): the base model writes explanation lines for the SFT model's fixed decision. Trained minus prompted on the same decisions: v1 +4.3 [1.2, 7.5], mortgage -0.8 [-5.4, 3.6]. The edge sits on answer-changing edits (v1 +10.6 [6.0, 15.7]). Prompted lines are 1.7x longer and cite distractors 75% of the time (13% trained).
+- Prompted-explanation control (`--mode explain`, logs `final-v1-peB-gemini-eval-28ca8c9-20261125-0027`, `final-mortgage-split-peB-gemini-eval-28ca8c9-20261125-0030`): the base model writes explanation lines for the SFT model's fixed decision. Trained minus prompted on the same decisions: v1 +4.3 [1.2, 7.5], mortgage -0.8 [-5.4, 3.6]. The edge sits on answer-changing edits (v1 +10.6 [6.0, 15.7]). Prompted lines are 1.7x longer and cite distractors 75% of the time (13% trained).
 - Explanation vs none, Gemini on v1: 0.684 with the model's own explanation, 0.569 with a shuffled one, 0.389 with none, so the own explanation informs the simulator, not only the shuffled one misleading it.
 - Round 1 Opus passes, the Opus no-explanation passes and the `compare_sims.py` error check (own explanations don't track the model's errors) ran before the prompt fix and were not rerun, so they are no longer cited.
 
@@ -79,10 +79,10 @@ Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus 
 
 ### Row-matched grid (pre-registered Nov 12)
 
-- 3 mixes at 3,600 train rows, equal share per domain: `rm-inv` grant + trial, `rm-real` mortgage + SNAP, `rm-mix` all 4. 2 conditions x 3 seeds = 18 runs. Tests: unseen families of the 4 training domains, plus review and IRS dependent, both held out from every mix. Logs `final-<test>-grid-{gemini,opus}[-raw]-eval-e6fbbe1-20261124-*`.
+- 3 mixes at 3,600 train rows, equal share per domain: `rm-inv` grant + trial, `rm-real` mortgage + SNAP, `rm-mix` all 4. 2 conditions x 3 seeds = 18 runs. Tests: unseen families of the 4 training domains, plus review and IRS dependent, both held out from every mix. Logs `final-<test>-grid-{gemini,opus}[-raw]-eval-28ca8c9-*`.
 - Registered main score, paired Gemini gain on IRS dependent: failed. inv -7.9 [-11.2, -4.4], real -4.3 [-9.0, 0.3], mix -3.1 [-8.5, 2.0]. The predicted order (mix >= real > inv) holds for point estimates only, no contrast clears Holm. Opus -1.9 / +0.3 / +2.5, no CI clear of 0. The review prediction also failed (Gemini +1.1 / +4.5 / +2.5, every CI crosses 0).
 - Gain by test, Gemini (inv / real / mix): grant 8.0 / 3.3 / 5.5, trial 8.0 / 3.3 / 5.2, review 1.1 / 4.5 / 2.4, mortgage 0.1 / 3.9 / 6.2, SNAP 2.8 / 2.0 / 3.9. No gain contrast clears Holm. Opus agrees except on mortgage: 1.2 / 12.1 / 8.2.
-- Explanation correctness, all 18 paired contrasts (explanation vs decision-only) clear Holm: each specialist is best on its own kind (the other trails by 11-38 points), mix is best on review and within 2-10 points elsewhere. Mix accuracy matches or beats decision-only on every test (up to +6.5 on IRS dependent).
+- Explanation correctness, all 18 paired contrasts (explanation vs decision-only) clear Holm: each specialist is best on its own kind (the other trails by 17-47 points), mix is best on review and within 2-8 points elsewhere. Mix accuracy matches or beats decision-only on every test (up to +6.5 on IRS dependent).
 - Wrong-reason control on the grid, own minus wrong, Gemini (inv / real / mix): v1 +7.0 / +7.6 / +5.9, mortgage +1.5 / +3.7 / +3.3, SNAP +13.5 / +7.1 / +4.7, IRS dependent +3.5 / +0.5 / +2.4. Opus: v1 +9.7 / +10.1 / +11.4, mortgage +3.4 / +13.4 / +13.6, SNAP +11.0 / +5.6 / +6.0.
 
 #### Post hoc: new test families (registered Nov 14, a robustness check, not a retest)
@@ -98,7 +98,7 @@ Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus 
 - Flaw: the simulator saw the bank id as Edit ID, which ends in the edit kind (`pivotal_replace`, `noncrossing_replace`). On v1 a rule from that suffix and the original decision predicts 95.5% of explanation-SFT answers, about what Opus got with no explanation. Shuffle partners also had another decision in 483 of 748 v1 seed-0 items, so their Policy support contradicted the Decision line kept.
 - Fix (539e723): an opaque Edit ID and a same-decision partner whenever the policy has one. Every simulator pass the cited evals read reran (`resim.py`), and Opus got wrong-reason passes on the 9 grid explanation runs. Scoring reads the opaque id since e6fbbe1.
 - Readouts, fixed before the rerun: registered endpoints keep their definitions. Mixed vs real-only reads first own minus wrong-reason on the explanation runs (`--contrast-raw account`, `sim_dwrong`), which stays within a run and avoids the decision-only placeholder lines, then the raw own-minus-shuffled contrast, then the registered paired gain. The simulators disagree only if the primary contrasts clear 0 in opposite directions on mortgage or SNAP (pooled). This order was set after the Nov 20 Opus result above and the pre-fix raw logs had shown the paired gap, so it is a post hoc choice of primary endpoint.
-- Result: no disagreement on mix - real by the registered rule, and no difference detected (primary CIs within about 3 points of 0). Mix - real, pooled, Gemini / Opus (logs `final-{mortgage-split,snap}-x-pool-grid-{gemini,opus}[-raw]-eval-e6fbbe1-20261124-*`):
+- Result: no disagreement on mix - real by the registered rule, and no difference detected (primary CIs within about 3 points of 0). Mix - real, pooled, Gemini / Opus (logs `final-{mortgage-split,snap}-x-pool-grid-{gemini,opus}[-raw]-eval-28ca8c9-*`):
 
 | contrast | mortgage | SNAP |
 |---|---|---|
@@ -108,12 +108,12 @@ Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus 
 
 - No primary contrast clears 0 under either simulator. The Opus paired mortgage gap splits by arithmetic into -1.2 from the explanation runs and -2.2 from the decision-only runs (their own gain, mix 6.5 vs real 4.3), with no CI on the split. Elsewhere the simulators differ: SNAP own minus wrong, mix - inv, pooled, is -8.5 [-11.6, -5.4] under Gemini and +1.2 [-1.7, 4.1] under Opus.
 - On invented tests the raw contrast favors mixed (v1 +5.2 [2.0, 8.3] / +8.2 [5.4, 11.1]), since real-only never trained there, while own minus wrong ties (-1.8 / +1.3).
-- Over all 6 tests, own minus wrong averages inv / real / mix 6.6 / 5.7 / 4.6 under Gemini and 6.9 / 8.6 / 9.7 under Opus (log `final-grid-seeds-c845667-20261124-1343`). Opposite order, and for mix - real no test clears Holm under either.
+- Over all 6 tests, own minus wrong averages inv / real / mix 6.6 / 5.7 / 4.6 under Gemini and 6.9 / 8.6 / 9.7 under Opus (log `final-grid-seeds-28ca8c9-20261125-0523`). Opposite order, and for mix - real no test clears Holm under either.
 - Before the fix (logs `final-*-grid-{gemini,opus}-raw-eval-b8301d2-*`, before (b8301d2)): the Opus mortgage gap was -6.5, -2.8 from the explanation runs and -3.7 from the subtraction.
 
 #### Mix recommendation
 
-- The pick depends on the workload, not on gain. Mean over all 6 tests, inv / real / mix: correctness 39.0% / 35.8% / 44.5%, accuracy 78.2% / 79.8% / 87.1%. Over the 3 real-rule tests (mortgage, SNAP, IRS dependent): correctness 18.9% / 35.1% / 31.2%, accuracy 67.4% / 82.9% / 84.1% (log `final-grid-seeds-c845667-20261124-1343`). Mixed beats real-only on invented tests (correctness +12 to +27) and trails it by 2-6 points on each real test.
+- The pick depends on the workload, not on gain. Mean over all 6 tests, inv / real / mix: correctness 39.8% / 40.2% / 49.4%, accuracy 78.2% / 79.8% / 87.1%. Over the 3 real-rule tests (mortgage, SNAP, IRS dependent): correctness 18.9% / 44.1% / 39.7%, accuracy 67.4% / 82.9% / 84.1% (log `final-grid-seeds-28ca8c9-20261125-0523`). Mixed beats real-only on invented tests (correctness +11 to +29) and trails it by 3-6 points on each real test (point estimates, SNAP and IRS dependent CIs cover 0).
 - Pick: mixed for a benchmark that weights invented and real rules equally (best accuracy and correctness), real-only for real-rule use (4 points more correctness at equal accuracy). Neither choice changes gain.
 - Not more data (log `final-grid-seeds-2005f39-20261120-1856`): every mix has 3,600 rows, 266-270 root cases, the same variant shares and the same steps. Real-only has the most text, 1.49M explanation characters vs 1.28M mixed (5.55M vs 4.76M training tokens in sc's `train_meta.json`). Mixed has 2x the families (120 vs 60) and 1.7x the policies (202 vs 119) at half the rows per domain, so the open confound is diversity vs per-domain dose, not volume.
 - Gain does not separate mixed from real-only. The primary contrast shows no difference on mortgage or SNAP under either simulator (Simulator prompt fix). On the paired gain averaged over the 6 tests by seed, mixed is higher in 8 of 9 seed pairs under Gemini (mix 4.1 / 3.5 / 2.6, real 0.5 / 3.4 / 2.5) and 7 of 9 under Opus (7.6 / 5.3 / 5.7 vs 5.0 / 4.2 / 6.7). On the 2 real tests Opus favors real-only in 7 of 9 pairs, mostly through the decision-only runs (above). Opus mortgage mix - real on the 24 original families flips by seed (+3.1, -9.0, -5.6).
@@ -130,7 +130,7 @@ Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus 
 
 ### Error analysis and diagnostics
 
-- IRS dependent failures (`errors.py`, 25 wrong decisions and 25 simulator misses from the 9 explanation-trained grid runs, labels in `data/errors-dependent.jsonl`, log `final-dependent-errors-eval-e6fbbe1-20261124-1330`).
+- IRS dependent failures (`errors.py`, 25 wrong decisions and 25 simulator misses from the 9 explanation-trained grid runs, labels in `data/errors-dependent.jsonl`, log `final-dependent-errors-eval-28ca8c9-20261125-0221`).
   - Wrong decisions cite a rule that an exception waives (690 of 2,309) or that covers the other claim type (757).
   - Simulator misses: the edit fixes the cited reason and the answer stays deny (326 of 549 answer-stays misses).
   - The model says "cannot determine" on 76 of 684 cases that need it. Training taught the format, not the scope and exceptions of the IRS rules.
@@ -153,8 +153,8 @@ Qwen3.5-9B LoRA, 3 seeds, epoch 2, means over seeds. Paired = explanation minus 
 - Nov 13-19: prompted-explanation, wrong-reason and permit controls.
 - Nov 20: metrics review. Boundary and necessity metrics removed (their GPU pass never ran), repeat and self-prediction passes opt-in. Every report eval rescored at abaa830.
 - Nov 21: Edit ID leak and cross-decision shuffle partners found. Fix and readout order registered before any rerun (539e723).
-- Nov 22-24: every cited simulator pass rerun (Gemini everywhere, Opus on the grid plus wrong-reason passes). Scoring fixed to read the opaque Edit ID (e6fbbe1), every report eval rescored there.
-- Nov 24: Medicaid 5-year bar fixed (40 work quarters is not an exception) before any training. Real vs invented arms registered (R4 vs M, 5 seeds, joint success on IRS dependent and FMLA). Medicaid, WIC and FMLA data generated, the arms job submitted on sc (job 18694708, `cluster.sh arms`: R4 s0-4, M s3-4 trained, M s0-2 answer FMLA), with R4 and M s3-4 also queued on FarmShare (job 2020563). Each seed keeps the copy that starts first and the other is cancelled, so no seed mixes clusters. Scoring fix before any arms answer: a cited enum value's exact display name now maps to it, since names such as "no SNAP, TANF or Medicaid in the family" tripped the negation guard and scored correct citations as wrong (gold targets scored 0.22-0.80 valid on the real domains, 0.91-1.0 after). Grid correctness numbers predate it and are biased low on real domains.
+- Nov 22-24: every cited simulator pass rerun (Gemini everywhere, Opus on the grid plus wrong-reason passes). Scoring fixed to read the opaque Edit ID (e6fbbe1), then to map exact enum names (24f596c, 28ca8c9), every report eval rescored at 28ca8c9.
+- Nov 24: Medicaid 5-year bar fixed (40 work quarters is not an exception) before any training. Real vs invented arms registered (R4 vs M, 5 seeds, joint success on IRS dependent and FMLA). Medicaid, WIC and FMLA data generated, the arms job submitted on sc (job 18694708, `cluster.sh arms`: R4 s0-4, M s3-4 trained, M s0-2 answer FMLA), with R4 and M s3-4 also queued on FarmShare (job 2020563). Each seed keeps the copy that starts first and the other is cancelled, so no seed mixes clusters. Scoring fix before any arms answer: a cited enum value's exact display name now maps to it, since names such as "no SNAP, TANF or Medicaid in the family" tripped the negation guard and scored correct citations as wrong (gold targets scored 0.22-0.80 valid on the real domains, 0.91-1.0 after). A 2nd fix (28ca8c9): exact names keep internal punctuation, and the enum value "none" counts as a value, which restores SNAP and mortgage fact consistency that the 1st fix had dropped. Every report eval rescored at 28ca8c9: SNAP correctness rose 25-26 points for real-only and mixed (real-only 32.0% to 58.2%) and 0 for invented-only, trial rose 4-5 (the old fallback read "a tier A Halvard site" through the article), mean correctness over 6 tests went from 39.0 / 35.8 / 44.5 to 39.8 / 40.2 / 49.4 (inv / real / mix), and mean gain and accuracy did not move. Real-rule pick is a trade-off: real-only explains better (44.1% vs 39.7%), mixed is slightly more accurate (84.1% vs 82.9%).
 - Not triggered: the CREDIT-style relabel round, planned only below the accuracy ceiling (round 1 is at 0.976).
 
 ## Split of work

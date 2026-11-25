@@ -6,7 +6,7 @@ Can fine-tuning make a model's stated reasons predict what it does when the fact
 
 ## Results
 
-Paired simulatability gain (Gemini), explanation SFT minus decision-only, seed by seed, 95% CI clustered by rule family. v1 = unseen families of the invented training domains, mortgage = 24 held-out mortgage families. Logs `final-v1-gemini-eval-e6fbbe1-20261124-1308`, `final-mortgage-gemini-eval-e6fbbe1-20261124-1320`.
+Paired simulatability gain (Gemini), explanation SFT minus decision-only, seed by seed, 95% CI clustered by rule family. v1 = unseen families of the invented training domains, mortgage = 24 held-out mortgage families. Logs `final-v1-gemini-eval-28ca8c9-20261125-0023`, `final-mortgage-gemini-eval-28ca8c9-20261125-0023`.
 
 | training mix | gain, v1 | gain, mortgage | accuracy, v1 |
 |---|---|---|---|
@@ -17,10 +17,10 @@ Paired simulatability gain (Gemini), explanation SFT minus decision-only, seed b
 ## Findings
 
 - On invented rules, trained explanations are case-specific and need the right reason. Swapping the cited facts for true non-binding ones (same decision, format, length) costs +7.9 points of gain on v1, every seed clear of 0. The gain holds on permit, an invented domain never trained on (+9.9 [6.6, 12.9]).
-- Explanation SFT matches decision-only on v1 accuracy (0.976 vs 0.972) and is the only condition with valid explanations (0.756 vs 0.000).
+- Explanation SFT matches decision-only on v1 accuracy (0.976 vs 0.972) and is the only one of the 2 SFT conditions with valid explanations (0.773 vs 0.000, prompted base 0.067).
 - Real-rules transfer is not shown. The pre-registered grid test (IRS dependent, held out) failed: gain is negative for every mix (-7.9 to -3.1). Round 1 mortgage gain is +0.8 points, and a prompted untrained explanation ties it.
 - Cause on IRS dependents: of 2,309 wrong decisions, 690 cite a rule that an exception waives and 757 a rule for the other claim type. Training taught the format, not the scope of the rules.
-- Mix pick depends on the workload. Over all 6 tests invented + real wins on correctness (44.5% vs 35.8% real-only, 39.0% invented-only) and accuracy (87.1% vs 79.8%, 78.2%). Over the 3 real-rule tests real-only explains better (35.1% vs 31.2% mixed) at equal accuracy (82.9% vs 84.1%) (log `final-grid-seeds-c845667-20261124-1343`). Not a data-volume effect: every mix has 3,600 rows and about 268 root cases, and real-only has the most text. Mixed has 2x the rule families at half the rows per domain. On gain no difference shows: own minus wrong-reason, mix - real, pooled over 84 mortgage and 84 SNAP families, is +0.7 / +0.8 on mortgage and -1.0 / -1.0 on SNAP (Gemini / Opus, every CI covers 0 and stays within 3 points). The Opus real-only edge on the registered paired gain (mortgage -3.4 [-6.0, -0.8]) is 2.2 points from the decision-only runs and 1.2 from the explanation runs.
+- Mix pick depends on the workload. Over all 6 tests invented + real wins on correctness (49.4% vs 40.2% real-only, 39.8% invented-only) and accuracy (87.1% vs 79.8%, 78.2%). Over the 3 real-rule tests real-only explains better (44.1% vs 39.7% mixed) while mixed is slightly more accurate (84.1% vs 82.9%) (log `final-grid-seeds-28ca8c9-20261125-0523`). Not a data-volume effect: every mix has 3,600 rows and about 268 root cases, and real-only has the most text. Mixed has 2x the rule families at half the rows per domain. On gain no difference shows: own minus wrong-reason, mix - real, pooled over 84 mortgage and 84 SNAP families, is +0.7 / +0.8 on mortgage and -1.0 / -1.0 on SNAP (Gemini / Opus, every CI covers 0 and stays within 3 points). The Opus real-only edge on the registered paired gain (mortgage -3.4 [-6.0, -0.8]) is 2.2 points from the decision-only runs and 1.2 from the explanation runs.
 
 ## Files
 
