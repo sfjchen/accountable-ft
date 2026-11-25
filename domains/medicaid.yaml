@@ -1,0 +1,306 @@
+# Medicaid adult group (MAGI adults aged 19-64) eligibility in an expansion state, coverage in calendar year 2027, 48
+# states and DC. Real-rules domain: the adult group rules follow 42 CFR 435.119, the MAGI income test 435.603, residency
+# 435.403, citizenship and status 435.406, 435.956 and SSA 1903(v)(5) as amended by P.L. 119-21 sec. 71109, the SSN rule
+# 435.910, and the community engagement requirement follows SSA 1902(xx) as added by P.L. 119-21 sec. 71119 and CMS's
+# interim final rule (42 CFR 435.551-435.560); see domains/medicaid.md for sources. Approve means the person is
+# eligible for coverage under the adult group. Simplifications: the income limit is 138% of the 2026 HHS poverty
+# guideline for the 48 states and DC ($15,960 plus $5,680 per extra person), a 133% limit plus the 5% income disregard,
+# written as a monthly amount in tenths of dollars (exact to the cent); MAGI is current monthly earned plus unearned
+# income, with no tax deductions, no tax household rules (household_size is the MAGI household) and no lump sums or
+# self-employment rules; the applicant's earned income is the whole household's earned income for the $580 income route
+# to community engagement; state variations (Alaska and Hawaii guidelines, state-funded coverage of immigrants,
+# the state option to cover LPRs without the bar) are left out; the
+# immigration facts are 1 status plus 1 bar-exception fact (40 quarters of work, military service or family, or refugee
+# origin), and the SHO 26-001 detail on emergency Medicaid, children and pregnant women is left out; the pregnancy
+# exclusion (435.119(b)(2)) is kept while the statute's postpartum exclusion from community engagement is the only
+# pregnancy-related exemption modeled; the exemption groups are 1 enum (plus 1 child fact) instead of the statute's
+# separate clauses, family caregivers of disabled individuals, the 1115 demonstration populations, optional
+# short-term hardship exceptions, the $580 seasonal-worker average and the 30-day noncompliance notice are left out; the
+# 80 hours are 1 monthly count of work, community service, work program and school (half-time school counts as 80) in
+# the verified month, with the look-back length left to states; inmate status is the public-institution test of 435.1009
+# with 1 inpatient exception; ints are bucketed to at most 8 values like every other domain.
+name: medicaid
+title: "Medicaid adult group (MAGI adults aged 19-64): eligibility rules in an expansion state, 2027"
+preamble: "An applicant is approved for the adult group only if the applicant meets every rule below. Income figures are monthly. Rules marked as defaults say what to assume when the application is silent on a point."
+ref_date: 2026-11-24
+required: [age_range]
+facts:
+  household_size:
+    type: int
+    values: [1, 2, 3, 4, 5, 6]
+    label: "number of people in the applicant's MAGI household"
+    say:
+      - "The applicant's household has {v} members for income counting."
+      - "{v} people are counted in the applicant's household."
+  earned_income:
+    type: int
+    values: [0, 500, 600, 1200, 2000, 3000, 4000]
+    label: "monthly earned income, wages and self-employment (dollars)"
+    say:
+      - "The household's wages come to {v:money} a month."
+      - "Pay stubs show monthly earnings of {v:money}."
+  unearned_income:
+    type: int
+    values: [0, 300, 700, 1200]
+    label: "monthly unearned income, such as unemployment benefits or alimony (dollars)"
+    say:
+      - "The household also receives {v:money} a month in unearned income."
+      - "Monthly unearned income, from benefits and support payments, is {v:money}."
+  age:
+    type: int
+    values: [18, 19, 26, 40, 55, 64, 65]
+    label: "the applicant's age in years"
+    say:
+      - "The applicant is {v} years old."
+      - "The applicant's birth records show an age of {v}."
+  state_resident:
+    type: bool
+    label: "the applicant lives in the state where the application was filed and intends to stay"
+    say_true:
+      - "The applicant lives in the state where the application was filed."
+      - "The applicant's home address is in this state."
+    say_false:
+      - "The applicant lives in another state and applied here."
+      - "The applicant's home is across the state line from the office where the application was filed."
+  immigration_status:
+    type: enum
+    values: [citizen, lpr_5plus, lpr_under5, cuban_haitian, cofa, refugee, visa]
+    names:
+      citizen: "a U.S. citizen"
+      lpr_5plus: "a green card holder for more than 5 years"
+      lpr_under5: "a green card holder for less than 5 years"
+      cuban_haitian: "a Cuban or Haitian entrant"
+      cofa: "a citizen of a Compact of Free Association nation (Marshall Islands, Micronesia or Palau)"
+      refugee: "a refugee or asylee without a green card"
+      visa: "on a temporary work visa"
+    label: "citizenship or immigration status of the applicant"
+    say:
+      - "The applicant is {v:e}."
+      - "Immigration records show the applicant is {v:e}."
+  bar_exception:
+    type: bool
+    label: "an exception to the 5-year waiting period applies: 40 quarters of work, military service or family of a service member or veteran, or refugee or asylee origin"
+    say_true:
+      - "Social Security records credit the applicant with 40 quarters of work."
+      - "The applicant is the spouse of an active-duty service member."
+    say_false:
+      - "No exception to the 5-year waiting period applies to the applicant."
+      - "The applicant has under 40 work quarters, no military tie and no refugee origin."
+  status_verified:
+    type: bool
+    label: "the applicant's citizenship or immigration status has been verified with the SAVE system or documents"
+    say_true:
+      - "The applicant's citizenship or immigration status was verified with the SAVE system."
+      - "The applicant's status is confirmed by documents on file."
+    say_false:
+      - "The applicant's status has not been verified yet."
+      - "The state could not confirm the applicant's status from the documents given."
+  reasonable_opportunity:
+    type: bool
+    label: "the applicant is within the 90-day reasonable opportunity period to give proof of status"
+    say_true:
+      - "The state gave the applicant a 90-day reasonable opportunity period that has not ended."
+      - "The applicant is still inside the reasonable opportunity period to send proof of status."
+    say_false:
+      - "No reasonable opportunity period is open for the applicant."
+      - "The applicant's reasonable opportunity period to prove status has ended."
+  ssn_provided:
+    type: bool
+    label: "the applicant gave a Social Security number or proof of applying for one"
+    say_true:
+      - "The applicant has given a Social Security number."
+      - "A Social Security number is on file for the applicant."
+    say_false:
+      - "The applicant has not given a Social Security number or proof of applying for one."
+      - "A Social Security number is missing from the application."
+  medicare:
+    type: bool
+    label: "the applicant is entitled to or enrolled in Medicare Part A or B"
+    say_true:
+      - "The applicant is enrolled in Medicare Part B."
+      - "The applicant is entitled to Medicare Part A."
+    say_false:
+      - "The applicant has no Medicare entitlement or enrollment."
+      - "The applicant is not on Medicare."
+  other_mandatory_group:
+    type: bool
+    label: "the applicant is eligible for and enrolled in another mandatory Medicaid group, such as SSI or parent and caretaker coverage"
+    say_true:
+      - "The applicant already receives Medicaid as an SSI recipient."
+      - "The applicant is enrolled in parent and caretaker coverage."
+    say_false:
+      - "The applicant is not enrolled in any other mandatory Medicaid group."
+      - "No other mandatory Medicaid group covers the applicant."
+  pregnant:
+    type: bool
+    label: "the applicant is pregnant"
+    say_true:
+      - "The applicant is 6 months pregnant."
+      - "The applicant reports a pregnancy."
+    say_false:
+      - "The applicant is not pregnant."
+      - "No pregnancy is reported."
+  inmate:
+    type: bool
+    label: "the applicant is an inmate of a public institution such as a jail or prison"
+    say_true:
+      - "The applicant is held in a county jail."
+      - "The applicant is serving a sentence in a state prison."
+    say_false:
+      - "The applicant is not in jail or prison."
+      - "The applicant is not held in any public institution."
+  inpatient_stay:
+    type: bool
+    label: "the applicant is receiving inpatient care in a medical institution, which can be covered even while the applicant is an inmate"
+    say_true:
+      - "The applicant is admitted to a hospital for an overnight stay."
+      - "The applicant is receiving inpatient hospital care."
+    say_false:
+      - "The applicant is not admitted to a hospital or nursing facility."
+      - "No inpatient stay is on record for the applicant."
+  state_ce_active:
+    type: bool
+    label: "the state is applying the community engagement requirement (no CMS good faith effort exemption)"
+    say_true:
+      - "The state applies the community engagement requirement in 2027."
+      - "The state has no good faith exemption from the community engagement requirement."
+    say_false:
+      - "CMS granted the state a good faith effort exemption from the community engagement requirement."
+      - "The state does not yet apply the community engagement requirement."
+  ce_hours:
+    type: int
+    values: [0, 40, 79, 80, 120]
+    label: "hours in the verified month of work, community service, a work program or half-time school (half-time school counts as 80)"
+    say:
+      - "The applicant's verified activity for the month totals {v} hours."
+      - "Records show {v} hours of work, service, a work program or school in the verified month."
+  ce_exemption:
+    type: enum
+    values: [none, medically_frail, postpartum, tribal, veteran_total, foster_youth, snap_tanf_work, sud_treatment]
+    names:
+      none: "no community engagement exemption group"
+      medically_frail: "medically frail, with a condition that significantly impairs the ability to work 80 hours a month"
+      postpartum: "in the postpartum coverage period after a pregnancy"
+      tribal: "an American Indian or Alaska Native eligible for Indian Health Service care"
+      veteran_total: "a veteran with a total (100 percent) VA disability rating"
+      foster_youth: "a former foster youth under age 26"
+      snap_tanf_work: "in a SNAP household and subject to SNAP work rules, or complying with TANF work rules"
+      sud_treatment: "in a drug or alcohol treatment and rehabilitation program"
+    label: "exemption group of the applicant"
+    say:
+      - "The applicant is {v:e}."
+      - "The file shows the applicant as {v:e}."
+  child_status:
+    type: enum
+    values: [no_child, child_13_under, child_14_17]
+    names:
+      no_child: "no dependent child in the applicant's care"
+      child_13_under: "a dependent child aged 13 or under in the applicant's care as parent, guardian or caretaker relative"
+      child_14_17: "a dependent child aged 14 to 17, and none younger, in the applicant's care"
+    label: "dependent children in the applicant's care"
+    say:
+      - "The applicant has {v:e}."
+      - "On family composition, the file shows {v:e}."
+derived_facts:
+  magi:
+    expr: "earned_income + unearned_income"
+    label: "monthly MAGI, current earned plus unearned income (dollars)"
+    say: ["Earned and unearned income together give monthly MAGI of {v:money}."]
+rules:
+  - key: age_range
+    cond: "age >= 19 and age <= 64"
+    text: "The applicant must be at least 19 and under 65 years old"
+  - key: residency
+    cond: "state_resident"
+    text: "The applicant must live in the state where the application is filed"
+  - key: qualified_status
+    cond: "immigration_status in ['citizen', 'lpr_5plus', 'lpr_under5', 'cuban_haitian', 'cofa']"
+    text: "The applicant must be a U.S. citizen or national, a green card holder, a Cuban or Haitian entrant, or a citizen of a Compact of Free Association nation. A refugee, an asylee or a temporary visa holder is not eligible"
+  - key: five_year_bar
+    scoped: true
+    cond: "immigration_status != 'lpr_under5'"
+    near: "immigration_status in ['citizen', 'cuban_haitian', 'cofa']"
+    text: "A green card holder must have had the card for at least 5 years"
+    unless:
+      - cond: "bar_exception"
+        text: "an exception applies, such as 40 quarters of work, military service or family of a service member or veteran, or refugee or asylee origin"
+  - key: status_verification
+    scoped: true
+    cond: "status_verified"
+    near: "not status_verified and reasonable_opportunity"
+    text: "The applicant's citizenship or immigration status must be verified"
+    unless:
+      - cond: "reasonable_opportunity"
+        text: "the applicant is within the 90-day reasonable opportunity period to give proof"
+  - key: other_group
+    cond: "not other_mandatory_group"
+    text: "The applicant may not be eligible for and enrolled in another mandatory Medicaid group, such as SSI or parent and caretaker coverage"
+  - key: not_pregnant
+    cond: "not pregnant"
+    text: "The applicant may not be pregnant, since pregnant women are covered under the pregnancy group"
+  - key: inmate
+    scoped: true
+    cond: "not inmate"
+    near: "inmate and inpatient_stay"
+    text: "The applicant may not be an inmate of a public institution such as a jail or prison"
+    unless:
+      - cond: "inpatient_stay"
+        text: "the applicant is receiving inpatient care in a medical institution"
+  - key: community_engagement
+    scoped: true
+    cond: "not state_ce_active or ce_hours >= 80 or earned_income >= 580"
+    near: "not state_ce_active and ce_hours < 80 and earned_income < 580"
+    text: "In a state applying the community engagement requirement, the applicant must show at least 80 hours in the verified month of work, community service, a work program or half-time school (or monthly income of at least $580, the federal minimum wage times 80 hours)"
+    unless:
+      - cond: "ce_exemption != 'none' or child_status == 'child_13_under'"
+        text: "the applicant is exempt: medically frail, postpartum, an American Indian or Alaska Native, a veteran with a total disability rating, a former foster youth under 26, in SNAP or TANF work compliance, in substance use treatment, or the parent, guardian or caretaker of a dependent child aged 13 or under"
+derived:
+  - key: magi_limit
+    cond: "magi * 10 <= 18354 + 6532 * (household_size - 1)"
+    text: "Monthly MAGI may not exceed $1,835.40 for a 1-person household plus $653.20 for each additional member, which is 138% of the federal poverty line"
+  - key: ssn
+    cond: "ssn_provided"
+    text: "The applicant must give a Social Security number or proof of applying for one"
+  - key: medicare
+    cond: "not medicare"
+    text: "The applicant may not be entitled to or enrolled in Medicare Part A or B"
+defaults:
+  - fact: ce_exemption
+    value: none
+    text: "If the application does not mention an exemption group, assume the applicant is in none"
+  - fact: child_status
+    value: no_child
+    text: "If the application does not mention a dependent child, assume the applicant has none"
+  - fact: bar_exception
+    value: false
+    text: "If no exception to the 5-year waiting period is shown, assume none applies"
+  - fact: reasonable_opportunity
+    value: false
+    text: "If no reasonable opportunity period is shown, assume none is open"
+  - fact: inpatient_stay
+    value: false
+    text: "If no inpatient stay is shown, assume the applicant is not in a medical institution"
+  - fact: other_mandatory_group
+    value: false
+    text: "If the application does not show other Medicaid coverage, assume the applicant is in no other mandatory group"
+  - fact: pregnant
+    value: false
+    text: "If the application does not mention a pregnancy, assume the applicant is not pregnant"
+  - fact: inmate
+    value: false
+    text: "If the application does not mention incarceration, assume the applicant is not an inmate"
+  - fact: medicare
+    value: false
+    text: "If the application does not show Medicare, assume the applicant has none"
+names: ["Maria Gonzalez", "James Carter", "Nguyen Thi Lan", "Aisha Mohamed", "Robert Kowalski", "Keisha Johnson", "Ahmed Hassan", "Linda Svensson"]
+intro:
+  - "Case {num}: {name} applied for Medicaid coverage for 2027."
+  - "The following summarizes Medicaid application {num}, filed by {name}."
+  - "{name} submitted Medicaid application {num} this month."
+color:
+  - "The applicant asked whether the caseworker could speed up the interview."
+  - "The applicant says they have never needed help before and feel embarrassed to apply."
+  - "The caseworker notes the applicant was polite and well prepared."
+  - "The applicant brought every document on the checklist to the interview."
+  - "The applicant attends a nearby church."
+  - "The applicant says a neighbor told them about the program."
