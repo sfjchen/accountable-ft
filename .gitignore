@@ -14,6 +14,10 @@ data/v1.0.jsonl
 data/.gemini_cache/
 data/snap.jsonl
 data/dependent.jsonl
+data/fmla.jsonl
+data/medicaid.jsonl
+data/wic.jsonl
+data/rm-*.sft.*.jsonl
 data/*-x.jsonl
 # response caches: the cluster answer caches (the run files hold the answers), and the simulator caches, committed as
 # .gz since GitHub refuses files over 100 MB
