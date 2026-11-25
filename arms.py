@@ -20,6 +20,8 @@ METRICS = {"joint": "joint success", "acc_maj": "accuracy", "expl_valid": "expla
 def welch(x, y):
     """Returns (mean difference, lo, hi) of x - y in points with a Welch t 95% CI."""
     vx, vy = st.variance(x) / len(x), st.variance(y) / len(y)
+    if vx + vy == 0:
+        return st.mean(x) - st.mean(y), st.mean(x) - st.mean(y), st.mean(x) - st.mean(y)
     df = (vx + vy) ** 2 / (vx ** 2 / (len(x) - 1) + vy ** 2 / (len(y) - 1))
     d, h = st.mean(x) - st.mean(y), stats.t.ppf(0.975, df) * (vx + vy) ** 0.5
     return d, d - h, d + h
@@ -32,6 +34,8 @@ def main():
     ap.add_argument("--arms", nargs=2, default=["rm-r4", "rm-mix"], help="arm prefixes, the first minus the second")
     ap.add_argument("--margin", type=float, default=3.0, help="equivalence margin, points")
     ap.add_argument("--guard", type=float, default=5.0, help="largest accuracy loss the winner may not include")
+    ap.add_argument("--seeds", type=int, default=5, help="registered seeds per arm; fewer marks the readout "
+                    "preliminary")
     a = ap.parse_args()
     v, doms, commits = {}, [], set()
     for f in a.json:
@@ -63,14 +67,17 @@ def main():
             print(f"\n{a.arms[0]} - {a.arms[1]}, {d}: {res[k, d][0]:+.1f} [{res[k, d][1]:+.1f}, {res[k, d][2]:+.1f}]"
                   f" ({len(xs[0])} vs {len(xs[1])} seeds)", end="")
         print("\n")
+    # a winner must clear 0 on joint success and keep its accuracy CI above a --guard loss, else no arm wins
     d, lo, hi = res["joint", "equal-weight mean"]
-    win = a.arms[0] if lo > 0 else a.arms[1] if hi < 0 else None
-    read = (f"{win} better" if win else f"equivalent within {a.margin:g} points" if -a.margin < lo and hi < a.margin
-            else "inconclusive")
     _, alo, ahi = res["acc_maj", "equal-weight mean"]
-    guard = "" if not win else (" (accuracy guardrail holds)" if (alo if win == a.arms[0] else -ahi) > -a.guard
-                                else " (accuracy guardrail FAILS)")
-    print(f"readout, joint success: {read}{guard}")
+    win = a.arms[0] if lo > 0 else a.arms[1] if hi < 0 else None
+    held = win and (alo if win == a.arms[0] else -ahi) > -a.guard
+    read = (f"{win} better" if held else f"inconclusive ({win} leads on joint success but fails the accuracy "
+            "guardrail)" if win else f"equivalent within {a.margin:g} points" if -a.margin < lo and hi < a.margin
+            else "inconclusive")
+    short = [f"{x} has {len(seeds[x])}" for x in a.arms if len(seeds[x]) < a.seeds]
+    print(f"readout, joint success: {read}" + (f" (PRELIMINARY: registered {a.seeds} seeds per arm, " +
+          ", ".join(short) + ")" if short else ""))
 
 
 if __name__ == "__main__":

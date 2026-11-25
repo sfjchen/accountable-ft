@@ -323,9 +323,11 @@ def score(recs, rows, aux, bank=(), dump=None):
             j = ({"valid": None, "uncertified": True, "reason": "label uncertified"} if g.get("uncertified") else
                     engine.is_valid_justification(pol, rec["facts"], cit, [r for _, _, r in p["relied"] if r], asm))
             # joint: the right decision with a valid explanation that, when it denies or cannot decide, names at
-            # least 1 rule (is_valid_justification checks each named rule's scope); uncertified counts as a failure
+            # least 1 binding rule (one that fails, or that an unknown fact leaves undecided); uncertified counts as
+            # a failure
+            bind = {k for k, t in g.get("rule_trace", {}).items() if t == "fail"} | set(g.get("needs_fact_for", ()))
             ev["joint"].append(p["dec"] == g["decision"] and bool(j.get("valid")) and not unm and
-                               (g["decision"] == "approve" or any(r for _, _, r in p["relied"])))
+                               (g["decision"] == "approve" or bool(bind & {r for _, _, r in p["relied"] if r})))
             if j.get("valid") is None:
                 cov["expl_uncertified"] += 1
             else:

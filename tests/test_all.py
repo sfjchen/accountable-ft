@@ -562,6 +562,24 @@ def test_metrics(stub):
                                   "Deny.")] == ["approve", None, "cannot determine", "deny"]
 
 
+def test_joint_needs_binding_rule(stub, monkeypatch):
+    """
+    Checks that joint success on a "cannot determine" case needs a cited rule the unknown fact leaves undecided (R2
+    on p1-b1-m), not just any rule, with every explanation counted valid.
+    """
+    monkeypatch.setattr(evaluate.engine, "is_valid_justification", lambda p, f, cit, rules, ass: {"valid": True})
+
+    def joint(rule):
+        """Returns the all-items joint mean with p1-b1-m citing rule."""
+        rows = fake_rows()
+        for r in rows:
+            if r["id"] == "p1-b1-m":
+                r["output"] = f"Decision: cannot determine\nPolicy support: Operator certificate=unknown ({rule})\n" \
+                    "Assumptions: none"
+        return aggregate(score(RECS, rows, {})[0])["all"]["joint"]["mean"]
+    assert joint("R2") - joint("R3") == pytest.approx(1 / 12)
+
+
 def test_domain_groups(stub, capsys):
     """Checks that every group is also split by domain and that each table gets a column per condition and domain."""
     ag = aggregate(score(RECS, fake_rows(), {})[0])
