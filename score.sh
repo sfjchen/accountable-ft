@@ -92,6 +92,12 @@ evals() {
   echo "fmla-arms $E $(for x in $A; do printf 'runs/fmla-%s.jsonl ' $x; done)--data data/fmla.jsonl" \
     "--bank data/fmla.bank.jsonl --json $J/fmla-arms.json"
   echo "arms-readout $PY arms.py $J/dependent-arms.json $J/fmla-arms.json"
+  # secondary: mortgage-x and SNAP-x, the Gemini own and wrong-reason passes
+  for f in mortgage-split-x snap-x; do
+    echo "$f-arms $E $(for x in $A; do printf 'runs/%s-%s.jsonl ' $f $x; done)--data data/$f.jsonl" \
+      "--bank data/$f.bank.jsonl --json $J/$f-arms.json"
+  done
+  echo "arms-secondary $PY arms.py $J/mortgage-split-x-arms.json $J/snap-x-arms.json --secondary"
   # error analysis on IRS dependents: the dump of every scored case and edit, then the tally of leading causes
   R=$(for m in inv real mix; do for s in 0 1 2; do printf 'dependent-rm-%s-account-e2-s%s ' $m $s; done; done)
   echo "dependent-errors bash -c \"$E $(for x in $R; do printf 'runs/%s.jsonl ' $x; done)--data data/dependent.jsonl" \
