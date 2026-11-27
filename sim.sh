@@ -25,8 +25,9 @@ else
   D=runs/sim-opus F="--backend claude-cli --model claude-opus-5-5 --conc ${OCONC:-8} --retries 6
       --cache runs/cache-opus.jsonl"
 fi
-RS=$(for p in runs/*.jsonl; do b=${p#runs/}; b=${b%.jsonl}; [[ $b =~ ^[a-z0-9-]+$ ]] && echo "$b"; done |
-    grep -E "$PAT")
+# a run counts when its v1 file or its file on any of FILES exists (the arms runs never answered v1)
+RS=$(for p in runs/*.jsonl; do b=${p#runs/}; b=${b%.jsonl}; [[ $b =~ ^[a-z0-9-]+$ ]] || continue
+    echo "$b"; for f in $FILES; do [[ $b == $f-* ]] && echo "${b#$f-}"; done; done | sort -u | grep -E "$PAT")
 [ -n "$RS" ] || { echo "no runs match $PAT"; exit 1; }
 echo "runs: $(echo $RS | wc -w) ($(echo $RS)) on $FILES, conc $CONC, $(hostname)"
 for r in $RS; do for f in $FILES; do fr=$r; [ $f = v1 ] || fr=$f-$r
