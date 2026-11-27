@@ -83,6 +83,15 @@ evals() {
         "${op}rm-inv --json $J/$f-pool-grid-${sd%:*}.json"
     done
   done
+  # real vs invented arms (registered Nov 24): the R4 and M explanation runs, seeds 0-4, on the 2 held-out domains
+  # (IRS dependents with the original and new families pooled, FMLA), then the registered readout over both JSONs
+  A=$(for m in r4 mix; do for s in 0 1 2 3 4; do printf 'rm-%s-account-e2-s%s ' $m $s; done; done)
+  echo "dependent-pool-arms $E $(for x in $A; do printf 'runs/dependent-%s.jsonl+runs/dependent-x-%s.jsonl ' $x $x
+    done)--data data/dependent.jsonl data/dependent-x.jsonl --bank data/dependent.bank.jsonl" \
+    "data/dependent-x.bank.jsonl --json $J/dependent-arms.json"
+  echo "fmla-arms $E $(for x in $A; do printf 'runs/fmla-%s.jsonl ' $x; done)--data data/fmla.jsonl" \
+    "--bank data/fmla.bank.jsonl --json $J/fmla-arms.json"
+  echo "arms-readout $PY arms.py $J/dependent-arms.json $J/fmla-arms.json"
   # error analysis on IRS dependents: the dump of every scored case and edit, then the tally of leading causes
   R=$(for m in inv real mix; do for s in 0 1 2; do printf 'dependent-rm-%s-account-e2-s%s ' $m $s; done; done)
   echo "dependent-errors bash -c \"$E $(for x in $R; do printf 'runs/%s.jsonl ' $x; done)--data data/dependent.jsonl" \

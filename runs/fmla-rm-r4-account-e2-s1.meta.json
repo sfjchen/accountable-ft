@@ -1,0 +1,39 @@
+{
+ "model": "rm-r4-account-e2-s1",
+ "backend": "openai",
+ "vertex": null,
+ "mode": "answer",
+ "no_account": false,
+ "shuffle_accounts": false,
+ "shuf_missing": null,
+ "wrong_missing": null,
+ "cases": 0,
+ "cache_tag": "rm-r4-account-e2-s1-1d78d919bd23",
+ "sample_seed": 0,
+ "decoding": {
+  "temperature": 0.0,
+  "top_p": 1.0,
+  "top_k": 0,
+  "max_tokens": 16384,
+  "seed": 0,
+  "thinking": false
+ },
+ "n": 1,
+ "rows": 912,
+ "cached": 0,
+ "errors": 0,
+ "fresh_calls": 912,
+ "wall_s": 328.58,
+ "in_tokens": 1656163,
+ "out_tokens": 105055,
+ "think_tokens": 0,
+ "finish": {
+  "stop": 912
+ },
+ "model_versions": [
+  "rm-r4-account-e2-s1"
+ ],
+ "mean_latency_s": 11.358,
+ "cost_usd_fresh": null,
+ "cost_usd_if_uncached": null
+}
